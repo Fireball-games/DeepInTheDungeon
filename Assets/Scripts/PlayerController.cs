@@ -8,6 +8,8 @@ namespace Scripts
     {
         public bool smoothTransition;
         public float transitionSpeed = 10f;
+        public float wallBashSpeed = 1f;
+        public float wallBashSpeedReturnMultiplier = 1.5f;
         public float transitionRotationSpeed = 500f;
 
         private Vector3 _targetGridPos;
@@ -17,52 +19,12 @@ namespace Scripts
         private bool _isStartPositionSet;
         private bool _isBashingIntoWall;
 
-        private bool AtRest = true;//=> !_isBashingIntoWall
-            // && Vector3.Distance(transform.position, _targetGridPos) < 0.05f
-            // && Vector3.Distance(transform.eulerAngles, _targetRotation) < 0.05f;
+        private bool AtRest = true;
 
-        private void FixedUpdate()
-        {
-            if (_isStartPositionSet)
-            {
-                MovePlayer();
-            }
-        }
-
-        public void SetPosition(Vector3 position)
+            public void SetPosition(Vector3 position)
         {
             transform.position = _targetGridPos = _prevTargetGridPos = position;
             _isStartPositionSet = true;
-        }
-
-        private void MovePlayer()
-        {
-            if (IsTargetPositionValid())
-            {
-                _prevTargetGridPos = _targetGridPos;
-                Transform myTransform = transform;
-
-                Vector3 targetPosition = _targetGridPos;
-
-                if (_targetRotation.y is > 270f and < 361f) _targetRotation.y = 0f;
-                if (_targetRotation.y < 0f) _targetRotation.y = 270f;
-
-                if (!smoothTransition)
-                {
-                    transform.position = targetPosition;
-                    transform.rotation = Quaternion.Euler(_targetRotation);
-                }
-                else
-                {
-                    transform.position = Vector3.MoveTowards(myTransform.position, targetPosition, Time.deltaTime * transitionSpeed);
-                    transform.rotation = Quaternion.RotateTowards(myTransform.rotation, Quaternion.Euler(_targetRotation),
-                        Time.deltaTime * transitionRotationSpeed);
-                }
-            }
-            else
-            {
-                _targetGridPos = _prevTargetGridPos;
-            }
         }
 
         public void RotateLeft() => SetMovement(() => _targetRotation -= Vector3.up * 90f);
@@ -74,23 +36,32 @@ namespace Scripts
 
         private void SetMovement(Action movementSetter)
         {
-            if (_isStartPositionSet && AtRest && IsTargetPositionValid())
+            if (!_isStartPositionSet || !AtRest) return;
+            
+            movementSetter?.Invoke();
+            
+            if (IsTargetPositionValid())
             {
                 AtRest = false;
-                _prevTargetGridPos = _targetGridPos;
-                movementSetter?.Invoke();
+               _prevTargetGridPos = _targetGridPos;
                 StartCoroutine(PerformMovementCoroutine());
+                return;
             }
-            else
+            
+            if (!_isBashingIntoWall && _targetGridPos != _prevTargetGridPos)
             {
-                _targetGridPos = _prevTargetGridPos;
+                AtRest = false;
+                StartCoroutine(BashIntoWallCoroutine());
+                return;
             }
+            
+            _targetGridPos = _prevTargetGridPos;
         }
 
         private IEnumerator PerformMovementCoroutine()
         {
-            while (Vector3.Distance(transform.position, _targetGridPos) < 0.05f
-                   && Vector3.Distance(transform.eulerAngles, _targetRotation) < 0.05)
+            while (Vector3.Distance(transform.position, _targetGridPos) > 0.05f
+                   || Vector3.Distance(transform.eulerAngles, _targetRotation) > 0.05)
             {
                 Transform myTransform = transform;
 
@@ -114,6 +85,31 @@ namespace Scripts
                 yield return null;
             }
 
+            AtRest = true;
+            _prevTargetGridPos = _targetGridPos;
+        }
+
+        private IEnumerator BashIntoWallCoroutine()
+        {
+            Vector3 position = transform.position;
+            Vector3 targetPosition = position + ((_targetGridPos - position) * 0.2f);
+            
+            while (Vector3.Distance(transform.position, targetPosition) > 0.05f)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, _targetGridPos,
+                    Time.deltaTime * wallBashSpeed);
+                yield return null;
+            }
+            
+            while (Vector3.Distance(transform.position, _prevTargetGridPos) > 0.05f)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, _prevTargetGridPos,
+                    Time.deltaTime * wallBashSpeed * wallBashSpeedReturnMultiplier);
+                yield return null;
+            }
+
+            SetPosition(_prevTargetGridPos);
+            _isBashingIntoWall = false;
             AtRest = true;
         }
 

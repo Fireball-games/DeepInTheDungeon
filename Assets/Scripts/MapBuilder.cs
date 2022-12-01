@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Scripts
@@ -6,17 +8,24 @@ namespace Scripts
     public class MapBuilder : MonoBehaviour
     {
         [Header("Prefabs")] 
-        [SerializeField] private Transform layoutParent;
         [SerializeField] private GameObject floorPrefab;
         [SerializeField] private GameObject ceilingPrefab;
         [SerializeField] private GameObject wallPrefab;
 
-        public void BuildMap(MapDescription mapDescription)
+        public event Action OnLayoutBuilt;
+
+        private Transform _layoutParent;
+        private void Awake()
         {
-            BuildLayout(mapDescription.Layout);
+            _layoutParent ??= new GameObject("Layout").transform;
         }
 
-        private void BuildLayout(List<List<int>> layout)
+        public void BuildMap(MapDescription mapDescription)
+        {
+            StartCoroutine(BuildLayout(mapDescription.Layout));
+        }
+
+        private IEnumerator BuildLayout(List<List<int>> layout)
         {
             for (int x = 0; x < layout.Count; x++)
             {
@@ -30,7 +39,7 @@ namespace Scripts
                         {
                             transform =
                             {
-                                parent = layoutParent
+                                parent = _layoutParent
                             }
                         };
 
@@ -71,9 +80,13 @@ namespace Scripts
                             GameObject westWall = Instantiate(wallPrefab, tilePosition, Quaternion.Euler(0f, 270f, 0f));
                             westWall.transform.parent = tileParent.transform;
                         }
+
+                        yield return null;
                     }
                 }
             }
+
+            OnLayoutBuilt?.Invoke();
         }
     }
 }

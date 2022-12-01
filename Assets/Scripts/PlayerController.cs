@@ -12,6 +12,8 @@ namespace Scripts
         public float wallBashSpeedReturnMultiplier = 1.5f;
         public float transitionRotationSpeed = 500f;
 
+        [SerializeField] private Camera playerCamera;
+
         private Vector3 _targetGridPos;
         private Vector3 _prevTargetGridPos;
         private Vector3 _targetRotation;
@@ -21,7 +23,12 @@ namespace Scripts
 
         private bool AtRest = true;
 
-            public void SetPosition(Vector3 position)
+        private void Awake()
+        {
+            CameraManager.SetMainCamera(playerCamera);
+        }
+
+        public void SetPosition(Vector3 position)
         {
             transform.position = _targetGridPos = _prevTargetGridPos = position;
             _isStartPositionSet = true;
@@ -36,25 +43,25 @@ namespace Scripts
 
         private void SetMovement(Action movementSetter)
         {
-            if (!_isStartPositionSet || !AtRest) return;
-            
+            if (!_isStartPositionSet || !GameController.MovementEnabled || !AtRest) return;
+
             movementSetter?.Invoke();
-            
+
             if (IsTargetPositionValid())
             {
                 AtRest = false;
-               _prevTargetGridPos = _targetGridPos;
+                _prevTargetGridPos = _targetGridPos;
                 StartCoroutine(PerformMovementCoroutine());
                 return;
             }
-            
+
             if (!_isBashingIntoWall && _targetGridPos != _prevTargetGridPos)
             {
                 AtRest = false;
                 StartCoroutine(BashIntoWallCoroutine());
                 return;
             }
-            
+
             _targetGridPos = _prevTargetGridPos;
         }
 
@@ -93,14 +100,14 @@ namespace Scripts
         {
             Vector3 position = transform.position;
             Vector3 targetPosition = position + ((_targetGridPos - position) * 0.2f);
-            
+
             while (Vector3.Distance(transform.position, targetPosition) > 0.05f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, _targetGridPos,
                     Time.deltaTime * wallBashSpeed);
                 yield return null;
             }
-            
+
             while (Vector3.Distance(transform.position, _prevTargetGridPos) > 0.05f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, _prevTargetGridPos,

@@ -2,7 +2,7 @@ using Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : Singleton<UIManager>
+public class MainUIManager : Singleton<MainUIManager>
 {
     public GameObject ButtonsWrapper;
     public Button PlayButton;

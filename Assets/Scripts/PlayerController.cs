@@ -64,11 +64,7 @@ namespace Scripts
 
         public void RotateLeft() { if (AtRest) _targetRotation -= Vector3.up * 90f; }
         public void RotateRight() { if (AtRest) _targetRotation += Vector3.up * 90f; }
-
-        public void MoveForward()
-        {
-            if (AtRest) _targetGridPos += transform.forward;
-        }
+        public void MoveForward() { if (AtRest) _targetGridPos += transform.forward; }
         public void MoveBackwards() { if (AtRest) _targetGridPos -= transform.forward; }
         public void MoveLeft() { if (AtRest) _targetGridPos -= transform.right; }
         public void MoveRight() { if (AtRest) _targetGridPos += transform.right; }

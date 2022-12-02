@@ -7,7 +7,7 @@ namespace Scripts
 {
     public class MapBuilder : MonoBehaviour
     {
-        [Header("Prefabs")] 
+        [Header("Prefabs")]
         [SerializeField] private GameObject floorPrefab;
         [SerializeField] private GameObject ceilingPrefab;
         [SerializeField] private GameObject wallPrefab;
@@ -15,6 +15,7 @@ namespace Scripts
         public event Action OnLayoutBuilt;
 
         private Transform _layoutParent;
+
         private void Awake()
         {
             _layoutParent ??= new GameObject("Layout").transform;
@@ -35,58 +36,66 @@ namespace Scripts
 
                     if (layout[x][y] == 1)
                     {
-                        GameObject tileParent = new GameObject($"Tile: [{x}] [{y}]")
+                        if (GameController.GameMode is GameController.EGameMode.Play)
                         {
-                            transform =
-                            {
-                                parent = _layoutParent
-                            }
-                        };
-
-                        Vector3 tilePosition = new(x, 0f, y);
+                            BuildBaseTile(layout, x, y);
+                        }
                         
-                        //floor
-                        GameObject floor = Instantiate(floorPrefab, tilePosition, Quaternion.identity);
-                        floor.transform.parent = tileParent.transform;
-                        
-                        //ceiling
-                        GameObject ceiling = Instantiate(ceilingPrefab, tilePosition, Quaternion.identity);
-                        ceiling.transform.parent = tileParent.transform;
-                        
-                        //North Wall
-                        if (layout[x][y+1] == 0)
-                        {
-                            GameObject northWall = Instantiate(wallPrefab, tilePosition, Quaternion.identity);
-                            northWall.transform.parent = tileParent.transform;
-                        }
-
-                        //East Wall
-                        if (layout[x+1][y] == 0)
-                        {
-                            GameObject eastWall = Instantiate(wallPrefab, tilePosition, Quaternion.Euler(0f, 90f, 0f));
-                            eastWall.transform.parent = tileParent.transform;
-                        }
-
-                        //South Wall
-                        if (layout[x][y-1] == 0)
-                        {
-                            GameObject southWall = Instantiate(wallPrefab, tilePosition, Quaternion.Euler(0f, 180f, 0f));
-                            southWall.transform.parent = tileParent.transform;
-                        }
-
-                        //West Wall
-                        if (layout[x-1][y] == 0)
-                        {
-                            GameObject westWall = Instantiate(wallPrefab, tilePosition, Quaternion.Euler(0f, 270f, 0f));
-                            westWall.transform.parent = tileParent.transform;
-                        }
-
                         yield return null;
                     }
                 }
             }
 
             OnLayoutBuilt?.Invoke();
+        }
+
+        private void BuildBaseTile(List<List<int>> layout, int x, int y)
+        {
+            GameObject tileParent = new($"Tile: [{x}] [{y}]")
+            {
+                transform =
+                {
+                    parent = _layoutParent
+                }
+            };
+
+            Vector3 tilePosition = new(x, 0f, y);
+
+            //floor
+            GameObject floor = Instantiate(floorPrefab, tilePosition, Quaternion.identity);
+            floor.transform.parent = tileParent.transform;
+
+            //ceiling
+            GameObject ceiling = Instantiate(ceilingPrefab, tilePosition, Quaternion.identity);
+            ceiling.transform.parent = tileParent.transform;
+
+            //North Wall
+            if (layout[x][y + 1] == 0)
+            {
+                GameObject northWall = Instantiate(wallPrefab, tilePosition, Quaternion.identity);
+                northWall.transform.parent = tileParent.transform;
+            }
+
+            //East Wall
+            if (layout[x + 1][y] == 0)
+            {
+                GameObject eastWall = Instantiate(wallPrefab, tilePosition, Quaternion.Euler(0f, 90f, 0f));
+                eastWall.transform.parent = tileParent.transform;
+            }
+
+            //South Wall
+            if (layout[x][y - 1] == 0)
+            {
+                GameObject southWall = Instantiate(wallPrefab, tilePosition, Quaternion.Euler(0f, 180f, 0f));
+                southWall.transform.parent = tileParent.transform;
+            }
+
+            //West Wall
+            if (layout[x - 1][y] == 0)
+            {
+                GameObject westWall = Instantiate(wallPrefab, tilePosition, Quaternion.Euler(0f, 270f, 0f));
+                westWall.transform.parent = tileParent.transform;
+            }
         }
     }
 }

@@ -13,9 +13,17 @@ namespace Scripts
 
         public static List<List<int>> CurrentMapLayout => _currentMap.Layout;
         public static bool MovementEnabled => _movementEnabled;
+        public static EGameMode GameMode => _gameMode;
 
         private static MapDescription _currentMap;
         private static bool _movementEnabled;
+        private static EGameMode _gameMode = EGameMode.Play;
+
+        public enum EGameMode
+        {
+            Play = 1,
+            Editor = 2,
+        }
 
         protected override void Awake()
         {

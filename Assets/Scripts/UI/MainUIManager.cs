@@ -14,6 +14,7 @@ public class MainUIManager : Singleton<MainUIManager>
         EditorButton.onClick.AddListener(OnEditorButtonClick);
 
         EventsManager.OnLevelStarted += OnLevelStarted;
+        EventsManager.OnSceneFinishedLoading += OnSceneFinishedLoading;
     }
 
     private void OnDisable()
@@ -22,6 +23,7 @@ public class MainUIManager : Singleton<MainUIManager>
         EditorButton.onClick.RemoveListener(OnEditorButtonClick);
         
         EventsManager.OnLevelStarted -= OnLevelStarted;
+        EventsManager.OnSceneFinishedLoading -= OnSceneFinishedLoading;
     }
 
     private void OnPlayButtonClick()
@@ -32,4 +34,10 @@ public class MainUIManager : Singleton<MainUIManager>
     private void OnEditorButtonClick() => EventsManager.TriggerOnOpenEditorRequested();
 
     private void OnLevelStarted() => ButtonsWrapper.SetActive(false);
+
+    private void OnSceneFinishedLoading(string sceneName)
+    {
+        if (sceneName == Scenes.EditorSceneName)
+            OnLevelStarted();
+    }
 }

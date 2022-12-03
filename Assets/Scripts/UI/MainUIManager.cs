@@ -6,6 +6,7 @@ namespace Scripts.UI
     public class MainUIManager : Singleton<MainUIManager>
     {
         public GameObject ButtonsWrapper;
+        public GameObject HUD;
         public Button PlayButton;
         public Button EditorButton;
 
@@ -34,12 +35,18 @@ namespace Scripts.UI
 
         private void OnEditorButtonClick() => EventsManager.TriggerOnOpenEditorRequested();
 
-        private void OnLevelStarted() => ButtonsWrapper.SetActive(false);
+        private void OnLevelStarted()
+        {
+            HUD.SetActive(true);
+            ButtonsWrapper.SetActive(false);
+        }
 
         private void OnSceneFinishedLoading(string sceneName)
         {
             if (sceneName == Scenes.EditorSceneName)
+            {
                 OnLevelStarted();
+            }
         }
     }
 }

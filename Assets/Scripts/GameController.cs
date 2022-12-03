@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Scripts.Building;
+﻿using Scripts.Building;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
 using UnityEngine;
@@ -11,6 +10,8 @@ namespace Scripts
         [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private PlayerController playerPrefab;
         private PlayerController player;
+
+        public PlayerController Player => player;
 
         public static TileDescription[,] CurrentMapLayout => _currentMap.Layout;
         public static bool MovementEnabled => _movementEnabled;
@@ -60,6 +61,7 @@ namespace Scripts
         {
             player = Instantiate(playerPrefab);
             player.SetPosition(_currentMap.StartPosition.ToVector3());
+            
             _movementEnabled = true;
             EventsManager.TriggerOnLevelStarted();
         }

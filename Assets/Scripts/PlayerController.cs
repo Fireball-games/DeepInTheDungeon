@@ -14,14 +14,15 @@ namespace Scripts
 
         [SerializeField] private Camera playerCamera;
 
+        public static float TransitionRotationSpeed { get; private set; }
+
         private Vector3 _targetGridPos;
         private Vector3 _prevTargetGridPos;
         private Vector3 _targetRotation;
 
         private bool _isStartPositionSet;
         private bool _isBashingIntoWall;
-
-        private bool AtRest = true;
+        private bool _atRest = true;
 
         private void Awake()
         {
@@ -43,13 +44,13 @@ namespace Scripts
 
         private void SetMovement(Action movementSetter)
         {
-            if (!_isStartPositionSet || !GameController.MovementEnabled || !AtRest) return;
+            if (!_isStartPositionSet || !GameController.MovementEnabled || !_atRest) return;
 
             movementSetter?.Invoke();
 
             if (IsTargetPositionValid())
             {
-                AtRest = false;
+                _atRest = false;
                 _prevTargetGridPos = _targetGridPos;
                 StartCoroutine(PerformMovementCoroutine());
                 return;
@@ -57,7 +58,7 @@ namespace Scripts
 
             if (!_isBashingIntoWall && _targetGridPos != _prevTargetGridPos)
             {
-                AtRest = false;
+                _atRest = false;
                 StartCoroutine(BashIntoWallCoroutine());
                 return;
             }
@@ -67,6 +68,9 @@ namespace Scripts
 
         private IEnumerator PerformMovementCoroutine()
         {
+            float currentRotY = transform.transform.eulerAngles.y;
+            Vector3 currentPosition = transform.position;
+            
             while (Vector3.Distance(transform.position, _targetGridPos) > 0.05f
                    || Vector3.Distance(transform.eulerAngles, _targetRotation) > 0.05)
             {
@@ -92,8 +96,19 @@ namespace Scripts
                 yield return null;
             }
 
-            AtRest = true;
+            _atRest = true;
             _prevTargetGridPos = _targetGridPos;
+            
+            if (Math.Abs(currentRotY - transform.rotation.eulerAngles.y) > float.Epsilon)
+            {
+                TransitionRotationSpeed = transitionRotationSpeed;
+                EventsManager.TriggerOnPlayerRotationChanged(_targetRotation);
+            }
+
+            if (Vector3.Magnitude(transform.position - currentPosition) > 0.5f)
+            {
+                EventsManager.TriggerOnPlayerPositionChanged(transform.position);
+            }
         }
 
         private IEnumerator BashIntoWallCoroutine()
@@ -117,7 +132,7 @@ namespace Scripts
 
             SetPosition(_prevTargetGridPos);
             _isBashingIntoWall = false;
-            AtRest = true;
+            _atRest = true;
         }
 
         private bool IsTargetPositionValid()

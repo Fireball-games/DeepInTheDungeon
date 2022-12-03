@@ -37,16 +37,18 @@ namespace Scripts.UI
 
         private void OnLevelStarted()
         {
-            HUD.SetActive(true);
-            ButtonsWrapper.SetActive(false);
+            HUD ??= FindObjectOfType<HUDController>(true).gameObject;
+            
+            if (HUD)
+            {
+                ButtonsWrapper.SetActive(false);
+                HUD.SetActive(true);
+            }
         }
 
         private void OnSceneFinishedLoading(string sceneName)
         {
-            if (sceneName == Scenes.EditorSceneName)
-            {
-                OnLevelStarted();
-            }
+            ButtonsWrapper.SetActive(false);
         }
     }
 }

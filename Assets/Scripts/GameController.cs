@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Scripts.Building;
+using Scripts.Building.Tile;
 using Scripts.Helpers;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace Scripts
         [SerializeField] private PlayerController playerPrefab;
         private PlayerController player;
 
-        public static List<List<int>> CurrentMapLayout => _currentMap.Layout;
+        public static List<List<TileDescription>> CurrentMapLayout => _currentMap.Layout;
         public static bool MovementEnabled => _movementEnabled;
         public static EGameMode GameMode => _gameMode;
 
@@ -25,21 +26,20 @@ namespace Scripts
             Editor = 2,
         }
 
-        protected override void Awake()
-        {
-            base.Awake();
-            
-            mapBuilder.OnLayoutBuilt += OnLayoutBuilt;
-        }
-
         private void OnEnable()
         {
             EventsManager.OnStartGameRequested += OnStartGameRequested;
+            EventsManager.OnSceneFinishedLoading += OnSceneFinishedLoading;
+            
+            mapBuilder.OnLayoutBuilt += OnLayoutBuilt;
         }
 
         private void OnDisable()
         {
             EventsManager.OnStartGameRequested -= OnStartGameRequested;
+            EventsManager.OnSceneFinishedLoading -= OnSceneFinishedLoading;
+            
+            mapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
         }
 
         private void StartLevel(MapDescription map)
@@ -52,6 +52,7 @@ namespace Scripts
 
         private void OnStartGameRequested()
         {
+            _gameMode = EGameMode.Play;
             StartLevel(new MapDescription());
         }
 
@@ -61,6 +62,19 @@ namespace Scripts
             player.SetPosition(_currentMap.StartPosition.ToVector3());
             _movementEnabled = true;
             EventsManager.TriggerOnLevelStarted();
+        }
+
+        private void OnSceneFinishedLoading(string sceneName)
+        {
+            if (sceneName == Scenes.EditorSceneName)
+            {
+                _gameMode = EGameMode.Editor;
+            }
+
+            if (sceneName == Scenes.MainSceneName)
+            {
+                _gameMode = EGameMode.Play;
+            }
         }
     }
 }

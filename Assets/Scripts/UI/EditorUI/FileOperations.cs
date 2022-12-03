@@ -32,7 +32,9 @@ namespace Scripts.UI.EditorUI
 
             if (_existingFiles == null || !_existingFiles.Any())
             {
-                EditorUIManager.StatusBar.RegisterMessage(GetTranslationText(LocalizationKeys.NoFilesToShow), StatusBar.EMessageType.None);
+                EditorUIManager.StatusBar.RegisterMessage(
+                    GetTranslationText(LocalizationKeys.NoFilesToShow),
+                    StatusBar.EMessageType.Warning);
                 return;
             }
             
@@ -41,17 +43,17 @@ namespace Scripts.UI.EditorUI
         
         private void OnSaveClicked()
         {
-            throw new NotImplementedException();
+            Logger.LogWarning("NOT IMPLEMENTED YET");
         }
         
         private void OnNewMapClicked()
         {
-            throw new NotImplementedException();
+            Logger.LogWarning("NOT IMPLEMENTED YET");
         }
 
         private void OnExitClicked()
         {
-            throw new NotImplementedException();
+            Logger.LogWarning("NOT IMPLEMENTED YET");
         }
 
         private void LoadMap(string mapName)

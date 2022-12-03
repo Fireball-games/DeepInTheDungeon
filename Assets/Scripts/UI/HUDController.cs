@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public class HUDController : MonoBehaviour
+namespace Scripts.UI
 {
+    public class HUDController : MonoBehaviour
+    {
    
+    }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Scripts.Helpers;
 using Scripts.Localization;
+using Scripts.MapEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using static Lean.Localization.LeanLocalization;
@@ -46,10 +47,7 @@ namespace Scripts.UI.EditorUI
             Logger.LogWarning("NOT IMPLEMENTED YET");
         }
         
-        private void OnNewMapClicked()
-        {
-            Logger.LogWarning("NOT IMPLEMENTED YET");
-        }
+        private void OnNewMapClicked() => MapEditorManager.Instance.CreateNewMap();
 
         private void OnExitClicked()
         {

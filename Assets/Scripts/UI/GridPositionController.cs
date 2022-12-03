@@ -1,28 +1,30 @@
-using Scripts;
+using Scripts.EventsManagement;
 using TMPro;
 using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
 
-public class GridPositionController : MonoBehaviour
+namespace Scripts.UI
 {
-   [SerializeField] private TMP_Text text;
-
-   private void OnEnable()
+   public class GridPositionController : MonoBehaviour
    {
-      EventsManager.OnPlayerPositionChanged += OnPlayerPositionChanged;
-      EventsManager.OnLevelStarted += OnLevelStarted;
-   }
+      [SerializeField] private TMP_Text text;
 
-   private void OnDisable()
-   {
-      EventsManager.OnPlayerPositionChanged += OnPlayerPositionChanged;
-      EventsManager.OnLevelStarted -= OnLevelStarted;
-   }
+      private void OnEnable()
+      {
+         EventsManager.OnPlayerPositionChanged += OnPlayerPositionChanged;
+         EventsManager.OnLevelStarted += OnLevelStarted;
+      }
 
-   private void OnPlayerPositionChanged(Vector3 newPosition)
-   {
-      text.text = $"{Mathf.RoundToInt(newPosition.x)} : {Mathf.RoundToInt(newPosition.z)}";
-   }
+      private void OnDisable()
+      {
+         EventsManager.OnPlayerPositionChanged += OnPlayerPositionChanged;
+         EventsManager.OnLevelStarted -= OnLevelStarted;
+      }
 
-   private void OnLevelStarted() => OnPlayerPositionChanged(GameController.Instance.Player.transform.position);
+      private void OnPlayerPositionChanged(Vector3 newPosition)
+      {
+         text.text = $"{Mathf.RoundToInt(newPosition.x)} : {Mathf.RoundToInt(newPosition.z)}";
+      }
+
+      private void OnLevelStarted() => OnPlayerPositionChanged(GameController.Instance.Player.transform.position);
+   }
 }

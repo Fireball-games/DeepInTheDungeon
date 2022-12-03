@@ -1,5 +1,6 @@
 ﻿using Scripts.Building;
 using Scripts.Building.Tile;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using UnityEngine;
 
@@ -48,7 +49,6 @@ namespace Scripts
             _movementEnabled = false;
             _currentMap = map;
             mapBuilder.BuildMap(_currentMap);
-            
         }
 
         private void OnStartGameRequested()
@@ -78,5 +78,7 @@ namespace Scripts
                 _gameMode = EGameMode.Play;
             }
         }
+
+        public void SetCurrentMap(MapDescription mapDescription) => _currentMap = mapDescription;
     }
 }

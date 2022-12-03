@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
 
-namespace Scripts
+namespace Scripts.EventsManagement
 {
     public class EventsManager : MonoBehaviour
     {
-        // ***********    Publishers    ***********
         public static event Action OnStartGameRequested;
         public static event Action OnOpenEditorRequested;
         public static event Action OnLevelStarted;

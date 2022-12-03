@@ -1,6 +1,6 @@
 ﻿namespace Scripts.Building.Tile
 {
-    public class WallsDescription
+    public class WallDescription
     {
         public RenderingInfo RenderingInfo;
         public bool ExistsOnTile;

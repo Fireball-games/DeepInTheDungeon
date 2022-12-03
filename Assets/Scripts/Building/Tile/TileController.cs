@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEditor.AssetImporters;
 using UnityEngine;
+using static Scripts.Building.Tile.TileDescription;
 
 namespace Scripts.Building.Tile
 {
@@ -15,17 +15,8 @@ namespace Scripts.Building.Tile
         [SerializeField] private TileRenderingParts westWall;
         
         private Dictionary<ETileDirection, TileRenderingParts> wallMap;
-        public enum ETileDirection
-        {
-            Floor = 1,
-            Ceiling = 2,
-            North = 3,
-            East = 4,
-            South = 5,
-            West = 6
-        }
         
-        private void Start()
+        private void Awake()
         {
             wallMap = new Dictionary<ETileDirection, TileRenderingParts>
             {
@@ -36,6 +27,11 @@ namespace Scripts.Building.Tile
                 {ETileDirection.South, southWall},
                 {ETileDirection.West, westWall},
             };
+        }
+
+        public void RemoveWall(ETileDirection direction)
+        {
+            Destroy(wallMap[direction].renderer.gameObject);
         }
 
         public void SetMeshAndMaterial(ETileDirection direction, Material material, Mesh mesh)

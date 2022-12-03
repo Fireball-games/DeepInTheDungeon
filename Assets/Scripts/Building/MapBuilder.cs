@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using Scripts.Building.Tile;
 using UnityEngine;
 
@@ -8,10 +7,6 @@ namespace Scripts.Building
 {
     public class MapBuilder : InitializeFromResourceBase
     {
-        [Header("Prefabs")]
-        [SerializeField] private GameObject floorPrefab;
-        [SerializeField] private GameObject ceilingPrefab;
-        [SerializeField] private GameObject wallPrefab;
         [SerializeField] private GameObject defaultTilePrefab;
         public DefaultMaterialsProvider defaultMaterialsProvider;
 
@@ -21,11 +16,9 @@ namespace Scripts.Building
         public event Action OnLayoutBuilt;
 
         internal Transform LayoutParent;
-        internal List<List<TileDescription>> Layout;
+        internal TileDescription[,] Layout;
 
-        internal GameObject FloorPrefab => floorPrefab;
-        internal GameObject CeilingPrefab => ceilingPrefab;
-        internal GameObject WallPrefab => wallPrefab;
+        internal GameObject DefaultTile => defaultTilePrefab;
 
         protected override void Awake()
         {
@@ -38,16 +31,16 @@ namespace Scripts.Building
             StartCoroutine(BuildLayout(mapDescription.Layout));
         }
 
-        private IEnumerator BuildLayout(List<List<TileDescription>> layout)
+        private IEnumerator BuildLayout(TileDescription[,] layout)
         {
             Layout = layout;
             
             _playBuilder ??= new PlayModeBuilder(this);
             _editorBuilder ??= new EditorModeBuilder(this);
             
-            for (int x = 0; x < layout.Count; x++)
+            for (int x = 0; x < layout.GetLength(0); x++)
             {
-                for (int y = 0; y < layout[0].Count; y++)
+                for (int y = 0; y < layout.GetLength(1); y++)
                 {
                     if (GameController.GameMode is GameController.EGameMode.Play)
                     {

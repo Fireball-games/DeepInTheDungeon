@@ -12,7 +12,7 @@ namespace Scripts
         [SerializeField] private PlayerController playerPrefab;
         private PlayerController player;
 
-        public static List<List<TileDescription>> CurrentMapLayout => _currentMap.Layout;
+        public static TileDescription[,] CurrentMapLayout => _currentMap.Layout;
         public static bool MovementEnabled => _movementEnabled;
         public static EGameMode GameMode => _gameMode;
 
@@ -53,7 +53,7 @@ namespace Scripts
         private void OnStartGameRequested()
         {
             _gameMode = EGameMode.Play;
-            StartLevel(new MapDescription());
+            StartLevel(_currentMap ?? new MapDescription());
         }
 
         private void OnLayoutBuilt()

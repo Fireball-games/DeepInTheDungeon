@@ -5,14 +5,8 @@ namespace Scripts.Building
 {
     public class EditorModeBuilder : TileBuilderBase
     {
-        public EditorModeBuilder(MapBuilder mapBuilder)
-        {
-            LayoutParent = mapBuilder.LayoutParent;
-            Layout = mapBuilder.Layout;
-            FloorPrefab = mapBuilder.FloorPrefab;
-            CeilingPrefab = mapBuilder.CeilingPrefab;
-            WallPrefab = mapBuilder.WallPrefab;
-        }
+        public EditorModeBuilder(MapBuilder mapBuilder) : base(mapBuilder)
+        {}
         
         public override void BuildTile(int x, int y)
         {

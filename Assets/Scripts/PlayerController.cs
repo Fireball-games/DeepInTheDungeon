@@ -123,7 +123,7 @@ namespace Scripts
         private bool IsTargetPositionValid()
         {
             Vector3Int intTargetPosition = Vector3Int.RoundToInt(_targetGridPos);
-            return GameController.CurrentMapLayout[intTargetPosition.x][intTargetPosition.z].IsForMovement;
+            return GameController.CurrentMapLayout[intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
         }
     }
 }

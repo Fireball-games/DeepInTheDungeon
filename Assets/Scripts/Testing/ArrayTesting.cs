@@ -18,13 +18,17 @@ namespace Scripts.Testing
                 }
             }
 
-            string result = "";
+            string result = $"SizeX: {arr.GetLength(0)}, SizeY: {arr.GetLength(1)}\n";
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
                     result += $"| {x}:{y}:{arr[x, y]} |";
+                    
                 }
+                
+                result += "\n";
+                
             }
         
             Debug.Log(result);

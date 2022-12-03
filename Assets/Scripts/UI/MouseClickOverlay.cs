@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 //Fireball Games * * * PetrZavodny.com
 
-namespace UI
+namespace Scripts.UI
 {
     public class MouseClickOverlay : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {

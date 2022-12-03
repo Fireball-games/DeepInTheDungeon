@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Scripts.Helpers
+namespace Scripts.Helpers.Attributes
 {
     /// <summary>
     /// Attribute used to show or hide the Field depending on certain conditions

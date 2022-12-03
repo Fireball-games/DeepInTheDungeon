@@ -6,47 +6,50 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OpenFileDialogController : MonoBehaviour
+namespace Scripts.UI.EditorUI
 {
-    [SerializeField] private GameObject body;
-    [SerializeField] private TMP_Text title;
-    [SerializeField] private Button cancelButton;
-    [SerializeField] private GameObject fileItemsParent;
-    [SerializeField] private GameObject fileItemPrefab;
-
-    private event Action OnClose;
-
-    private void Awake()
+    public class OpenFileDialogController : MonoBehaviour
     {
-        cancelButton.onClick.AddListener(CloseDialog);
-    }
+        [SerializeField] private GameObject body;
+        [SerializeField] private TMP_Text title;
+        [SerializeField] private Button cancelButton;
+        [SerializeField] private GameObject fileItemsParent;
+        [SerializeField] private GameObject fileItemPrefab;
 
-    public void Open(string dialogTitle, IEnumerable<string> files, Action<string> onFileItemClicked, Action onClose = null)
-    {
-        title.text = dialogTitle;
-        OnClose = onClose;
-        EventsManager.OnModalClicked += CloseDialog;
-        EventsManager.TriggerOnModalShowRequested();
-        
-        fileItemsParent.DestroyAllChildren();
+        private event Action OnClose;
 
-        foreach (string file in files)  
+        private void Awake()
         {
-            string fileName = Path.GetFileName(file);
-
-            GameObject fileItem = Instantiate(fileItemPrefab, fileItemsParent.transform);
-            fileItem.GetComponentInChildren<TMP_Text>().text = fileName;
-            fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => onFileItemClicked?.Invoke(file));
+            cancelButton.onClick.AddListener(CloseDialog);
         }
-        
-        body.SetActive(true);
-    }
 
-    private void CloseDialog()
-    {
-        EventsManager.OnModalClicked -= CloseDialog;
-        body.SetActive(false);
-        OnClose?.Invoke();
-        EventsManager.TriggerOnModalHideRequested();
+        public void Open(string dialogTitle, IEnumerable<string> files, Action<string> onFileItemClicked, Action onClose = null)
+        {
+            title.text = dialogTitle;
+            OnClose = onClose;
+            EventsManager.OnModalClicked += CloseDialog;
+            EventsManager.TriggerOnModalShowRequested();
+        
+            fileItemsParent.DestroyAllChildren();
+
+            foreach (string file in files)  
+            {
+                string fileName = Path.GetFileName(file);
+
+                GameObject fileItem = Instantiate(fileItemPrefab, fileItemsParent.transform);
+                fileItem.GetComponentInChildren<TMP_Text>().text = fileName;
+                fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => onFileItemClicked?.Invoke(file));
+            }
+        
+            body.SetActive(true);
+        }
+
+        private void CloseDialog()
+        {
+            EventsManager.OnModalClicked -= CloseDialog;
+            body.SetActive(false);
+            OnClose?.Invoke();
+            EventsManager.TriggerOnModalHideRequested();
+        }
     }
 }

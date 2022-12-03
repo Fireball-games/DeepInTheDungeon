@@ -6,12 +6,14 @@ using UnityEngine;
 
 namespace Scripts.Building
 {
-    public class MapBuilder : MonoBehaviour
+    public class MapBuilder : InitializeFromResourceBase
     {
         [Header("Prefabs")]
         [SerializeField] private GameObject floorPrefab;
         [SerializeField] private GameObject ceilingPrefab;
         [SerializeField] private GameObject wallPrefab;
+        [SerializeField] private GameObject defaultTilePrefab;
+        public DefaultMaterialsProvider defaultMaterialsProvider;
 
         private TileBuilderBase _playBuilder;
         private TileBuilderBase _editorBuilder;
@@ -25,8 +27,9 @@ namespace Scripts.Building
         internal GameObject CeilingPrefab => ceilingPrefab;
         internal GameObject WallPrefab => wallPrefab;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             LayoutParent ??= new GameObject("Layout").transform;
         }
 

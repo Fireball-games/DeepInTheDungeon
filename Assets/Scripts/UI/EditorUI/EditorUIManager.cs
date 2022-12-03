@@ -1,19 +1,19 @@
-using System;
-using Scripts.UI;
-using Scripts.UI.EditorUI;
 using UnityEngine;
 
-public class EditorUIManager : MonoBehaviour
+namespace Scripts.UI.EditorUI
 {
-    [SerializeField] private GameObject body;
-    [SerializeField] private FileOperations fileOperations;
-    [SerializeField] private StatusBar statusBar;
-
-    private void Awake()
+    public class EditorUIManager : MonoBehaviour
     {
-        StatusBar = statusBar ??= FindObjectOfType<StatusBar>();
+        [SerializeField] private GameObject body;
+        [SerializeField] private FileOperations fileOperations;
+        [SerializeField] private StatusBar statusBar;
+
+        private void Awake()
+        {
+            StatusBar = statusBar ??= FindObjectOfType<StatusBar>();
+        }
+
+        public static StatusBar StatusBar;
+
     }
-
-    public static StatusBar StatusBar;
-
 }

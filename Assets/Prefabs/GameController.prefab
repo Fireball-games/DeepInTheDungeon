@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7648017574634641508
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7648017574634641515}
+  - component: {fileID: 7648017574634641514}
+  - component: {fileID: 7648017574634641509}
+  - component: {fileID: 3832279166589929012}
+  m_Layer: 0
+  m_Name: GameController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7648017574634641515
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7648017574634641508}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.3916384, y: 0.18528157, z: -0.053880814}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7648017574634641514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7648017574634641508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b27beb0515e94d7a80b1664e546a4ef7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapBuilder: {fileID: 7648017574634641509}
+  playerPrefab: {fileID: 5562948617168804262, guid: 11e06ad3dd581734799e4e87ed373741,
+    type: 3}
+--- !u!114 &7648017574634641509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7648017574634641508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deaffc9e691f4035ba10ef8721755e7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorPrefab: {fileID: 9077699002463559798, guid: 27f80e1989e9ebe41a8d1ce8336c94e8,
+    type: 3}
+  ceilingPrefab: {fileID: 2777885479937423852, guid: 3b164db80abc83b498b03a9c5e2a6311,
+    type: 3}
+  wallPrefab: {fileID: 4139461177896970457, guid: 57df6502ea36b884787d6e265978e12e,
+    type: 3}
+  defaultTilePrefab: {fileID: 0}
+  defaultMaterialsProvider: {fileID: 3832279166589929012}
+--- !u!114 &3832279166589929012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7648017574634641508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 916be883ac764668a6c06c9ff99bd41e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultFloorMaterial: {fileID: 2100000, guid: 8d46af1bbeb682141990db7409cf7bda,
+    type: 2}
+  defaultCeilingMaterial: {fileID: 2100000, guid: a5baef5a72b29a44da89512df3bc8d6a,
+    type: 2}
+  defaultWallMaterial: {fileID: 2100000, guid: d2d038bbd584ca44c817ea83a109e41a, type: 2}

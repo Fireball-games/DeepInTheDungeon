@@ -8,7 +8,7 @@ namespace Scripts.Building
     public class MapBuilder : InitializeFromResourceBase
     {
         [SerializeField] private GameObject defaultTilePrefab;
-        public DefaultMaterialsProvider defaultMaterialsProvider;
+        public DefaultBuildPartsProvider defaultsProvider;
 
         private TileBuilderBase _playBuilder;
         private TileBuilderBase _editorBuilder;
@@ -23,7 +23,12 @@ namespace Scripts.Building
         protected override void Awake()
         {
             base.Awake();
-            LayoutParent ??= new GameObject("Layout").transform;
+            
+            if(!LayoutParent)
+            {
+                LayoutParent = new GameObject("Layout").transform;
+                LayoutParent.transform.parent = transform;
+            }
         }
 
         public void BuildMap(MapDescription mapDescription)

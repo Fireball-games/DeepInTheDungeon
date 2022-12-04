@@ -7,21 +7,23 @@ namespace Scripts.Building
 {
     public abstract class TileBuilderBase
     {
-        private readonly Transform _layoutParent;
-        protected readonly TileDescription[,] Layout;
-        private readonly GameObject _tileDefaultPrefab;
+        protected readonly Transform LayoutParent;
         protected TileController LastBuiltTile;
+        protected DefaultBuildPartsProvider DefaultsProvider;
+        private readonly TileDescription[,] _layout;
+        private readonly GameObject _tileDefaultPrefab;
         
         protected TileBuilderBase(MapBuilder mapBuilder)
         {
-            _layoutParent = mapBuilder.LayoutParent;
-            Layout = mapBuilder.Layout;
+            LayoutParent = mapBuilder.LayoutParent;
+            DefaultsProvider = mapBuilder.defaultsProvider;
+            _layout = mapBuilder.Layout;
             _tileDefaultPrefab = mapBuilder.DefaultTile;
         }
 
         public void BuildTile(int x, int y)
         {
-            if(Layout[x, y] == null)
+            if(_layout[x, y] == null)
             {
                 BuildNullTile(x, y);
             } 
@@ -37,13 +39,13 @@ namespace Scripts.Building
 
         protected virtual void BuildNormalTile(int x, int y)
         {
-            TileController newTile = GameObject.Instantiate(_tileDefaultPrefab, _layoutParent).GetComponent<TileController>();
+            TileController newTile = GameObject.Instantiate(_tileDefaultPrefab, LayoutParent).GetComponent<TileController>();
             LastBuiltTile = newTile;
             Transform tileTransform = newTile.transform;
 
             foreach (ETileDirection direction in TileDirections)
             {
-                WallDescription wall = Layout[x, y].GetWall(direction);
+                WallDescription wall = _layout[x, y].GetWall(direction);
 
                 if (wall == null)
                 {

@@ -47,7 +47,16 @@ namespace Scripts.UI.EditorUI
             Logger.LogWarning("NOT IMPLEMENTED YET");
         }
         
-        private void OnNewMapClicked() => MapEditorManager.Instance.CreateNewMap();
+        private void OnNewMapClicked()
+        {
+            if (!MapEditorManager.Instance.MapIsEdited)
+            {
+                MapEditorManager.Instance.CreateNewMap();
+                return;
+            }
+            
+            //TODO: confirmation dialog if to save, discard current map or cancel.
+        }
 
         private void OnExitClicked()
         {

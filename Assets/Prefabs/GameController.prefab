@@ -61,14 +61,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deaffc9e691f4035ba10ef8721755e7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floorPrefab: {fileID: 9077699002463559798, guid: 27f80e1989e9ebe41a8d1ce8336c94e8,
-    type: 3}
-  ceilingPrefab: {fileID: 2777885479937423852, guid: 3b164db80abc83b498b03a9c5e2a6311,
-    type: 3}
-  wallPrefab: {fileID: 4139461177896970457, guid: 57df6502ea36b884787d6e265978e12e,
-    type: 3}
   defaultTilePrefab: {fileID: 0}
-  defaultMaterialsProvider: {fileID: 3832279166589929012}
+  defaultsProvider: {fileID: 3832279166589929012}
 --- !u!114 &3832279166589929012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,3 +80,5 @@ MonoBehaviour:
   defaultCeilingMaterial: {fileID: 2100000, guid: a5baef5a72b29a44da89512df3bc8d6a,
     type: 2}
   defaultWallMaterial: {fileID: 2100000, guid: d2d038bbd584ca44c817ea83a109e41a, type: 2}
+  defaultNullCubePrefab: {fileID: 4470904905357970976, guid: a05b758c757783240ad1a6387b66fe1e,
+    type: 3}

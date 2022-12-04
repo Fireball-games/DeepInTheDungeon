@@ -11,8 +11,9 @@ namespace Scripts.MapEditor
         [SerializeField] private Camera sceneCamera;
         [SerializeField] private float cameraHeight = 10f;
 
-        public EWorkMode WorkMode => _workMode; 
-        
+        public EWorkMode WorkMode => _workMode;
+        public bool MapIsEdited { get; private set; }
+
         private MapBuilder _mapBuilder;
         private EWorkMode _workMode;
         
@@ -37,6 +38,8 @@ namespace Scripts.MapEditor
 
         public void CreateNewMap()
         {
+            MapIsEdited = true;
+            
             EditorEvents.TriggerOnNewMapCreated();
 
             MapDescription newMap = new();

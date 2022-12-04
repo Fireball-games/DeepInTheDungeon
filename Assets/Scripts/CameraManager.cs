@@ -1,39 +1,33 @@
-using System;
 using UnityEngine;
 
 namespace Scripts
 {
     public class CameraManager : Singleton<CameraManager>
     {
-        public Camera uiCamera;
+        public Camera MainCamera;
+        private Camera ownCamera;
 
-        public static Camera MainCamera;
-
-        private static event Action<ECameraType> OnMainCameraSet;
-
-        private enum ECameraType
+        protected override void Awake()
         {
-            UI = 1,
-            Main = 2,
+            base.Awake();
+
+            ownCamera = GetComponent<Camera>();
+            
+            SetMainCamera(ownCamera);
         }
 
-        private void OnEnable()
+        public void SetMainCamera(Camera newCamera)
         {
-            OnMainCameraSet += SwapCamera;
-        }
-
-        private void SwapCamera(ECameraType cameraType)
-        {
-            bool swappedToMain = cameraType is ECameraType.Main;
-
-            uiCamera.enabled = !swappedToMain;
-            MainCamera.enabled = swappedToMain;
-        }
-
-        public static void SetMainCamera(Camera newCamera)
-        {
+            if (MainCamera)
+            {
+                MainCamera.enabled = false;
+                MainCamera.tag = Helpers.Strings.Untagged;
+            }
+            
             MainCamera = newCamera;
-            OnMainCameraSet?.Invoke(ECameraType.Main);
+            newCamera.tag = Helpers.Strings.MainCamera;
+            newCamera.enabled = true;
+
         }
     }
 }

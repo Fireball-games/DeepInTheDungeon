@@ -20,6 +20,7 @@ namespace Scripts.Building
             cube.transform.parent = LayoutParent;
             cube.transform.position = new Vector3(x, 0f, y);
             cube.transform.localScale = _tileScaleInEditor;
+            cube.name = $"Tile: x: {x}, y: {y}";
         }
 
         protected override void BuildNormalTile(int x, int y)

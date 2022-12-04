@@ -14,6 +14,7 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private TitleController mapTitle;
 
         public static StatusBar StatusBar;
+        public static string DefaultMapName => $"< {LeanLocalization.GetTranslationText(LocalizationKeys.NewMap)} >";
         
         private void Awake()
         {
@@ -32,7 +33,7 @@ namespace Scripts.UI.EditorUI
 
         private void OnNewMapCreated()
         {
-            mapTitle.Show($"< {LeanLocalization.GetTranslationText(LocalizationKeys.NewMap)} >");
+            mapTitle.Show(DefaultMapName);
         }
     }
 }

@@ -7,7 +7,6 @@ namespace Scripts.Building
 {
     public class MapBuilder : InitializeFromResourceBase
     {
-        [SerializeField] private GameObject defaultTilePrefab;
         public DefaultBuildPartsProvider defaultsProvider;
 
         private TileBuilderBase _playBuilder;
@@ -17,8 +16,6 @@ namespace Scripts.Building
 
         internal Transform LayoutParent;
         internal TileDescription[,] Layout;
-
-        internal GameObject DefaultTile => defaultTilePrefab;
 
         protected override void Awake()
         {

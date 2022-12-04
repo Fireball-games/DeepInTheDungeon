@@ -27,7 +27,7 @@ namespace Scripts
 
         private void Awake()
         {
-            CameraManager.SetMainCamera(playerCamera);
+            CameraManager.Instance.SetMainCamera(playerCamera);
         }
 
         public void SetPosition(Vector3 position)

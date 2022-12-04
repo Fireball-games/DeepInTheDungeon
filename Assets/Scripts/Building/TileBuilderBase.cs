@@ -9,7 +9,7 @@ namespace Scripts.Building
     {
         protected readonly Transform LayoutParent;
         protected TileController LastBuiltTile;
-        protected DefaultBuildPartsProvider DefaultsProvider;
+        protected readonly DefaultBuildPartsProvider DefaultsProvider;
         private readonly TileDescription[,] _layout;
         private readonly GameObject _tileDefaultPrefab;
         
@@ -18,7 +18,7 @@ namespace Scripts.Building
             LayoutParent = mapBuilder.LayoutParent;
             DefaultsProvider = mapBuilder.defaultsProvider;
             _layout = mapBuilder.Layout;
-            _tileDefaultPrefab = mapBuilder.DefaultTile;
+            _tileDefaultPrefab = mapBuilder.defaultsProvider.defaultTilePrefab;
         }
 
         public void BuildTile(int x, int y)
@@ -40,6 +40,7 @@ namespace Scripts.Building
         protected virtual void BuildNormalTile(int x, int y)
         {
             TileController newTile = GameObject.Instantiate(_tileDefaultPrefab, LayoutParent).GetComponent<TileController>();
+            newTile.gameObject.name = $"Tile: x: {x}, y: {y}";
             LastBuiltTile = newTile;
             Transform tileTransform = newTile.transform;
 

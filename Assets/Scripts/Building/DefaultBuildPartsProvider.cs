@@ -8,5 +8,6 @@ namespace Scripts.Building
         public Material defaultCeilingMaterial;
         public Material defaultWallMaterial;
         public GameObject defaultNullCubePrefab;
+        public GameObject defaultTilePrefab;
     }
 }

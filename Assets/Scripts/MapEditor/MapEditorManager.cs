@@ -8,8 +8,9 @@ namespace Scripts.MapEditor
 {
     public class MapEditorManager : Singleton<MapEditorManager>
     {
-        [SerializeField] private Camera sceneCamera;
         [SerializeField] private float cameraHeight = 10f;
+        [SerializeField] private Camera sceneCamera;
+        [SerializeField] private PlayerIconController playerIcon;
 
         public EWorkMode WorkMode => _workMode;
         public bool MapIsEdited { get; private set; }
@@ -21,7 +22,7 @@ namespace Scripts.MapEditor
         {
             base.Awake();
             sceneCamera ??= Camera.main;
-            CameraManager.SetMainCamera(sceneCamera);
+            CameraManager.Instance.SetMainCamera(sceneCamera);
 
             _mapBuilder ??= GameController.Instance.MapBuilder;
         }
@@ -58,7 +59,11 @@ namespace Scripts.MapEditor
         private void OnLayoutBuilt()
         {
             Vector3 startPosition = GameController.Instance.CurrentMap.StartPosition;
-            sceneCamera.transform.position = new(startPosition.x, cameraHeight, startPosition.z);
+            sceneCamera.transform.position = new Vector3(startPosition.x, cameraHeight, startPosition.z);
+            playerIcon.transform.position = GameController.Instance.CurrentMap.StartPosition;
+            // TODO: rotate by data from CurrentMap when implemented
+            playerIcon.SetArrowRotation(Vector3.zero);
+            playerIcon.SetActive(true);
         }
     }
 }

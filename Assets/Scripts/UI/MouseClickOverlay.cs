@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
@@ -8,11 +9,9 @@ namespace Scripts.UI
 {
     public class MouseClickOverlay : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
-#pragma warning disable 649
-        [SerializeField] public UnityEvent OnClick;
-        [SerializeField] public UnityEvent OnMouseEnter;
-        [SerializeField] public UnityEvent OnMouseLeave;
-#pragma warning restore 649
+        public event Action OnClick;
+        public event Action  OnMouseEnter;
+        public event Action  OnMouseLeave;
 
         public void OnPointerClick(PointerEventData eventData)
         {

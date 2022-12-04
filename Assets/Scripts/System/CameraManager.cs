@@ -4,30 +4,31 @@ namespace Scripts.System
 {
     public class CameraManager : Singleton<CameraManager>
     {
-        public Camera MainCamera;
-        private Camera ownCamera;
+        public Camera mainCamera;
+        private Camera _ownCamera;
 
         protected override void Awake()
         {
             base.Awake();
 
-            ownCamera = GetComponent<Camera>();
+            _ownCamera = mainCamera;
             
-            SetMainCamera(ownCamera);
+            SetMainCamera(mainCamera);
         }
 
         public void SetMainCamera(Camera newCamera)
         {
-            if (MainCamera)
+            if (newCamera == mainCamera) return;
+            
+            if (mainCamera)
             {
-                MainCamera.enabled = false;
-                MainCamera.tag = Helpers.Strings.Untagged;
+                mainCamera.enabled = false;
+                mainCamera.tag = Helpers.Strings.Untagged;
             }
             
-            MainCamera = newCamera;
+            mainCamera = newCamera;
             newCamera.tag = Helpers.Strings.MainCamera;
             newCamera.enabled = true;
-
         }
     }
 }

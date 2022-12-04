@@ -29,9 +29,9 @@ namespace Scripts.Building.Tile
             };
         }
 
-        public void RemoveWall(ETileDirection direction)
+        public void HideWall(ETileDirection direction)
         {
-            Destroy(wallMap[direction].renderer.gameObject);
+            wallMap[direction].wallParent.SetActive(false);
         }
 
         public void SetMeshAndMaterial(ETileDirection direction, Material material, Mesh mesh)
@@ -48,6 +48,7 @@ namespace Scripts.Building.Tile
     [Serializable]
     internal class TileRenderingParts
     {
+        public GameObject wallParent;
         public MeshFilter meshFilter;
         public MeshRenderer renderer;
     }

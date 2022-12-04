@@ -42,7 +42,7 @@ namespace Scripts.Building
             {
                 for (int y = 0; y < layout.GetLength(1); y++)
                 {
-                    if (GameController.GameMode is GameController.EGameMode.Play)
+                    if (GameController.Instance.GameMode is GameController.EGameMode.Play)
                     {
                         _playBuilder.BuildTile( x, y);
                     }

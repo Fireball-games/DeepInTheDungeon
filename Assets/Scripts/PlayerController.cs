@@ -45,7 +45,7 @@ namespace Scripts
 
         private void SetMovement(Action movementSetter)
         {
-            if (!_isStartPositionSet || !GameController.MovementEnabled || !_atRest) return;
+            if (!_isStartPositionSet || !GameController.Instance.MovementEnabled || !_atRest) return;
 
             movementSetter?.Invoke();
 
@@ -69,14 +69,13 @@ namespace Scripts
 
         private IEnumerator PerformMovementCoroutine()
         {
-            float currentRotY = transform.transform.eulerAngles.y;
-            Vector3 currentPosition = transform.position;
+            Transform myTransform = transform;
+            float currentRotY = myTransform.eulerAngles.y;
+            Vector3 currentPosition = myTransform.position;
             
             while (Vector3.Distance(transform.position, _targetGridPos) > 0.05f
                    || Vector3.Distance(transform.eulerAngles, _targetRotation) > 0.05)
             {
-                Transform myTransform = transform;
-
                 Vector3 targetPosition = _targetGridPos;
 
                 if (_targetRotation.y is > 270f and < 361f) _targetRotation.y = 0f;
@@ -139,7 +138,7 @@ namespace Scripts
         private bool IsTargetPositionValid()
         {
             Vector3Int intTargetPosition = Vector3Int.RoundToInt(_targetGridPos);
-            return GameController.CurrentMapLayout[intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
+            return GameController.Instance.CurrentMap.Layout[intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
         }
     }
 }

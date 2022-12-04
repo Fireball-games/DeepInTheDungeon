@@ -1,5 +1,5 @@
-﻿
-using Scripts.Helpers;
+﻿using Scripts.Building.Tile;
+using UnityEngine;
 
 namespace Scripts.Building
 {
@@ -7,15 +7,18 @@ namespace Scripts.Building
     {
         public EditorModeBuilder(MapBuilder mapBuilder) : base(mapBuilder)
         {}
-        
-        public override void BuildTile(int x, int y)
+
+        protected override void BuildNullTile(int x, int y)
         {
-            Logger.LogWarning("NOT IMPLEMENTED YET");
+            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.transform.position = new Vector3(x, 0f, y);
         }
 
-        protected override void BuildBaseTile(int x, int y)
+        protected override void BuildNormalTile(int x, int y)
         {
-            Logger.LogWarning("NOT IMPLEMENTED YET");
+            base.BuildNormalTile(x, y);
+            
+            LastBuiltTile.HideWall(TileDescription.ETileDirection.Ceiling);
         }
     }
 }

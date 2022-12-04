@@ -13,14 +13,16 @@ namespace Scripts
         private PlayerController player;
 
         public PlayerController Player => player;
+        public MapBuilder MapBuilder => mapBuilder;
+        public MapDescription CurrentMap => _currentMap;
+        public bool MovementEnabled => _movementEnabled;
+        public EGameMode GameMode => _gameMode;
 
-        public static TileDescription[,] CurrentMapLayout => _currentMap.Layout;
-        public static bool MovementEnabled => _movementEnabled;
-        public static EGameMode GameMode => _gameMode;
+        private MapDescription _currentMap;
+        private bool _movementEnabled;
+        private EGameMode _gameMode = EGameMode.Play;
 
-        private static MapDescription _currentMap;
-        private static bool _movementEnabled;
-        private static EGameMode _gameMode = EGameMode.Play;
+        private bool _startLevelAfterBuildFinishes;
 
         public enum EGameMode
         {
@@ -48,6 +50,9 @@ namespace Scripts
         {
             _movementEnabled = false;
             _currentMap = map;
+            
+            _startLevelAfterBuildFinishes = true;
+            
             mapBuilder.BuildMap(_currentMap);
         }
 
@@ -59,6 +64,8 @@ namespace Scripts
 
         private void OnLayoutBuilt()
         {
+            if (!_startLevelAfterBuildFinishes) return;
+            
             player = Instantiate(playerPrefab);
             player.SetPosition(_currentMap.StartPosition.ToVector3());
             

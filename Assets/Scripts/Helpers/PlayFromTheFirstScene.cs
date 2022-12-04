@@ -2,6 +2,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// *************************************************************************************************
+// By YinXiaozhou
+// https://answers.unity.com/questions/441246/editor-script-to-make-play-always-jump-to-a-start.html
+// *************************************************************************************************
+
 namespace Scripts.Helpers
 {
     public static class PlayFromTheFirstScene

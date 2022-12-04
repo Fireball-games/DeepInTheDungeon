@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Scripts.Helpers
 {
@@ -26,6 +28,12 @@ namespace Scripts.Helpers
             {
                 GameObject.Destroy(child.gameObject);
             }
+        }
+        
+        public static TKey GetFirstKeyByValue<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TValue value)
+        {
+            return dictionary.FirstOrDefault(entry =>
+                EqualityComparer<TValue>.Default.Equals(entry.Value, value)).Key;
         }
     }
 }

@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4479683936416676333}
   - component: {fileID: 499396756372750723}
-  - component: {fileID: 5787758293017289090}
   - component: {fileID: 206885898971731945}
+  - component: {fileID: 5787758293017289090}
   - component: {fileID: 932590955419825994}
   m_Layer: 5
   m_Name: ImageButton
@@ -49,6 +49,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 205022847497899275}
   m_CullTransparentMesh: 1
+--- !u!114 &206885898971731945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205022847497899275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b2004d37bfe0c342a5eca5762cae25f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frame: {fileID: 0}
+  icon: {fileID: 0}
+  background: {fileID: 0}
+  idleColor: {r: 0.6792453, g: 0.66322535, b: 0.66322535, a: 1}
+  enteredColor: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
+  clickedColor: {r: 0.1745283, g: 1, b: 0.36716476, a: 1}
+  selectedColor: {r: 0.7735849, g: 0.5450381, b: 0, a: 1}
+  selectedEnteredColor: {r: 0.5603146, g: 0.6509434, b: 0.009211446, a: 1}
+  clickedEffectDuration: 0.1
+  mouseClickOverlay: {fileID: 932590955419825994}
+  frameImage: {fileID: 5787758293017289090}
+  iconImage: {fileID: 7149549645816038978}
+  backgroundImage: {fileID: 7614926879159360215}
 --- !u!114 &5787758293017289090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,7 +94,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ee5fbd8aad25a2846a34765f04c71685, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -79,30 +104,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &206885898971731945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 205022847497899275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b2004d37bfe0c342a5eca5762cae25f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frame: {fileID: 0}
-  icon: {fileID: 0}
-  background: {fileID: 0}
-  idleColor: {r: 0.6792453, g: 0.66322535, b: 0.66322535, a: 1}
-  enteredColor: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
-  clickedColor: {r: 0.1745283, g: 1, b: 0.36716476, a: 1}
-  selectedColor: {r: 0.7735849, g: 0.5450381, b: 0, a: 1}
-  clickedEffectDuration: 0.1
-  mouseClickOverlay: {fileID: 932590955419825994}
-  frameImage: {fileID: 5787758293017289090}
-  iconImage: {fileID: 7149549645816038978}
-  backgroundImage: {fileID: 7614926879159360215}
 --- !u!114 &932590955419825994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,7 +182,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9533b6ddfcb6e794386ee4520fc051db, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -252,14 +253,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.49019608}
+  m_Color: {r: 0.6792453, g: 0.66322535, b: 0.66322535, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

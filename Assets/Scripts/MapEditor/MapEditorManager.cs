@@ -2,6 +2,7 @@ using System;
 using Scripts.Building;
 using Scripts.EventsManagement;
 using UnityEngine;
+using static Scripts.MapEditor.Enums;
 
 namespace Scripts.MapEditor
 {
@@ -10,7 +11,10 @@ namespace Scripts.MapEditor
         [SerializeField] private Camera sceneCamera;
         [SerializeField] private float cameraHeight = 10f;
 
+        public EWorkMode WorkMode => _workMode; 
+        
         private MapBuilder _mapBuilder;
+        private EWorkMode _workMode;
         
         protected override void Awake()
         {
@@ -40,6 +44,12 @@ namespace Scripts.MapEditor
             GameController.Instance.SetCurrentMap(newMap);
             
             _mapBuilder.BuildMap(newMap);
+        }
+
+        public void SetWorkMode(EWorkMode newWorkMode)
+        {
+            _workMode = newWorkMode;
+            EditorEvents.TriggerOnWorkModeChanged(_workMode);
         }
 
         private void OnLayoutBuilt()

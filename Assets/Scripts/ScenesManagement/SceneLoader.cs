@@ -1,11 +1,11 @@
-using System;
 using System.Collections;
 using Scripts.EventsManagement;
+using Scripts.System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Logger = Scripts.Helpers.Logger;
 
-namespace Scripts
+namespace Scripts.ScenesManagement
 {
     public class SceneLoader : Singleton<SceneLoader>
     {

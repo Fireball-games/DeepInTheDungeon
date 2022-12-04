@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace Scripts.UI
+namespace Scripts.UI.Components
 {
     public class TitleController : MonoBehaviour
     {

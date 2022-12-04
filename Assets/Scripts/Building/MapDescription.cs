@@ -1,8 +1,7 @@
-using System.Collections.Generic;
 using Scripts.Building.Tile;
 using UnityEngine;
 
-namespace Scripts
+namespace Scripts.Building
 {
     public class MapDescription
     {

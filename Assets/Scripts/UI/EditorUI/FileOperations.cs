@@ -3,6 +3,7 @@ using System.Linq;
 using Scripts.Helpers;
 using Scripts.Localization;
 using Scripts.MapEditor;
+using Scripts.UI.Components;
 using UnityEngine;
 using UnityEngine.UI;
 using static Lean.Localization.LeanLocalization;

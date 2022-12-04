@@ -2,6 +2,7 @@ using System;
 using Lean.Localization;
 using Scripts.EventsManagement;
 using Scripts.Localization;
+using Scripts.UI.Components;
 using UnityEngine;
 
 namespace Scripts.UI.EditorUI

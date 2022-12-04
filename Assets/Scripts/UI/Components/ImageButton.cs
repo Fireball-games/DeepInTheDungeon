@@ -1,116 +1,117 @@
 using System;
 using System.Collections;
-using Scripts.UI;
 using UnityEngine;
 using UnityEngine.UI;
-using Logger = Scripts.Helpers.Logger;
 
-public class ImageButton : MonoBehaviour
+namespace Scripts.UI.Components
 {
-   [Header("Sprites")]
-   [SerializeField] private Sprite frame;
-   [SerializeField] private Sprite icon;
-   [SerializeField] private Sprite background;
-   [Header("Colors")]
-   [SerializeField] private Color idleColor;
-   [SerializeField] private Color enteredColor;
-   [SerializeField] private Color clickedColor;
-   [SerializeField] private Color selectedColor;
-   [SerializeField] private Color selectedEnteredColor;
-   [Header("Options")]
-   [SerializeField] private float clickedEffectDuration = 0.2f;
-   [SerializeField] private MouseClickOverlay mouseClickOverlay;
-   [Header("Assignables")] 
-   [SerializeField] private Image frameImage;
-   [SerializeField] private Image iconImage;
-   [SerializeField] private Image backgroundImage;
-
-   public event Action<ImageButton> OnClick;
-   
-   private bool _isMouseEntered;
-   private bool _isSelected;
-   
-   private void OnEnable()
+   public class ImageButton : MonoBehaviour
    {
-      mouseClickOverlay.OnClick += OnClickInternal;
-      mouseClickOverlay.OnMouseEnter += OnMouseEnter;
-      mouseClickOverlay.OnMouseLeave += OnMouseExit;
+      [Header("Sprites")]
+      [SerializeField] private Sprite frame;
+      [SerializeField] private Sprite icon;
+      [SerializeField] private Sprite background;
+      [Header("Colors")]
+      [SerializeField] private Color idleColor;
+      [SerializeField] private Color enteredColor;
+      [SerializeField] private Color clickedColor;
+      [SerializeField] private Color selectedColor;
+      [SerializeField] private Color selectedEnteredColor;
+      [Header("Options")]
+      [SerializeField] private float clickedEffectDuration = 0.2f;
+      [SerializeField] private MouseClickOverlay mouseClickOverlay;
+      [Header("Assignables")] 
+      [SerializeField] private Image frameImage;
+      [SerializeField] private Image iconImage;
+      [SerializeField] private Image backgroundImage;
+
+      public event Action<ImageButton> OnClick;
+   
+      private bool _isMouseEntered;
+      private bool _isSelected;
+   
+      private void OnEnable()
+      {
+         mouseClickOverlay.OnClick += OnClickInternal;
+         mouseClickOverlay.OnMouseEnter += OnMouseEnter;
+         mouseClickOverlay.OnMouseLeave += OnMouseExit;
       
-      SetBackgroundColor();
-   }
+         SetBackgroundColor();
+      }
 
 #if UNITY_EDITOR
-   private void OnValidate()
-   {
-      if (frame)
+      private void OnValidate()
       {
-         frameImage.sprite = frame;
-      }
+         if (frame)
+         {
+            frameImage.sprite = frame;
+         }
 
-      if (background)
-      {
-         backgroundImage.sprite = background;
-      }
+         if (background)
+         {
+            backgroundImage.sprite = background;
+         }
 
-      if (icon)
-      {
-         iconImage.sprite = icon;
-      }
+         if (icon)
+         {
+            iconImage.sprite = icon;
+         }
 
-      backgroundImage.color = idleColor;
-   }
+         backgroundImage.color = idleColor;
+      }
 #endif
 
-   public void SetSelected(bool isSelected)
-   {
-      _isSelected = isSelected;
-      SetBackgroundColor();
-   }
+      public void SetSelected(bool isSelected)
+      {
+         _isSelected = isSelected;
+         SetBackgroundColor();
+      }
 
-   private void OnClickInternal()
-   {
-      OnClick?.Invoke(this);
-      StartCoroutine(ClickedCoroutine());
-   }
+      private void OnClickInternal()
+      {
+         OnClick?.Invoke(this);
+         StartCoroutine(ClickedCoroutine());
+      }
    
-   private void OnMouseEnter()
-   {
-      _isMouseEntered = true;
-      SetBackgroundColor();
-   }
+      private void OnMouseEnter()
+      {
+         _isMouseEntered = true;
+         SetBackgroundColor();
+      }
    
-   private void OnMouseExit()
-   {
-      _isMouseEntered = false;
-      SetBackgroundColor();
-   }
+      private void OnMouseExit()
+      {
+         _isMouseEntered = false;
+         SetBackgroundColor();
+      }
 
-   private IEnumerator ClickedCoroutine()
-   {
-      backgroundImage.color = clickedColor;
+      private IEnumerator ClickedCoroutine()
+      {
+         backgroundImage.color = clickedColor;
 
-      yield return new WaitForSeconds(clickedEffectDuration);
+         yield return new WaitForSeconds(clickedEffectDuration);
       
-      SetBackgroundColor();
-   }
+         SetBackgroundColor();
+      }
 
-   private void SetBackgroundColor()
-   {
-      Color result;
+      private void SetBackgroundColor()
+      {
+         Color result;
 
-      if (_isMouseEntered)
-      {
-         result = _isSelected ? selectedEnteredColor : enteredColor;
-      }
-      else if (_isSelected)
-      {
-         result = _isMouseEntered ? selectedEnteredColor : selectedColor;
-      }
-      else
-      {
-         result = idleColor;
-      }
+         if (_isMouseEntered)
+         {
+            result = _isSelected ? selectedEnteredColor : enteredColor;
+         }
+         else if (_isSelected)
+         {
+            result = _isMouseEntered ? selectedEnteredColor : selectedColor;
+         }
+         else
+         {
+            result = idleColor;
+         }
       
-      backgroundImage.color = result;
+         backgroundImage.color = result;
+      }
    }
 }

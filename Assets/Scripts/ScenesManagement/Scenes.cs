@@ -1,7 +1,6 @@
 ﻿using System.Linq;
-using UnityEditor.U2D;
 
-namespace Scripts
+namespace Scripts.ScenesManagement
 {
     public static class Scenes
     {

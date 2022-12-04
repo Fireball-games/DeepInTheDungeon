@@ -1,5 +1,7 @@
 using System.Collections;
 using Scripts.EventsManagement;
+using Scripts.Player;
+using Scripts.System;
 using UnityEngine;
 
 namespace Scripts.UI

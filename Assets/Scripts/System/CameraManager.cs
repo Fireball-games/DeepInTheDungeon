@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Scripts
+namespace Scripts.System
 {
     public class CameraManager : Singleton<CameraManager>
     {

@@ -1,14 +1,17 @@
 using UnityEngine;
 
-public class PlayerIconController : MonoBehaviour
+namespace Scripts.MapEditor
 {
-    [SerializeField] private GameObject body;
-    [SerializeField] private GameObject arrow;
-
-    public void SetArrowRotation(Vector3 rotation)
+    public class PlayerIconController : MonoBehaviour
     {
-        Vector3 arrowRotation = new(0f, 0f, rotation.y);
-    }
+        [SerializeField] private GameObject body;
+        [SerializeField] private GameObject arrow;
 
-    public void SetActive(bool isActive) => body.SetActive(isActive);
+        public void SetArrowRotation(Vector3 rotation)
+        {
+            Vector3 arrowRotation = new(0f, 0f, rotation.y);
+        }
+
+        public void SetActive(bool isActive) => body.SetActive(isActive);
+    }
 }

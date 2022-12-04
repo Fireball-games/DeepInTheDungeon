@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Scripts
+namespace Scripts.Player
 {
     [RequireComponent(typeof(PlayerController))]
     public class PlayerInput : MonoBehaviour

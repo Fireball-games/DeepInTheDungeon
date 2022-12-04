@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using Scripts.EventsManagement;
+using Scripts.System;
 using UnityEngine;
 
-namespace Scripts
+namespace Scripts.Player
 {
     public class PlayerController : MonoBehaviour
     {

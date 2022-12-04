@@ -4,7 +4,7 @@ using UnityEngine;
 
 //Fireball Games * * * PetrZavodny.com
 
-namespace Scripts.UI
+namespace Scripts.UI.Components
 {
     public class StatusBar : MonoBehaviour
     {

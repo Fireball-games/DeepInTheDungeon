@@ -1,10 +1,11 @@
 ﻿using Scripts.Building;
-using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
+using Scripts.Player;
+using Scripts.ScenesManagement;
 using UnityEngine;
 
-namespace Scripts
+namespace Scripts.System
 {
     public class GameController : Singleton<GameController>
     {

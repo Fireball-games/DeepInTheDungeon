@@ -7,7 +7,7 @@ namespace Scripts.UI
 {
     public class MainUIManager : Singleton<MainUIManager>
     {
-        public GameObject ButtonsWrapper;
+        public GameObject body;
         public GameObject HUD;
         public Button PlayButton;
         public Button EditorButton;
@@ -43,14 +43,14 @@ namespace Scripts.UI
             
             if (HUD)
             {
-                ButtonsWrapper.SetActive(false);
+                body.SetActive(false);
                 HUD.SetActive(true);
             }
         }
 
         private void OnSceneFinishedLoading(string sceneName)
         {
-            ButtonsWrapper.SetActive(false);
+            body.SetActive(false);
         }
     }
 }

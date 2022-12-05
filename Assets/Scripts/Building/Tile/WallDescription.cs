@@ -2,7 +2,7 @@
 {
     public class WallDescription
     {
-        public RenderingInfo RenderingInfo;
+        public MeshInfo MeshInfo;
         public bool ExistsOnTile;
     }
 }

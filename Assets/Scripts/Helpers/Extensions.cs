@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Scripts.Helpers
@@ -42,6 +43,11 @@ namespace Scripts.Helpers
             int yLength = source.GetLength(1);
 
             return x >= 0 && x < xLength && y >= 0 && y < yLength;
+        }
+
+        public static bool HasIndex<T>(this List<List<T>> source, int x, int y)
+        {
+            return x >= 0 && x < source.Count && y >= 0 && y < source[0].Count;
         }
 
         public static void DestroyAllChildren(this GameObject go)

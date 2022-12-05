@@ -56,9 +56,9 @@ namespace Scripts.Building
                 }
                 
                 // Means default values
-                if (wall.RenderingInfo == null || !wall.RenderingInfo.material && !wall.RenderingInfo.mesh) continue;
+                if (wall.MeshInfo == null || !string.IsNullOrEmpty(wall.MeshInfo.materialName) && !string.IsNullOrEmpty(wall.MeshInfo.meshName)) continue;
 
-                if (!wall.RenderingInfo.material ^ !wall.RenderingInfo.mesh)
+                if (!string.IsNullOrEmpty(wall.MeshInfo.materialName) ^ !string.IsNullOrEmpty(wall.MeshInfo.meshName))
                 {
                     Logger.LogError($"Tile at location: [{x}] [{y}] is missing either material or mesh for {direction}");
                 }

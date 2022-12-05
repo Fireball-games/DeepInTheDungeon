@@ -103,8 +103,14 @@ namespace Scripts.MapEditor
 
             GridPositionType = isNullTile ? EGridPositionType.Null : EGridPositionType.EditableTile; 
             
-            Texture2D newCursor = isNullTile ? digCursor : demolishCursor;
-            Vector2 hotspot = isNullTile ? _defaultMouseHotspot : _demolishMouseHotspot;
+            Texture2D newCursor = null;
+            Vector2 hotspot = _defaultMouseHotspot;
+
+            if (MapEditorManager.Instance.WorkMode == EWorkMode.Build)
+            {
+                newCursor = isNullTile ? digCursor : demolishCursor;
+                hotspot = isNullTile ? _defaultMouseHotspot : _demolishMouseHotspot;
+            }
             
             SetCursor(newCursor, hotspot);
         }

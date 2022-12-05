@@ -27,12 +27,11 @@ namespace Scripts.Building
         //     new List<TileDescription> {o, o, o, o, o, o, o, o, o, o, o},
         // };
         private TileDescription[,] _layout;
-        private Vector3Int _startPosition;
 
         public MapDescription()
         {
             _layout = DefaultMapProvider.Layout;
-            _startPosition = DefaultMapProvider.StartPosition;
+            StartPosition = DefaultMapProvider.StartPosition;
         }
         
         public TileDescription[,] Layout
@@ -41,6 +40,6 @@ namespace Scripts.Building
             set => _layout = value;
         }
 
-        public Vector3Int StartPosition => _startPosition;
+        public Vector3Int StartPosition { get; set; }
     }
 }

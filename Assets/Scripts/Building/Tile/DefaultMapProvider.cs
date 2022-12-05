@@ -13,6 +13,8 @@ namespace Scripts.Building.Tile
             {null, null        , null      , null      , null        , null},
         };
 
+        public static TileDescription FullTile => fullTile;
+
         public static Vector3Int StartPosition => new(2, 0, 2);
 
         private static readonly TileDescription centerTile = new()
@@ -114,6 +116,20 @@ namespace Scripts.Building.Tile
                 Ceiling = new WallDescription(),
                 South = new WallDescription(),
                 East = new WallDescription(),
+            }
+        };
+        
+        private static readonly TileDescription fullTile = new()
+        {
+            IsForMovement = true,
+            Walls = new Walls
+            {
+                Floor = new WallDescription(),
+                Ceiling = new WallDescription(),
+                North = new WallDescription(),
+                South = new WallDescription(),
+                East = new WallDescription(),
+                West = new WallDescription(),
             }
         };
     }

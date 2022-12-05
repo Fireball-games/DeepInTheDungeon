@@ -4,9 +4,9 @@ using UnityEngine;
 namespace Scripts.Building.Tile
 {
     [Serializable]
-    public class RenderingInfo
+    public class MeshInfo
     {
-        public Mesh mesh;
-        public Material material;
+        public string meshName;
+        public string materialName;
     }
 }

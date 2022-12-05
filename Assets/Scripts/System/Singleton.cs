@@ -24,11 +24,11 @@ namespace Scripts.System
         {
             get
             {
-                if (instance != null) return instance;
+                if (instance) return instance;
                 
                 instance = FindObjectOfType<T> ();
                     
-                if (instance != null) return instance;
+                if (instance) return instance;
                     
                 GameObject obj = new()
                 {

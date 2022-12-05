@@ -7,6 +7,7 @@ using Scripts.System;
 using Scripts.System.Pooling;
 using UnityEngine;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building
 {
@@ -77,24 +78,76 @@ namespace Scripts.Building
             PhysicalTiles.Clear();
         }
 
-        public void RegenerateTilesAround(int row, int column, LayoutType layout)
+        /// <summary>
+        /// Build a new tile where was previously null tile. Or null tile where was previously a tile.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="layout"></param>
+        public void RebuildTile(int row, int column, LayoutType layout)
         {
-            RegenerateTile(row, column, layout);
-
-            foreach (Vector3Int direction in TileDirections.Directions)
+            Vector3Int key = new (row, 0, column);
+            
+            GameObject rawTile = PhysicalTiles[key];
+            ObjectPool.Instance.ReturnToPool(rawTile);
+            PhysicalTiles.Remove(key);
+            
+            if (layout[row][column] == null)
             {
-                RegenerateTile(row + direction.x, column + direction.y, layout);
+                _editorBuilder.BuildTile(row, column);
+                return;
             }
+
+            GameObject newTile = ObjectPool.Instance.GetFromPool(defaultsProvider.defaultTilePrefab, LayoutParent.gameObject);
+            PhysicalTiles.Add(key, newTile);
+            TileController tileController = newTile.GetComponent<TileController>();
+            
+            foreach (Vector3Int direction in TileDirections.VectorDirections)
+            {
+                if (layout[row + direction.x][column + direction.z] == null)
+                    tileController.HideWall(TileDirections.WallDirectionByVector[direction]);
+                else
+                    tileController.ShowWall(TileDirections.WallDirectionByVector[direction]);
+            }
+            
+            tileController.HideWall(TileDescription.ETileDirection.Ceiling);
+            tileController.transform.localScale = new Vector3(0.99f, 0.99f, 0.99f);
         }
 
+        public void RegenerateTilesAround(int row, int column, LayoutType layout)
+        {
+            foreach (Vector3Int direction in TileDirections.VectorDirections)
+            {
+                if (layout[row + direction.x][column + direction.z] != null)
+                {
+                    RegenerateTile(row + direction.x, column + direction.y, layout);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Works over physical tile, shows or hides walls after assumed changed layout. 
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="layout"></param>
         private void RegenerateTile(int row, int column, LayoutType layout)
         {
-            TileDescription tile = layout[row][column];
+            Vector3Int key = new (row, 0, column);
+            TileController tileController = PhysicalTiles[key].GetComponent<TileController>();
 
-            foreach (Vector3Int direction in TileDirections.Directions)
+            if (!tileController)
             {
-                // if (layout[row + direction.x][column + direction.y] == null)
-                //     tile.Walls.
+                Logger.LogWarning($"Attempt to regenerate tile which is null tile on position: [{row}][{column}]");
+                return;
+            }
+            
+            foreach (Vector3Int direction in TileDirections.VectorDirections)
+            {
+                if (layout[row + direction.x][column + direction.z] == null)
+                    tileController.ShowWall(TileDirections.WallDirectionByVector[direction]);
+                else
+                    tileController.HideWall(TileDirections.WallDirectionByVector[direction]);
             }
         }
     }

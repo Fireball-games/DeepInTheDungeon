@@ -161,15 +161,21 @@ namespace Scripts.MapEditor
             EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
 
             _buildService.AdjustEditedLayout(row, column, out int rowAdjustment, out int columnAdjustment, out bool wasLayoutAdjusted);
-            
-            EditedLayout[row + rowAdjustment][column + columnAdjustment] = tileType == EGridPositionType.Null 
-                // TODO: add proper wall setup based on surrounding tiles
-                ? DefaultMapProvider.FullTile 
+
+            int adjustedRow = row + rowAdjustment;
+            int adjustedColumn = column + columnAdjustment;
+
+            EditedLayout[adjustedRow][adjustedColumn] = tileType == EGridPositionType.Null 
+                ? TileDescription.GetByLayout(adjustedRow, adjustedColumn, ConvertEditedLayoutToArray()) 
                 : null;
-
-            _mapBuilder.RegenerateTilesAround(row + rowAdjustment, column + columnAdjustment, EditedLayout);
-
-            if (!wasLayoutAdjusted) return;
+            
+            _mapBuilder.RebuildTile(adjustedRow, adjustedColumn, EditedLayout);
+            
+            if (!wasLayoutAdjusted)
+            {
+                _mapBuilder.RegenerateTilesAround(adjustedRow, adjustedColumn, EditedLayout);
+                return;
+            }
 
             MapDescription newMap = GameController.Instance.CurrentMap;
             newMap.Layout = ConvertEditedLayoutToArray();

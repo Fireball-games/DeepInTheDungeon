@@ -26,10 +26,10 @@ namespace Scripts.Helpers
             Vector3IntZero = new(0, 0, 0);
             Vector3IntUp = Vector3Int.up;
             Vector3IntDown = Vector3Int.down;
-            Vector3IntNorth = Vector3Int.back;
-            Vector3IntEast = Vector3Int.right;
-            Vector3IntSouth = Vector3Int.forward;
-            Vector3IntWest = Vector3Int.left;
+            Vector3IntNorth = Vector3Int.left;
+            Vector3IntEast = Vector3Int.forward;
+            Vector3IntSouth = Vector3Int.right;
+            Vector3IntWest = Vector3Int.back;
         }
         
         public static Vector3 ToVector3(this Vector3Int source)

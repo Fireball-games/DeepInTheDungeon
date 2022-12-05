@@ -1,5 +1,7 @@
 ﻿using System;
+using Scripts.Helpers;
 using UnityEditor;
+using UnityEngine;
 
 namespace Scripts.Building.Tile
 {
@@ -38,5 +40,27 @@ namespace Scripts.Building.Tile
             ETileDirection.West => Walls.West,
             _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
         };
+
+        public static TileDescription GetByLayout(int row, int column, TileDescription[,] layout)
+        {
+            return  new TileDescription
+            {
+                IsForMovement = true,
+                Walls = new Walls
+                {
+                    Ceiling = new WallDescription(),
+                    Floor = new WallDescription(),
+                    North = WallForDirection(row, column, Extensions.Vector3IntNorth, layout),
+                    East = WallForDirection(row, column, Extensions.Vector3IntEast, layout),
+                    South = WallForDirection(row, column, Extensions.Vector3IntSouth, layout),
+                    West = WallForDirection(row, column, Extensions.Vector3IntWest, layout),
+                }
+            };
+        }
+
+        private static WallDescription WallForDirection(int row, int column, Vector3Int direction, TileDescription[,] layout)
+        {
+            return layout[row + direction.x, column + direction.z] == null ? new WallDescription() : null;
+        }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System;
-using Unity.VisualScripting;
+using Scripts.System.Pooling;
 using UnityEngine;
+using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
 
 namespace Scripts.Building
 {
@@ -19,10 +21,12 @@ namespace Scripts.Building
 
         internal Transform LayoutParent;
         internal TileDescription[,] Layout;
+        internal Dictionary<Vector3Int, GameObject> PhysicalTiles;
 
         protected override void Awake()
         {
             base.Awake();
+            PhysicalTiles = new Dictionary<Vector3Int, GameObject>();
             
             if(!LayoutParent)
             {
@@ -65,7 +69,33 @@ namespace Scripts.Building
 
         public void DemolishMap()
         {
-            LayoutParent.gameObject.DestroyAllChildren();
+            foreach (GameObject tile in PhysicalTiles.Values)
+            {
+                ObjectPool.Instance.ReturnToPool(tile);
+            }
+            
+            PhysicalTiles.Clear();
+        }
+
+        public void RegenerateTilesAround(int row, int column, LayoutType layout)
+        {
+            RegenerateTile(row, column, layout);
+
+            foreach (Vector3Int direction in TileDirections.Directions)
+            {
+                RegenerateTile(row + direction.x, column + direction.y, layout);
+            }
+        }
+
+        private void RegenerateTile(int row, int column, LayoutType layout)
+        {
+            TileDescription tile = layout[row][column];
+
+            foreach (Vector3Int direction in TileDirections.Directions)
+            {
+                // if (layout[row + direction.x][column + direction.y] == null)
+                //     tile.Walls.
+            }
         }
     }
 }

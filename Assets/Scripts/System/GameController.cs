@@ -3,6 +3,7 @@ using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Player;
 using Scripts.ScenesManagement;
+using Scripts.System.Pooling;
 using UnityEngine;
 
 namespace Scripts.System
@@ -66,8 +67,8 @@ namespace Scripts.System
         private void OnLayoutBuilt()
         {
             if (!_startLevelAfterBuildFinishes) return;
-            
-            player = Instantiate(playerPrefab);
+            player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
+                .GetComponent<PlayerController>();
             player.SetPosition(_currentMap.StartPosition.ToVector3());
             
             _movementEnabled = true;

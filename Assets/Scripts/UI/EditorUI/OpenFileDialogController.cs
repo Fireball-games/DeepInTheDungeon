@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
+using Scripts.System.Pooling;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,13 +32,13 @@ namespace Scripts.UI.EditorUI
             EventsManager.OnModalClicked += CloseDialog;
             EventsManager.TriggerOnModalShowRequested();
         
-            fileItemsParent.DestroyAllChildren();
+            fileItemsParent.DismissAllChildrenToPool();
 
             foreach (string file in files)  
             {
                 string fileName = Path.GetFileName(file);
 
-                GameObject fileItem = Instantiate(fileItemPrefab, fileItemsParent.transform);
+                GameObject fileItem = ObjectPool.Instance.GetFromPool(fileItemPrefab, fileItemsParent);
                 fileItem.GetComponentInChildren<TMP_Text>().text = fileName;
                 fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => onFileItemClicked?.Invoke(file));
             }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
 
+
 namespace Scripts.Building.Tile
 {
+    [SelectionBase]
     public class TileController : MonoBehaviour
     {
         [SerializeField] private TileRenderingParts floor;
@@ -29,10 +31,9 @@ namespace Scripts.Building.Tile
             };
         }
 
-        public void HideWall(ETileDirection direction)
-        {
-            wallMap[direction].wallParent.SetActive(false);
-        }
+        public void HideWall(ETileDirection direction) => wallMap[direction].wallParent.SetActive(false);
+
+        public void ShowWall(ETileDirection direction) => wallMap[direction].wallParent.SetActive(true);
 
         public void SetMeshAndMaterial(ETileDirection direction, Material material, Mesh mesh)
         {

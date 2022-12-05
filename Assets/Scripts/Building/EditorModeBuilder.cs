@@ -1,4 +1,6 @@
 ﻿using Scripts.Building.Tile;
+using Scripts.Helpers;
+using Scripts.System.Pooling;
 using UnityEngine;
 
 namespace Scripts.Building
@@ -14,13 +16,15 @@ namespace Scripts.Building
         protected override void BuildNullTile(int x, int y)
         {
             GameObject cube = DefaultsProvider.defaultNullCubePrefab
-                ? GameObject.Instantiate(DefaultsProvider.defaultNullCubePrefab, LayoutParent)
+                ? ObjectPool.Instance.GetFromPool(DefaultsProvider.defaultNullCubePrefab, LayoutParent.gameObject)
                 : GameObject.CreatePrimitive(PrimitiveType.Cube);
             
             cube.transform.parent = LayoutParent;
             cube.transform.position = new Vector3(x, 0f, y);
             cube.transform.localScale = _tileScaleInEditor;
-            cube.name = $"Tile: x: {x}, y: {y}";
+            cube.name = cube.name;
+
+            PhysicalTiles.Add(cube.transform.position.ToVector3Int(), cube);
         }
 
         protected override void BuildNormalTile(int x, int y, TileDescription tileDescription)

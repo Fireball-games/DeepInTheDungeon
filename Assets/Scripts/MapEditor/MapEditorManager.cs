@@ -22,6 +22,7 @@ namespace Scripts.MapEditor
         public bool MapIsBeingBuilt { get; private set; }
 
         private MapBuilder _mapBuilder;
+        private MapBuildService _buildService;
         private EWorkMode _workMode;
 
         public LayoutType EditedLayout { get; private set; }
@@ -29,6 +30,7 @@ namespace Scripts.MapEditor
         protected override void Awake()
         {
             base.Awake();
+            _buildService = new MapBuildService(this);
             sceneCamera ??= Camera.main;
             CameraManager.Instance.SetMainCamera(sceneCamera);
 
@@ -93,7 +95,7 @@ namespace Scripts.MapEditor
             playerIcon.SetActive(true);
         }
 
-        private TileDescription[,] ConvertToArrayLayout()
+        private TileDescription[,] ConvertEditedLayoutToArray()
         {
             TileDescription[,] result = new TileDescription[EditedLayout.Count, EditedLayout[0].Count];
 
@@ -156,112 +158,24 @@ namespace Scripts.MapEditor
             
             if (!EditedLayout.HasIndex(row, column)) return;
             
-            int rowAdjustment = 0;
-            int columnAdjustment = 0;
-            int rowCount = EditedLayout.Count;
-            int columnCount = EditedLayout[0].Count;
             EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
 
-            // NW corner
-            if (row == 0 && column == 0)
-            {
-                InsertColumnToStart();
-                InsertRowToTop();
-
-                rowAdjustment += 1;
-                columnAdjustment += 1;
-            }
-            // NE corner
-            else if (row == 0 && column == columnCount - 1)
-            {
-                AddColumn();
-                InsertRowToTop();
-
-                rowAdjustment += 1;
-            }
-            //SW corner
-            else if (row == rowCount - 1 && column == 0)
-            {
-               InsertColumnToStart();
-               AddRowToBottom();
-
-                columnAdjustment += 1;
-            }
-            // SE corner
-            else if (row == rowCount - 1 && column == columnCount - 1)
-            {
-                AddColumn();
-                AddRowToBottom();
-            }
-            else if (row == 0)
-            {
-                InsertRowToTop();
-
-                rowAdjustment += 1;
-            }
-            else if (column == 0)
-            {
-                InsertColumnToStart();
-
-                columnAdjustment += 1;
-            }
-            else if (row == rowCount - 1)
-            {
-                AddRowToBottom();
-            }
-            else if (column == columnCount - 1)
-            {
-                AddColumn();
-            }
-
+            _buildService.AdjustEditedLayout(row, column, out int rowAdjustment, out int columnAdjustment, out bool wasLayoutAdjusted);
+            
             EditedLayout[row + rowAdjustment][column + columnAdjustment] = tileType == EGridPositionType.Null 
                 // TODO: add proper wall setup based on surrounding tiles
                 ? DefaultMapProvider.FullTile 
                 : null;
 
+            _mapBuilder.RegenerateTilesAround(row + rowAdjustment, column + columnAdjustment, EditedLayout);
+
+            if (!wasLayoutAdjusted) return;
+
             MapDescription newMap = GameController.Instance.CurrentMap;
-            newMap.Layout = ConvertToArrayLayout();
+            newMap.Layout = ConvertEditedLayoutToArray();
             newMap.StartPosition = new(newMap.StartPosition.x + rowAdjustment, 0, newMap.StartPosition.z + columnAdjustment);
 
             OrderMapConstruction(newMap);
-        }
-
-        private void AddColumn()
-        {
-            foreach (List<TileDescription> r in EditedLayout)
-            {
-                r.Add(null);
-            }
-        }
-
-        private void InsertColumnToStart()
-        {
-            foreach (List<TileDescription> r in EditedLayout)
-            {
-                r.Insert(0, null);
-            }
-        }
-
-        private void InsertRowToTop()
-        {
-            EditedLayout.Insert(0, new List<TileDescription>());
-
-            PopulateRow(0);
-        }
-
-        private void AddRowToBottom()
-        {
-            EditedLayout.Add(new List<TileDescription>());
-
-            PopulateRow(EditedLayout.Count - 1);
-        }
-
-        private void PopulateRow(int index)
-        {
-            for (int i = 0; i < EditedLayout[1].Count; i++)
-            {
-                EditedLayout[index].Add(null);
-            }
         }
 
         #endregion

@@ -1,4 +1,4 @@
-﻿namespace Scripts.System.ObjectPool
+﻿namespace Scripts.System.Pooling
 {
     public interface IPoolInitializable
     {

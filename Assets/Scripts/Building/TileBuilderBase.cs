@@ -1,4 +1,8 @@
-﻿using Scripts.Building.Tile;
+﻿using System.Collections.Generic;
+using Scripts.Building.Tile;
+using Scripts.Helpers;
+using Scripts.System.Pooling;
+using Unity.VisualScripting;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
 using Logger = Scripts.Helpers.Logger;
@@ -12,11 +16,13 @@ namespace Scripts.Building
         protected readonly DefaultBuildPartsProvider DefaultsProvider;
         private readonly TileDescription[,] _layout;
         private readonly GameObject _tileDefaultPrefab;
-        
+        protected Dictionary<Vector3Int, GameObject> PhysicalTiles;
+
         protected TileBuilderBase(MapBuilder mapBuilder)
         {
             LayoutParent = mapBuilder.LayoutParent;
             DefaultsProvider = mapBuilder.defaultsProvider;
+            PhysicalTiles = mapBuilder.PhysicalTiles;
             _layout = mapBuilder.Layout;
             _tileDefaultPrefab = mapBuilder.defaultsProvider.defaultTilePrefab;
         }
@@ -40,12 +46,14 @@ namespace Scripts.Building
 
         protected virtual void BuildNormalTile(int x, int y, TileDescription tileDescription)
         {
-            TileController newTile = GameObject.Instantiate(_tileDefaultPrefab, LayoutParent).GetComponent<TileController>();
-            newTile.gameObject.name = $"Tile: x: {x}, y: {y}";
+            TileController newTile = ObjectPool.Instance.GetFromPool(_tileDefaultPrefab, LayoutParent.GameObject())
+                .GetComponent<TileController>();
+            
+            newTile.gameObject.name = _tileDefaultPrefab.name;
             LastBuiltTile = newTile;
             Transform tileTransform = newTile.transform;
 
-            foreach (ETileDirection direction in TileDirections)
+            foreach (ETileDirection direction in TileDescription.TileDirections)
             {
                 WallDescription wall = tileDescription.GetWall(direction);
 
@@ -54,6 +62,8 @@ namespace Scripts.Building
                     newTile.HideWall(direction);
                     continue;
                 }
+
+                newTile.ShowWall(direction);
                 
                 // Means default values
                 if (wall.MeshInfo == null || !string.IsNullOrEmpty(wall.MeshInfo.materialName) && !string.IsNullOrEmpty(wall.MeshInfo.meshName)) continue;
@@ -65,6 +75,7 @@ namespace Scripts.Building
             }
             
             tileTransform.position = new(x, 0f, y);
+            PhysicalTiles.Add(tileTransform.position.ToVector3Int(), newTile.gameObject);
         }
     }
 }

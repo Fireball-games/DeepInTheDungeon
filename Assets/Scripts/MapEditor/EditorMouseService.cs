@@ -5,13 +5,12 @@ using Scripts.Helpers;
 using Scripts.System;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
-    public class EditorMouseService : MonoBehaviour
+    public class EditorMouseService : SingletonNotPersisting<EditorMouseService>
     {
-        public static EditorMouseService instance;
-
         [SerializeField] private Texture2D digCursor;
         [SerializeField] private Texture2D demolishCursor;
         
@@ -41,26 +40,6 @@ namespace Scripts.MapEditor
         private void OnDisable()
         {
             EditorEvents.OnNewMapCreated -= OnNewMapCreated;
-        }
-
-        public static EditorMouseService Instance
-        {
-            get
-            {
-                if (instance) return instance;
-                
-                instance = FindObjectOfType<EditorMouseService> ();
-                    
-                if (instance) return instance;
-                    
-                GameObject obj = new()
-                {
-                    name = nameof(EditorMouseService)
-                };
-                
-                instance = obj.AddComponent<EditorMouseService> ();
-                return instance;
-            }
         }
 
         private void OnNewMapCreated() => StartCoroutine(UpdateMousePositionCoroutine());
@@ -102,7 +81,7 @@ namespace Scripts.MapEditor
             bool isNullTile = layout[newPosition.x, newPosition.z] == null;
 
             GridPositionType = isNullTile ? EGridPositionType.Null : EGridPositionType.EditableTile; 
-            
+            Logger.Log($"GridPositionType: {GridPositionType}");
             Texture2D newCursor = null;
             Vector2 hotspot = _defaultMouseHotspot;
 

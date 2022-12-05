@@ -5,15 +5,13 @@ using UnityEngine;
 
 //Fireball Games * * * PetrZavodny.com
 
-namespace Scripts.System.ObjectPool
+namespace Scripts.System.Pooling
 {
-    public class ObjectPool : MonoBehaviour
+    public class ObjectPool : SingletonNotPersisting<ObjectPool>
     {
-#pragma warning disable 649
         public List<PreSpawnSetItem> preSpawnSetItems;
         public Transform storeParent;
         private static readonly Dictionary<string, Queue<GameObject>> Pool = new();
-#pragma warning restore 649
 
         private Dictionary<string, Transform> _transforms;
 
@@ -26,6 +24,9 @@ namespace Scripts.System.ObjectPool
                 SpawnPreSpawnItems();
             }
         }
+
+        public GameObject GetFromPool(GameObject go, GameObject parent) => 
+            GetFromPool(go, Vector3.zero, Quaternion.identity, parent);
         
         public GameObject GetFromPool(GameObject go, Vector3 position, Quaternion rotation, GameObject parent = null) 
         {
@@ -36,7 +37,7 @@ namespace Scripts.System.ObjectPool
                 Transform removedObjectTransform = removedObject.transform;
                 removedObjectTransform.position = position;
                 removedObjectTransform.rotation = rotation;
-                removedObjectTransform.parent = parent != null ? parent.transform : storeParent;
+                removedObjectTransform.parent = parent ? parent.transform : storeParent;
                 removedObject.gameObject.SetActive(true);
                 return ProcessInterfaces(removedObject);
             }
@@ -61,9 +62,9 @@ namespace Scripts.System.ObjectPool
 
         private GameObject InstantiateNewPoolObject(GameObject requestedObject, Vector3 position, Quaternion rotation, GameObject parent, bool instantiateToDisabled = false)
         {
-            Transform poolParent = parent != null ? parent.transform : storeParent;
+            Transform poolParent = parent ? parent.transform : storeParent;
             
-            if (parent != null)
+            if (parent)
             {
                 poolParent = ResolveParentTransform(requestedObject.name);
             }

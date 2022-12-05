@@ -50,9 +50,11 @@ namespace Scripts.UI.EditorUI
         
         private void OnNewMapClicked()
         {
+            if (MapEditorManager.Instance.MapIsBeingBuilt) return;
+            
             if (!MapEditorManager.Instance.MapIsEdited)
             {
-                MapEditorManager.Instance.CreateNewMap();
+                MapEditorManager.Instance.OrderMapConstruction();
                 return;
             }
             

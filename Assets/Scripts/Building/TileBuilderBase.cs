@@ -21,15 +21,16 @@ namespace Scripts.Building
             _tileDefaultPrefab = mapBuilder.defaultsProvider.defaultTilePrefab;
         }
 
-        public void BuildTile(int x, int y)
+        public void BuildTile(int x, int y, TileDescription tileDescription = null)
         {
-            if(_layout[x, y] == null)
+            tileDescription ??= _layout[x, y];
+            if(tileDescription == null)
             {
                 BuildNullTile(x, y);
             } 
             else
             {
-                BuildNormalTile(x, y);
+                BuildNormalTile(x, y, tileDescription);
             }
         }
 
@@ -37,7 +38,7 @@ namespace Scripts.Building
         {
         }
 
-        protected virtual void BuildNormalTile(int x, int y)
+        protected virtual void BuildNormalTile(int x, int y, TileDescription tileDescription)
         {
             TileController newTile = GameObject.Instantiate(_tileDefaultPrefab, LayoutParent).GetComponent<TileController>();
             newTile.gameObject.name = $"Tile: x: {x}, y: {y}";
@@ -46,7 +47,7 @@ namespace Scripts.Building
 
             foreach (ETileDirection direction in TileDirections)
             {
-                WallDescription wall = _layout[x, y].GetWall(direction);
+                WallDescription wall = tileDescription.GetWall(direction);
 
                 if (wall == null)
                 {

@@ -5,7 +5,7 @@ namespace Scripts.Building
 {
     public class EditorModeBuilder : TileBuilderBase
     {
-        private Vector3 _tileScaleInEditor = new(0.99f, 0.99f, 0.99f);
+        private readonly Vector3 _tileScaleInEditor = new(0.99f, 0.99f, 0.99f);
         
         public EditorModeBuilder(MapBuilder mapBuilder) : base(mapBuilder)
         {
@@ -23,9 +23,9 @@ namespace Scripts.Building
             cube.name = $"Tile: x: {x}, y: {y}";
         }
 
-        protected override void BuildNormalTile(int x, int y)
+        protected override void BuildNormalTile(int x, int y, TileDescription tileDescription)
         {
-            base.BuildNormalTile(x, y);
+            base.BuildNormalTile(x, y, tileDescription);
 
             LastBuiltTile.HideWall(TileDescription.ETileDirection.Ceiling);
             LastBuiltTile.transform.localScale = _tileScaleInEditor;

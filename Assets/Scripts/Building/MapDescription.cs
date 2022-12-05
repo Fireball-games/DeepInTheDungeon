@@ -1,5 +1,6 @@
 using Scripts.Building.Tile;
 using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
@@ -34,8 +35,12 @@ namespace Scripts.Building
             _startPosition = DefaultMapProvider.StartPosition;
         }
         
-        public TileDescription[,] Layout => _layout ?? DefaultMapProvider.Layout;
-        
+        public TileDescription[,] Layout
+        {
+            get => _layout ?? DefaultMapProvider.Layout;
+            set => _layout = value;
+        }
+
         public Vector3Int StartPosition => _startPosition;
     }
 }

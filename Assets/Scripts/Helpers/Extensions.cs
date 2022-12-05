@@ -36,6 +36,14 @@ namespace Scripts.Helpers
             return _v3i;
         }
 
+        public static bool HasIndex<T>(this T[,] source, int x, int y)
+        {
+            int xLength = source.GetLength(0);
+            int yLength = source.GetLength(1);
+
+            return x >= 0 && x < xLength && y >= 0 && y < yLength;
+        }
+
         public static void DestroyAllChildren(this GameObject go)
         {
             foreach (Transform child in go.transform)

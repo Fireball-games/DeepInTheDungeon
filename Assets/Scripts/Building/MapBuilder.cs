@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using Scripts.Building.Tile;
+using Scripts.Helpers;
 using Scripts.System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Scripts.Building
@@ -31,15 +33,15 @@ namespace Scripts.Building
 
         public void BuildMap(MapDescription mapDescription)
         {
-            StartCoroutine(BuildLayout(mapDescription.Layout));
+            StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
         }
 
-        private IEnumerator BuildLayout(TileDescription[,] layout)
+        private IEnumerator BuildLayoutCoroutine(TileDescription[,] layout)
         {
             Layout = layout;
             
-            _playBuilder ??= new PlayModeBuilder(this);
-            _editorBuilder ??= new EditorModeBuilder(this);
+            _playBuilder = new PlayModeBuilder(this);
+            _editorBuilder = new EditorModeBuilder(this);
             
             for (int x = 0; x < layout.GetLength(0); x++)
             {
@@ -59,6 +61,11 @@ namespace Scripts.Building
             }
 
             OnLayoutBuilt?.Invoke();
+        }
+
+        public void DemolishMap()
+        {
+            LayoutParent.gameObject.DestroyAllChildren();
         }
     }
 }

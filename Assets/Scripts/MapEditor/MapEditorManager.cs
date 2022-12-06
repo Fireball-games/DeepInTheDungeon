@@ -5,15 +5,18 @@ using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.System;
-using Scripts.System.Pooling;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
 
 namespace Scripts.MapEditor
 {
-    public class MapEditorManager : Singleton<MapEditorManager>
+    public class MapEditorManager : SingletonNotPersisting<MapEditorManager>
     {
+        public const int MinRows = 5;
+        public const int MinColumns = 5;
+        
         [SerializeField] private float cameraHeight = 10f;
         [SerializeField] private Camera sceneCamera;
         [SerializeField] private PlayerIconController playerIcon;
@@ -23,16 +26,15 @@ namespace Scripts.MapEditor
         public bool MapIsEdited { get; private set; }
         public bool MapIsChanged { get; private set; }
         public bool MapIsBeingBuilt { get; private set; }
+        public LayoutType EditedLayout { get; private set; }
 
         private MapBuilder _mapBuilder;
         private MapBuildService _buildService;
         private EWorkMode _workMode;
 
-        public LayoutType EditedLayout { get; private set; }
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             _buildService = new MapBuildService(this);
             sceneCamera ??= Camera.main;
             CameraManager.Instance.SetMainCamera(sceneCamera);
@@ -47,6 +49,8 @@ namespace Scripts.MapEditor
 
         private void Update()
         {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            
             if (MapIsEdited)
             {
                 if (Input.GetMouseButtonDown(0))

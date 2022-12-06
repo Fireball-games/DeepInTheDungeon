@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Scripts.UI
 {
-    public class ModalController : MonoBehaviour
+    public class Modal : MonoBehaviour
     {
         [SerializeField] private Button body;
 
@@ -24,6 +24,9 @@ namespace Scripts.UI
             EventsManager.OnModalShowRequested -= Activate;
             EventsManager.OnModalHideRequested -= Deactivate;
         }
+
+        public static void Hide() => EventsManager.TriggerOnModalHideRequested();
+        public static void Show() => EventsManager.TriggerOnModalShowRequested();
 
         private void OnModalClicked() => EventsManager.TriggerOnModalClicked();
 

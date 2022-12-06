@@ -134,5 +134,37 @@ namespace Scripts.Building
                     tileController.HideWall(TileDirections.WallDirectionByVector[direction]);
             }
         }
+
+        public static MapDescription GenerateDefaultMap(int rows, int columns)
+        {
+            TileDescription[,] layout = new TileDescription[rows, columns];
+
+            Vector3Int center = new(rows / 2, 0, columns / 2);
+
+            layout = AddTilesToCenterOfLayout(layout);
+
+            return new MapDescription
+            {
+                Layout = layout,
+                StartPosition = center,
+            };
+        }
+
+        private static TileDescription[,] AddTilesToCenterOfLayout(TileDescription[,] layout)
+        {
+            Vector2Int center = new(layout.GetLength(0) / 2, layout.GetLength(1) / 2);
+
+            layout[center.x - 1, center.y - 1] = DefaultMapProvider.FullTile;
+            layout[center.x - 1, center.y] = DefaultMapProvider.FullTile;
+            layout[center.x - 1, center.y + 1] = DefaultMapProvider.FullTile;
+            layout[center.x , center.y - 1] = DefaultMapProvider.FullTile;
+            layout[center.x, center.y] = DefaultMapProvider.FullTile;
+            layout[center.x, center.y + 1] = DefaultMapProvider.FullTile;
+            layout[center.x + 1, center.y - 1] = DefaultMapProvider.FullTile;
+            layout[center.x + 1, center.y] = DefaultMapProvider.FullTile;
+            layout[center.x + 1, center.y + 1] = DefaultMapProvider.FullTile;
+
+            return layout;
+        }
     }
 }

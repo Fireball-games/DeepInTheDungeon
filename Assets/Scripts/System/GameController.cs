@@ -61,7 +61,7 @@ namespace Scripts.System
         private void OnStartGameRequested()
         {
             _gameMode = EGameMode.Play;
-            StartLevel(_currentMap ?? new MapDescription());
+            StartLevel(_currentMap ?? MapBuilder.GenerateDefaultMap(5, 5));
         }
 
         private void OnLayoutBuilt()

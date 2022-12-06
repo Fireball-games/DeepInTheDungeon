@@ -4,6 +4,7 @@ using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;
 using Logger = Scripts.Helpers.Logger;
 
@@ -51,21 +52,24 @@ namespace Scripts.MapEditor
         {
             while (true)
             {
-                Vector3Int newGridPosition = Extensions.Vector3IntZero;
-                
-                Ray ray = CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
-                if (_layerPlane.Raycast(ray, out float distance))
+                if (!EventSystem.current.IsPointerOverGameObject())
                 {
-                    newGridPosition = ray.GetPoint(distance).ToVector3Int();
+                    Vector3Int newGridPosition = Extensions.Vector3IntZero;
+                
+                    Ray ray = CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
+                    if (_layerPlane.Raycast(ray, out float distance))
+                    {
+                        newGridPosition = ray.GetPoint(distance).ToVector3Int();
+                    }
+
+                    if (!newGridPosition.Equals(_lastGridPosition))
+                    {
+                        EditorEvents.TriggerOnMouseGridPositionChanged(newGridPosition, _lastGridPosition);
+                        OnMouseGridPositionChanged(newGridPosition);
+                        _lastGridPosition = newGridPosition;
+                    }
                 }
 
-                if (!newGridPosition.Equals(_lastGridPosition))
-                {
-                    EditorEvents.TriggerOnMouseGridPositionChanged(newGridPosition, _lastGridPosition);
-                    OnMouseGridPositionChanged(newGridPosition);
-                    _lastGridPosition = newGridPosition;
-                }
-                
                 yield return _refreshPeriod;
             }
         }

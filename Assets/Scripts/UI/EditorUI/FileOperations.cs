@@ -1,8 +1,11 @@
 using System.Linq;
+using Scripts.Building;
+using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.UI.Components;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.UI;
 using static Lean.Localization.LeanLocalization;
@@ -36,8 +39,8 @@ namespace Scripts.UI.EditorUI
             
             if (_existingFiles == null || !_existingFiles.Any())
             {
-                EditorUIManager.StatusBar.RegisterMessage(
-                    GetTranslationText(LocalizationKeys.NoFilesToShow),
+                EditorUIManager.Instance.StatusBar.RegisterMessage(
+                    T.Get(LocalizationKeys.NoFilesToShow),
                     StatusBar.EMessageType.Warning);
                 return;
             }
@@ -49,8 +52,8 @@ namespace Scripts.UI.EditorUI
         {
             if (!editorManager.MapIsChanged)
             {
-                EditorUIManager.StatusBar.RegisterMessage(
-                    GetTranslationText(LocalizationKeys.NoChangesToSave),
+                EditorUIManager.Instance.StatusBar.RegisterMessage(
+                    T.Get(LocalizationKeys.NoChangesToSave),
                     StatusBar.EMessageType.Warning);
             }
         }
@@ -61,7 +64,9 @@ namespace Scripts.UI.EditorUI
             
             if (!editorManager.MapIsEdited)
             {
-                editorManager.OrderMapConstruction();
+                EditorUIManager.Instance.NewMapDialog.Open(T.Get(LocalizationKeys.NewMapDialogTitle),
+                    OnNewMapDialogOK);
+                // editorManager.OrderMapConstruction();
                 return;
             }
             
@@ -76,6 +81,23 @@ namespace Scripts.UI.EditorUI
         private void LoadMap(string mapName)
         {
             Logger.Log($"Loading file: {mapName}");
+        }
+
+        private void OnNewMapDialogOK()
+        {
+            NewMapDialog dialog = EditorUIManager.Instance.NewMapDialog;
+            int rows = int.Parse(dialog.rowsInput.Text);
+            int columns = int.Parse(dialog.columnsInput.Text);
+            string mapName = dialog.mapNameInput.Text;
+
+            MapDescription newMap = MapBuilder.GenerateDefaultMap(
+                Mathf.Max(rows, MapEditorManager.MinRows), Mathf.Max(columns, MapEditorManager.MinColumns));
+
+            newMap.MapName = string.IsNullOrEmpty(mapName) 
+                ? T.Get(LocalizationKeys.NewMap) 
+                : mapName;
+            
+            editorManager.OrderMapConstruction(newMap);
         }
     }
 }

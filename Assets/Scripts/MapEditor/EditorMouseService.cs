@@ -16,6 +16,7 @@ namespace Scripts.MapEditor
         
         public Vector3Int MouseGridPosition => _lastGridPosition;
         public EGridPositionType GridPositionType { get; private set; } = EGridPositionType.None;
+        public Vector3Int LastGridMouseDownPosition { get; private set; }
 
         private Plane _layerPlane;
         private Vector3Int _lastGridPosition;
@@ -41,6 +42,8 @@ namespace Scripts.MapEditor
         {
             EditorEvents.OnNewMapCreated -= OnNewMapCreated;
         }
+
+        public void SetLastMouseDownPosition() => LastGridMouseDownPosition = _lastGridPosition;
 
         private void OnNewMapCreated() => StartCoroutine(UpdateMousePositionCoroutine());
 
@@ -98,5 +101,7 @@ namespace Scripts.MapEditor
         {
             Cursor.SetCursor(image, hotspot, CursorMode.Auto);
         }
+
+        public void RefreshMousePosition() => OnMouseGridPositionChanged(MouseGridPosition);
     }
 }

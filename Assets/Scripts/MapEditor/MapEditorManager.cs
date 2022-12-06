@@ -16,6 +16,7 @@ namespace Scripts.MapEditor
         [SerializeField] private float cameraHeight = 10f;
         [SerializeField] private Camera sceneCamera;
         [SerializeField] private PlayerIconController playerIcon;
+        [SerializeField] private EditorMouseService mouse;
 
         public EWorkMode WorkMode => _workMode;
         public bool MapIsEdited { get; private set; }
@@ -46,6 +47,8 @@ namespace Scripts.MapEditor
         {
             if (MapIsEdited)
             {
+                if (Input.GetMouseButtonDown(0))
+                    ProcessMouseButtonDown(0);
                 if (Input.GetMouseButtonUp(0))
                     ProcessMouseButtonUp(0);
                 if (Input.GetMouseButtonUp(1))
@@ -129,6 +132,14 @@ namespace Scripts.MapEditor
 
         #region Input Processing
 
+        private void ProcessMouseButtonDown(int mouseButtonDowned)
+        {
+            if (mouseButtonDowned == 0)
+            {
+                EditorMouseService.Instance.SetLastMouseDownPosition();
+            }
+        }
+
         private void ProcessMouseButtonUp(int mouseButtonUpped)
         {
             switch (WorkMode)
@@ -151,8 +162,10 @@ namespace Scripts.MapEditor
 
         private void ProcessBuildClick()
         {
+            Vector3Int position = mouse.MouseGridPosition;
             
-            Vector3Int position = EditorMouseService.Instance.MouseGridPosition;
+            if (mouse.LastGridMouseDownPosition != position) return;
+            
             int row = position.x;
             int column = position.z;
             
@@ -168,6 +181,7 @@ namespace Scripts.MapEditor
             EditedLayout[adjustedRow][adjustedColumn] = tileType == EGridPositionType.Null 
                 ? DefaultMapProvider.FullTile 
                 : null;
+
             
             MapDescription newMap = GameController.Instance.CurrentMap;
             TileDescription[,] newLayout = ConvertEditedLayoutToArray();
@@ -175,6 +189,8 @@ namespace Scripts.MapEditor
             newMap.StartPosition = new Vector3Int(newMap.StartPosition.x + rowAdjustment, 0, newMap.StartPosition.z + columnAdjustment);
             GameController.Instance.SetCurrentMap(newMap);
 
+            mouse.RefreshMousePosition();
+            
             if (!wasLayoutAdjusted)
             {
                 _mapBuilder.RebuildTile(adjustedRow, adjustedColumn);

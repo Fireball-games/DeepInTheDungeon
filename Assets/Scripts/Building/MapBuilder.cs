@@ -104,7 +104,7 @@ namespace Scripts.Building
             {
                 if (Layout[row + direction.x,column + direction.z] != null)
                 {
-                    RegenerateTile(row + direction.x, column + direction.y);
+                    RegenerateTile(row + direction.x, column + direction.z);
                 }
             }
         }

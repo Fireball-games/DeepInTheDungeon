@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Scripts.Building;
-using Scripts.Building.Tile;
 using Scripts.EventsManagement;
-using Scripts.Helpers;
 using Scripts.System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
 
@@ -20,16 +15,14 @@ namespace Scripts.MapEditor
         [SerializeField] private float cameraHeight = 10f;
         [SerializeField] private Camera sceneCamera;
         [SerializeField] private PlayerIconController playerIcon;
-        [SerializeField] private EditorMouseService mouse;
 
         public EWorkMode WorkMode => _workMode;
         public bool MapIsEdited { get; private set; }
-        public bool MapIsChanged { get; private set; }
+        public bool MapIsChanged { get; set; }
         public bool MapIsBeingBuilt { get; private set; }
         public LayoutType EditedLayout { get; private set; }
+        public MapBuilder MapBuilder { get; private set; }
 
-        private MapBuilder _mapBuilder;
-        private MapBuildService _buildService;
         private EWorkMode _workMode;
 
 
@@ -37,36 +30,20 @@ namespace Scripts.MapEditor
         {
             base.Awake();
             
-            _buildService = new MapBuildService(this);
             sceneCamera ??= Camera.main;
             CameraManager.Instance.SetMainCamera(sceneCamera);
 
-            _mapBuilder ??= GameController.Instance.MapBuilder;
+            MapBuilder ??= GameController.Instance.MapBuilder;
         }
 
         private void OnEnable()
         {
-            _mapBuilder.OnLayoutBuilt += OnLayoutBuilt;
-        }
-
-        private void Update()
-        {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
-            
-            if (MapIsEdited)
-            {
-                if (Input.GetMouseButtonDown(0))
-                    ProcessMouseButtonDown(0);
-                if (Input.GetMouseButtonUp(0))
-                    ProcessMouseButtonUp(0);
-                if (Input.GetMouseButtonUp(1))
-                    ProcessMouseButtonUp(1);
-            }
+            MapBuilder.OnLayoutBuilt += OnLayoutBuilt;
         }
 
         private void OnDisable()
         {
-            _mapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
+            MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
         }
 
         public void OrderMapConstruction(MapDescription map = null)
@@ -74,15 +51,15 @@ namespace Scripts.MapEditor
             MapIsBeingBuilt = true;
             MapIsEdited = false;
 
-            if (_mapBuilder.LayoutParent) _mapBuilder.DemolishMap();
+            if (MapBuilder.LayoutParent) MapBuilder.DemolishMap();
 
             MapDescription newMap = map ??= new MapDescription();
 
-            EditedLayout = ConvertToLayoutType(map.Layout);
+            EditedLayout = MapBuildService.ConvertToLayoutType(map.Layout);
 
             GameController.Instance.SetCurrentMap(newMap);
 
-            _mapBuilder.BuildMap(newMap);
+            MapBuilder.BuildMap(newMap);
 
             EditorEvents.TriggerOnNewMapCreated();
         }
@@ -105,112 +82,5 @@ namespace Scripts.MapEditor
             playerIcon.SetArrowRotation(Vector3.zero);
             playerIcon.SetActive(true);
         }
-
-        private TileDescription[,] ConvertEditedLayoutToArray()
-        {
-            TileDescription[,] result = new TileDescription[EditedLayout.Count, EditedLayout[0].Count];
-
-            for (int x = 0; x < EditedLayout.Count; x++)
-            {
-                for (int y = 0; y < EditedLayout[0].Count; y++)
-                {
-                    result[x, y] = EditedLayout[x][y];
-                }
-            }
-
-            return result;
-        }
-
-        private LayoutType ConvertToLayoutType(TileDescription[,] layout)
-        {
-            LayoutType result = new();
-
-            for (int x = 0; x < layout.GetLength(0); x++)
-            {
-                result.Add(new List<TileDescription>());
-
-                for (int y = 0; y < layout.GetLength(1); y++)
-                {
-                    result[x].Add(layout[x, y]);
-                }
-            }
-
-            return result;
-        }
-
-        #region Input Processing
-
-        private void ProcessMouseButtonDown(int mouseButtonDowned)
-        {
-            if (mouseButtonDowned == 0)
-            {
-                EditorMouseService.Instance.SetLastMouseDownPosition();
-            }
-        }
-
-        private void ProcessMouseButtonUp(int mouseButtonUpped)
-        {
-            switch (WorkMode)
-            {
-                case EWorkMode.None:
-                    break;
-                case EWorkMode.Build:
-                    if (mouseButtonUpped == 0)
-                    {
-                        ProcessBuildClick();
-                    }
-
-                    break;
-                case EWorkMode.Select:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void ProcessBuildClick()
-        {
-            Vector3Int position = mouse.MouseGridPosition;
-            
-            if (mouse.LastGridMouseDownPosition != position) return;
-
-            MapIsChanged = true;
-            
-            int row = position.x;
-            int column = position.z;
-            
-            if (!EditedLayout.HasIndex(row, column)) return;
-            
-            EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
-
-            _buildService.AdjustEditedLayout(row, column, out int rowAdjustment, out int columnAdjustment, out bool wasLayoutAdjusted);
-
-            int adjustedRow = row + rowAdjustment;
-            int adjustedColumn = column + columnAdjustment;
-
-            EditedLayout[adjustedRow][adjustedColumn] = tileType == EGridPositionType.Null 
-                ? DefaultMapProvider.FullTile 
-                : null;
-
-            
-            MapDescription newMap = GameController.Instance.CurrentMap;
-            TileDescription[,] newLayout = ConvertEditedLayoutToArray();
-            newMap.Layout = newLayout;
-            newMap.StartPosition = new Vector3Int(newMap.StartPosition.x + rowAdjustment, 0, newMap.StartPosition.z + columnAdjustment);
-            GameController.Instance.SetCurrentMap(newMap);
-
-            mouse.RefreshMousePosition();
-            
-            if (!wasLayoutAdjusted)
-            {
-                _mapBuilder.RebuildTile(adjustedRow, adjustedColumn);
-                _mapBuilder.RegenerateTilesAround(adjustedRow, adjustedColumn);
-                return;
-            }
-            
-            OrderMapConstruction(newMap);
-        }
-
-        #endregion
     }
 }

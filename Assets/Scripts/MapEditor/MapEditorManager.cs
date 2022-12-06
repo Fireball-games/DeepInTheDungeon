@@ -2,6 +2,8 @@ using Scripts.Building;
 using Scripts.EventsManagement;
 using Scripts.ScenesManagement;
 using Scripts.System;
+using Scripts.UI.Components;
+using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
@@ -73,6 +75,12 @@ namespace Scripts.MapEditor
         
         public void PlayMap()
         {
+            if (!MapIsEdited)
+            {
+                EditorUIManager.Instance.StatusBar.RegisterMessage("BLABLA", StatusBar.EMessageType.Negative);
+                return;
+            }
+            
             string mapName = GameController.Instance.CurrentMap.MapName;
             ES3.Save(mapName, GameController.Instance.CurrentMap, "Maps/mapName.map");
             

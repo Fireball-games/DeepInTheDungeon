@@ -7,13 +7,12 @@ namespace Scripts.MapEditor
 {
     public class EditorInputService : MonoBehaviour
     {
-        private MapEditorManager _manager;
+        private MapEditorManager _manager => MapEditorManager.Instance;
         private MapBuildService _buildService;
 
         private void Awake()
         {
-            _manager = MapEditorManager.Instance;
-            _buildService = new MapBuildService(_manager);
+            _buildService = new MapBuildService();
         }
 
         private void Update()

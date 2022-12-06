@@ -28,6 +28,7 @@ namespace Scripts.System
 
         public enum EGameMode
         {
+            MainMenu = 0,
             Play = 1,
             Editor = 2,
         }
@@ -48,25 +49,35 @@ namespace Scripts.System
             mapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
         }
 
-        private void StartLevel(MapDescription map)
+        private void StartBuildingLevel()
         {
-            _movementEnabled = false;
-            _currentMap = map;
+            _gameMode = EGameMode.Play;
             
+            _movementEnabled = false;
+
             _startLevelAfterBuildFinishes = true;
+
+            _currentMap ??= MapBuilder.GenerateDefaultMap(5, 5);
             
             mapBuilder.BuildMap(_currentMap);
         }
 
         private void OnStartGameRequested()
         {
-            _gameMode = EGameMode.Play;
-            StartLevel(_currentMap ?? MapBuilder.GenerateDefaultMap(5, 5));
+            string loadSceneName = Scenes.PlayIndoorSceneName;
+            
+            if (_currentMap != null)
+            {
+                loadSceneName = _currentMap.SceneName;
+            }
+            
+            SceneLoader.Instance.LoadScene(loadSceneName);
         }
 
         private void OnLayoutBuilt()
         {
             if (!_startLevelAfterBuildFinishes) return;
+            
             player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
             player.SetPosition(_currentMap.StartPosition.ToVector3());
@@ -77,15 +88,20 @@ namespace Scripts.System
 
         private void OnSceneFinishedLoading(string sceneName)
         {
-            if (sceneName == Scenes.EditorSceneName)
+            if (sceneName is Scenes.EditorSceneName)
             {
                 _gameMode = EGameMode.Editor;
+                return;
             }
 
-            if (sceneName == Scenes.MainSceneName)
+            if (sceneName is Scenes.MainSceneName)
             {
-                _gameMode = EGameMode.Play;
+                CameraManager.Instance.SetMainCamera();
+                _gameMode = EGameMode.MainMenu;
+                return;
             }
+
+            StartBuildingLevel();
         }
 
         public void SetCurrentMap(MapDescription mapDescription)

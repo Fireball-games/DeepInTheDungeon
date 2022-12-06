@@ -1,3 +1,5 @@
+using System;
+using Scripts.EventsManagement;
 using UnityEngine;
 
 namespace Scripts.System
@@ -16,18 +18,18 @@ namespace Scripts.System
             SetMainCamera(mainCamera);
         }
 
-        public void SetMainCamera(Camera newCamera)
+        public void SetMainCamera(Camera newCamera = null)
         {
-            if (newCamera == mainCamera) return;
+            if (mainCamera && newCamera == mainCamera) return;
             
             if (mainCamera)
             {
                 mainCamera.enabled = false;
                 mainCamera.tag = Helpers.Strings.Untagged;
             }
-            
+            newCamera = !newCamera ? _ownCamera : newCamera;
             mainCamera = newCamera;
-            newCamera.tag = Helpers.Strings.MainCamera;
+            newCamera!.tag = Helpers.Strings.MainCamera;
             newCamera.enabled = true;
         }
     }

@@ -10,15 +10,14 @@ namespace Scripts.MapEditor
 {
     public class MapBuildService
     {
-        private readonly MapEditorManager _manager;
-        private LayoutType EditedLayout => _manager.EditedLayout;
-        private readonly MapBuilder _mapBuilder;
-        private EditorMouseService _mouse => EditorMouseService.Instance;
+        private MapEditorManager Manager => MapEditorManager.Instance;
+        private LayoutType EditedLayout => Manager.EditedLayout;
+        private MapBuilder MapBuilder => Manager.MapBuilder;
+        private EditorMouseService Mouse => EditorMouseService.Instance;
 
-        internal MapBuildService(MapEditorManager manager)
+        internal MapBuildService()
         {
-            _manager = manager;
-            _mapBuilder = _manager.MapBuilder;
+            
         }
         
         internal void AdjustEditedLayout(int row, int column, out int adjustedX, out int adjustedY, out bool wasAdjusted)
@@ -133,16 +132,16 @@ namespace Scripts.MapEditor
         
         internal void ProcessBuildClick()
         {
-            Vector3Int position = _mouse.MouseGridPosition;
+            Vector3Int position = Mouse.MouseGridPosition;
             
-            if (_mouse.LastGridMouseDownPosition != position) return;
+            if (Mouse.LastGridMouseDownPosition != position) return;
 
-            _manager.MapIsChanged = true;
+            Manager.MapIsChanged = true;
             
             int row = position.x;
             int column = position.z;
             
-            if (!_manager.EditedLayout.HasIndex(row, column)) return;
+            if (!Manager.EditedLayout.HasIndex(row, column)) return;
             
             Enums.EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
 
@@ -161,16 +160,16 @@ namespace Scripts.MapEditor
             newMap.StartPosition = new Vector3Int(newMap.StartPosition.x + rowAdjustment, 0, newMap.StartPosition.z + columnAdjustment);
             GameController.Instance.SetCurrentMap(newMap);
 
-            _mouse.RefreshMousePosition();
+            Mouse.RefreshMousePosition();
             
             if (!wasLayoutAdjusted)
             {
-                _mapBuilder.RebuildTile(adjustedRow, adjustedColumn);
-                _mapBuilder.RegenerateTilesAround(adjustedRow, adjustedColumn);
+                MapBuilder.RebuildTile(adjustedRow, adjustedColumn);
+                MapBuilder.RegenerateTilesAround(adjustedRow, adjustedColumn);
                 return;
             }
             
-            _manager.OrderMapConstruction(newMap);
+            Manager.OrderMapConstruction(newMap);
         }
         
         public TileDescription[,] ConvertEditedLayoutToArray()

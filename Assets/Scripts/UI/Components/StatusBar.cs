@@ -66,9 +66,9 @@ namespace Scripts.UI.Components
             textMesh.text = message.Key;
             textMesh.color = _colorMap[message.Value];
             
-            body.SetActive(true);
-        
             animator.SetTrigger(Helpers.Strings.Show);
+            
+            body.SetActive(true);
         }
     }
 }

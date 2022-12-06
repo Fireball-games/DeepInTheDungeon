@@ -9,6 +9,11 @@ namespace Scripts.ScenesManagement
 {
     public class SceneLoader : Singleton<SceneLoader>
     {
+        public void LoadScene(string sceneName)
+        {
+            StartCoroutine(LoadSceneAsync(sceneName));
+        }
+        
         public void LoadMainScene(bool skipToPlay)
         {
             StartCoroutine(LoadSceneAsync(Scenes.MainSceneName));

@@ -60,7 +60,7 @@ namespace Scripts.UI
 
         private void OnSceneFinishedLoading(string sceneName)
         {
-            body.SetActive(false);
+            body.SetActive(sceneName == Scenes.MainSceneName);
         }
     }
 }

@@ -4,7 +4,6 @@ using Scripts.Helpers;
 using Scripts.System.Pooling;
 using Unity.VisualScripting;
 using UnityEngine;
-using static Scripts.Building.Tile.TileDescription;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building
@@ -12,24 +11,25 @@ namespace Scripts.Building
     public abstract class TileBuilderBase
     {
         protected readonly Transform LayoutParent;
-        protected TileController LastBuiltTile;
         protected readonly DefaultBuildPartsProvider DefaultsProvider;
-        private readonly TileDescription[,] _layout;
         private readonly GameObject _tileDefaultPrefab;
-        protected Dictionary<Vector3Int, GameObject> PhysicalTiles;
+        protected Dictionary<Vector3Int, GameObject> PhysicalTiles => _mapBuilder.PhysicalTiles;
+        protected TileController LastBuiltTile;
+        protected Vector3Int KeyVector;
+        private TileDescription[,] Layout => _mapBuilder.Layout;
+        private readonly MapBuilder _mapBuilder;
 
         protected TileBuilderBase(MapBuilder mapBuilder)
         {
+            _mapBuilder = mapBuilder;
             LayoutParent = mapBuilder.LayoutParent;
             DefaultsProvider = mapBuilder.defaultsProvider;
-            PhysicalTiles = mapBuilder.PhysicalTiles;
-            _layout = mapBuilder.Layout;
             _tileDefaultPrefab = mapBuilder.defaultsProvider.defaultTilePrefab;
         }
 
         public void BuildTile(int x, int y, TileDescription tileDescription = null)
         {
-            tileDescription ??= _layout[x, y];
+            tileDescription ??= Layout[x, y];
             if(tileDescription == null)
             {
                 BuildNullTile(x, y);
@@ -40,41 +40,65 @@ namespace Scripts.Building
             }
         }
 
-        protected virtual void BuildNullTile(int x, int y)
+        protected virtual void BuildNullTile(int row, int column)
         {
         }
-
-        protected virtual void BuildNormalTile(int x, int y, TileDescription tileDescription)
+        
+        protected virtual void BuildNormalTile(int row, int column, TileDescription tileDescription)
         {
-            TileController newTile = ObjectPool.Instance.GetFromPool(_tileDefaultPrefab, LayoutParent.GameObject())
-                .GetComponent<TileController>();
-            
+            KeyVector.x = row;
+            KeyVector.z = column;
+
+            tileDescription ??= Layout[row, column];
+
+            TileController newTile = null;
+            // Try to find what block is in PhysicalTiles on that location
+            if (PhysicalTiles.TryGetValue(KeyVector, out GameObject foundTile))
+            {
+                newTile = foundTile.GetComponent<TileController>();
+                // If its not a tile (could be null tile), then get rid of it
+                if (!newTile)
+                {
+                    ObjectPool.Instance.ReturnToPool(foundTile);
+                    PhysicalTiles.Remove(KeyVector);
+                }
+            }
+            // Means there was no found file or if so, it wasn't a tile, so it got disposed, so we need a new tile. We know, that in layout is
+            // not a null tile, because else it would not be here.
+            if (!newTile)
+            {
+                newTile = ObjectPool.Instance.GetFromPool(_tileDefaultPrefab, LayoutParent.GameObject()).GetComponent<TileController>();
+            }
+
             newTile.gameObject.name = _tileDefaultPrefab.name;
             LastBuiltTile = newTile;
             Transform tileTransform = newTile.transform;
 
-            foreach (ETileDirection direction in TileDescription.TileDirections)
+            foreach (Vector3Int direction in TileDirections.VectorDirections)
             {
-                WallDescription wall = tileDescription.GetWall(direction);
-
-                if (wall == null)
+                if (Layout[row+direction.x, column+direction.z] == null )
                 {
-                    newTile.HideWall(direction);
-                    continue;
+                    newTile.ShowWall(TileDirections.WallDirectionByVector[direction]);
                 }
-
-                newTile.ShowWall(direction);
+                else
+                {
+                    newTile.HideWall(TileDirections.WallDirectionByVector[direction]);
+                }
+                
+                WallDescription wall = tileDescription.GetWall(direction);
                 
                 // Means default values
                 if (wall.MeshInfo == null || !string.IsNullOrEmpty(wall.MeshInfo.materialName) && !string.IsNullOrEmpty(wall.MeshInfo.meshName)) continue;
-
+                // Means only material OR mesh name is set, which is an error
                 if (!string.IsNullOrEmpty(wall.MeshInfo.materialName) ^ !string.IsNullOrEmpty(wall.MeshInfo.meshName))
                 {
-                    Logger.LogError($"Tile at location: [{x}] [{y}] is missing either material or mesh for {direction}");
+                    Logger.LogError($"Tile at location: [{row}] [{column}] is missing either material or mesh for {direction}");
                 }
+                
+                // TODO: manage mesh and material via stored names
             }
             
-            tileTransform.position = new(x, 0f, y);
+            tileTransform.position = new(row, 0f, column);
             PhysicalTiles.Add(tileTransform.position.ToVector3Int(), newTile.gameObject);
         }
     }

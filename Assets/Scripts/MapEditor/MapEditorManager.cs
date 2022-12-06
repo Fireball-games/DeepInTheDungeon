@@ -166,21 +166,22 @@ namespace Scripts.MapEditor
             int adjustedColumn = column + columnAdjustment;
 
             EditedLayout[adjustedRow][adjustedColumn] = tileType == EGridPositionType.Null 
-                ? TileDescription.GetByLayout(adjustedRow, adjustedColumn, ConvertEditedLayoutToArray()) 
+                ? DefaultMapProvider.FullTile 
                 : null;
             
-            _mapBuilder.RebuildTile(adjustedRow, adjustedColumn, EditedLayout);
-            
+            MapDescription newMap = GameController.Instance.CurrentMap;
+            TileDescription[,] newLayout = ConvertEditedLayoutToArray();
+            newMap.Layout = newLayout;
+            newMap.StartPosition = new Vector3Int(newMap.StartPosition.x + rowAdjustment, 0, newMap.StartPosition.z + columnAdjustment);
+            GameController.Instance.SetCurrentMap(newMap);
+
             if (!wasLayoutAdjusted)
             {
-                _mapBuilder.RegenerateTilesAround(adjustedRow, adjustedColumn, EditedLayout);
+                _mapBuilder.RebuildTile(adjustedRow, adjustedColumn);
+                _mapBuilder.RegenerateTilesAround(adjustedRow, adjustedColumn);
                 return;
             }
-
-            MapDescription newMap = GameController.Instance.CurrentMap;
-            newMap.Layout = ConvertEditedLayoutToArray();
-            newMap.StartPosition = new(newMap.StartPosition.x + rowAdjustment, 0, newMap.StartPosition.z + columnAdjustment);
-
+            
             OrderMapConstruction(newMap);
         }
 

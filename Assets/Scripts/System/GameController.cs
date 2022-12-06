@@ -88,6 +88,10 @@ namespace Scripts.System
             }
         }
 
-        public void SetCurrentMap(MapDescription mapDescription) => _currentMap = mapDescription;
+        public void SetCurrentMap(MapDescription mapDescription)
+        {
+            mapBuilder.SetLayout(mapDescription.Layout);
+            _currentMap = mapDescription;
+        }
     }
 }

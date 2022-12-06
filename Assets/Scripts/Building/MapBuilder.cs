@@ -41,6 +41,8 @@ namespace Scripts.Building
             StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
         }
 
+        public void SetLayout(TileDescription[,] layout) => Layout = layout;
+
         private IEnumerator BuildLayoutCoroutine(TileDescription[,] layout)
         {
             Layout = layout;
@@ -84,43 +86,25 @@ namespace Scripts.Building
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="layout"></param>
-        public void RebuildTile(int row, int column, LayoutType layout)
+        public void RebuildTile(int row, int column)
         {
-            Vector3Int key = new (row, 0, column);
-            
-            GameObject rawTile = PhysicalTiles[key];
-            ObjectPool.Instance.ReturnToPool(rawTile);
-            PhysicalTiles.Remove(key);
-            
-            if (layout[row][column] == null)
+            if (GameController.Instance.GameMode is GameController.EGameMode.Play)
+            {
+                _playBuilder.BuildTile( row, column);
+            }
+            else
             {
                 _editorBuilder.BuildTile(row, column);
-                return;
             }
-
-            GameObject newTile = ObjectPool.Instance.GetFromPool(defaultsProvider.defaultTilePrefab, LayoutParent.gameObject);
-            PhysicalTiles.Add(key, newTile);
-            TileController tileController = newTile.GetComponent<TileController>();
-            
-            foreach (Vector3Int direction in TileDirections.VectorDirections)
-            {
-                if (layout[row + direction.x][column + direction.z] == null)
-                    tileController.HideWall(TileDirections.WallDirectionByVector[direction]);
-                else
-                    tileController.ShowWall(TileDirections.WallDirectionByVector[direction]);
-            }
-            
-            tileController.HideWall(TileDescription.ETileDirection.Ceiling);
-            tileController.transform.localScale = new Vector3(0.99f, 0.99f, 0.99f);
         }
 
-        public void RegenerateTilesAround(int row, int column, LayoutType layout)
+        public void RegenerateTilesAround(int row, int column)
         {
             foreach (Vector3Int direction in TileDirections.VectorDirections)
             {
-                if (layout[row + direction.x][column + direction.z] != null)
+                if (Layout[row + direction.x,column + direction.z] != null)
                 {
-                    RegenerateTile(row + direction.x, column + direction.y, layout);
+                    RegenerateTile(row + direction.x, column + direction.y);
                 }
             }
         }
@@ -131,7 +115,7 @@ namespace Scripts.Building
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="layout"></param>
-        private void RegenerateTile(int row, int column, LayoutType layout)
+        private void RegenerateTile(int row, int column)
         {
             Vector3Int key = new (row, 0, column);
             TileController tileController = PhysicalTiles[key].GetComponent<TileController>();
@@ -144,7 +128,7 @@ namespace Scripts.Building
             
             foreach (Vector3Int direction in TileDirections.VectorDirections)
             {
-                if (layout[row + direction.x][column + direction.z] == null)
+                if (Layout[row + direction.x,column + direction.z] == null)
                     tileController.ShowWall(TileDirections.WallDirectionByVector[direction]);
                 else
                     tileController.HideWall(TileDirections.WallDirectionByVector[direction]);

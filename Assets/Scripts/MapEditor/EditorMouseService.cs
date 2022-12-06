@@ -81,7 +81,7 @@ namespace Scripts.MapEditor
             bool isNullTile = layout[newPosition.x, newPosition.z] == null;
 
             GridPositionType = isNullTile ? EGridPositionType.Null : EGridPositionType.EditableTile; 
-            Logger.Log($"GridPositionType: {GridPositionType}");
+            // Logger.Log($"GridPositionType: {GridPositionType}");
             Texture2D newCursor = null;
             Vector2 hotspot = _defaultMouseHotspot;
 

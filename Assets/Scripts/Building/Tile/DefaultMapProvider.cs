@@ -6,11 +6,11 @@ namespace Scripts.Building.Tile
     {
         public static TileDescription[,] Layout => new[,]
         {
-            {null, null        , null      , null      , null        , null},
-            {null, nwCornerWall, northWall , northWall , neCornerWall, null},
-            {null, westWall    , centerTile, centerTile, eastWall    , null},
-            {null, swCornerWall, southWall , southWall , seCornerWall, null},
-            {null, null        , null      , null      , null        , null},
+            {null, null    , null     , null     , null    , null},
+            {null, fullTile, fullTile , fullTile , fullTile, null},
+            {null, fullTile, fullTile , fullTile , fullTile, null},
+            {null, fullTile, fullTile , fullTile , fullTile, null},
+            {null, null    , null     , null     , null    , null},
         };
 
         public static TileDescription FullTile => fullTile;

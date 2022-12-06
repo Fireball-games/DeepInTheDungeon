@@ -33,8 +33,10 @@ namespace Scripts.MapEditor
         private EWorkMode _workMode;
 
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             _buildService = new MapBuildService(this);
             sceneCamera ??= Camera.main;
             CameraManager.Instance.SetMainCamera(sceneCamera);

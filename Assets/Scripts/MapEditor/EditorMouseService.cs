@@ -25,8 +25,10 @@ namespace Scripts.MapEditor
         private readonly Vector2 _defaultMouseHotspot = Vector2.zero;
         private Vector2 _demolishMouseHotspot;
 
-        protected void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             _layerPlane = new Plane(Vector3.up, new Vector3(0f, 0.5f, 0f));
             _lastGridPosition = new Vector3Int(-1000, -1000, -1000);
             _refreshPeriod = new WaitForSecondsRealtime(0.1f);

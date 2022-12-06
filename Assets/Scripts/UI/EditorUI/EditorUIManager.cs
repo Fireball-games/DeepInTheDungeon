@@ -20,9 +20,11 @@ namespace Scripts.UI.EditorUI
         public StatusBar StatusBar => statusBar;
         public NewMapDialog NewMapDialog => newMapDialog;
         public static string DefaultMapName => $"< {LeanLocalization.GetTranslationText(LocalizationKeys.NewMap)} >";
-        
-        private void Awake()
+
+        protected override void Awake()
         {
+            base.Awake();
+            
             ObjectPool.Instance.uiParent = uiPoolParent;
         }
 

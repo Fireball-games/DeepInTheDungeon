@@ -16,8 +16,10 @@ namespace Scripts.System.Pooling
 
         private Dictionary<string, Transform> _transforms;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             _transforms = new Dictionary<string, Transform>();
             
             if (preSpawnSetItems.Any())

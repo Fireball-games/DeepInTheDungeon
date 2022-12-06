@@ -25,5 +25,22 @@ namespace Scripts.System
                 return instance;
             }
         }
+        
+        /// <summary>
+        /// Use this for initialization.
+        /// </summary>
+        protected virtual void Awake ()
+        {
+            if ( instance == null )
+            {
+                instance = this as T;
+            }
+            else
+            {
+                GameObject o;
+                (o = gameObject).SetActive(false);
+                Destroy ( o );
+            }
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace Scripts.MapEditor
             sceneCamera ??= Camera.main;
             CameraManager.Instance.SetMainCamera(sceneCamera);
 
-            MapBuilder ??= GameController.Instance.MapBuilder;
+            MapBuilder = GameController.Instance.MapBuilder;
         }
 
         private void OnEnable()

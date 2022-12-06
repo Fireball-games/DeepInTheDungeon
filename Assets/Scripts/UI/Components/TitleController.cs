@@ -5,7 +5,7 @@ namespace Scripts.UI.Components
 {
     public class TitleController : MonoBehaviour
     {
-        [SerializeField] private TMP_Text titleText;
+        [SerializeField] private TMP_Text text;
         [SerializeField] private GameObject body;
 
         public void SetActive(bool isActive) => body.SetActive(isActive);
@@ -13,7 +13,9 @@ namespace Scripts.UI.Components
         public void Show(string title)
         {
             SetActive(true);
-            titleText.text = title;
+            text.text = title;
         }
+
+        public void SetTitle(string newTitle) => text.text = newTitle;
     }
 }

@@ -1,14 +1,15 @@
 ﻿using System;
 using Scripts.EventsManagement;
+using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Scripts.System
 {
-    public class DialogBase : UIWindowBase
+    public class DialogBase : UIElementBase
     {
-        [SerializeField] protected TMP_Text title;
+        [SerializeField] protected TitleController title;
         [SerializeField] protected Button cancelButton;
         
         protected event Action OnClose;
@@ -20,7 +21,7 @@ namespace Scripts.System
 
         public void Open(string dialogTitle, Action onClose = null)
         {
-            title.text = dialogTitle;
+            title.SetTitle(dialogTitle);
             OnClose = onClose;
             EventsManager.OnModalClicked += CloseDialog;
             EventsManager.TriggerOnModalShowRequested();

@@ -2,7 +2,7 @@
 
 namespace Scripts.System
 {
-    public class UIWindowBase : MonoBehaviour
+    public class UIElementBase : MonoBehaviour
     {
         [SerializeField] protected GameObject body;
         [SerializeField] protected GameObject content;

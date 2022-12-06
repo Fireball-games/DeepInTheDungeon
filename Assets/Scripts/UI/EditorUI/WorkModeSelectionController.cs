@@ -10,7 +10,7 @@ using static Scripts.MapEditor.Enums;
 
 namespace Scripts.UI.EditorUI
 {
-    public class WorkModeSelectionController : UIWindowBase
+    public class WorkModeSelectionController : UIElementBase
     {
         [SerializeField] private ImageButton buildModeButton;
         [SerializeField] private ImageButton selectModeButton;

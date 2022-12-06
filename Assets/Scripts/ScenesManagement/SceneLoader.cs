@@ -38,6 +38,9 @@ namespace Scripts.ScenesManagement
             {
                 yield return null;
             }
+
+            yield return null;
+            
             
             EventsManager.TriggerOnSceneFinishedLoading(sceneName);            
         }

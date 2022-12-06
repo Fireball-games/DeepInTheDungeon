@@ -84,6 +84,8 @@ namespace Scripts.MapEditor
             string mapName = GameController.Instance.CurrentMap.MapName;
             ES3.Save(mapName, GameController.Instance.CurrentMap, "Maps/mapName.map");
             
+            MapBuilder.DemolishMap();
+            
             SceneLoader.Instance.LoadMainScene(true);
         }
 

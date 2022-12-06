@@ -11,6 +11,7 @@ namespace Scripts.System.Pooling
     {
         public List<PreSpawnSetItem> preSpawnSetItems;
         public Transform storeParent;
+        public RectTransform uiParent;
         private static readonly Dictionary<string, Queue<GameObject>> Pool = new();
 
         private Dictionary<string, Transform> _transforms;
@@ -25,27 +26,36 @@ namespace Scripts.System.Pooling
             }
         }
 
-        public GameObject GetFromPool(GameObject go, GameObject parent) => 
-            GetFromPool(go, Vector3.zero, Quaternion.identity, parent);
+        public GameObject GetFromPool(GameObject go, GameObject parent, bool isUiObject = false) => 
+            GetFromPool(go, Vector3.zero, Quaternion.identity, parent, isUiObject);
         
-        public GameObject GetFromPool(GameObject go, Vector3 position, Quaternion rotation, GameObject parent = null) 
+        public GameObject GetFromPool(GameObject go, Vector3 position, Quaternion rotation, GameObject parent = null, bool isUiObject = false) 
         {
             if (Pool.ContainsKey(go.name) && Pool[go.name].Any())
             {
                 GameObject removedObject = Pool[go.name].Dequeue();
-                // ReSharper disable once PossibleNullReferenceException
                 Transform removedObjectTransform = removedObject.transform;
                 removedObjectTransform.position = position;
                 removedObjectTransform.rotation = rotation;
-                removedObjectTransform.parent = parent ? parent.transform : storeParent;
+                
+                if (isUiObject)
+                {
+                    CheckUIParent();
+                    removedObjectTransform.SetParent(parent ? parent.transform : uiParent);
+                }
+                else
+                {
+                    removedObjectTransform.parent = ResolveParentTransform(removedObjectTransform.name);
+                }
+                
                 removedObject.gameObject.SetActive(true);
                 return ProcessInterfaces(removedObject);
             }
         
-            return InstantiateNewPoolObject(go, position, rotation, parent);
+            return InstantiateNewPoolObject(go, position, rotation, parent, false, isUiObject);
         }
 
-        public void ReturnToPool(GameObject returningObject)
+        public void ReturnToPool(GameObject returningObject, bool isUiObject = false)
         {
             if (!Pool.ContainsKey(returningObject.name))
             {
@@ -54,17 +64,33 @@ namespace Scripts.System.Pooling
 
             Transform returningObjectTransform = returningObject.transform;
             returningObjectTransform.position = transform.position;
-            returningObjectTransform.parent = ResolveParentTransform(returningObject.name);
+            
+            if (isUiObject)
+            {
+                CheckUIParent();
+                returningObjectTransform.SetParent(uiParent);
+            }
+            else
+            {
+                returningObjectTransform.parent = ResolveParentTransform(returningObject.name);
+            }
+            
             returningObject.gameObject.SetActive(false);
         
             Pool[returningObject.name].Enqueue(returningObject);
         }
 
-        private GameObject InstantiateNewPoolObject(GameObject requestedObject, Vector3 position, Quaternion rotation, GameObject parent, bool instantiateToDisabled = false)
+        private GameObject InstantiateNewPoolObject(GameObject requestedObject, Vector3 position, Quaternion rotation, GameObject parent, bool instantiateToPoolStore = false, bool isUiObject = false)
         {
             Transform poolParent = parent ? parent.transform : storeParent;
+
+            if (!parent && isUiObject)
+            {
+                CheckUIParent();
+                poolParent = uiParent;
+            }
             
-            if (parent)
+            if (instantiateToPoolStore)
             {
                 poolParent = ResolveParentTransform(requestedObject.name);
             }
@@ -73,22 +99,31 @@ namespace Scripts.System.Pooling
             newObject.name = requestedObject.name;
             newObject = ProcessInterfaces(newObject);
             
-            if (instantiateToDisabled)
+            if (instantiateToPoolStore)
             {
                 newObject.SetActive(false);
             }
                 
             return newObject;
         }
+
+        private void CheckUIParent()
+        {
+            if (!uiParent)
+            {
+                throw new ArgumentException(
+                    "Object Pool is asked to use UI parent, but such parent is not set. Can't continue.");
+            }
+        }
         
-        private GameObject InstantiateNewPoolObject(GameObject objectToInstantiate, bool instantiateToDisabled = false) 
+        private GameObject InstantiateNewPoolObject(GameObject objectToInstantiate, bool instantiateToPoolStore = false) 
         {
             Transform objectToInstantiateTransform = objectToInstantiate.transform;
             return InstantiateNewPoolObject(
-                objectToInstantiate, objectToInstantiateTransform.position, objectToInstantiateTransform.rotation, gameObject, instantiateToDisabled
+                objectToInstantiate, objectToInstantiateTransform.position, objectToInstantiateTransform.rotation, gameObject, instantiateToPoolStore
             );
         }
-        
+
         private GameObject ProcessInterfaces(GameObject target)
         {
             IPoolNeedy[] needy = target.GetComponents<IPoolNeedy>();
@@ -140,7 +175,7 @@ namespace Scripts.System.Pooling
                 result = newParentGo.transform;
             }
 
-            return result == null ? storeParent : result;
+            return !result ? storeParent : result;
         }
 
         [Serializable]

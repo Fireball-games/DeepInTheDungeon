@@ -71,14 +71,14 @@ namespace Scripts.Helpers
             }
         }
 
-        public static void DismissAllChildrenToPool(this GameObject go)
+        public static void DismissAllChildrenToPool(this GameObject go, bool isUiObject = false)
         {
             while (go.transform.childCount > 0)
             {
-                Logger.Log("Deleting kids");
+                Logger.Log("Shooing kids to pool");
                 foreach (Transform child in go.transform)
                 {
-                    ObjectPool.Instance.ReturnToPool(child.gameObject);
+                    ObjectPool.Instance.ReturnToPool(child.gameObject, isUiObject);
                 }
             }
         }

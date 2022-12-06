@@ -5,6 +5,7 @@ using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.System;
+using Scripts.System.Pooling;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
@@ -20,6 +21,7 @@ namespace Scripts.MapEditor
 
         public EWorkMode WorkMode => _workMode;
         public bool MapIsEdited { get; private set; }
+        public bool MapIsChanged { get; private set; }
         public bool MapIsBeingBuilt { get; private set; }
 
         private MapBuilder _mapBuilder;
@@ -165,6 +167,8 @@ namespace Scripts.MapEditor
             Vector3Int position = mouse.MouseGridPosition;
             
             if (mouse.LastGridMouseDownPosition != position) return;
+
+            MapIsChanged = true;
             
             int row = position.x;
             int column = position.z;

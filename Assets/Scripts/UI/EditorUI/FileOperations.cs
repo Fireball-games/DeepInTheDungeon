@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Scripts.Helpers;
 using Scripts.Localization;
@@ -17,7 +16,8 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private Button loadButton;
         [SerializeField] private Button saveButton;
         [SerializeField] private Button newMapButton;
-        [SerializeField] private OpenFileDialogController openFileDialog;
+        [SerializeField] private OpenFileDialog openFileDialog;
+        [SerializeField] private MapEditorManager editorManager;
 
         private string[] _existingFiles;
 
@@ -32,6 +32,8 @@ namespace Scripts.UI.EditorUI
         {
             _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectory);
 
+            _existingFiles = new[]{ "File 1", "File 2"};
+            
             if (_existingFiles == null || !_existingFiles.Any())
             {
                 EditorUIManager.StatusBar.RegisterMessage(
@@ -45,16 +47,21 @@ namespace Scripts.UI.EditorUI
         
         private void OnSaveClicked()
         {
-            Logger.LogWarning("NOT IMPLEMENTED YET");
+            if (!editorManager.MapIsChanged)
+            {
+                EditorUIManager.StatusBar.RegisterMessage(
+                    GetTranslationText(LocalizationKeys.NoChangesToSave),
+                    StatusBar.EMessageType.Warning);
+            }
         }
         
         private void OnNewMapClicked()
         {
-            if (MapEditorManager.Instance.MapIsBeingBuilt) return;
+            if (editorManager.MapIsBeingBuilt) return;
             
-            if (!MapEditorManager.Instance.MapIsEdited)
+            if (!editorManager.MapIsEdited)
             {
-                MapEditorManager.Instance.OrderMapConstruction();
+                editorManager.OrderMapConstruction();
                 return;
             }
             

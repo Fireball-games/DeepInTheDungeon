@@ -1,7 +1,7 @@
-using System;
 using Lean.Localization;
 using Scripts.EventsManagement;
 using Scripts.Localization;
+using Scripts.System.Pooling;
 using Scripts.UI.Components;
 using UnityEngine;
 
@@ -13,6 +13,7 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private FileOperations fileOperations;
         [SerializeField] private StatusBar statusBar;
         [SerializeField] private TitleController mapTitle;
+        [SerializeField] private RectTransform uiPoolParent;
 
         public static StatusBar StatusBar;
         public static string DefaultMapName => $"< {LeanLocalization.GetTranslationText(LocalizationKeys.NewMap)} >";
@@ -20,6 +21,7 @@ namespace Scripts.UI.EditorUI
         private void Awake()
         {
             StatusBar = statusBar ??= FindObjectOfType<StatusBar>();
+            ObjectPool.Instance.uiParent = uiPoolParent;
         }
 
         private void OnEnable()

@@ -15,6 +15,7 @@ namespace Scripts.System
             }
             else
             {
+                // TODO: Why is GameController going through here instead of Singleton class O.o !!??
                 Logger.LogWarning($"Second instance of {gameObject.name} tries to instantiate.");
                 GameObject o;
                 (o = gameObject).SetActive(false);

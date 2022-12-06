@@ -25,7 +25,8 @@ namespace Scripts.UI.Components
       [SerializeField] private Image iconImage;
       [SerializeField] private Image backgroundImage;
 
-      public event Action<ImageButton> OnClick;
+      public event Action<ImageButton> OnClickWithSender;
+      public event Action OnClick;
    
       private bool _isMouseEntered;
       private bool _isSelected;
@@ -69,7 +70,8 @@ namespace Scripts.UI.Components
 
       private void OnClickInternal()
       {
-         OnClick?.Invoke(this);
+         OnClickWithSender?.Invoke(this);
+         OnClick?.Invoke();
          StartCoroutine(ClickedCoroutine());
       }
    

@@ -9,17 +9,12 @@ namespace Scripts.ScenesManagement
 {
     public class SceneLoader : Singleton<SceneLoader>
     {
-        private void OnEnable()
+        public void LoadMainScene(bool skipToPlay)
         {
-            EventsManager.OnOpenEditorRequested += LoadEditorScene;
+            StartCoroutine(LoadSceneAsync(Scenes.MainSceneName));
         }
 
-        private void OnDisable()
-        {
-            EventsManager.OnOpenEditorRequested -= LoadEditorScene;
-        }
-
-        private void LoadEditorScene()
+        public void LoadEditorScene()
         {
             StartCoroutine(LoadSceneAsync(Scenes.EditorSceneName));
         }

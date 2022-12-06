@@ -29,15 +29,15 @@ namespace Scripts.UI.EditorUI
         private void OnEnable()
         {
             EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
-            buildModeButton.OnClick += WorkModeButtonClicked;
-            selectModeButton.OnClick += WorkModeButtonClicked;
+            buildModeButton.OnClickWithSender += WorkModeButtonClicked;
+            selectModeButton.OnClickWithSender += WorkModeButtonClicked;
         }
 
         private void OnDisable()
         {
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
-            buildModeButton.OnClick -= WorkModeButtonClicked;
-            selectModeButton.OnClick -= WorkModeButtonClicked;
+            buildModeButton.OnClickWithSender -= WorkModeButtonClicked;
+            selectModeButton.OnClickWithSender -= WorkModeButtonClicked;
         }
 
         private void OnWorkModeChanged(EWorkMode newWorkMode)

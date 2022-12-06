@@ -11,7 +11,7 @@ using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building
 {
-    public class MapBuilder : InitializeFromResourceBase
+    public class MapBuilder : MonoBehaviour
     {
         public DefaultBuildPartsProvider defaultsProvider;
 
@@ -24,9 +24,8 @@ namespace Scripts.Building
         internal TileDescription[,] Layout;
         internal Dictionary<Vector3Int, GameObject> PhysicalTiles;
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             PhysicalTiles = new Dictionary<Vector3Int, GameObject>();
             
             if(!LayoutParent)
@@ -85,7 +84,6 @@ namespace Scripts.Building
         /// </summary>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        /// <param name="layout"></param>
         public void RebuildTile(int row, int column)
         {
             if (GameController.Instance.GameMode is GameController.EGameMode.Play)
@@ -114,7 +112,6 @@ namespace Scripts.Building
         /// </summary>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        /// <param name="layout"></param>
         private void RegenerateTile(int row, int column)
         {
             Vector3Int key = new (row, 0, column);

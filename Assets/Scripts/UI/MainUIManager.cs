@@ -1,5 +1,7 @@
 using Scripts.EventsManagement;
+using Scripts.ScenesManagement;
 using Scripts.System;
+using Scripts.System.Pooling;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +13,14 @@ namespace Scripts.UI
         public GameObject HUD;
         public Button PlayButton;
         public Button EditorButton;
+        [SerializeField] private RectTransform poolStore;
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            ObjectPool.Instance.uiParent = poolStore;
+        }
 
         private void OnEnable()
         {
@@ -35,7 +45,7 @@ namespace Scripts.UI
             EventsManager.TriggerOnStartGameRequested();
         }
 
-        private void OnEditorButtonClick() => EventsManager.TriggerOnOpenEditorRequested();
+        private void OnEditorButtonClick() => SceneLoader.Instance.LoadEditorScene();
 
         private void OnLevelStarted()
         {

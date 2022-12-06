@@ -1,6 +1,5 @@
-using Lean.Localization;
 using Scripts.EventsManagement;
-using Scripts.Localization;
+using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.Pooling;
 using Scripts.UI.Components;
@@ -10,16 +9,15 @@ namespace Scripts.UI.EditorUI
 {
     public class EditorUIManager : SingletonNotPersisting<EditorUIManager>
     {
-        [SerializeField] private GameObject body;
-        [SerializeField] private FileOperations fileOperations;
+        [SerializeField] private ImageButton playButton;
         [SerializeField] private NewMapDialog newMapDialog;
         [SerializeField] private StatusBar statusBar;
         [SerializeField] private TitleController mapTitle;
         [SerializeField] private RectTransform uiPoolParent;
+        [SerializeField] private MapEditorManager manager;
 
         public StatusBar StatusBar => statusBar;
         public NewMapDialog NewMapDialog => newMapDialog;
-        public static string DefaultMapName => $"< {LeanLocalization.GetTranslationText(LocalizationKeys.NewMap)} >";
 
         protected override void Awake()
         {
@@ -30,11 +28,13 @@ namespace Scripts.UI.EditorUI
 
         private void OnEnable()
         {
+            playButton.OnClick += manager.PlayMap;
             EditorEvents.OnNewMapCreated += OnNewMapCreated;
         }
 
         private void OnDisable()
         {
+            playButton.OnClick -= manager.PlayMap;
             EditorEvents.OnNewMapCreated -= OnNewMapCreated;
         }
 

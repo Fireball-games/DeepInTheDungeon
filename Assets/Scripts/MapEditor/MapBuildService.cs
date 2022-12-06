@@ -12,14 +12,13 @@ namespace Scripts.MapEditor
     {
         private readonly MapEditorManager _manager;
         private LayoutType EditedLayout => _manager.EditedLayout;
-        private MapBuilder _mapBuilder;
-        private readonly EditorMouseService _mouse;
+        private readonly MapBuilder _mapBuilder;
+        private EditorMouseService _mouse => EditorMouseService.Instance;
 
         internal MapBuildService(MapEditorManager manager)
         {
             _manager = manager;
             _mapBuilder = _manager.MapBuilder;
-            _mouse = EditorMouseService.Instance;
         }
         
         internal void AdjustEditedLayout(int row, int column, out int adjustedX, out int adjustedY, out bool wasAdjusted)

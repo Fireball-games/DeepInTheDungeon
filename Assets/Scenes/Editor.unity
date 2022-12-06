@@ -415,6 +415,18 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+--- !u!114 &482149993 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8477931848310215035, guid: a6f1101cf43648145b7c4f518a79709d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2447713149184624081}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b2004d37bfe0c342a5eca5762cae25f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &712252866
 GameObject:
   m_ObjectHideFlags: 0
@@ -591,6 +603,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2447713149274392830, guid: a6f1101cf43648145b7c4f518a79709d,
+        type: 3}
+      propertyPath: manager
+      value: 
+      objectReference: {fileID: 2051228926}
+    - target: {fileID: 2447713149274392830, guid: a6f1101cf43648145b7c4f518a79709d,
+        type: 3}
+      propertyPath: playButton
+      value: 
+      objectReference: {fileID: 482149993}
     - target: {fileID: 2447713149274392831, guid: a6f1101cf43648145b7c4f518a79709d,
         type: 3}
       propertyPath: m_Pivot.x

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using Scripts.Building;
@@ -5,8 +6,10 @@ using Scripts.Helpers;
 using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.UI.Components;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI
 {
@@ -24,9 +27,13 @@ namespace Scripts.UI.EditorUI
         private void OnEnable()
         {
             loadButton.onClick.AddListener(OnLoadClicked);
+            loadButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Load);
             exitButton.onClick.AddListener(OnExitClicked);
+            exitButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Exit);
             saveButton.onClick.AddListener(OnSaveClicked);
+            saveButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Save);
             newMapButton.onClick.AddListener(OnNewMapClicked);
+            newMapButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.NewMap);
         }
         
         private static string GetDefaultMapName()
@@ -58,7 +65,24 @@ namespace Scripts.UI.EditorUI
                     StatusBar.EMessageType.Warning);
                 return;
             }
+
+            if (Manager.MapIsChanged || !Manager.MapIsSaved)
+            {
+                OpenConfirmationDialog(LoadMapConfirmedWithSave, LoadMapConfirmed);
+                return;
+            }
             
+            LoadMapConfirmed();
+        }
+
+        private void LoadMapConfirmedWithSave()
+        {
+            MapEditorManager.Instance.SaveMap();
+            LoadMapConfirmed();
+        }
+
+        private void LoadMapConfirmed()
+        {
             openFileDialog.Open(T.Get(LocalizationKeys.SelectMapToLoad), _existingFiles, LoadMap);
         }
         
@@ -81,17 +105,22 @@ namespace Scripts.UI.EditorUI
 
             if (Manager.MapIsChanged || !Manager.MapIsSaved)
             {
-                EditorUIManager.Instance.ConfirmationDialog.Open(
-                    T.Get(LocalizationKeys.SaveEditedMapPrompt),
-                    OpenNewMapDialogWithSave,
-                    OpenNewMapDialog,
-                    T.Get(LocalizationKeys.SaveMap),
-                    T.Get(LocalizationKeys.DontSave)
-                    );
+                OpenConfirmationDialog(OpenNewMapDialogWithSave, OpenNewMapDialog);
                 return;
             }
 
             OpenNewMapDialog();
+        }
+
+        private void OpenConfirmationDialog(Action onOk, Action onCancel)
+        {
+            EditorUIManager.Instance.ConfirmationDialog.Open(
+                T.Get(LocalizationKeys.SaveEditedMapPrompt),
+                onOk,
+                onCancel,
+                T.Get(LocalizationKeys.SaveMap),
+                T.Get(LocalizationKeys.DontSave)
+            );
         }
 
         private void OpenNewMapDialogWithSave()
@@ -132,7 +161,24 @@ namespace Scripts.UI.EditorUI
 
         private void LoadMap(string filePath)
         {
-            MapDescription loadedMap = ES3.Load<MapDescription>(Path.GetFileNameWithoutExtension(filePath), filePath);
+            MapDescription loadedMap = null;
+                
+            try
+            {
+                loadedMap = ES3.Load<MapDescription>(Path.GetFileNameWithoutExtension(filePath), filePath);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError($"Failed to load map \"{filePath}\" : {e.Message}.", Logger.ELogSeverity.Release);
+            }
+
+            if (loadedMap == null)
+            {
+                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.LoadingFileFailed), StatusBar.EMessageType.Negative);
+                return;
+            }
+            
+            openFileDialog.CloseDialog();
             Manager.OrderMapConstruction(loadedMap, true);
         }
     }

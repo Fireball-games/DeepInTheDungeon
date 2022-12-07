@@ -8,6 +8,9 @@
         public const string CreateMap = "CreateMap";
         public const string Default = "Default";
         public const string DontSave = "DontSave";
+        public const string Exit = "Exit";
+        public const string Load = "Load";
+        public const string LoadingFileFailed = "LoadingFileFailed";
         public const string NewMap = "NewMap";
         public const string NewMapDialogTitle = "NewMapDialogTitle";
         public const string NewMapName = "NewMapName";

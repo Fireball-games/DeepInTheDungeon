@@ -57,7 +57,7 @@ namespace Scripts.System
             SetActive(true);
         }
 
-        protected void CloseDialog()
+        public void CloseDialog()
         {
             EventsManager.OnModalClicked -= CloseDialog;
             Modal.Hide();

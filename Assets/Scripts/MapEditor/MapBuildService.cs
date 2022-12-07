@@ -10,13 +10,15 @@ namespace Scripts.MapEditor
 {
     public class MapBuildService
     {
-        private MapEditorManager Manager => MapEditorManager.Instance;
-        private LayoutType EditedLayout => Manager.EditedLayout;
-        private MapBuilder MapBuilder => Manager.MapBuilder;
+        private MapEditorManager _manager;
+        private LayoutType EditedLayout => _manager.EditedLayout;
+        private MapBuilder MapBuilder => _manager.MapBuilder;
         private EditorMouseService Mouse => EditorMouseService.Instance;
 
-        internal MapBuildService()
-        {}
+        internal MapBuildService(MapEditorManager mapEditorManager)
+        {
+            _manager = mapEditorManager;
+        }
         
         internal void AdjustEditedLayout(int row, int column, out int adjustedX, out int adjustedY, out bool wasAdjusted)
         {
@@ -134,13 +136,13 @@ namespace Scripts.MapEditor
             
             if (Mouse.LastGridMouseDownPosition != position) return;
 
-            Manager.MapIsChanged = true;
-            Manager.MapIsSaved = false;
+            _manager.MapIsChanged = true;
+            _manager.MapIsSaved = false;
             
             int row = position.x;
             int column = position.z;
             
-            if (!Manager.EditedLayout.HasIndex(row, column)) return;
+            if (!_manager.EditedLayout.HasIndex(row, column)) return;
             
             Enums.EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
 
@@ -168,7 +170,7 @@ namespace Scripts.MapEditor
                 return;
             }
             
-            Manager.OrderMapConstruction(newMap);
+            _manager.OrderMapConstruction(newMap);
         }
         
         public TileDescription[,] ConvertEditedLayoutToArray()

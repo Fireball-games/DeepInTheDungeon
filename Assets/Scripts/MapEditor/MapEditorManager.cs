@@ -12,7 +12,7 @@ using LayoutType = System.Collections.Generic.List<System.Collections.Generic.Li
 
 namespace Scripts.MapEditor
 {
-    public class MapEditorManager : SingletonNotPersisting<MapEditorManager>
+    public class MapEditorManager : MonoBehaviour
     {
         public const int MinRows = 5;
         public const int MinColumns = 5;
@@ -32,10 +32,8 @@ namespace Scripts.MapEditor
         private EWorkMode _workMode;
 
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-            
             sceneCamera ??= Camera.main;
             CameraManager.Instance.SetMainCamera(sceneCamera);
 
@@ -113,7 +111,6 @@ namespace Scripts.MapEditor
             GameManager.Instance.SetCurrentMap(null);
             GameManager.Instance.IsPlayingFromEditor = false;
             SceneLoader.Instance.LoadMainScene();
-            Instance = null;
         }
         
         public void PlayMap()
@@ -129,7 +126,6 @@ namespace Scripts.MapEditor
             SaveMap();
             GameManager.Instance.IsPlayingFromEditor = true;
             SceneLoader.Instance.LoadScene(currentMap.SceneName);
-            Instance = null;
         }
         
         public void SaveMap()

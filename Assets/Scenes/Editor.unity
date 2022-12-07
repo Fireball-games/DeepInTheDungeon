@@ -728,6 +728,11 @@ PrefabInstance:
       propertyPath: editorManager
       value: 
       objectReference: {fileID: 2051228926}
+    - target: {fileID: 4918262064659979083, guid: a6f1101cf43648145b7c4f518a79709d,
+        type: 3}
+      propertyPath: mapEditorManager
+      value: 
+      objectReference: {fileID: 2051228926}
     - target: {fileID: 5366950870345824149, guid: a6f1101cf43648145b7c4f518a79709d,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1017,10 +1022,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6547159520619869986, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: mapEditorManager
+      value: 
+      objectReference: {fileID: 2051228926}
     - target: {fileID: 6547159520619869991, guid: 2089c85b97fa7ee4690ad8c3ced77346,
         type: 3}
       propertyPath: m_Name
       value: MapEditorManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8119083429710413764, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: manager
+      value: 
+      objectReference: {fileID: 2051228926}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2089c85b97fa7ee4690ad8c3ced77346, type: 3}

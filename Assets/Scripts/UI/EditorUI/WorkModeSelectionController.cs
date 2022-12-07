@@ -12,6 +12,7 @@ namespace Scripts.UI.EditorUI
 {
     public class WorkModeSelectionController : UIElementBase
     {
+        public MapEditorManager mapEditorManager;
         [SerializeField] private ImageButton buildModeButton;
         [SerializeField] private ImageButton selectModeButton;
 
@@ -60,7 +61,7 @@ namespace Scripts.UI.EditorUI
 
             if (!button) return;
             
-            MapEditorManager.Instance.SetWorkMode(_workModesMap[button]);
+            mapEditorManager.SetWorkMode(_workModesMap[button]);
         }
     }
 }

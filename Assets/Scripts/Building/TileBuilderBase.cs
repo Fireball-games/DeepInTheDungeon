@@ -101,7 +101,7 @@ namespace Scripts.Building
             
             tileTransform.position = new(row, 0f, column);
             
-            // TODO: this is caused with MapEditorManager runs Start twice due to wonky singleton management, could not solve it myself at the time
+            // TODO: this is caused with MapEditorManager runs Start twice due to some mysterious intervention, could not solve it myself at the time
             try
             {
                 PhysicalTiles.Add(tileTransform.position.ToVector3Int(), newTile.gameObject);

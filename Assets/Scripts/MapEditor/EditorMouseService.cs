@@ -78,7 +78,7 @@ namespace Scripts.MapEditor
 
         private void OnMouseGridPositionChanged(Vector3Int newPosition)
         {
-            TileDescription[,] layout = GameController.Instance.CurrentMap.Layout;
+            TileDescription[,] layout = GameManager.Instance.CurrentMap.Layout;
             
             if (!layout.HasIndex(newPosition.x, newPosition.z))
             {

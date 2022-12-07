@@ -53,7 +53,7 @@ namespace Scripts.Building
             {
                 for (int y = 0; y < layout.GetLength(1); y++)
                 {
-                    if (GameController.Instance.GameMode is GameController.EGameMode.Play)
+                    if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
                     {
                         _playBuilder.BuildTile( x, y);
                     }
@@ -86,7 +86,7 @@ namespace Scripts.Building
         /// <param name="column"></param>
         public void RebuildTile(int row, int column)
         {
-            if (GameController.Instance.GameMode is GameController.EGameMode.Play)
+            if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
             {
                 _playBuilder.BuildTile( row, column);
             }

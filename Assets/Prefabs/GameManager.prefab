@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 3832279166589929012}
   - component: {fileID: 2868499664538057293}
   m_Layer: 0
-  m_Name: GameController
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -139,3 +139,4 @@ MonoBehaviour:
       type: 3}
     howMany: 100
   storeParent: {fileID: 5617565299547472302}
+  uiParent: {fileID: 0}

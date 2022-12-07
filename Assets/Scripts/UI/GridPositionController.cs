@@ -26,6 +26,6 @@ namespace Scripts.UI
          text.text = $"{Mathf.RoundToInt(newPosition.x)} : {Mathf.RoundToInt(newPosition.z)}";
       }
 
-      private void OnLevelStarted() => OnPlayerPositionChanged(GameController.Instance.Player.transform.position);
+      private void OnLevelStarted() => OnPlayerPositionChanged(GameManager.Instance.Player.transform.position);
    }
 }

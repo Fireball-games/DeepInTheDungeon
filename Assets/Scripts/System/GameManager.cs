@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Scripts.System
 {
-    public class GameController : Singleton<GameController>
+    public class GameManager : Singleton<GameManager>
     {
         [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private PlayerController playerPrefab;

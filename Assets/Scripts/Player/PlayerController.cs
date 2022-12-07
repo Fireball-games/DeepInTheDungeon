@@ -46,7 +46,7 @@ namespace Scripts.Player
 
         private void SetMovement(Action movementSetter)
         {
-            if (!_isStartPositionSet || !GameController.Instance.MovementEnabled || !_atRest) return;
+            if (!_isStartPositionSet || !GameManager.Instance.MovementEnabled || !_atRest) return;
 
             movementSetter?.Invoke();
 
@@ -139,7 +139,7 @@ namespace Scripts.Player
         private bool IsTargetPositionValid()
         {
             Vector3Int intTargetPosition = Vector3Int.RoundToInt(_targetGridPos);
-            return GameController.Instance.CurrentMap.Layout[intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
+            return GameManager.Instance.CurrentMap.Layout[intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
         }
     }
 }

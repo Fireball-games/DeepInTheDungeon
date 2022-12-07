@@ -40,7 +40,7 @@ namespace Scripts.UI.EditorUI
 
         private void OnNewMapCreated()
         {
-            mapTitle.Show(GameController.Instance.CurrentMap.MapName);
+            mapTitle.Show(GameManager.Instance.CurrentMap.MapName);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Scripts.MapEditor
             sceneCamera ??= Camera.main;
             CameraManager.Instance.SetMainCamera(sceneCamera);
 
-            MapBuilder = GameController.Instance.MapBuilder;
+            MapBuilder = GameManager.Instance.MapBuilder;
         }
 
         private void OnEnable()
@@ -60,7 +60,7 @@ namespace Scripts.MapEditor
 
             EditedLayout = MapBuildService.ConvertToLayoutType(map.Layout);
 
-            GameController.Instance.SetCurrentMap(newMap);
+            GameManager.Instance.SetCurrentMap(newMap);
 
             MapBuilder.BuildMap(newMap);
 
@@ -81,8 +81,8 @@ namespace Scripts.MapEditor
                 return;
             }
             
-            string mapName = GameController.Instance.CurrentMap.MapName;
-            ES3.Save(mapName, GameController.Instance.CurrentMap, "Maps/mapName.map");
+            string mapName = GameManager.Instance.CurrentMap.MapName;
+            ES3.Save(mapName, GameManager.Instance.CurrentMap, "Maps/mapName.map");
             
             MapBuilder.DemolishMap();
             
@@ -94,9 +94,9 @@ namespace Scripts.MapEditor
             MapIsBeingBuilt = false;
             MapIsEdited = true;
             SetWorkMode(EWorkMode.Build);
-            Vector3 startPosition = GameController.Instance.CurrentMap.StartPosition;
+            Vector3 startPosition = GameManager.Instance.CurrentMap.StartPosition;
             sceneCamera.transform.position = new Vector3(startPosition.x, cameraHeight, startPosition.z);
-            playerIcon.transform.position = GameController.Instance.CurrentMap.StartPosition;
+            playerIcon.transform.position = GameManager.Instance.CurrentMap.StartPosition;
             // TODO: rotate by data from CurrentMap when implemented
             playerIcon.SetArrowRotation(Vector3.zero);
             playerIcon.SetActive(true);

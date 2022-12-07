@@ -48,7 +48,7 @@ namespace Scripts.UI
 
       private void SetRotation()
       {
-         Vector3 playerRotation = GameController.Instance.Player.transform.rotation.eulerAngles;
+         Vector3 playerRotation = GameManager.Instance.Player.transform.rotation.eulerAngles;
          compassImage.transform.rotation = Quaternion.Euler(new(0f, 0f, playerRotation.y + 90));
       }
 

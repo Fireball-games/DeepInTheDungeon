@@ -16,9 +16,7 @@ namespace Scripts.MapEditor
         private EditorMouseService Mouse => EditorMouseService.Instance;
 
         internal MapBuildService()
-        {
-            
-        }
+        {}
         
         internal void AdjustEditedLayout(int row, int column, out int adjustedX, out int adjustedY, out bool wasAdjusted)
         {
@@ -154,11 +152,11 @@ namespace Scripts.MapEditor
                 ? DefaultMapProvider.FullTile 
                 : null;
             
-            MapDescription newMap = GameController.Instance.CurrentMap;
+            MapDescription newMap = GameManager.Instance.CurrentMap;
             TileDescription[,] newLayout = ConvertEditedLayoutToArray();
             newMap.Layout = newLayout;
             newMap.StartPosition = new Vector3Int(newMap.StartPosition.x + rowAdjustment, 0, newMap.StartPosition.z + columnAdjustment);
-            GameController.Instance.SetCurrentMap(newMap);
+            GameManager.Instance.SetCurrentMap(newMap);
 
             Mouse.RefreshMousePosition();
             

@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 307521932}
   - component: {fileID: 307521934}
   m_Layer: 0
-  m_Name: Managers
+  m_Name: Services
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -185,6 +185,12 @@ MonoBehaviour:
   projectName: 
   severityLevel: 1
   classDescriptionLevel: 2
+--- !u!224 &661357664 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3330092226711196025, guid: 02913019860e24a488c711d3574125e8,
+    type: 3}
+  m_PrefabInstance: {fileID: 488252321421427739}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -730,6 +736,11 @@ PrefabInstance:
       propertyPath: HUD
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 488252322334843662, guid: 02913019860e24a488c711d3574125e8,
+        type: 3}
+      propertyPath: poolStore
+      value: 
+      objectReference: {fileID: 661357664}
     - target: {fileID: 488252322334843663, guid: 02913019860e24a488c711d3574125e8,
         type: 3}
       propertyPath: m_Pivot.x

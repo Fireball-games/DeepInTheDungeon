@@ -1,3 +1,4 @@
+using System;
 using Scripts.EventsManagement;
 using Scripts.ScenesManagement;
 using Scripts.System;
@@ -7,20 +8,14 @@ using UnityEngine.UI;
 
 namespace Scripts.UI
 {
-    public class MainUIManager : Singleton<MainUIManager>
+    public class MainUIManager : SingletonNotPersisting<MainUIManager>
     {
         public GameObject body;
-        public GameObject HUD;
         public Button PlayButton;
         public Button EditorButton;
         [SerializeField] private RectTransform poolStore;
 
-        protected override void Awake()
-        {
-            base.Awake();
-
-            ObjectPool.Instance.uiParent = poolStore;
-        }
+        private GameObject _hud;
 
         private void OnEnable()
         {
@@ -29,6 +24,11 @@ namespace Scripts.UI
 
             EventsManager.OnLevelStarted += OnLevelStarted;
             EventsManager.OnSceneFinishedLoading += OnSceneFinishedLoading;
+        }
+
+        private void Start()
+        {
+            ObjectPool.Instance.uiParent = poolStore;
         }
 
         private void OnDisable()
@@ -49,12 +49,12 @@ namespace Scripts.UI
 
         private void OnLevelStarted()
         {
-            HUD ??= FindObjectOfType<HUDController>(true).gameObject;
+            _hud ??= FindObjectOfType<HUDController>(true).gameObject;
             
-            if (HUD)
+            if (_hud)
             {
                 body.SetActive(false);
-                HUD.SetActive(true);
+                _hud.SetActive(true);
             }
         }
 

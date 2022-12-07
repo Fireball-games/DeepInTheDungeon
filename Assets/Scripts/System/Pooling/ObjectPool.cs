@@ -21,12 +21,8 @@ namespace Scripts.System.Pooling
         {
             base.Awake();
 
-            if (Instance != this)
-            {
-                Logger.Log("Got the culprit");
-                return;
-            }
-            
+            if (Instance != this) return;
+
             _transforms = new Dictionary<string, Transform>();
             
             if (preSpawnSetItems.Any())

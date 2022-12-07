@@ -23,9 +23,13 @@ namespace Scripts.UI.EditorUI
             mapNameInput.SetTitleText(T.Get(LocalizationKeys.NewMapName));
         }
 
-        public void Open(string dialogTitle, string placeholderMapName, Action onOk = null, Action onCancel = null)
+        public void Open(
+            string dialogTitle,
+            string placeholderMapName,
+            Action onOk = null,
+            Action onCancel = null)
         {
-            base.Open(dialogTitle, onOk, onCancel);
+            base.Open(dialogTitle, onOk, onCancel, T.Get(LocalizationKeys.CreateMap));
             
             mapNameInput.SetPlaceholderText(placeholderMapName);
         }

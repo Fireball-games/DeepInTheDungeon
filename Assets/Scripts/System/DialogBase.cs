@@ -4,7 +4,6 @@ using Scripts.Localization;
 using Scripts.UI;
 using Scripts.UI.Components;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,20 +14,37 @@ namespace Scripts.System
         [SerializeField] protected TitleController title;
         [SerializeField] protected Button cancelButton;
         [SerializeField] protected Button confirmButton;
+        [SerializeField] protected TMP_Text cancelText;
+        [SerializeField] protected TMP_Text confirmText;
         
         protected event Action OnCancel;
         protected event Action OnOk;
 
         private void Awake()
         {
-            cancelButton.onClick.AddListener(OnCancelClicked);
-            cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
-            confirmButton.onClick.AddListener(OnOKClicked);
-            confirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Confirm);
+            if (cancelButton)
+            {
+                cancelButton.onClick.AddListener(OnCancelClicked);
+                cancelText.text = T.Get(LocalizationKeys.Cancel);
+            }
+
+            if (confirmButton)
+            {
+                confirmButton.onClick.AddListener(OnOKClicked);
+                confirmText.text = T.Get(LocalizationKeys.Confirm);
+            }
         }
 
-        public void Open(string dialogTitle, Action onOk = null, Action onCancel = null)
+        public void Open(
+            string dialogTitle,
+            Action onOk = null,
+            Action onCancel = null,
+            string confirmButtonText = null,
+            string cancelButtonText = null)
         {
+            if (!string.IsNullOrEmpty(confirmButtonText) && confirmButton) confirmText.text = confirmButtonText;
+            if (!string.IsNullOrEmpty(cancelButtonText) && cancelButton) cancelText.text = cancelButtonText;
+            
             title.SetTitle(dialogTitle);
             OnCancel = onCancel;
             OnOk = onOk;

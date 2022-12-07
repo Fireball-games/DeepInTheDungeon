@@ -49,9 +49,8 @@ namespace Scripts.Building.Tile
         
         public void Initialize()
         {
-            Logger.Log("Tile is being reset.");
             transform.localScale = Vector3.one;
-
+            // TODO: probably OK to remove once map layers are implemented
             foreach (TileRenderingParts wall in wallMap.Values)
             {
                 wall.wallParent.SetActive(true);

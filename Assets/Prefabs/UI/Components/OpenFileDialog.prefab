@@ -202,7 +202,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00018580396}
+  m_AnchoredPosition: {x: 0, y: 0.00063355983}
   m_SizeDelta: {x: 0, y: 379.28}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &539789203288271488
@@ -410,6 +410,9 @@ MonoBehaviour:
   content: {fileID: 539789204707196794}
   title: {fileID: 3766802101788740923}
   cancelButton: {fileID: 2454528126799658982}
+  confirmButton: {fileID: 0}
+  cancelText: {fileID: 3338891097194890876}
+  confirmText: {fileID: 0}
   fileItemsParent: {fileID: 539789203288271518}
   fileItemPrefab: {fileID: 3010988750656366452, guid: e738f8e62d516d44686c9f374c6128b5,
     type: 3}
@@ -942,6 +945,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3338891097194890876 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
+    type: 3}
+  m_PrefabInstance: {fileID: 539789203587855856}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &7773814106555311994 stripped

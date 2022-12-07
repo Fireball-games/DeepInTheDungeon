@@ -51,8 +51,6 @@ namespace Scripts.UI.EditorUI
         {
             _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectory);
 
-            // _existingFiles = new[]{ "File 1", "File 2"};
-            
             if (_existingFiles == null || !_existingFiles.Any())
             {
                 EditorUIManager.Instance.StatusBar.RegisterMessage(
@@ -83,27 +81,33 @@ namespace Scripts.UI.EditorUI
 
             if (editorManager.MapIsChanged || !editorManager.MapIsSaved)
             {
-                EditorUIManager.Instance.ConfirmationDialog.Open(T.Get(LocalizationKeys.SaveEditedMapPrompt),
-                    editorManager.SaveMap);
+                EditorUIManager.Instance.ConfirmationDialog.Open(
+                    T.Get(LocalizationKeys.SaveEditedMapPrompt),
+                    OpenNewMapDialogWithSave,
+                    OpenNewMapDialog,
+                    T.Get(LocalizationKeys.SaveMap),
+                    T.Get(LocalizationKeys.DontSave)
+                    );
+                return;
             }
 
+            OpenNewMapDialog();
+        }
+
+        private void OpenNewMapDialogWithSave()
+        {
+            editorManager.SaveMap();
+            OpenNewMapDialog();
+        }
+
+        private void OpenNewMapDialog()
+        {
             EditorUIManager.Instance.NewMapDialog.Open(T.Get(LocalizationKeys.NewMapDialogTitle),
                 GetDefaultMapName(),
                 OnNewMapDialogOK
-                );
+            );
         }
-
-        private void OnExitClicked()
-        {
-            editorManager.GoToMainMenu();
-        }
-
-        private void LoadMap(string filePath)
-        {
-            MapDescription loadedMap = ES3.Load<MapDescription>(Path.GetFileNameWithoutExtension(filePath), filePath);
-            editorManager.OrderMapConstruction(loadedMap, true);
-        }
-
+        
         private void OnNewMapDialogOK()
         {
             NewMapDialog dialog = EditorUIManager.Instance.NewMapDialog;
@@ -119,6 +123,17 @@ namespace Scripts.UI.EditorUI
                 : mapName;
             
             editorManager.OrderMapConstruction(newMap);
+        }
+
+        private void OnExitClicked()
+        {
+            editorManager.GoToMainMenu();
+        }
+
+        private void LoadMap(string filePath)
+        {
+            MapDescription loadedMap = ES3.Load<MapDescription>(Path.GetFileNameWithoutExtension(filePath), filePath);
+            editorManager.OrderMapConstruction(loadedMap, true);
         }
     }
 }

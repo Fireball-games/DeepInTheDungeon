@@ -12,7 +12,9 @@
         public const string NewMapNamePrompt = "NewMapNamePrompt";
         public const string NoChangesToSave = "NoChangesToSave";
         public const string NoFilesToShow = "NoFilesToShow";
+        public const string NoMapToPlayLoaded = "NoMapToPlayLoaded";
         public const string Rows = "Rows";
+        public const string SaveEditedMapPrompt = "SaveEditedMapPrompt";
         public const string SelectMapToLoad = "SelectMapToLoad";
     }
 }

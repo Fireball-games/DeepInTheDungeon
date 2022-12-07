@@ -1,3 +1,4 @@
+using System;
 using Scripts.Localization;
 using Scripts.System;
 using UnityEngine;
@@ -20,6 +21,13 @@ namespace Scripts.UI.EditorUI
             columnsInput.SetTitleText(T.Get(LocalizationKeys.Columns));
             mapNameInput.SetPlaceholderText(T.Get(LocalizationKeys.NewMapNamePrompt));
             mapNameInput.SetTitleText(T.Get(LocalizationKeys.NewMapName));
+        }
+
+        public void Open(string dialogTitle, string placeholderMapName, Action onOk = null, Action onCancel = null)
+        {
+            base.Open(dialogTitle, onOk, onCancel);
+            
+            mapNameInput.SetPlaceholderText(placeholderMapName);
         }
     }
 }

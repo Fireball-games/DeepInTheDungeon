@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System;
@@ -37,6 +38,7 @@ namespace Scripts.Building
 
         public void BuildMap(MapDescription mapDescription)
         {
+            DemolishMap();
             StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
         }
 

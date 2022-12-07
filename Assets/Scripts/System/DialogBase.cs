@@ -3,6 +3,8 @@ using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.UI;
 using Scripts.UI.Components;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +22,9 @@ namespace Scripts.System
         private void Awake()
         {
             cancelButton.onClick.AddListener(OnCancelClicked);
+            cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
             confirmButton.onClick.AddListener(OnOKClicked);
+            confirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Confirm);
         }
 
         public void Open(string dialogTitle, Action onOk = null, Action onCancel = null)

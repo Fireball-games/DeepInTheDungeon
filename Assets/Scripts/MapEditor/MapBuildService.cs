@@ -135,6 +135,7 @@ namespace Scripts.MapEditor
             if (Mouse.LastGridMouseDownPosition != position) return;
 
             Manager.MapIsChanged = true;
+            Manager.MapIsSaved = false;
             
             int row = position.x;
             int column = position.z;

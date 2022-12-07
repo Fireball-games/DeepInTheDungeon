@@ -11,6 +11,7 @@ namespace Scripts.UI.EditorUI
     {
         [SerializeField] private ImageButton playButton;
         [SerializeField] private NewMapDialog newMapDialog;
+        [SerializeField] private DialogBase confirmationDialog;
         [SerializeField] private StatusBar statusBar;
         [SerializeField] private TitleController mapTitle;
         [SerializeField] private RectTransform uiPoolParent;
@@ -18,6 +19,7 @@ namespace Scripts.UI.EditorUI
 
         public StatusBar StatusBar => statusBar;
         public NewMapDialog NewMapDialog => newMapDialog;
+        public DialogBase ConfirmationDialog => confirmationDialog;
 
         protected override void Awake()
         {

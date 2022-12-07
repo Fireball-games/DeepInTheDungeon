@@ -107,7 +107,7 @@ namespace Scripts.System
 
         public void SetCurrentMap(MapDescription mapDescription)
         {
-            mapBuilder.SetLayout(mapDescription.Layout);
+            mapBuilder.SetLayout(mapDescription?.Layout);
             _currentMap = mapDescription;
         }
     }

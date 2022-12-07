@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;
 using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.MapEditor
 {
@@ -109,5 +110,10 @@ namespace Scripts.MapEditor
         }
 
         public void RefreshMousePosition() => OnMouseGridPositionChanged(MouseGridPosition);
+
+        public void ResetCursor()
+        {
+            SetCursor(null, Vector3.zero);
+        }
     }
 }

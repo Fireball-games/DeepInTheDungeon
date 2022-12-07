@@ -19,7 +19,7 @@ namespace Scripts.MapEditor
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             
-            if (_manager.MapIsEdited)
+            if (_manager.MapIsPresented)
             {
                 if (Input.GetMouseButtonDown(0))
                     ProcessMouseButtonDown(0);

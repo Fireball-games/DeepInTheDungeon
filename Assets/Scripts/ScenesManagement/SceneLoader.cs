@@ -14,7 +14,7 @@ namespace Scripts.ScenesManagement
             StartCoroutine(LoadSceneAsync(sceneName));
         }
         
-        public void LoadMainScene(bool skipToPlay)
+        public void LoadMainScene()
         {
             StartCoroutine(LoadSceneAsync(Scenes.MainSceneName));
         }
@@ -40,7 +40,6 @@ namespace Scripts.ScenesManagement
             }
 
             yield return null;
-            
             
             EventsManager.TriggerOnSceneFinishedLoading(sceneName);            
         }

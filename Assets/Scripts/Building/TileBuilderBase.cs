@@ -67,7 +67,7 @@ namespace Scripts.Building
             // not a null tile, because else it would not be here.
             if (!newTile)
             {
-                newTile = ObjectPool.Instance.GetFromPool(_tileDefaultPrefab, LayoutParent.GameObject()).GetComponent<TileController>();
+                newTile = ObjectPool.Instance.GetFromPool(_tileDefaultPrefab, LayoutParent.gameObject).GetComponent<TileController>();
             }
 
             newTile.gameObject.name = _tileDefaultPrefab.name;

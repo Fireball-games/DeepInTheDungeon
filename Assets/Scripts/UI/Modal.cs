@@ -8,6 +8,8 @@ namespace Scripts.UI
     {
         [SerializeField] private Button body;
 
+        private int openCount;
+
         private void Awake()
         {
             body.onClick.AddListener(OnModalClicked);
@@ -30,8 +32,22 @@ namespace Scripts.UI
 
         private void OnModalClicked() => EventsManager.TriggerOnModalClicked();
 
-        private void Activate() => SetActive(true);
-        private void Deactivate() => SetActive(false);
+        private void Activate()
+        {
+            if(!body.IsActive()) openCount = 0;
+            openCount += 1;
+            SetActive(true);
+        }
+
+        private void Deactivate()
+        {
+            if (body.IsActive()) openCount -= 1;
+
+            if (openCount > 0) return;
+            
+            SetActive(false);
+        }
+
         private void SetActive(bool isActive) => body.gameObject.SetActive(isActive);
     }
 }

@@ -28,7 +28,7 @@ namespace Scripts.UI.EditorUI
 
             foreach (string file in files)  
             {
-                string fileName = Path.GetFileName(file);
+                string fileName = Path.GetFileNameWithoutExtension(file);
 
                 GameObject fileItem = ObjectPool.Instance.GetFromPool(fileItemPrefab, fileItemsParent, true);
                 fileItem.GetComponentInChildren<TMP_Text>().text = fileName;

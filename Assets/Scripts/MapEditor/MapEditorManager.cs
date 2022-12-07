@@ -1,5 +1,9 @@
+using System.Dynamic;
+using System.IO;
 using Scripts.Building;
 using Scripts.EventsManagement;
+using Scripts.Helpers;
+using Scripts.Localization;
 using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.UI.Components;
@@ -20,8 +24,9 @@ namespace Scripts.MapEditor
         [SerializeField] private PlayerIconController playerIcon;
 
         public EWorkMode WorkMode => _workMode;
-        public bool MapIsEdited { get; private set; }
+        public bool MapIsPresented { get; private set; }
         public bool MapIsChanged { get; set; }
+        public bool MapIsSaved { get; set; } = true;
         public bool MapIsBeingBuilt { get; private set; }
         public LayoutType EditedLayout { get; private set; }
         public MapBuilder MapBuilder { get; private set; }
@@ -37,6 +42,7 @@ namespace Scripts.MapEditor
             CameraManager.Instance.SetMainCamera(sceneCamera);
 
             MapBuilder = GameManager.Instance.MapBuilder;
+            MapBuilder.DemolishMap();
         }
 
         private void OnEnable()
@@ -49,12 +55,11 @@ namespace Scripts.MapEditor
             MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
         }
 
-        public void OrderMapConstruction(MapDescription map = null)
+        public void OrderMapConstruction(MapDescription map = null, bool markMapAsSaved = false)
         {
             MapIsBeingBuilt = true;
-            MapIsEdited = false;
-
-            if (MapBuilder.LayoutParent) MapBuilder.DemolishMap();
+            MapIsPresented = false;
+            MapIsSaved = markMapAsSaved;
 
             MapDescription newMap = map ??= new MapDescription();
 
@@ -72,27 +77,67 @@ namespace Scripts.MapEditor
             _workMode = newWorkMode;
             EditorEvents.TriggerOnWorkModeChanged(_workMode);
         }
-        
-        public void PlayMap()
+
+        public void GoToMainMenu()
         {
-            if (!MapIsEdited)
+            if (!MapIsSaved)
             {
-                EditorUIManager.Instance.StatusBar.RegisterMessage("BLABLA", StatusBar.EMessageType.Negative);
+                EditorUIManager.Instance.ConfirmationDialog.Open(
+                    T.Get(LocalizationKeys.SaveEditedMapPrompt),
+                    GoToMainMenuWithSave,
+                    LoadMainSceneClear);
+                
                 return;
             }
             
-            string mapName = GameManager.Instance.CurrentMap.MapName;
-            ES3.Save(mapName, GameManager.Instance.CurrentMap, "Maps/mapName.map");
-            
+            LoadMainSceneClear();
+        }
+
+        private void GoToMainMenuWithSave()
+        {
+            SaveMap();
+            LoadMainSceneClear();
+        }
+
+        private void LoadMainSceneClear()
+        {
+            EditorMouseService.Instance.ResetCursor();
             MapBuilder.DemolishMap();
+            GameManager.Instance.SetCurrentMap(null);
+            SceneLoader.Instance.LoadMainScene();
+        }
+        
+        public void PlayMap()
+        {
+            if (!MapIsPresented)
+            {
+                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.NoMapToPlayLoaded), StatusBar.EMessageType.Negative);
+                return;
+            }
+
+            MapDescription currentMap = GameManager.Instance.CurrentMap;
             
-            SceneLoader.Instance.LoadMainScene(true);
+            SaveMap();
+            
+            SceneLoader.Instance.LoadScene(currentMap.SceneName);
+        }
+        
+        public void SaveMap()
+        {
+            MapDescription currentMap = GameManager.Instance.CurrentMap;
+            
+            string mapName = currentMap.MapName;
+            ES3.Save(mapName, currentMap, FileOperationsHelper.GetSavePath(mapName));
+
+            MapIsChanged = false;
+            MapIsSaved = true;
         }
 
         private void OnLayoutBuilt()
         {
             MapIsBeingBuilt = false;
-            MapIsEdited = true;
+            MapIsPresented = true;
+
             SetWorkMode(EWorkMode.Build);
             Vector3 startPosition = GameManager.Instance.CurrentMap.StartPosition;
             sceneCamera.transform.position = new Vector3(startPosition.x, cameraHeight, startPosition.z);

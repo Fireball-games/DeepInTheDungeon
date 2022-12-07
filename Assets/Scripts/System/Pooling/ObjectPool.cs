@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 //Fireball Games * * * PetrZavodny.com
 
@@ -19,6 +20,12 @@ namespace Scripts.System.Pooling
         protected override void Awake()
         {
             base.Awake();
+
+            if (Instance != this)
+            {
+                Logger.Log("Got the culprit");
+                return;
+            }
             
             _transforms = new Dictionary<string, Transform>();
             
@@ -47,7 +54,7 @@ namespace Scripts.System.Pooling
                 }
                 else
                 {
-                    removedObjectTransform.parent = ResolveParentTransform(removedObjectTransform.name);
+                    removedObjectTransform.parent = ResolveParentTransform(removedObjectTransform.name, parent);
                 }
                 
                 removedObject.gameObject.SetActive(true);
@@ -74,7 +81,7 @@ namespace Scripts.System.Pooling
             }
             else
             {
-                returningObjectTransform.parent = ResolveParentTransform(returningObject.name);
+                returningObjectTransform.parent = ResolveParentTransform(returningObject.name, null);
             }
             
             returningObject.gameObject.SetActive(false);
@@ -94,7 +101,12 @@ namespace Scripts.System.Pooling
             
             if (instantiateToPoolStore)
             {
-                poolParent = ResolveParentTransform(requestedObject.name);
+                poolParent = ResolveParentTransform(requestedObject.name, parent);
+            }
+
+            if (!instantiateToPoolStore)
+            {
+                Logger.LogWarning($"Instantiating new {requestedObject.name}, consider pre create them instead.");
             }
             
             GameObject newObject = Instantiate(requestedObject, position, rotation, poolParent);
@@ -160,8 +172,10 @@ namespace Scripts.System.Pooling
             });
         }
 
-        private Transform ResolveParentTransform(string objectName)
+        private Transform ResolveParentTransform(string objectName, GameObject parent)
         {
+            if (parent) return parent.transform;
+            
             if (!_transforms.TryGetValue(objectName, out Transform result))
             {
                 GameObject newParentGo = new(objectName)

@@ -1,15 +1,12 @@
+using System.IO;
 using System.Linq;
 using Scripts.Building;
-using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.UI.Components;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.UI;
-using static Lean.Localization.LeanLocalization;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI
 {
@@ -31,11 +28,30 @@ namespace Scripts.UI.EditorUI
             saveButton.onClick.AddListener(OnSaveClicked);
             newMapButton.onClick.AddListener(OnNewMapClicked);
         }
+        
+        private static string GetDefaultMapName()
+        {
+            string newMapName = T.Get(LocalizationKeys.NewMap);
+            
+            string[] fileNames = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectory);
+
+            fileNames = fileNames.Select(Path.GetFileName).ToArray();
+
+            int number = 1;
+
+            while (fileNames.Contains($"{T.Get(LocalizationKeys.NewMap)}{number}.map"))
+            {
+                number++;
+            }
+
+            return $"{newMapName}{number}";
+        }
+        
         private void OnLoadClicked()
         {
             _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectory);
 
-            _existingFiles = new[]{ "File 1", "File 2"};
+            // _existingFiles = new[]{ "File 1", "File 2"};
             
             if (_existingFiles == null || !_existingFiles.Any())
             {
@@ -45,42 +61,47 @@ namespace Scripts.UI.EditorUI
                 return;
             }
             
-            openFileDialog.Open(GetTranslationText(LocalizationKeys.SelectMapToLoad), _existingFiles, LoadMap);
+            openFileDialog.Open(T.Get(LocalizationKeys.SelectMapToLoad), _existingFiles, LoadMap);
         }
         
         private void OnSaveClicked()
         {
-            if (!editorManager.MapIsChanged)
+            if (!editorManager.MapIsSaved)
             {
-                EditorUIManager.Instance.StatusBar.RegisterMessage(
+                editorManager.SaveMap();
+                return;
+            }
+
+            EditorUIManager.Instance.StatusBar.RegisterMessage(
                     T.Get(LocalizationKeys.NoChangesToSave),
                     StatusBar.EMessageType.Warning);
-            }
         }
         
         private void OnNewMapClicked()
         {
             if (editorManager.MapIsBeingBuilt) return;
-            
-            if (!editorManager.MapIsEdited)
+
+            if (editorManager.MapIsChanged || !editorManager.MapIsSaved)
             {
-                EditorUIManager.Instance.NewMapDialog.Open(T.Get(LocalizationKeys.NewMapDialogTitle),
-                    OnNewMapDialogOK);
-                // editorManager.OrderMapConstruction();
-                return;
+                EditorUIManager.Instance.ConfirmationDialog.Open(T.Get(LocalizationKeys.SaveEditedMapPrompt),
+                    editorManager.SaveMap);
             }
-            
-            //TODO: confirmation dialog if to save, discard current map or cancel.
+
+            EditorUIManager.Instance.NewMapDialog.Open(T.Get(LocalizationKeys.NewMapDialogTitle),
+                GetDefaultMapName(),
+                OnNewMapDialogOK
+                );
         }
 
         private void OnExitClicked()
         {
-            Logger.LogWarning("NOT IMPLEMENTED YET");
+            editorManager.GoToMainMenu();
         }
 
-        private void LoadMap(string mapName)
+        private void LoadMap(string filePath)
         {
-            Logger.Log($"Loading file: {mapName}");
+            MapDescription loadedMap = ES3.Load<MapDescription>(Path.GetFileNameWithoutExtension(filePath), filePath);
+            editorManager.OrderMapConstruction(loadedMap, true);
         }
 
         private void OnNewMapDialogOK()
@@ -94,7 +115,7 @@ namespace Scripts.UI.EditorUI
                 Mathf.Max(rows, MapEditorManager.MinRows), Mathf.Max(columns, MapEditorManager.MinColumns));
 
             newMap.MapName = string.IsNullOrEmpty(mapName) 
-                ? T.Get(LocalizationKeys.NewMap) 
+                ? GetDefaultMapName()
                 : mapName;
             
             editorManager.OrderMapConstruction(newMap);

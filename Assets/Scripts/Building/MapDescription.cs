@@ -9,6 +9,7 @@ namespace Scripts.Building
     public class MapDescription
     {
         public Vector3Int StartPosition;
+        public Quaternion PlayerRotation;
         public string SceneName;
         public TileDescription[,] Layout;
         public string MapName = "DefaultMapName";
@@ -16,6 +17,7 @@ namespace Scripts.Building
         public MapDescription()
         {
             StartPosition = DefaultMapProvider.StartPosition;
+            PlayerRotation = Quaternion.identity;
             SceneName = Scenes.PlayIndoorSceneName;
         }
     }

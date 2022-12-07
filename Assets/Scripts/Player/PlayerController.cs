@@ -26,9 +26,12 @@ namespace Scripts.Player
         private bool _isBashingIntoWall;
         private bool _atRest = true;
 
-        public void SetPosition(Vector3 position)
+        public void SetPositionAndRotation(Vector3 position, Quaternion rotation)
         {
-            transform.position = _targetGridPos = _prevTargetGridPos = position;
+            Transform playerTransform = transform;
+            playerTransform.position = _targetGridPos = _prevTargetGridPos = position;
+            playerTransform.rotation = rotation;
+            _targetRotation = rotation.eulerAngles;
             _isStartPositionSet = true;
         }
 
@@ -126,7 +129,7 @@ namespace Scripts.Player
                 yield return null;
             }
 
-            SetPosition(_prevTargetGridPos);
+            SetPositionAndRotation(_prevTargetGridPos, Quaternion.Euler(_targetRotation));
             _isBashingIntoWall = false;
             _atRest = true;
         }

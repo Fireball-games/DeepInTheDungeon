@@ -2,10 +2,12 @@
 using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.MapEditor;
+using Scripts.ScenesManagement;
 using Scripts.UI;
 using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Scripts.System
@@ -46,8 +48,11 @@ namespace Scripts.System
             if (!string.IsNullOrEmpty(confirmButtonText) && confirmButton) confirmText.text = confirmButtonText;
             if (!string.IsNullOrEmpty(cancelButtonText) && cancelButton) cancelText.text = cancelButtonText;
             if (title) title.SetTitle(dialogTitle);
-            
-            EditorMouseService.Instance.ResetCursor();
+
+            if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
+            {
+                EditorMouseService.Instance.ResetCursor();
+            }
             
             OnCancel = onCancel;
             OnOk = onOk;

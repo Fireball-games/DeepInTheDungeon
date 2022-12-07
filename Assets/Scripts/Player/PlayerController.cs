@@ -26,11 +26,6 @@ namespace Scripts.Player
         private bool _isBashingIntoWall;
         private bool _atRest = true;
 
-        private void Awake()
-        {
-            CameraManager.Instance.SetMainCamera(playerCamera);
-        }
-
         public void SetPosition(Vector3 position)
         {
             transform.position = _targetGridPos = _prevTargetGridPos = position;
@@ -140,6 +135,11 @@ namespace Scripts.Player
         {
             Vector3Int intTargetPosition = Vector3Int.RoundToInt(_targetGridPos);
             return GameManager.Instance.CurrentMap.Layout[intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
+        }
+
+        public void SetCamera()
+        {
+            CameraManager.Instance.SetMainCamera(playerCamera);
         }
     }
 }

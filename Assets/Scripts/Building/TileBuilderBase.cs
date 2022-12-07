@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System.Pooling;
-using Unity.VisualScripting;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
 
@@ -63,6 +63,7 @@ namespace Scripts.Building
                     PhysicalTiles.Remove(KeyVector);
                 }
             }
+            
             // Means there was no found file or if so, it wasn't a tile, so it got disposed, so we need a new tile. We know, that in layout is
             // not a null tile, because else it would not be here.
             if (!newTile)
@@ -99,7 +100,16 @@ namespace Scripts.Building
             }
             
             tileTransform.position = new(row, 0f, column);
-            PhysicalTiles.Add(tileTransform.position.ToVector3Int(), newTile.gameObject);
+            
+            // TODO: this is caused with MapEditorManager runs Start twice due to wonky singleton management, could not solve it myself at the time
+            try
+            {
+                PhysicalTiles.Add(tileTransform.position.ToVector3Int(), newTile.gameObject);
+            }
+            catch (Exception)
+            {
+                 // Logger.LogWarning("Trying to add Physical tile where it should not be possible");
+            }
         }
     }
 }

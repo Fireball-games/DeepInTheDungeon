@@ -58,7 +58,7 @@ namespace Scripts.System
             {
                 GameObject o;
                 (o = gameObject).SetActive(false);
-                Destroy ( o );
+                Destroy(o);
             }
         }
 

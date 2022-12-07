@@ -36,7 +36,7 @@ namespace Scripts.System
         }
 
         public void Open(
-            string dialogTitle,
+            string dialogTitle = null,
             Action onOk = null,
             Action onCancel = null,
             string confirmButtonText = null,
@@ -44,8 +44,8 @@ namespace Scripts.System
         {
             if (!string.IsNullOrEmpty(confirmButtonText) && confirmButton) confirmText.text = confirmButtonText;
             if (!string.IsNullOrEmpty(cancelButtonText) && cancelButton) cancelText.text = cancelButtonText;
+            if (title) title.SetTitle(dialogTitle);
             
-            title.SetTitle(dialogTitle);
             OnCancel = onCancel;
             OnOk = onOk;
             EventsManager.OnModalClicked += CloseDialog;

@@ -21,15 +21,10 @@ namespace Scripts.UI.EditorUI
         public NewMapDialog NewMapDialog => newMapDialog;
         public DialogBase ConfirmationDialog => confirmationDialog;
 
-        protected override void Awake()
-        {
-            base.Awake();
-            
-            ObjectPool.Instance.uiParent = uiPoolParent;
-        }
-
         private void OnEnable()
         {
+            ObjectPool.Instance.uiParent = uiPoolParent;
+            
             playButton.OnClick += manager.PlayMap;
             EditorEvents.OnNewMapCreated += OnNewMapCreated;
         }

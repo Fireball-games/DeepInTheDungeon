@@ -26,6 +26,8 @@ namespace Scripts.ScenesManagement
 
         private static IEnumerator LoadSceneAsync(string sceneName)
         {
+            EventsManager.TriggerOnSceneStartedLoading();
+            
             if (!Scenes.IsValidSceneName(sceneName))
             {
                 Logger.LogWarning("Invalid scene name");

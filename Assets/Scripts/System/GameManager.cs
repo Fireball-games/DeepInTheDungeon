@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Scripts.Building;
+﻿using Scripts.Building;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Player;
@@ -19,6 +18,7 @@ namespace Scripts.System
         public MapBuilder MapBuilder => mapBuilder;
         public MapDescription CurrentMap => _currentMap;
         public bool MovementEnabled => _movementEnabled;
+        public bool IsPlayingFromEditor { get; set; }
         public EGameMode GameMode => _gameMode;
 
         private MapDescription _currentMap;
@@ -37,6 +37,7 @@ namespace Scripts.System
         private void OnEnable()
         {
             EventsManager.OnStartGameRequested += OnStartGameRequested;
+            EventsManager.OnSceneStartedLoading += OnSceneStartedLoading;
             EventsManager.OnSceneFinishedLoading += OnSceneFinishedLoading;
             
             mapBuilder.OnLayoutBuilt += OnLayoutBuilt;
@@ -45,6 +46,7 @@ namespace Scripts.System
         private void OnDisable()
         {
             EventsManager.OnStartGameRequested -= OnStartGameRequested;
+            EventsManager.OnSceneStartedLoading -= OnSceneStartedLoading;
             EventsManager.OnSceneFinishedLoading -= OnSceneFinishedLoading;
             
             mapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
@@ -82,21 +84,34 @@ namespace Scripts.System
             player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
             player.SetPosition(_currentMap.StartPosition.ToVector3());
+            player.SetCamera();
             
             _movementEnabled = true;
             EventsManager.TriggerOnLevelStarted();
         }
 
+        private void OnSceneStartedLoading()
+        {
+            if (Player)
+            {
+                ObjectPool.Instance.ReturnToPool(Player.gameObject);
+            }
+        }
+
         private void OnSceneFinishedLoading(string sceneName)
         {
+            MapBuilder.DemolishMap();
+            
             if (sceneName is Scenes.EditorSceneName)
             {
+                _startLevelAfterBuildFinishes = false;
                 _gameMode = EGameMode.Editor;
                 return;
             }
 
             if (sceneName is Scenes.MainSceneName)
             {
+                IsPlayingFromEditor = false;
                 CameraManager.Instance.SetMainCamera();
                 _gameMode = EGameMode.MainMenu;
                 return;

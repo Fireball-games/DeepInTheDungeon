@@ -1,5 +1,3 @@
-using System.Dynamic;
-using System.IO;
 using Scripts.Building;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -42,12 +40,19 @@ namespace Scripts.MapEditor
             CameraManager.Instance.SetMainCamera(sceneCamera);
 
             MapBuilder = GameManager.Instance.MapBuilder;
-            MapBuilder.DemolishMap();
         }
 
         private void OnEnable()
         {
             MapBuilder.OnLayoutBuilt += OnLayoutBuilt;
+        }
+
+        private void Start()
+        {
+            if (GameManager.Instance.IsPlayingFromEditor)
+            {
+                OrderMapConstruction(GameManager.Instance.CurrentMap, true);
+            }
         }
 
         private void OnDisable()
@@ -57,6 +62,8 @@ namespace Scripts.MapEditor
 
         public void OrderMapConstruction(MapDescription map = null, bool markMapAsSaved = false)
         {
+            if (MapIsBeingBuilt) return;
+            
             MapIsBeingBuilt = true;
             MapIsPresented = false;
             MapIsSaved = markMapAsSaved;
@@ -84,7 +91,7 @@ namespace Scripts.MapEditor
             {
                 EditorUIManager.Instance.ConfirmationDialog.Open(
                     T.Get(LocalizationKeys.SaveEditedMapPrompt),
-                    GoToMainMenuWithSave,
+                    GoToMainScreenWithSave,
                     LoadMainSceneClear);
                 
                 return;
@@ -93,7 +100,7 @@ namespace Scripts.MapEditor
             LoadMainSceneClear();
         }
 
-        private void GoToMainMenuWithSave()
+        private void GoToMainScreenWithSave()
         {
             SaveMap();
             LoadMainSceneClear();
@@ -104,7 +111,9 @@ namespace Scripts.MapEditor
             EditorMouseService.Instance.ResetCursor();
             MapBuilder.DemolishMap();
             GameManager.Instance.SetCurrentMap(null);
+            GameManager.Instance.IsPlayingFromEditor = false;
             SceneLoader.Instance.LoadMainScene();
+            Instance = null;
         }
         
         public void PlayMap()
@@ -118,8 +127,9 @@ namespace Scripts.MapEditor
             MapDescription currentMap = GameManager.Instance.CurrentMap;
             
             SaveMap();
-            
+            GameManager.Instance.IsPlayingFromEditor = true;
             SceneLoader.Instance.LoadScene(currentMap.SceneName);
+            Instance = null;
         }
         
         public void SaveMap()

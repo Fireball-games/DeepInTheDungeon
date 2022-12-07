@@ -14,6 +14,9 @@ namespace Scripts.ScenesManagement
         
         [MenuItem("Scenes/Editor Scene", false)]
         private static void ShowEditorScene() => LoadScene(Scenes.EditorSceneName);
+        
+        [MenuItem("Scenes/PlayIndoor Scene", false)]
+        private static void ShowPlayIndoorScene() => LoadScene(Scenes.PlayIndoorSceneName);
 
         private static void LoadScene(string sceneName)
         {

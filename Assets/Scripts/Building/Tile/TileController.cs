@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using Scripts.System.Pooling;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
+using Logger = Scripts.Helpers.Logger;
 
 
 namespace Scripts.Building.Tile
 {
     [SelectionBase]
-    public class TileController : MonoBehaviour
+    public class TileController : MonoBehaviour, IPoolInitializable
     {
         [SerializeField] private TileRenderingParts floor;
         [SerializeField] private TileRenderingParts ceiling;
@@ -44,6 +46,17 @@ namespace Scripts.Building.Tile
         public void SetMaterial(ETileDirection direction, Material material) => wallMap[direction].renderer.material = material;
 
         public void SetMesh(ETileDirection direction, Mesh mesh) => wallMap[direction].meshFilter.mesh = mesh;
+        
+        public void Initialize()
+        {
+            Logger.Log("Tile is being reset.");
+            transform.localScale = Vector3.one;
+
+            foreach (TileRenderingParts wall in wallMap.Values)
+            {
+                wall.wallParent.SetActive(true);
+            }
+        }
     }
 
     [Serializable]

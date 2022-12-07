@@ -1,8 +1,6 @@
-using System;
 using Scripts.EventsManagement;
 using Scripts.ScenesManagement;
 using Scripts.System;
-using Scripts.System.Pooling;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +11,6 @@ namespace Scripts.UI
         public GameObject body;
         public Button PlayButton;
         public Button EditorButton;
-        [SerializeField] private RectTransform poolStore;
 
         private GameObject _hud;
 
@@ -24,11 +21,6 @@ namespace Scripts.UI
 
             EventsManager.OnLevelStarted += OnLevelStarted;
             EventsManager.OnSceneFinishedLoading += OnSceneFinishedLoading;
-        }
-
-        private void Start()
-        {
-            ObjectPool.Instance.uiParent = poolStore;
         }
 
         private void OnDisable()

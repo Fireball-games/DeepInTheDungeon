@@ -1,6 +1,7 @@
 ﻿using System;
 using Scripts.EventsManagement;
 using Scripts.Localization;
+using Scripts.MapEditor;
 using Scripts.UI;
 using Scripts.UI.Components;
 using TMPro;
@@ -46,6 +47,8 @@ namespace Scripts.System
             if (!string.IsNullOrEmpty(cancelButtonText) && cancelButton) cancelText.text = cancelButtonText;
             if (title) title.SetTitle(dialogTitle);
             
+            EditorMouseService.Instance.ResetCursor();
+            
             OnCancel = onCancel;
             OnOk = onOk;
             EventsManager.OnModalClicked += CloseDialog;
@@ -62,7 +65,7 @@ namespace Scripts.System
             SetActive(false);
         }
 
-        protected void OnCancelClicked()
+        private void OnCancelClicked()
         {
             OnCancel?.Invoke();
             OnCancel = null;
@@ -70,7 +73,7 @@ namespace Scripts.System
             CloseDialog();
         }
 
-        protected void OnOKClicked()
+        private void OnOKClicked()
         {
             OnOk?.Invoke();
             OnOk = null;

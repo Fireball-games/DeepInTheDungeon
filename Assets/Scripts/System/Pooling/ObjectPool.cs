@@ -12,7 +12,6 @@ namespace Scripts.System.Pooling
     {
         public List<PreSpawnSetItem> preSpawnSetItems;
         public Transform storeParent;
-        public RectTransform uiParent;
         private static readonly Dictionary<string, Queue<GameObject>> Pool = new();
 
         private Dictionary<string, Transform> _transforms;
@@ -45,8 +44,7 @@ namespace Scripts.System.Pooling
                 
                 if (isUiObject)
                 {
-                    CheckUIParent();
-                    removedObjectTransform.SetParent(parent ? parent.transform : uiParent);
+                    removedObjectTransform.SetParent(ResolveParentTransform(removedObjectTransform.name, parent));
                 }
                 else
                 {
@@ -57,7 +55,7 @@ namespace Scripts.System.Pooling
                 return ProcessInterfaces(removedObject);
             }
         
-            return InstantiateNewPoolObject(go, position, rotation, parent, false, isUiObject);
+            return InstantiateNewPoolObject(go, position, rotation, parent);
         }
 
         public void ReturnToPool(GameObject returningObject, bool isUiObject = false)
@@ -72,8 +70,7 @@ namespace Scripts.System.Pooling
             
             if (isUiObject)
             {
-                CheckUIParent();
-                returningObjectTransform.SetParent(uiParent);
+                returningObjectTransform.SetParent(ResolveParentTransform(returningObject.name, null));
             }
             else
             {
@@ -85,16 +82,10 @@ namespace Scripts.System.Pooling
             Pool[returningObject.name].Enqueue(returningObject);
         }
 
-        private GameObject InstantiateNewPoolObject(GameObject requestedObject, Vector3 position, Quaternion rotation, GameObject parent, bool instantiateToPoolStore = false, bool isUiObject = false)
+        private GameObject InstantiateNewPoolObject(GameObject requestedObject, Vector3 position, Quaternion rotation, GameObject parent, bool instantiateToPoolStore = false)
         {
             Transform poolParent = parent ? parent.transform : storeParent;
 
-            if (!parent && isUiObject)
-            {
-                CheckUIParent();
-                poolParent = uiParent;
-            }
-            
             if (instantiateToPoolStore)
             {
                 poolParent = ResolveParentTransform(requestedObject.name, parent);
@@ -117,15 +108,6 @@ namespace Scripts.System.Pooling
             return newObject;
         }
 
-        private void CheckUIParent()
-        {
-            if (!uiParent)
-            {
-                throw new ArgumentException(
-                    "Object Pool is asked to use UI parent, but such parent is not set. Can't continue.");
-            }
-        }
-        
         private GameObject InstantiateNewPoolObject(GameObject objectToInstantiate, bool instantiateToPoolStore = false) 
         {
             Transform objectToInstantiateTransform = objectToInstantiate.transform;
@@ -163,7 +145,7 @@ namespace Scripts.System.Pooling
                 for (int i = 0; i < item.howMany; i++)
                 {
                     GameObject newObject = InstantiateNewPoolObject(item.prefabGameObject, true);
-                    ReturnToPool(newObject);
+                    ReturnToPool(newObject, item.isUiObject);
                 }
             });
         }
@@ -195,6 +177,7 @@ namespace Scripts.System.Pooling
         {
             public GameObject prefabGameObject;
             public int howMany;
+            public bool isUiObject;
         }
     }
 }

@@ -1,7 +1,6 @@
 using Scripts.EventsManagement;
 using Scripts.MapEditor;
 using Scripts.System;
-using Scripts.System.Pooling;
 using Scripts.UI.Components;
 using UnityEngine;
 
@@ -14,7 +13,6 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private DialogBase confirmationDialog;
         [SerializeField] private StatusBar statusBar;
         [SerializeField] private TitleController mapTitle;
-        [SerializeField] private RectTransform uiPoolParent;
         [SerializeField] private MapEditorManager manager;
 
         public StatusBar StatusBar => statusBar;
@@ -23,8 +21,6 @@ namespace Scripts.UI.EditorUI
 
         private void OnEnable()
         {
-            ObjectPool.Instance.uiParent = uiPoolParent;
-            
             playButton.OnClick += manager.PlayMap;
             EditorEvents.OnNewMapCreated += OnNewMapCreated;
         }

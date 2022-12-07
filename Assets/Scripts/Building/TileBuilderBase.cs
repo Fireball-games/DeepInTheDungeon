@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System.Pooling;
@@ -99,17 +98,8 @@ namespace Scripts.Building
                 // TODO: manage mesh and material via stored names
             }
             
-            tileTransform.position = new(row, 0f, column);
-            
-            // TODO: this is caused with MapEditorManager runs Start twice due to some mysterious intervention, could not solve it myself at the time
-            try
-            {
-                PhysicalTiles.Add(tileTransform.position.ToVector3Int(), newTile.gameObject);
-            }
-            catch (Exception)
-            {
-                 // Logger.LogWarning("Trying to add Physical tile where it should not be possible");
-            }
+            tileTransform.position = new Vector3(row, 0f, column);
+            PhysicalTiles.Add(tileTransform.position.ToVector3Int(), newTile.gameObject);
         }
     }
 }

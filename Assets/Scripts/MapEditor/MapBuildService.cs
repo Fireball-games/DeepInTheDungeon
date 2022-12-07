@@ -10,17 +10,15 @@ namespace Scripts.MapEditor
 {
     public class MapBuildService
     {
-        private MapEditorManager _manager;
-        private LayoutType EditedLayout => _manager.EditedLayout;
-        private MapBuilder MapBuilder => _manager.MapBuilder;
-        private EditorMouseService Mouse => EditorMouseService.Instance;
+        private static MapEditorManager Manager => MapEditorManager.Instance;
+        private LayoutType EditedLayout => Manager.EditedLayout;
+        private MapBuilder MapBuilder => Manager.MapBuilder;
+        private static EditorMouseService Mouse => EditorMouseService.Instance;
 
-        internal MapBuildService(MapEditorManager mapEditorManager)
-        {
-            _manager = mapEditorManager;
-        }
-        
-        internal void AdjustEditedLayout(int row, int column, out int adjustedX, out int adjustedY, out bool wasAdjusted)
+        internal MapBuildService()
+        {}
+
+        private void AdjustEditedLayout(int row, int column, out int adjustedX, out int adjustedY, out bool wasAdjusted)
         {
             int rowAdjustment = 0;
             int columnAdjustment = 0;
@@ -136,13 +134,13 @@ namespace Scripts.MapEditor
             
             if (Mouse.LastGridMouseDownPosition != position) return;
 
-            _manager.MapIsChanged = true;
-            _manager.MapIsSaved = false;
+            Manager.MapIsChanged = true;
+            Manager.MapIsSaved = false;
             
             int row = position.x;
             int column = position.z;
             
-            if (!_manager.EditedLayout.HasIndex(row, column)) return;
+            if (!Manager.EditedLayout.HasIndex(row, column)) return;
             
             Enums.EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
 
@@ -170,10 +168,10 @@ namespace Scripts.MapEditor
                 return;
             }
             
-            _manager.OrderMapConstruction(newMap);
+            Manager.OrderMapConstruction(newMap);
         }
-        
-        public TileDescription[,] ConvertEditedLayoutToArray()
+
+        private TileDescription[,] ConvertEditedLayoutToArray()
         {
             TileDescription[,] result = new TileDescription[EditedLayout.Count, EditedLayout[0].Count];
 

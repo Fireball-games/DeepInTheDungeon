@@ -1,6 +1,7 @@
 ﻿using Scripts.Building;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
+using Scripts.MapEditor;
 using Scripts.Player;
 using Scripts.ScenesManagement;
 using Scripts.System.Pooling;
@@ -106,6 +107,12 @@ namespace Scripts.System
             {
                 _startLevelAfterBuildFinishes = false;
                 _gameMode = EGameMode.Editor;
+
+                if (IsPlayingFromEditor)
+                {
+                    FindObjectOfType<MapEditorManager>().OrderMapConstruction(CurrentMap, true);
+                }
+                
                 return;
             }
 

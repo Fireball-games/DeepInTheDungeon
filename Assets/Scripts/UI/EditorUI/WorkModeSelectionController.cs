@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Scripts.EventsManagement;
-using Scripts.Helpers;
 using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.UI.Components;
@@ -12,10 +10,10 @@ namespace Scripts.UI.EditorUI
 {
     public class WorkModeSelectionController : UIElementBase
     {
-        public MapEditorManager mapEditorManager;
         [SerializeField] private ImageButton buildModeButton;
         [SerializeField] private ImageButton selectModeButton;
 
+        private static MapEditorManager Manager => MapEditorManager.Instance;
         private Dictionary<ImageButton, EWorkMode> _workModesMap;
 
         private void Awake()
@@ -61,7 +59,7 @@ namespace Scripts.UI.EditorUI
 
             if (!button) return;
             
-            mapEditorManager.SetWorkMode(_workModesMap[button]);
+            Manager.SetWorkMode(_workModesMap[button]);
         }
     }
 }

@@ -17,8 +17,8 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private Button saveButton;
         [SerializeField] private Button newMapButton;
         [SerializeField] private OpenFileDialog openFileDialog;
-        [SerializeField] private MapEditorManager editorManager;
 
+        private static MapEditorManager Manager => MapEditorManager.Instance;
         private string[] _existingFiles;
 
         private void OnEnable()
@@ -64,9 +64,9 @@ namespace Scripts.UI.EditorUI
         
         private void OnSaveClicked()
         {
-            if (!editorManager.MapIsSaved)
+            if (!Manager.MapIsSaved)
             {
-                editorManager.SaveMap();
+                Manager.SaveMap();
                 return;
             }
 
@@ -77,9 +77,9 @@ namespace Scripts.UI.EditorUI
         
         private void OnNewMapClicked()
         {
-            if (editorManager.MapIsBeingBuilt) return;
+            if (MapEditorManager.MapIsBeingBuilt) return;
 
-            if (editorManager.MapIsChanged || !editorManager.MapIsSaved)
+            if (Manager.MapIsChanged || !Manager.MapIsSaved)
             {
                 EditorUIManager.Instance.ConfirmationDialog.Open(
                     T.Get(LocalizationKeys.SaveEditedMapPrompt),
@@ -96,7 +96,7 @@ namespace Scripts.UI.EditorUI
 
         private void OpenNewMapDialogWithSave()
         {
-            editorManager.SaveMap();
+            Manager.SaveMap();
             OpenNewMapDialog();
         }
 
@@ -122,18 +122,18 @@ namespace Scripts.UI.EditorUI
                 ? GetDefaultMapName()
                 : mapName;
             
-            editorManager.OrderMapConstruction(newMap);
+            Manager.OrderMapConstruction(newMap);
         }
 
         private void OnExitClicked()
         {
-            editorManager.GoToMainMenu();
+            Manager.GoToMainMenu();
         }
 
         private void LoadMap(string filePath)
         {
             MapDescription loadedMap = ES3.Load<MapDescription>(Path.GetFileNameWithoutExtension(filePath), filePath);
-            editorManager.OrderMapConstruction(loadedMap, true);
+            Manager.OrderMapConstruction(loadedMap, true);
         }
     }
 }

@@ -7,19 +7,19 @@ namespace Scripts.MapEditor
 {
     public class EditorInputService : MonoBehaviour
     {
-        public MapEditorManager manager;
+        private static MapEditorManager Manager => MapEditorManager.Instance;
         private MapBuildService _buildService;
 
         private void Awake()
         {
-            _buildService = new MapBuildService(manager);
+            _buildService = new MapBuildService();
         }
 
         private void Update()
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             
-            if (manager.MapIsPresented)
+            if (Manager.MapIsPresented)
             {
                 if (Input.GetMouseButtonDown(0))
                     ProcessMouseButtonDown(0);
@@ -40,7 +40,7 @@ namespace Scripts.MapEditor
 
         private void ProcessMouseButtonUp(int mouseButtonUpped)
         {
-            switch (manager.WorkMode)
+            switch (Manager.WorkMode)
             {
                 case Enums.EWorkMode.None:
                     break;

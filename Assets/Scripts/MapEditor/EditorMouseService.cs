@@ -12,7 +12,7 @@ namespace Scripts.MapEditor
     {
         [SerializeField] private Texture2D digCursor;
         [SerializeField] private Texture2D demolishCursor;
-        public MapEditorManager mapEditorManager;
+        private static MapEditorManager Manager => MapEditorManager.Instance;
 
         public Vector3Int MouseGridPosition => _lastGridPosition;
         public EGridPositionType GridPositionType { get; private set; } = EGridPositionType.None;
@@ -35,7 +35,7 @@ namespace Scripts.MapEditor
         
         private void Update()
         {
-            if (mapEditorManager.MapIsPresented && !EventSystem.current.IsPointerOverGameObject())
+            if (Manager.MapIsPresented && !EventSystem.current.IsPointerOverGameObject())
             {
                 Vector3Int newGridPosition = Extensions.Vector3IntZero;
 
@@ -74,7 +74,7 @@ namespace Scripts.MapEditor
             Texture2D newCursor = null;
             Vector2 hotspot = _defaultMouseHotspot;
 
-            if (mapEditorManager.WorkMode == EWorkMode.Build)
+            if (Manager.WorkMode == EWorkMode.Build)
             {
                 newCursor = isNullTile ? digCursor : demolishCursor;
                 hotspot = isNullTile ? _defaultMouseHotspot : _demolishMouseHotspot;

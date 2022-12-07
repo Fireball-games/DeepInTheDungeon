@@ -12,7 +12,7 @@ using LayoutType = System.Collections.Generic.List<System.Collections.Generic.Li
 
 namespace Scripts.MapEditor
 {
-    public class MapEditorManager : MonoBehaviour
+    public class MapEditorManager : SingletonNotPersisting<MapEditorManager>
     {
         public const int MinRows = 5;
         public const int MinColumns = 5;
@@ -25,15 +25,16 @@ namespace Scripts.MapEditor
         public bool MapIsPresented { get; private set; }
         public bool MapIsChanged { get; set; }
         public bool MapIsSaved { get; set; } = true;
-        public bool MapIsBeingBuilt { get; private set; }
+        public static bool MapIsBeingBuilt { get; private set; }
         public LayoutType EditedLayout { get; private set; }
         public MapBuilder MapBuilder { get; private set; }
 
         private EWorkMode _workMode;
-
-
-        protected void Awake()
+        
+        protected override void Awake()
         {
+            base.Awake();
+            
             sceneCamera ??= Camera.main;
             CameraManager.Instance.SetMainCamera(sceneCamera);
 
@@ -45,34 +46,24 @@ namespace Scripts.MapEditor
             MapBuilder.OnLayoutBuilt += OnLayoutBuilt;
         }
 
-        private void Start()
-        {
-            if (GameManager.Instance.IsPlayingFromEditor)
-            {
-                OrderMapConstruction(GameManager.Instance.CurrentMap, true);
-            }
-        }
-
         private void OnDisable()
         {
             MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
         }
 
-        public void OrderMapConstruction(MapDescription map = null, bool markMapAsSaved = false)
+        public void OrderMapConstruction(MapDescription map, bool markMapAsSaved = false)
         {
             if (MapIsBeingBuilt) return;
             
             MapIsBeingBuilt = true;
             MapIsPresented = false;
             MapIsSaved = markMapAsSaved;
-
-            MapDescription newMap = map ??= new MapDescription();
-
+            
             EditedLayout = MapBuildService.ConvertToLayoutType(map.Layout);
 
-            GameManager.Instance.SetCurrentMap(newMap);
+            GameManager.Instance.SetCurrentMap(map);
 
-            MapBuilder.BuildMap(newMap);
+            MapBuilder.BuildMap(map);
 
             EditorEvents.TriggerOnNewMapCreated();
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Scripts.Localization;
 using Scripts.System.Pooling;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -50,17 +51,21 @@ namespace Scripts.Helpers
             return _v3i;
         }
 
-        public static bool HasIndex<T>(this T[,] source, int x, int y)
+        public static bool HasIndex<T>(this T[,,] source, Vector3Int position)
         {
-            int xLength = source.GetLength(0);
-            int yLength = source.GetLength(1);
-
-            return x >= 0 && x < xLength && y >= 0 && y < yLength;
+            return position.y >= 0 && position.y < source.GetLength(0) 
+                            && position.x >= 0 && position.x < source.GetLength(1) 
+                            && position.y >= 0 && position.y < source.GetLength(2);
         }
 
-        public static bool HasIndex<T>(this List<List<T>> source, int x, int y)
+        public static T ByGridV3int<T>(this T[,,] source, Vector3Int position)
         {
-            return x >= 0 && x < source.Count && y >= 0 && y < source[0].Count;
+            return source[position.y, position.x, position.z];
+        }
+
+        public static bool HasIndex<T>(this List<List<T>> source, int row, int column)
+        {
+            return row >= 0 && row < source.Count && column >= 0 && column < source[0].Count;
         }
 
         public static void DestroyAllChildren(this GameObject go)

@@ -17,8 +17,8 @@ namespace Scripts.Helpers
             VectorDirections = new[]
             {
                 // TODO: these will be used once Layout will be 3D
-                // Extensions.Vector3IntUp,
-                // Extensions.Vector3IntDown,
+                Extensions.Vector3IntUp,
+                Extensions.Vector3IntDown,
                 Extensions.Vector3IntNorth,
                 Extensions.Vector3IntEast,
                 Extensions.Vector3IntSouth,

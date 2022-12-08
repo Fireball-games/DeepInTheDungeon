@@ -142,10 +142,14 @@ namespace Scripts.UI.EditorUI
             NewMapDialog dialog = EditorUIManager.Instance.NewMapDialog;
             int rows = int.Parse(dialog.rowsInput.Text);
             int columns = int.Parse(dialog.columnsInput.Text);
+            // TODO: add this into new map dialog and get it from there!
+            int floors = 3;
             string mapName = dialog.mapNameInput.Text;
 
             MapDescription newMap = MapBuilder.GenerateDefaultMap(
-                Mathf.Max(rows, MapEditorManager.MinRows), Mathf.Max(columns, MapEditorManager.MinColumns));
+                Mathf.Max(rows, MapEditorManager.MinRows),
+                Mathf.Max(columns, MapEditorManager.MinColumns),
+                Mathf.Max(floors, MapEditorManager.MinFloors));
 
             newMap.MapName = string.IsNullOrEmpty(mapName) 
                 ? GetDefaultMapName()

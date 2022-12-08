@@ -4,7 +4,7 @@ using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System;
 using UnityEngine;
-using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
+using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 
 namespace Scripts.MapEditor
 {
@@ -92,30 +92,30 @@ namespace Scripts.MapEditor
         
         private void AddColumn()
         {
-            foreach (List<TileDescription> r in EditedLayout)
-            {
-                r.Add(null);
-            }
+            // foreach (List<TileDescription> r in EditedLayout)
+            // {
+            //     r.Add(null);
+            // }
         }
 
         private void InsertColumnToStart()
         {
-            foreach (List<TileDescription> r in EditedLayout)
-            {
-                r.Insert(0, null);
-            }
+            // foreach (List<TileDescription> r in EditedLayout)
+            // {
+            //     r.Insert(0, null);
+            // }
         }
 
         private void InsertRowToTop()
         {
-            EditedLayout.Insert(0, new List<TileDescription>());
+            // EditedLayout.Insert(0, new List<TileDescription>());
 
             PopulateRow(0);
         }
 
         private void AddRowToBottom()
         {
-            EditedLayout.Add(new List<TileDescription>());
+            // EditedLayout.Add(new List<TileDescription>());
 
             PopulateRow(EditedLayout.Count - 1);
         }
@@ -130,73 +130,81 @@ namespace Scripts.MapEditor
         
         internal void ProcessBuildClick()
         {
-            Vector3Int position = Mouse.MouseGridPosition;
-            
-            if (Mouse.LeftClickExpired) return;
-
-            Manager.MapIsChanged = true;
-            Manager.MapIsSaved = false;
-            
-            int row = position.x;
-            int column = position.z;
-            
-            if (!Manager.EditedLayout.HasIndex(row, column)) return;
-            
-            Enums.EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
-
-            AdjustEditedLayout(row, column, out int rowAdjustment, out int columnAdjustment, out bool wasLayoutAdjusted);
-
-            int adjustedRow = row + rowAdjustment;
-            int adjustedColumn = column + columnAdjustment;
-
-            EditedLayout[adjustedRow][adjustedColumn] = tileType == Enums.EGridPositionType.Null 
-                ? DefaultMapProvider.FullTile 
-                : null;
-            
-            MapDescription newMap = GameManager.Instance.CurrentMap;
-            TileDescription[,] newLayout = ConvertEditedLayoutToArray();
-            newMap.Layout = newLayout;
-            newMap.StartPosition = new Vector3Int(newMap.StartPosition.x + rowAdjustment, 0, newMap.StartPosition.z + columnAdjustment);
-            GameManager.Instance.SetCurrentMap(newMap);
-
-            Mouse.RefreshMousePosition();
-
-            if (!wasLayoutAdjusted)
-            {
-                MapBuilder.RebuildTile(adjustedRow, adjustedColumn);
-                MapBuilder.RegenerateTilesAround(adjustedRow, adjustedColumn);
-                return;
-            }
-            
-            Manager.OrderMapConstruction(newMap, mapIsPresented: true);
+            // Vector3Int position = Mouse.MouseGridPosition;
+            //
+            // if (Mouse.LeftClickExpired) return;
+            //
+            // Manager.MapIsChanged = true;
+            // Manager.MapIsSaved = false;
+            //
+            // int row = position.x;
+            // int column = position.z;
+            //
+            // if (!Manager.EditedLayout.HasIndex(row, column)) return;
+            //
+            // Enums.EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
+            //
+            // AdjustEditedLayout(row, column, out int rowAdjustment, out int columnAdjustment, out bool wasLayoutAdjusted);
+            //
+            // int adjustedRow = row + rowAdjustment;
+            // int adjustedColumn = column + columnAdjustment;
+            //
+            // EditedLayout[adjustedRow][adjustedColumn] = tileType == Enums.EGridPositionType.Null 
+            //     ? DefaultMapProvider.FullTile 
+            //     : null;
+            //
+            // MapDescription newMap = GameManager.Instance.CurrentMap;
+            // TileDescription[,,] newLayout = ConvertEditedLayoutToArray();
+            // newMap.Layout = newLayout;
+            // newMap.StartPosition = new Vector3Int(newMap.StartPosition.x + rowAdjustment, 0, newMap.StartPosition.z + columnAdjustment);
+            // GameManager.Instance.SetCurrentMap(newMap);
+            //
+            // Mouse.RefreshMousePosition();
+            //
+            // if (!wasLayoutAdjusted)
+            // {
+            //     MapBuilder.RebuildTile(adjustedRow, adjustedColumn);
+            //     MapBuilder.RegenerateTilesAround(adjustedRow, adjustedColumn);
+            //     return;
+            // }
+            //
+            // Manager.OrderMapConstruction(newMap, mapIsPresented: true);
         }
 
-        private TileDescription[,] ConvertEditedLayoutToArray()
+        private TileDescription[,,] ConvertEditedLayoutToArray()
         {
-            TileDescription[,] result = new TileDescription[EditedLayout.Count, EditedLayout[0].Count];
+            TileDescription[,,] result = new TileDescription[EditedLayout.Count, EditedLayout[0].Count, EditedLayout[0][0].Count];
 
             for (int x = 0; x < EditedLayout.Count; x++)
             {
                 for (int y = 0; y < EditedLayout[0].Count; y++)
                 {
-                    result[x, y] = EditedLayout[x][y];
+                    for (int z = 0; z < EditedLayout[0][0].Count; z++)
+                    {
+                        result[x, y, z] = EditedLayout[x][y][z];
+                    }
                 }
             }
 
             return result;
         }
 
-        public static LayoutType ConvertToLayoutType(TileDescription[,] layout)
+        public static LayoutType ConvertToLayoutType(TileDescription[,,] layout)
         {
             LayoutType result = new();
 
             for (int x = 0; x < layout.GetLength(0); x++)
             {
-                result.Add(new List<TileDescription>());
+                result.Add(new List<List<TileDescription>>());
 
                 for (int y = 0; y < layout.GetLength(1); y++)
                 {
-                    result[x].Add(layout[x, y]);
+                    result[x].Add(new List<TileDescription>());
+
+                    for (int z = 0; z < layout.GetLength(2); z++)
+                    {
+                        result[x][y].Add(layout[x, y, z]);
+                    }
                 }
             }
 

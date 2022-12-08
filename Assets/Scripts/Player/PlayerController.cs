@@ -29,7 +29,7 @@ namespace Scripts.Player
         public void SetPositionAndRotation(Vector3 position, Quaternion rotation)
         {
             Transform playerTransform = transform;
-            playerTransform.position = _targetGridPos = _prevTargetGridPos = position;
+            playerTransform.position = _targetGridPos = _prevTargetGridPos = new Vector3(position.x, 0 - position.y, position.z);
             playerTransform.rotation = rotation;
             _targetRotation = rotation.eulerAngles;
             _isStartPositionSet = true;
@@ -129,15 +129,19 @@ namespace Scripts.Player
                 yield return null;
             }
 
-            SetPositionAndRotation(_prevTargetGridPos, Quaternion.Euler(_targetRotation));
+            Vector3Int newPosition = Vector3Int.RoundToInt(transform.position);
+            newPosition.y = 0 - newPosition.y;
+            
+            SetPositionAndRotation(newPosition, Quaternion.Euler(_targetRotation));
             _isBashingIntoWall = false;
             _atRest = true;
         }
 
         private bool IsTargetPositionValid()
         {
-            Vector3Int intTargetPosition = Vector3Int.RoundToInt(_targetGridPos);
-            return GameManager.Instance.CurrentMap.Layout[intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
+            Vector3Int intTargetPosition = new((int)_targetGridPos.x, (int)-_targetGridPos.y, (int)_targetGridPos.z);
+            
+            return GameManager.Instance.CurrentMap.Layout[intTargetPosition.y,intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
         }
 
         public void SetCamera()

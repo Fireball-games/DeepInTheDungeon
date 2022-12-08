@@ -61,7 +61,7 @@ namespace Scripts.System
 
             _startLevelAfterBuildFinishes = true;
 
-            _currentMap ??= MapBuilder.GenerateDefaultMap(5, 5);
+            _currentMap ??= MapBuilder.GenerateDefaultMap(3, 5, 5);
             
             mapBuilder.BuildMap(_currentMap);
         }
@@ -84,6 +84,7 @@ namespace Scripts.System
             
             player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
+            player.transform.parent = null;
             player.SetPositionAndRotation(_currentMap.StartPosition.ToVector3(), CurrentMap.PlayerRotation);
             player.SetCamera();
             

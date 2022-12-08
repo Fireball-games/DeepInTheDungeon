@@ -13,9 +13,10 @@ namespace Scripts.Building
         {
         }
 
-        protected override void BuildNullTile(int row, int column)
+        protected override void BuildNullTile(int row, int column,int floor)
         {
             KeyVector.x = row;
+            KeyVector.y = floor;
             KeyVector.z = column;
 
             // Try to find what block is in PhysicalTiles on that location
@@ -36,16 +37,16 @@ namespace Scripts.Building
                 : GameObject.CreatePrimitive(PrimitiveType.Cube);
             
             cube.transform.parent = LayoutParent;
-            cube.transform.position = new Vector3(row, 0f, column);
+            cube.transform.position = new Vector3(row, 0 - floor, column);
             cube.transform.localScale = _tileScaleInEditor;
             cube.name = cube.name;
 
             PhysicalTiles.Add(cube.transform.position.ToVector3Int(), cube);
         }
 
-        protected override void BuildNormalTile(int row, int column, TileDescription tileDescription)
+        protected override void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription)
         {
-            base.BuildNormalTile(row, column, tileDescription);
+            base.BuildNormalTile(floor, row, column, tileDescription);
 
             LastBuiltTile.HideWall(TileDescription.ETileDirection.Ceiling);
             LastBuiltTile.transform.localScale = _tileScaleInEditor;

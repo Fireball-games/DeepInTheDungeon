@@ -8,7 +8,7 @@ using Scripts.UI.Components;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
-using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
+using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 
 namespace Scripts.MapEditor
 {
@@ -16,6 +16,7 @@ namespace Scripts.MapEditor
     {
         public const int MinRows = 5;
         public const int MinColumns = 5;
+        public const int MinFloors = 3;
         
         [SerializeField] private float cameraHeight = 10f;
         [SerializeField] private Camera sceneCamera;

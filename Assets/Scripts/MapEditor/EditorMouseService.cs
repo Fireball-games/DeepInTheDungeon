@@ -217,16 +217,16 @@ namespace Scripts.MapEditor
 
         private void OnMouseGridPositionChanged(Vector3Int newPosition)
         {
-            TileDescription[,] layout = GameManager.Instance.CurrentMap.Layout;
+            TileDescription[,,] layout = GameManager.Instance.CurrentMap.Layout;
 
-            if (!layout.HasIndex(newPosition.x, newPosition.z))
+            if (!layout.HasIndex(newPosition))
             {
                 Cursor.SetCursor(null, _defaultMouseHotspot, CursorMode.Auto);
                 GridPositionType = EGridPositionType.None;
                 return;
             }
 
-            bool isNullTile = layout[newPosition.x, newPosition.z] == null;
+            bool isNullTile = layout[newPosition.x, newPosition.y, newPosition.z] == null;
 
             GridPositionType = isNullTile ? EGridPositionType.Null : EGridPositionType.EditableTile;
 

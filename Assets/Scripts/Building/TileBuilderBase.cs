@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System.Pooling;
@@ -15,7 +16,7 @@ namespace Scripts.Building
         protected Dictionary<Vector3Int, GameObject> PhysicalTiles => _mapBuilder.PhysicalTiles;
         protected TileController LastBuiltTile;
         protected Vector3Int KeyVector;
-        private TileDescription[,] Layout => _mapBuilder.Layout;
+        private TileDescription[,,] Layout => _mapBuilder.Layout;
         private readonly MapBuilder _mapBuilder;
 
         protected TileBuilderBase(MapBuilder mapBuilder)
@@ -26,29 +27,30 @@ namespace Scripts.Building
             _tileDefaultPrefab = mapBuilder.defaultsProvider.defaultTilePrefab;
         }
 
-        public void BuildTile(int x, int y, TileDescription tileDescription = null)
+        public void BuildTile(int floor, int row, int column, TileDescription tileDescription = null)
         {
-            tileDescription ??= Layout[x, y];
+            tileDescription ??= Layout[floor, row, column];
             if(tileDescription == null)
             {
-                BuildNullTile(x, y);
+                BuildNullTile(floor, row, column);
             } 
             else
             {
-                BuildNormalTile(x, y, tileDescription);
+                BuildNormalTile(floor, row, column, tileDescription);
             }
         }
 
-        protected virtual void BuildNullTile(int row, int column)
+        protected virtual void BuildNullTile(int floor, int row, int column)
         {
         }
         
-        protected virtual void BuildNormalTile(int row, int column, TileDescription tileDescription)
+        protected virtual void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription)
         {
             KeyVector.x = row;
+            KeyVector.y = floor;
             KeyVector.z = column;
 
-            tileDescription ??= Layout[row, column];
+            tileDescription ??= Layout[floor, row, column];
 
             TileController newTile = null;
             // Try to find what block is in PhysicalTiles on that location
@@ -76,13 +78,20 @@ namespace Scripts.Building
 
             foreach (Vector3Int direction in TileDirections.VectorDirections)
             {
-                if (Layout[row+direction.x, column+direction.z] == null )
+                try
                 {
-                    newTile.ShowWall(TileDirections.WallDirectionByVector[direction]);
+                    if (Layout[floor+direction.y, row+direction.x, column+direction.z] == null )
+                    {
+                        newTile.ShowWall(TileDirections.WallDirectionByVector[direction]);
+                    }
+                    else
+                    {
+                        newTile.HideWall(TileDirections.WallDirectionByVector[direction]);
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    newTile.HideWall(TileDirections.WallDirectionByVector[direction]);
+                    int b = 2 - 3;
                 }
                 
                 WallDescription wall = tileDescription.GetWall(direction);
@@ -92,13 +101,13 @@ namespace Scripts.Building
                 // Means only material OR mesh name is set, which is an error
                 if (!string.IsNullOrEmpty(wall.MeshInfo.materialName) ^ !string.IsNullOrEmpty(wall.MeshInfo.meshName))
                 {
-                    Logger.LogError($"Tile at location: [{row}] [{column}] is missing either material or mesh for {direction}");
+                    Logger.LogError($"Tile at location: [{floor}] [{row}] [{column}] is missing either material or mesh for {direction}");
                 }
                 
                 // TODO: manage mesh and material via stored names
             }
             
-            tileTransform.position = new Vector3(row, 0f, column);
+            tileTransform.position = new Vector3(row, 0 - floor, column);
             PhysicalTiles.Add(tileTransform.position.ToVector3Int(), newTile.gameObject);
         }
     }

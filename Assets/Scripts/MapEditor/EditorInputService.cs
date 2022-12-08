@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
 
 namespace Scripts.MapEditor
 {

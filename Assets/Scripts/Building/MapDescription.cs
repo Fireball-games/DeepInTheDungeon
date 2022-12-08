@@ -11,7 +11,7 @@ namespace Scripts.Building
         public Vector3Int StartPosition;
         public Quaternion PlayerRotation;
         public string SceneName;
-        public TileDescription[,] Layout;
+        public TileDescription[,,] Layout;
         public string MapName = "DefaultMapName";
 
         public MapDescription()

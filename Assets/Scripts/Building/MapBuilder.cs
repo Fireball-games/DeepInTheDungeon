@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System;
@@ -22,7 +21,7 @@ namespace Scripts.Building
         public event Action OnLayoutBuilt;
 
         internal Transform LayoutParent;
-        internal TileDescription[,] Layout;
+        internal TileDescription[,,] Layout;
         internal Dictionary<Vector3Int, GameObject> PhysicalTiles;
 
         private void Awake()
@@ -42,29 +41,32 @@ namespace Scripts.Building
             StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
         }
 
-        public void SetLayout(TileDescription[,] layout) => Layout = layout;
+        public void SetLayout(TileDescription[,,] layout) => Layout = layout;
 
-        private IEnumerator BuildLayoutCoroutine(TileDescription[,] layout)
+        private IEnumerator BuildLayoutCoroutine(TileDescription[,,] layout)
         {
             Layout = layout;
             
             _playBuilder = new PlayModeBuilder(this);
             _editorBuilder = new EditorModeBuilder(this);
             
-            for (int x = 0; x < layout.GetLength(0); x++)
+            for (int floor = 0; floor < layout.GetLength(0); floor++)
             {
-                for (int y = 0; y < layout.GetLength(1); y++)
+                for (int row = 0; row < layout.GetLength(1); row++)
                 {
-                    if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
+                    for (int column = 0; column < layout.GetLength(2); column++)
                     {
-                        _playBuilder.BuildTile( x, y);
-                    }
-                    else
-                    {
-                        _editorBuilder.BuildTile(x, y);
-                    }
+                        if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
+                        {
+                            _playBuilder.BuildTile(floor, row, column);
+                        }
+                        else
+                        {
+                            _editorBuilder.BuildTile(floor, row, column);
+                        }
                     
-                    yield return null;
+                        yield return null;
+                    }
                 }
             }
 
@@ -86,35 +88,37 @@ namespace Scripts.Building
         /// </summary>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        public void RebuildTile(int row, int column)
+        /// <param name="floor"></param>
+        public void RebuildTile(int floor, int row, int column)
         {
             if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
             {
-                _playBuilder.BuildTile( row, column);
+                _playBuilder.BuildTile( floor, row, column);
             }
             else
             {
-                _editorBuilder.BuildTile(row, column);
+                _editorBuilder.BuildTile(floor, row, column);
             }
         }
 
-        public void RegenerateTilesAround(int row, int column)
+        public void RegenerateTilesAround(int floor, int row, int column)
         {
             foreach (Vector3Int direction in TileDirections.VectorDirections)
             {
-                if (Layout[row + direction.x,column + direction.z] != null)
+                if (Layout[floor + direction.y, row + direction.x, column + direction.z] != null)
                 {
-                    RegenerateTile(row + direction.x, column + direction.z);
+                    RegenerateTile(floor + direction.y, row + direction.x, column + direction.z);
                 }
             }
         }
-        
+
         /// <summary>
         /// Works over physical tile, shows or hides walls after assumed changed layout. 
         /// </summary>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        private void RegenerateTile(int row, int column)
+        /// <param name="floor"></param>
+        private void RegenerateTile(int floor, int row, int column)
         {
             Vector3Int key = new (row, 0, column);
             TileController tileController = PhysicalTiles[key].GetComponent<TileController>();
@@ -127,18 +131,18 @@ namespace Scripts.Building
             
             foreach (Vector3Int direction in TileDirections.VectorDirections)
             {
-                if (Layout[row + direction.x,column + direction.z] == null)
+                if (Layout[row + direction.x, floor + direction.y, column + direction.z] == null)
                     tileController.ShowWall(TileDirections.WallDirectionByVector[direction]);
                 else
                     tileController.HideWall(TileDirections.WallDirectionByVector[direction]);
             }
         }
 
-        public static MapDescription GenerateDefaultMap(int rows, int columns)
+        public static MapDescription GenerateDefaultMap(int floors, int rows, int columns)
         {
-            TileDescription[,] layout = new TileDescription[rows, columns];
+            TileDescription[,,] layout = new TileDescription[floors, rows, columns];
 
-            Vector3Int center = new(rows / 2, 0, columns / 2);
+            Vector3Int center = new(rows / 2, floors / 2, columns / 2);
 
             layout = AddTilesToCenterOfLayout(layout);
 
@@ -149,19 +153,19 @@ namespace Scripts.Building
             };
         }
 
-        private static TileDescription[,] AddTilesToCenterOfLayout(TileDescription[,] layout)
+        private static TileDescription[,,] AddTilesToCenterOfLayout(TileDescription[,,] layout)
         {
             Vector2Int center = new(layout.GetLength(0) / 2, layout.GetLength(1) / 2);
 
-            layout[center.x - 1, center.y - 1] = DefaultMapProvider.FullTile;
-            layout[center.x - 1, center.y] = DefaultMapProvider.FullTile;
-            layout[center.x - 1, center.y + 1] = DefaultMapProvider.FullTile;
-            layout[center.x , center.y - 1] = DefaultMapProvider.FullTile;
-            layout[center.x, center.y] = DefaultMapProvider.FullTile;
-            layout[center.x, center.y + 1] = DefaultMapProvider.FullTile;
-            layout[center.x + 1, center.y - 1] = DefaultMapProvider.FullTile;
-            layout[center.x + 1, center.y] = DefaultMapProvider.FullTile;
-            layout[center.x + 1, center.y + 1] = DefaultMapProvider.FullTile;
+            layout[1, center.x - 1, center.y - 1] = DefaultMapProvider.FullTile;
+            layout[1, center.x - 1, center.y] = DefaultMapProvider.FullTile;
+            layout[1, center.x - 1, center.y + 1] = DefaultMapProvider.FullTile;
+            layout[1, center.x , center.y - 1] = DefaultMapProvider.FullTile;
+            layout[1, center.x, center.y] = DefaultMapProvider.FullTile;
+            layout[1, center.x, center.y + 1] = DefaultMapProvider.FullTile;
+            layout[1, center.x + 1, center.y - 1] = DefaultMapProvider.FullTile;
+            layout[1, center.x + 1, center.y] = DefaultMapProvider.FullTile;
+            layout[1, center.x + 1, center.y + 1] = DefaultMapProvider.FullTile;
 
             return layout;
         }

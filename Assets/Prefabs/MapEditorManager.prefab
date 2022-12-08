@@ -65,7 +65,8 @@ MonoBehaviour:
   demolishCursor: {fileID: 2800000, guid: e111f1408c7d37542a33cf4d9749a1db, type: 3}
   moveCameraCursor: {fileID: 2800000, guid: 6a46ef255a74f544e9ffc49af1106cc5, type: 3}
   maxValidClickTime: 0.1
-  cameraScrollSpeed: 100
+  cameraPanSpeed: 100
+  cameraZoomSpeed: 1500
   cameraHolder: {fileID: 0}
 --- !u!114 &8119083429710413764
 MonoBehaviour:

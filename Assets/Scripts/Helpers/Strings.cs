@@ -7,5 +7,6 @@
         public const string MainCamera = "MainCamera";
         public const string MouseXAxis = "Mouse X";
         public const string MouseYAxis = "Mouse Y";
+        public const string MouseWheel = "Mouse ScrollWheel";
     }
 }

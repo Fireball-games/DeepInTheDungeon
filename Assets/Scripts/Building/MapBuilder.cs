@@ -155,17 +155,18 @@ namespace Scripts.Building
 
         private static TileDescription[,,] AddTilesToCenterOfLayout(TileDescription[,,] layout)
         {
-            Vector2Int center = new(layout.GetLength(0) / 2, layout.GetLength(1) / 2);
+            Vector2Int center = new(layout.GetLength(1) / 2, layout.GetLength(2) / 2);
+            int floor = layout.GetLength(0) / 2;
 
-            layout[1, center.x - 1, center.y - 1] = DefaultMapProvider.FullTile;
-            layout[1, center.x - 1, center.y] = DefaultMapProvider.FullTile;
-            layout[1, center.x - 1, center.y + 1] = DefaultMapProvider.FullTile;
-            layout[1, center.x , center.y - 1] = DefaultMapProvider.FullTile;
-            layout[1, center.x, center.y] = DefaultMapProvider.FullTile;
-            layout[1, center.x, center.y + 1] = DefaultMapProvider.FullTile;
-            layout[1, center.x + 1, center.y - 1] = DefaultMapProvider.FullTile;
-            layout[1, center.x + 1, center.y] = DefaultMapProvider.FullTile;
-            layout[1, center.x + 1, center.y + 1] = DefaultMapProvider.FullTile;
+            layout[floor, center.x - 1, center.y - 1] = DefaultMapProvider.FullTile;
+            layout[floor, center.x - 1, center.y + 1] = DefaultMapProvider.FullTile;
+            layout[floor, center.x - 1, center.y] = DefaultMapProvider.FullTile;
+            layout[floor, center.x , center.y - 1] = DefaultMapProvider.FullTile;
+            layout[floor, center.x, center.y] = DefaultMapProvider.FullTile;
+            layout[floor, center.x, center.y + 1] = DefaultMapProvider.FullTile;
+            layout[floor, center.x + 1, center.y - 1] = DefaultMapProvider.FullTile;
+            layout[floor, center.x + 1, center.y] = DefaultMapProvider.FullTile;
+            layout[floor, center.x + 1, center.y + 1] = DefaultMapProvider.FullTile;
 
             return layout;
         }

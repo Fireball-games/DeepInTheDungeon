@@ -46,6 +46,7 @@ namespace Scripts.Building
         
         protected virtual void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription)
         {
+            // Physical position
             KeyVector.x = row;
             KeyVector.y = floor;
             KeyVector.z = column;
@@ -78,20 +79,13 @@ namespace Scripts.Building
 
             foreach (Vector3Int direction in TileDirections.VectorDirections)
             {
-                try
+                if (Layout[floor+direction.y, row+direction.x, column+direction.z] == null )
                 {
-                    if (Layout[floor+direction.y, row+direction.x, column+direction.z] == null )
-                    {
-                        newTile.ShowWall(TileDirections.WallDirectionByVector[direction]);
-                    }
-                    else
-                    {
-                        newTile.HideWall(TileDirections.WallDirectionByVector[direction]);
-                    }
+                    newTile.ShowWall(TileDirections.WallDirectionByVector[direction]);
                 }
-                catch (Exception e)
+                else
                 {
-                    int b = 2 - 3;
+                    newTile.HideWall(TileDirections.WallDirectionByVector[direction]);
                 }
                 
                 WallDescription wall = tileDescription.GetWall(direction);

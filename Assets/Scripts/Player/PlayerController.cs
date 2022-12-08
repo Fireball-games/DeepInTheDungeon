@@ -139,7 +139,8 @@ namespace Scripts.Player
 
         private bool IsTargetPositionValid()
         {
-            Vector3Int intTargetPosition = new((int)_targetGridPos.x, (int)-_targetGridPos.y, (int)_targetGridPos.z);
+            Vector3Int intTargetPosition = Vector3Int.RoundToInt(_targetGridPos);
+            intTargetPosition.y = -intTargetPosition.y;
             
             return GameManager.Instance.CurrentMap.Layout[intTargetPosition.y,intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
         }

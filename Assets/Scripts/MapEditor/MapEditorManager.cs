@@ -146,10 +146,11 @@ namespace Scripts.MapEditor
             MapIsPresented = true;
 
             SetWorkMode(EWorkMode.Build);
+
+            MapDescription map = GameManager.Instance.CurrentMap;
             
-            playerIcon.SetPositionByGrid(GameManager.Instance.CurrentMap.StartGridPosition);
-            // TODO: rotate by data from CurrentMap when implemented
-            playerIcon.SetArrowRotation(Vector3.zero);
+            playerIcon.SetPositionByGrid(map.StartGridPosition);
+            playerIcon.SetArrowRotation(map.PlayerRotation);
             playerIcon.SetActive(true);
         }
     }

@@ -1,10 +1,10 @@
 ﻿using Scripts.Building.Tile;
-using UnityEngine;
 
 namespace Scripts.Building
 {
     public static class DefaultMapProvider
     {
+        // ReSharper disable once UnusedMember.Global - left just for a demonstration purposes how looks basic map
         public static TileDescription[,,] Layout => new[,,]
         {
             {
@@ -16,9 +16,9 @@ namespace Scripts.Building
             },
             {
                 {null, null, null, null, null, null},
-                {null, fullTile, fullTile, fullTile, fullTile, null},
-                {null, fullTile, fullTile, fullTile, fullTile, null},
-                {null, fullTile, fullTile, fullTile, fullTile, null},
+                {null, FullTile, FullTile, FullTile, FullTile, null},
+                {null, FullTile, FullTile, FullTile, FullTile, null},
+                {null, FullTile, FullTile, FullTile, FullTile, null},
                 {null, null, null, null, null, null}
             },
             {
@@ -30,11 +30,7 @@ namespace Scripts.Building
             }
         };
 
-        public static TileDescription FullTile => fullTile;
-
-        public static Vector3Int StartPosition => new(2, 1, 2);
-
-        private static readonly TileDescription fullTile = new()
+        public static TileDescription FullTile { get; } = new()
         {
             IsForMovement = true,
             Walls = new Walls

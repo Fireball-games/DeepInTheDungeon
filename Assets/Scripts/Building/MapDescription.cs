@@ -20,7 +20,7 @@ namespace Scripts.Building
         public MapDescription()
         {
             
-            StartGridPosition = DefaultMapProvider.StartPosition;
+            StartGridPosition = Vector3Int.zero;
             PlayerRotation = Quaternion.identity;
             SceneName = Scenes.PlayIndoorSceneName;
         }

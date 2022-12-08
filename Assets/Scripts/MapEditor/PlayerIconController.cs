@@ -14,10 +14,13 @@ namespace Scripts.MapEditor
             gridPosition.y = -gridPosition.y;
             gameObject.transform.position = gridPosition;
         }
+        
+        public void SetArrowRotation(Quaternion rotation) => SetArrowRotation(rotation.eulerAngles);
 
-        public void SetArrowRotation(Vector3 rotation)
+        private void SetArrowRotation(Vector3 rotation)
         {
-            Vector3 arrowRotation = new(0f, 0f, rotation.y);
+            Vector3 arrowRotation = arrow.transform.localRotation.eulerAngles;
+            arrowRotation.z = rotation.y - 90;
             arrow.transform.localRotation = Quaternion.Euler(arrowRotation);
         }
 

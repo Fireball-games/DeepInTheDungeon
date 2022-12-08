@@ -58,12 +58,16 @@ namespace Scripts.MapEditor
             base.Awake();
 
             _buildService = new MapBuildService();
-
-            _layerPlane = new Plane(Vector3.up, new Vector3(0f, 0.5f, 0f));
+            
             _lastGridPosition = new Vector3Int(-1000, -1000, -1000);
 
             _demolishMouseHotspot = new Vector2(demolishCursor.width / 2, demolishCursor.height / 2);
             _moveCameraMouseHotspot = new Vector2(moveCameraCursor.width / 2, moveCameraCursor.height / 2);
+        }
+
+        private void OnEnable()
+        {
+            EditorEvents.OnNewMapCreated += OnNewMapCreated;
         }
 
         private void Update()
@@ -80,6 +84,17 @@ namespace Scripts.MapEditor
             HandleMouseWheel();
             SetGridPosition();
             HandleMouseMovement();
+        }
+
+        private void OnDisable()
+        {
+            EditorEvents.OnNewMapCreated -= OnNewMapCreated;
+        }
+
+        private void OnNewMapCreated()
+        {
+            _layerPlane = _layerPlane = new Plane(Vector3.up, 
+                new Vector3(0f, 0.5f - GameManager.Instance.CurrentMap.StartGridPosition.x, 0f));
         }
 
         private void TranslateCameraHorizontal(float x, float z) => TranslateCamera(x, 0, z);
@@ -190,9 +205,11 @@ namespace Scripts.MapEditor
         {
             if (IsManipulatingCameraPosition) return;
 
-            if (!GetMousePlanePosition(out Vector3 position)) return;
+            if (!GetMousePlanePosition(out Vector3 worldPosition)) return;
 
-            Vector3Int newGridPosition = position.ToVector3Int();
+            Vector3Int newGridPosition = Vector3Int.RoundToInt(worldPosition);
+            newGridPosition.y = newGridPosition.x;
+            newGridPosition.x = -Manager.CurrentFloor;
 
             if (!newGridPosition.Equals(_lastGridPosition))
             {
@@ -215,18 +232,18 @@ namespace Scripts.MapEditor
             return false;
         }
 
-        private void OnMouseGridPositionChanged(Vector3Int newPosition)
+        private void OnMouseGridPositionChanged(Vector3Int newGridPosition)
         {
             TileDescription[,,] layout = GameManager.Instance.CurrentMap.Layout;
 
-            if (!layout.HasIndex(newPosition))
+            if (!layout.HasIndex(newGridPosition))
             {
                 Cursor.SetCursor(null, _defaultMouseHotspot, CursorMode.Auto);
                 GridPositionType = EGridPositionType.None;
                 return;
             }
 
-            bool isNullTile = layout[newPosition.x, newPosition.y, newPosition.z] == null;
+            bool isNullTile = layout[newGridPosition.x, newGridPosition.y, newGridPosition.z] == null;
 
             GridPositionType = isNullTile ? EGridPositionType.Null : EGridPositionType.EditableTile;
 

@@ -30,9 +30,9 @@ namespace Scripts.Building
             }
         };
 
-    public static TileDescription FullTile => fullTile;
+        public static TileDescription FullTile => fullTile;
 
-        public static Vector3Int StartPosition => new(2, 0, 2);
+        public static Vector3Int StartPosition => new(2, 1, 2);
 
         private static readonly TileDescription fullTile = new()
         {

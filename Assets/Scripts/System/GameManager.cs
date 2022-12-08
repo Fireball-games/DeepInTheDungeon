@@ -85,7 +85,7 @@ namespace Scripts.System
             player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
             player.transform.parent = null;
-            player.SetPositionAndRotation(_currentMap.StartPosition.ToVector3(), CurrentMap.PlayerRotation);
+            player.SetPositionAndRotation(_currentMap.StartGridPosition.ToVector3(), CurrentMap.PlayerRotation);
             player.SetCamera();
             
             _movementEnabled = true;

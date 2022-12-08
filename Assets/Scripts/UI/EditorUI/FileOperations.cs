@@ -147,9 +147,9 @@ namespace Scripts.UI.EditorUI
             string mapName = dialog.mapNameInput.Text;
 
             MapDescription newMap = MapBuilder.GenerateDefaultMap(
+                Mathf.Max(floors, MapEditorManager.MinFloors),
                 Mathf.Max(rows, MapEditorManager.MinRows),
-                Mathf.Max(columns, MapEditorManager.MinColumns),
-                Mathf.Max(floors, MapEditorManager.MinFloors));
+                Mathf.Max(columns, MapEditorManager.MinColumns));
 
             newMap.MapName = string.IsNullOrEmpty(mapName) 
                 ? GetDefaultMapName()

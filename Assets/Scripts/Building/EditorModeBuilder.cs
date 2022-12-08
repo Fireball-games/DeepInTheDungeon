@@ -13,7 +13,7 @@ namespace Scripts.Building
         {
         }
 
-        protected override void BuildNullTile(int row, int column,int floor)
+        protected override void BuildNullTile(int floor, int row,int column)
         {
             KeyVector.x = row;
             KeyVector.y = floor;
@@ -39,7 +39,11 @@ namespace Scripts.Building
             cube.transform.parent = LayoutParent;
             cube.transform.position = new Vector3(row, 0 - floor, column);
             cube.transform.localScale = _tileScaleInEditor;
-            cube.name = cube.name;
+            
+            if (floor != MapBuilder.MapDescription.StartGridPosition.x)
+            {
+                cube.SetActive(false);
+            }
 
             PhysicalTiles.Add(cube.transform.position.ToVector3Int(), cube);
         }
@@ -50,6 +54,11 @@ namespace Scripts.Building
 
             LastBuiltTile.HideWall(TileDescription.ETileDirection.Ceiling);
             LastBuiltTile.transform.localScale = _tileScaleInEditor;
+
+            if (floor != MapBuilder.MapDescription.StartGridPosition.x)
+            {
+                LastBuiltTile.gameObject.SetActive(false);
+            }
         }
     }
 }

@@ -13,15 +13,15 @@ namespace Scripts.Building
         protected readonly Transform LayoutParent;
         protected readonly DefaultBuildPartsProvider DefaultsProvider;
         private readonly GameObject _tileDefaultPrefab;
-        protected Dictionary<Vector3Int, GameObject> PhysicalTiles => _mapBuilder.PhysicalTiles;
+        protected Dictionary<Vector3Int, GameObject> PhysicalTiles => MapBuilder.PhysicalTiles;
         protected TileController LastBuiltTile;
         protected Vector3Int KeyVector;
-        private TileDescription[,,] Layout => _mapBuilder.Layout;
-        private readonly MapBuilder _mapBuilder;
+        protected readonly MapBuilder MapBuilder;
+        private TileDescription[,,] Layout => MapBuilder.Layout;
 
         protected TileBuilderBase(MapBuilder mapBuilder)
         {
-            _mapBuilder = mapBuilder;
+            MapBuilder = mapBuilder;
             LayoutParent = mapBuilder.LayoutParent;
             DefaultsProvider = mapBuilder.defaultsProvider;
             _tileDefaultPrefab = mapBuilder.defaultsProvider.defaultTilePrefab;

@@ -193,17 +193,17 @@ namespace Scripts.MapEditor
         {
             LayoutType result = new();
 
-            for (int x = 0; x < layout.GetLength(0); x++)
+            for (int floor = 0; floor < layout.GetLength(0); floor++)
             {
                 result.Add(new List<List<TileDescription>>());
 
-                for (int y = 0; y < layout.GetLength(1); y++)
+                for (int row = 0; row < layout.GetLength(1); row++)
                 {
-                    result[x].Add(new List<TileDescription>());
+                    result[floor].Add(new List<TileDescription>());
 
-                    for (int z = 0; z < layout.GetLength(2); z++)
+                    for (int column = 0; column < layout.GetLength(2); column++)
                     {
-                        result[x][y].Add(layout[x, y, z]);
+                        result[floor][row].Add(layout[floor, row, column]);
                     }
                 }
             }

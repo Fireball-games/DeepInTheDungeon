@@ -51,16 +51,28 @@ namespace Scripts.Helpers
             return _v3i;
         }
 
-        public static bool HasIndex<T>(this T[,,] source, Vector3Int position)
+        public static bool HasIndex<T>(this T[,,] source, Vector3Int gridPosition)
         {
-            return position.y >= 0 && position.y < source.GetLength(0) 
-                            && position.x >= 0 && position.x < source.GetLength(1) 
-                            && position.y >= 0 && position.y < source.GetLength(2);
+            return gridPosition.x >= 0 && gridPosition.x < source.GetLength(0) 
+                            && gridPosition.y >= 0 && gridPosition.y < source.GetLength(1) 
+                            && gridPosition.z >= 0 && gridPosition.z < source.GetLength(2);
         }
 
         public static T ByGridV3int<T>(this T[,,] source, Vector3Int position)
         {
             return source[position.y, position.x, position.z];
+        }
+
+        public static Vector3 SwapXY(this Vector3 source)
+        {
+            (source.y, source.x) = (source.x, source.y); // Swapping via deconstruction, noice
+            return source;
+        }
+        
+        public static Vector3Int SwapXY(this Vector3Int source)
+        {
+            (source.y, source.x) = (source.x, source.y);
+            return source;
         }
 
         public static bool HasIndex<T>(this List<List<T>> source, int row, int column)

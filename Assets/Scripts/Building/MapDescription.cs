@@ -8,7 +8,10 @@ namespace Scripts.Building
 {
     public class MapDescription
     {
-        public Vector3Int StartPosition;
+        /// <summary>
+        /// Position according to Layout array
+        /// </summary>
+        public Vector3Int StartGridPosition;
         public Quaternion PlayerRotation;
         public string SceneName;
         public TileDescription[,,] Layout;
@@ -16,7 +19,8 @@ namespace Scripts.Building
 
         public MapDescription()
         {
-            StartPosition = DefaultMapProvider.StartPosition;
+            
+            StartGridPosition = DefaultMapProvider.StartPosition;
             PlayerRotation = Quaternion.identity;
             SceneName = Scenes.PlayIndoorSceneName;
         }

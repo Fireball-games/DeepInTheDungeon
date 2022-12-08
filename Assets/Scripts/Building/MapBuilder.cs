@@ -23,6 +23,7 @@ namespace Scripts.Building
         internal Transform LayoutParent;
         internal TileDescription[,,] Layout;
         internal Dictionary<Vector3Int, GameObject> PhysicalTiles;
+        internal MapDescription MapDescription;
 
         private void Awake()
         {
@@ -38,6 +39,9 @@ namespace Scripts.Building
         public void BuildMap(MapDescription mapDescription)
         {
             DemolishMap();
+
+            MapDescription = mapDescription;
+            
             StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
         }
 
@@ -142,14 +146,14 @@ namespace Scripts.Building
         {
             TileDescription[,,] layout = new TileDescription[floors, rows, columns];
 
-            Vector3Int center = new(rows / 2, floors / 2, columns / 2);
+            Vector3Int center = new(floors / 2, rows / 2, columns / 2);
 
             layout = AddTilesToCenterOfLayout(layout);
 
             return new MapDescription
             {
                 Layout = layout,
-                StartPosition = center,
+                StartGridPosition = center,
             };
         }
 

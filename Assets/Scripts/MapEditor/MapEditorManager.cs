@@ -29,6 +29,7 @@ namespace Scripts.MapEditor
         public static bool MapIsBeingBuilt { get; private set; }
         public LayoutType EditedLayout { get; private set; }
         public MapBuilder MapBuilder { get; private set; }
+        public int CurrentFloor { get; private set; }
 
         private EWorkMode _workMode;
         
@@ -61,6 +62,7 @@ namespace Scripts.MapEditor
             MapIsSaved = markMapAsSaved;
             
             EditedLayout = MapBuildService.ConvertToLayoutType(map.Layout);
+            CurrentFloor = -map.StartGridPosition.x;
 
             GameManager.Instance.SetCurrentMap(map);
 
@@ -133,7 +135,7 @@ namespace Scripts.MapEditor
 
         private void OnLayoutBuilt()
         {
-            Vector3 startPosition = GameManager.Instance.CurrentMap.StartPosition;
+            Vector3 startPosition = GameManager.Instance.CurrentMap.StartGridPosition;
             
             if (!MapIsPresented)
             {
@@ -145,7 +147,7 @@ namespace Scripts.MapEditor
 
             SetWorkMode(EWorkMode.Build);
             
-            playerIcon.transform.position = GameManager.Instance.CurrentMap.StartPosition;
+            playerIcon.SetPositionByGrid(GameManager.Instance.CurrentMap.StartGridPosition);
             // TODO: rotate by data from CurrentMap when implemented
             playerIcon.SetArrowRotation(Vector3.zero);
             playerIcon.SetActive(true);

@@ -1,3 +1,4 @@
+using System;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -23,6 +24,7 @@ namespace Scripts.MapEditor
         public bool LeftClickExpired { get; private set; }
         public bool RightClickExpired { get; private set; }
 
+        private MapBuildService _buildService;
         private Plane _layerPlane;
         private Vector3Int _lastGridPosition;
         private readonly Vector2 _defaultMouseHotspot = Vector2.zero;
@@ -54,6 +56,8 @@ namespace Scripts.MapEditor
         {
             base.Awake();
 
+            _buildService = new MapBuildService();
+            
             _layerPlane = new Plane(Vector3.up, new Vector3(0f, 0.5f, 0f));
             _lastGridPosition = new Vector3Int(-1000, -1000, -1000);
 
@@ -64,7 +68,14 @@ namespace Scripts.MapEditor
         private void Update()
         {
             if (!Manager.MapIsPresented || EventSystem.current.IsPointerOverGameObject()) return;
+            
             ValidateClicks();
+
+            if (!LeftClickExpired && Input.GetMouseButtonUp(0))
+            {
+                ProcessMouseButtonUp(0);
+            }
+            
             SetGridPosition();
             HandleMouseMovement();
         }
@@ -111,6 +122,26 @@ namespace Scripts.MapEditor
             if (!RightClickExpired && currentTime - _lastRightClickTime > maxValidClickTime)
             {
                 RightClickExpired = true;
+            }
+        }
+        
+        private void ProcessMouseButtonUp(int mouseButtonUpped)
+        {
+            switch (Manager.WorkMode)
+            {
+                case EWorkMode.None:
+                    break;
+                case EWorkMode.Build:
+                    if (mouseButtonUpped == 0)
+                    {
+                        _buildService.ProcessBuildClick();
+                    }
+
+                    break;
+                case EWorkMode.Select:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

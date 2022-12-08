@@ -4,7 +4,8 @@ using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System;
 using UnityEngine;
-using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using LayoutType =
+    System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 
 namespace Scripts.MapEditor
 {
@@ -16,21 +17,25 @@ namespace Scripts.MapEditor
         private static EditorMouseService Mouse => EditorMouseService.Instance;
 
         internal MapBuildService()
-        {}
-
-        private void AdjustEditedLayout(int row, int column, out int adjustedX, out int adjustedY, out bool wasAdjusted)
         {
-            int rowAdjustment = 0;
-            int columnAdjustment = 0;
-            int rowCount = EditedLayout.Count;
-            int columnCount = EditedLayout[0].Count;
+        }
+
+        private void AdjustEditedLayout(int floor, int row, int column,
+            out int floorAdjustment, out int rowAdjustment, out int columnAdjustment, out bool wasAdjusted)
+        {
+            floorAdjustment = 0;
+            rowAdjustment = 0;
+            columnAdjustment = 0;
+            int floorCount = EditedLayout.Count;
+            int rowCount = EditedLayout[0].Count;
+            int columnCount = EditedLayout[0][0].Count;
             wasAdjusted = false;
-            
+
             // NW corner
             if (row == 0 && column == 0)
             {
                 InsertColumnToStart();
-                InsertRowToTop();
+                InsertRowToBack();
 
                 rowAdjustment += 1;
                 columnAdjustment += 1;
@@ -40,7 +45,7 @@ namespace Scripts.MapEditor
             else if (row == 0 && column == columnCount - 1)
             {
                 AddColumn();
-                InsertRowToTop();
+                InsertRowToBack();
 
                 rowAdjustment += 1;
                 wasAdjusted = true;
@@ -49,7 +54,7 @@ namespace Scripts.MapEditor
             else if (row == rowCount - 1 && column == 0)
             {
                 InsertColumnToStart();
-                AddRowToBottom();
+                AddRowToFront();
 
                 columnAdjustment += 1;
                 wasAdjusted = true;
@@ -58,12 +63,12 @@ namespace Scripts.MapEditor
             else if (row == rowCount - 1 && column == columnCount - 1)
             {
                 AddColumn();
-                AddRowToBottom();
+                AddRowToFront();
                 wasAdjusted = true;
             }
             else if (row == 0)
             {
-                InsertRowToTop();
+                InsertRowToBack();
 
                 rowAdjustment += 1;
                 wasAdjusted = true;
@@ -77,7 +82,7 @@ namespace Scripts.MapEditor
             }
             else if (row == rowCount - 1)
             {
-                AddRowToBottom();
+                AddRowToFront();
                 wasAdjusted = true;
             }
             else if (column == columnCount - 1)
@@ -85,90 +90,146 @@ namespace Scripts.MapEditor
                 AddColumn();
                 wasAdjusted = true;
             }
-            
-            adjustedX = rowAdjustment;
-            adjustedY = columnAdjustment;
+            else if (floor == 0)
+            {
+                InsertFloorToTop();
+                floorAdjustment += 1;
+                wasAdjusted = true;
+            }
+            else if (floor == floorCount - 1)
+            {
+                AddFloorToBottom();
+                wasAdjusted = true;
+            }
         }
-        
+
         private void AddColumn()
         {
-            // foreach (List<TileDescription> r in EditedLayout)
-            // {
-            //     r.Add(null);
-            // }
+            foreach (List<List<TileDescription>> floor in EditedLayout)
+            {
+                foreach (List<TileDescription> row in floor)
+                {
+                    row.Add(null);
+                }
+            }
         }
 
         private void InsertColumnToStart()
         {
-            // foreach (List<TileDescription> r in EditedLayout)
-            // {
-            //     r.Insert(0, null);
-            // }
-        }
-
-        private void InsertRowToTop()
-        {
-            // EditedLayout.Insert(0, new List<TileDescription>());
-
-            PopulateRow(0);
-        }
-
-        private void AddRowToBottom()
-        {
-            // EditedLayout.Add(new List<TileDescription>());
-
-            PopulateRow(EditedLayout.Count - 1);
-        }
-
-        private void PopulateRow(int index)
-        {
-            for (int i = 0; i < EditedLayout[1].Count; i++)
+            foreach (List<List<TileDescription>> floor in EditedLayout)
             {
-                EditedLayout[index].Add(null);
+                foreach (List<TileDescription> row in floor)
+                {
+                    row.Insert(0, null);
+                }
             }
         }
-        
+
+        private void InsertRowToBack()
+        {
+            foreach (List<List<TileDescription>> floor in EditedLayout)
+            {
+                floor.Insert(0, new List<TileDescription>());
+            }
+
+            PopulateRows(0);
+        }
+
+        private void AddRowToFront()
+        {
+            foreach (List<List<TileDescription>> floor in EditedLayout)
+            {
+                floor.Add(new List<TileDescription>());
+            }
+
+            PopulateRows(EditedLayout[0].Count - 1);
+        }
+
+        private void InsertFloorToTop()
+        {
+            EditedLayout.Add( new List<List<TileDescription>>());
+
+            foreach (List<TileDescription> row in EditedLayout[0])
+            {
+                for (int index = 0; index < row.Count; index++)
+                {
+                    row.Add(null);
+                }
+            }
+        }
+
+        private void AddFloorToBottom()
+        {
+            EditedLayout.Insert(0, new List<List<TileDescription>>());
+
+            foreach (List<TileDescription> row in EditedLayout[^1])
+            {
+                for (int index = 0; index < row.Count; index++)
+                {
+                    row.Add(null);
+                }
+            }
+        }
+
+        private void PopulateRows(int index)
+        {
+            foreach (List<List<TileDescription>> floor in EditedLayout)
+            {
+                for (int row = 0; row < floor[0].Count; row++)
+                {
+                    floor[index].Add(null);
+                }
+            }
+        }
+
         internal void ProcessBuildClick()
         {
-            // Vector3Int position = Mouse.MouseGridPosition;
-            //
-            // if (Mouse.LeftClickExpired) return;
-            //
-            // Manager.MapIsChanged = true;
-            // Manager.MapIsSaved = false;
-            //
-            // int row = position.x;
-            // int column = position.z;
-            //
-            // if (!Manager.EditedLayout.HasIndex(row, column)) return;
-            //
-            // Enums.EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
-            //
-            // AdjustEditedLayout(row, column, out int rowAdjustment, out int columnAdjustment, out bool wasLayoutAdjusted);
-            //
-            // int adjustedRow = row + rowAdjustment;
-            // int adjustedColumn = column + columnAdjustment;
-            //
-            // EditedLayout[adjustedRow][adjustedColumn] = tileType == Enums.EGridPositionType.Null 
-            //     ? DefaultMapProvider.FullTile 
-            //     : null;
-            //
-            // MapDescription newMap = GameManager.Instance.CurrentMap;
-            // TileDescription[,,] newLayout = ConvertEditedLayoutToArray();
-            // newMap.Layout = newLayout;
-            // newMap.StartPosition = new Vector3Int(newMap.StartPosition.x + rowAdjustment, 0, newMap.StartPosition.z + columnAdjustment);
-            // GameManager.Instance.SetCurrentMap(newMap);
-            //
-            // Mouse.RefreshMousePosition();
-            //
-            // if (!wasLayoutAdjusted)
-            // {
-            //     MapBuilder.RebuildTile(adjustedRow, adjustedColumn);
-            //     MapBuilder.RegenerateTilesAround(adjustedRow, adjustedColumn);
-            //     return;
-            // }
-            //
-            // Manager.OrderMapConstruction(newMap, mapIsPresented: true);
+            Vector3Int position = Mouse.MouseGridPosition;
+            
+            if (Mouse.LeftClickExpired) return;
+            
+            Manager.MapIsChanged = true;
+            Manager.MapIsSaved = false;
+            
+            int floor = position.x;
+            int row = position.y;
+            int column = position.z;
+            
+            if (!Manager.EditedLayout.HasIndex(floor, row, column)) return;
+            
+            Enums.EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
+            
+            AdjustEditedLayout(floor, row, column, out int floorAdjustment, out int rowAdjustment, out int columnAdjustment, out bool wasLayoutAdjusted);
+
+            int adjustedFloor = floor + floorAdjustment;
+            int adjustedRow = row + rowAdjustment;
+            int adjustedColumn = column + columnAdjustment;
+            
+            EditedLayout[adjustedFloor][adjustedRow][adjustedColumn] = tileType == Enums.EGridPositionType.Null 
+                ? DefaultMapProvider.FullTile 
+                : null;
+            
+            MapDescription newMap = GameManager.Instance.CurrentMap;
+            TileDescription[,,] newLayout = ConvertEditedLayoutToArray();
+            newMap.Layout = newLayout;
+            
+            newMap.StartGridPosition = new Vector3Int(
+                newMap.StartGridPosition.x + floorAdjustment,
+                newMap.StartGridPosition.y + rowAdjustment,
+                newMap.StartGridPosition.z + columnAdjustment);
+            
+            GameManager.Instance.SetCurrentMap(newMap);
+            
+            Mouse.RefreshMousePosition();
+            
+            if (!wasLayoutAdjusted)
+            {
+                MapBuilder.RebuildTile(adjustedFloor, adjustedRow, adjustedColumn);
+                MapBuilder.RegenerateTilesAround(adjustedFloor, adjustedRow, adjustedColumn);
+                return;
+            }
+            
+            Manager.OrderMapConstruction(newMap, mapIsPresented: true);
         }
 
         private TileDescription[,,] ConvertEditedLayoutToArray()

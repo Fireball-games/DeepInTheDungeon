@@ -15,12 +15,12 @@ namespace Scripts.Building
 
         protected override void BuildNullTile(int floor, int row,int column)
         {
-            KeyVector.x = row;
-            KeyVector.y = floor;
-            KeyVector.z = column;
+            WorldKey.x = row;
+            WorldKey.y = -floor;
+            WorldKey.z = column;
 
             // Try to find what block is in PhysicalTiles on that location
-            if (PhysicalTiles.TryGetValue(KeyVector, out GameObject foundTile))
+            if (PhysicalTiles.TryGetValue(WorldKey, out GameObject foundTile))
             {
                 // There is already null tile, so stop an execution
                 if (!foundTile.GetComponent<TileController>())
@@ -29,7 +29,7 @@ namespace Scripts.Building
                 }
                 // There is physical tile already, let us dispose of it.
                 ObjectPool.Instance.ReturnToPool(foundTile);
-                PhysicalTiles.Remove(KeyVector);
+                PhysicalTiles.Remove(WorldKey);
             }
             
             GameObject cube = DefaultsProvider.defaultNullCubePrefab

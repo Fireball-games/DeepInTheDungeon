@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Scripts.EventsManagement;
+using Scripts.Helpers;
 using Scripts.System;
 using UnityEngine;
 
@@ -26,10 +27,10 @@ namespace Scripts.Player
         private bool _isBashingIntoWall;
         private bool _atRest = true;
 
-        public void SetPositionAndRotation(Vector3 position, Quaternion rotation)
+        public void SetPositionAndRotation(Vector3 gridPosition, Quaternion rotation)
         {
             Transform playerTransform = transform;
-            playerTransform.position = _targetGridPos = _prevTargetGridPos = new Vector3(position.x, 0 - position.y, position.z);
+            playerTransform.position = _targetGridPos = _prevTargetGridPos = new Vector3(gridPosition.y, -gridPosition.x, gridPosition.z);
             playerTransform.rotation = rotation;
             _targetRotation = rotation.eulerAngles;
             _isStartPositionSet = true;
@@ -129,8 +130,8 @@ namespace Scripts.Player
                 yield return null;
             }
 
-            Vector3Int newPosition = Vector3Int.RoundToInt(transform.position);
-            newPosition.y = 0 - newPosition.y;
+            Vector3Int newPosition = Vector3Int.RoundToInt(transform.position).SwapXY();
+            newPosition.x = 0 - newPosition.x;
             
             SetPositionAndRotation(newPosition, Quaternion.Euler(_targetRotation));
             _isBashingIntoWall = false;

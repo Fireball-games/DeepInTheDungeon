@@ -124,18 +124,18 @@ namespace Scripts.Building
         /// <param name="floor"></param>
         private void RegenerateTile(int floor, int row, int column)
         {
-            Vector3Int key = new (row, 0, column);
-            TileController tileController = PhysicalTiles[key].GetComponent<TileController>();
+            Vector3Int worldKey = new (row, -floor, column);
+            TileController tileController = PhysicalTiles[worldKey].GetComponent<TileController>();
 
             if (!tileController)
             {
-                Logger.LogWarning($"Attempt to regenerate tile which is null tile on position: [{row}][{column}]");
+                Logger.LogWarning($"Attempt to regenerate tile which is null tile on position: [{floor}][{row}][{column}]");
                 return;
             }
             
             foreach (Vector3Int direction in TileDirections.VectorDirections)
             {
-                if (Layout[row + direction.x, floor + direction.y, column + direction.z] == null)
+                if (Layout[floor + direction.y, row + direction.x, column + direction.z] == null)
                     tileController.ShowWall(TileDirections.WallDirectionByVector[direction]);
                 else
                     tileController.HideWall(TileDirections.WallDirectionByVector[direction]);

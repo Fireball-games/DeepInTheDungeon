@@ -139,7 +139,7 @@ namespace Scripts.MapEditor
             
             if (!MapIsPresented)
             {
-                EditorMouseService.Instance.MoveCameraTo(startPosition.x, cameraHeight, startPosition.z);
+                EditorMouseService.Instance.MoveCameraTo(startPosition.y, cameraHeight, startPosition.z);
             }
             
             MapIsBeingBuilt = false;

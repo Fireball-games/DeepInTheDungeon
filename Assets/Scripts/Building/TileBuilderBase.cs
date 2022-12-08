@@ -15,7 +15,7 @@ namespace Scripts.Building
         private readonly GameObject _tileDefaultPrefab;
         protected Dictionary<Vector3Int, GameObject> PhysicalTiles => MapBuilder.PhysicalTiles;
         protected TileController LastBuiltTile;
-        protected Vector3Int KeyVector;
+        protected Vector3Int WorldKey;
         protected readonly MapBuilder MapBuilder;
         private TileDescription[,,] Layout => MapBuilder.Layout;
 
@@ -47,22 +47,22 @@ namespace Scripts.Building
         protected virtual void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription)
         {
             // Physical position
-            KeyVector.x = row;
-            KeyVector.y = floor;
-            KeyVector.z = column;
+            WorldKey.x = row;
+            WorldKey.y = -floor;
+            WorldKey.z = column;
 
             tileDescription ??= Layout[floor, row, column];
 
             TileController newTile = null;
             // Try to find what block is in PhysicalTiles on that location
-            if (PhysicalTiles.TryGetValue(KeyVector, out GameObject foundTile))
+            if (PhysicalTiles.TryGetValue(WorldKey, out GameObject foundTile))
             {
                 newTile = foundTile.GetComponent<TileController>();
                 // If its not a tile (could be null tile), then get rid of it
                 if (!newTile)
                 {
                     ObjectPool.Instance.ReturnToPool(foundTile);
-                    PhysicalTiles.Remove(KeyVector);
+                    PhysicalTiles.Remove(WorldKey);
                 }
             }
             

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Scripts.Localization;
 using Scripts.System.Pooling;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Scripts.Helpers
@@ -16,7 +14,7 @@ namespace Scripts.Helpers
         public static readonly Vector3Int Vector3IntEast;
         public static readonly Vector3Int Vector3IntSouth;
         public static readonly Vector3Int Vector3IntWest;
-        
+
         private static Vector3 _v3;
         private static Vector3Int _v3i;
 
@@ -32,7 +30,7 @@ namespace Scripts.Helpers
             Vector3IntSouth = Vector3Int.right;
             Vector3IntWest = Vector3Int.back;
         }
-        
+
         public static Vector3 ToVector3(this Vector3Int source)
         {
             _v3.x = source.x;
@@ -41,7 +39,7 @@ namespace Scripts.Helpers
 
             return _v3;
         }
-        
+
         public static Vector3Int ToVector3Int(this Vector3 source)
         {
             _v3i.x = Mathf.RoundToInt(source.x);
@@ -53,9 +51,16 @@ namespace Scripts.Helpers
 
         public static bool HasIndex<T>(this T[,,] source, Vector3Int gridPosition)
         {
-            return gridPosition.x >= 0 && gridPosition.x < source.GetLength(0) 
-                            && gridPosition.y >= 0 && gridPosition.y < source.GetLength(1) 
-                            && gridPosition.z >= 0 && gridPosition.z < source.GetLength(2);
+            return gridPosition.x >= 0 && gridPosition.x < source.GetLength(0)
+                                       && gridPosition.y >= 0 && gridPosition.y < source.GetLength(1)
+                                       && gridPosition.z >= 0 && gridPosition.z < source.GetLength(2);
+        }
+
+        public static bool HasIndex<T>(this List<List<List<T>>> source, int floor, int row, int column)
+        {
+            return floor >= 0 && floor < source.Count
+                              && row >= 0 && row < source[0].Count
+                              && column >= 0 && column < source[0][0].Count;
         }
 
         public static T ByGridV3int<T>(this T[,,] source, Vector3Int position)
@@ -68,7 +73,7 @@ namespace Scripts.Helpers
             (source.y, source.x) = (source.x, source.y); // Swapping via deconstruction, noice
             return source;
         }
-        
+
         public static Vector3Int SwapXY(this Vector3Int source)
         {
             (source.y, source.x) = (source.x, source.y);
@@ -99,7 +104,7 @@ namespace Scripts.Helpers
                 }
             }
         }
-        
+
         public static TKey GetFirstKeyByValue<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TValue value)
         {
             return dictionary.FirstOrDefault(entry =>

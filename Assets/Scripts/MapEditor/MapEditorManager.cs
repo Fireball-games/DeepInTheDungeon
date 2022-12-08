@@ -51,12 +51,12 @@ namespace Scripts.MapEditor
             MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
         }
 
-        public void OrderMapConstruction(MapDescription map, bool markMapAsSaved = false)
+        public void OrderMapConstruction(MapDescription map, bool markMapAsSaved = false, bool mapIsPresented = false)
         {
             if (MapIsBeingBuilt) return;
             
             MapIsBeingBuilt = true;
-            MapIsPresented = false;
+            MapIsPresented = mapIsPresented;
             MapIsSaved = markMapAsSaved;
             
             EditedLayout = MapBuildService.ConvertToLayoutType(map.Layout);
@@ -132,12 +132,18 @@ namespace Scripts.MapEditor
 
         private void OnLayoutBuilt()
         {
+            Vector3 startPosition = GameManager.Instance.CurrentMap.StartPosition;
+            
+            if (!MapIsPresented)
+            {
+                EditorMouseService.Instance.MoveCameraTo(startPosition.x, cameraHeight, startPosition.z);
+            }
+            
             MapIsBeingBuilt = false;
             MapIsPresented = true;
 
             SetWorkMode(EWorkMode.Build);
-            Vector3 startPosition = GameManager.Instance.CurrentMap.StartPosition;
-            sceneCamera.transform.position = new Vector3(startPosition.x, cameraHeight, startPosition.z);
+            
             playerIcon.transform.position = GameManager.Instance.CurrentMap.StartPosition;
             // TODO: rotate by data from CurrentMap when implemented
             playerIcon.SetArrowRotation(Vector3.zero);

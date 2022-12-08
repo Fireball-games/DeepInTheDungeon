@@ -132,7 +132,7 @@ namespace Scripts.MapEditor
         {
             Vector3Int position = Mouse.MouseGridPosition;
             
-            if (Mouse.LastGridMouseDownPosition != position) return;
+            if (Mouse.LeftClickExpired) return;
 
             Manager.MapIsChanged = true;
             Manager.MapIsSaved = false;
@@ -160,7 +160,7 @@ namespace Scripts.MapEditor
             GameManager.Instance.SetCurrentMap(newMap);
 
             Mouse.RefreshMousePosition();
-            
+
             if (!wasLayoutAdjusted)
             {
                 MapBuilder.RebuildTile(adjustedRow, adjustedColumn);
@@ -168,7 +168,7 @@ namespace Scripts.MapEditor
                 return;
             }
             
-            Manager.OrderMapConstruction(newMap);
+            Manager.OrderMapConstruction(newMap, mapIsPresented: true);
         }
 
         private TileDescription[,] ConvertEditedLayoutToArray()

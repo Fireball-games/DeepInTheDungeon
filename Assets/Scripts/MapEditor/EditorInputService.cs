@@ -34,7 +34,7 @@ namespace Scripts.MapEditor
         {
             if (mouseButtonDowned == 0)
             {
-                EditorMouseService.Instance.SetLastMouseDownPosition();
+                // TODO is something pop up which needs doing
             }
         }
 

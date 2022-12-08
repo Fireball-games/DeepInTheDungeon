@@ -2,12 +2,10 @@
 using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.MapEditor;
-using Scripts.ScenesManagement;
 using Scripts.UI;
 using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Scripts.System

@@ -260,11 +260,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 367157412}
   m_LocalRotation: {x: -0.5, y: 0.5, z: -0.5, w: -0.5}
-  m_LocalPosition: {x: 0, y: 1, z: 10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2033699653}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 270, z: 0}
 --- !u!114 &367157416
@@ -539,6 +539,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3858cd1fcfc103b4498bc87194f91c1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2033699652
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2033699653}
+  m_Layer: 0
+  m_Name: CameraHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2033699653
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033699652}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 367157415}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2051228926 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6547159520619869984, guid: 2089c85b97fa7ee4690ad8c3ced77346,
@@ -1024,9 +1056,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6547159520619869986, guid: 2089c85b97fa7ee4690ad8c3ced77346,
         type: 3}
+      propertyPath: cameraHolder
+      value: 
+      objectReference: {fileID: 2033699653}
+    - target: {fileID: 6547159520619869986, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
       propertyPath: mapEditorManager
       value: 
       objectReference: {fileID: 2051228926}
+    - target: {fileID: 6547159520619869986, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: maxValidClickTime
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6547159520619869991, guid: 2089c85b97fa7ee4690ad8c3ced77346,
         type: 3}
       propertyPath: m_Name
@@ -1037,5 +1079,10 @@ PrefabInstance:
       propertyPath: manager
       value: 
       objectReference: {fileID: 2051228926}
+    - target: {fileID: 8119083429710413764, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: cameraHolder
+      value: 
+      objectReference: {fileID: 2033699653}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2089c85b97fa7ee4690ad8c3ced77346, type: 3}

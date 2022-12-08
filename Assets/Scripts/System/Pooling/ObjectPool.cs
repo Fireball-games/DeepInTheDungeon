@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
 
 //Fireball Games * * * PetrZavodny.com
 
@@ -93,7 +92,7 @@ namespace Scripts.System.Pooling
 
             if (!instantiateToPoolStore)
             {
-                Logger.LogWarning($"Instantiating new {requestedObject.name}, consider pre create them instead.");
+                // Logger.LogWarning($"Instantiating new {requestedObject.name}, consider pre create them instead.");
             }
             
             GameObject newObject = Instantiate(requestedObject, position, rotation, poolParent);

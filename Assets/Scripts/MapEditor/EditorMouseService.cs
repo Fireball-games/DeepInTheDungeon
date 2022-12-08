@@ -12,17 +12,44 @@ namespace Scripts.MapEditor
     {
         [SerializeField] private Texture2D digCursor;
         [SerializeField] private Texture2D demolishCursor;
+        [SerializeField] private Texture2D moveCameraCursor;
+        [SerializeField] private float maxValidClickTime = 0.1f;
+        [SerializeField] private float cameraScrollSpeed;
+        [SerializeField] private Transform cameraHolder;
         private static MapEditorManager Manager => MapEditorManager.Instance;
 
         public Vector3Int MouseGridPosition => _lastGridPosition;
         public EGridPositionType GridPositionType { get; private set; } = EGridPositionType.None;
-        public Vector3Int LastGridMouseDownPosition { get; private set; }
+        public bool LeftClickExpired { get; private set; }
+        public bool RightClickExpired { get; private set; }
 
         private Plane _layerPlane;
         private Vector3Int _lastGridPosition;
         private readonly Vector2 _defaultMouseHotspot = Vector2.zero;
         private Vector2 _demolishMouseHotspot;
+        private Vector2 _moveCameraMouseHotspot;
 
+        private float _lastLeftClickTime;
+        private float _lastRightClickTime;
+
+        private bool _isManipulatingCameraPosition;
+
+        private bool IsManipulatingCameraPosition
+        {
+            get => _isManipulatingCameraPosition;
+            set
+            {
+                if (value == _isManipulatingCameraPosition) return;
+                
+                if (!_isManipulatingCameraPosition)
+                {
+                    ResetCursor();
+                }
+
+                _isManipulatingCameraPosition = value;
+            }
+        }
+        
         protected override void Awake()
         {
             base.Awake();
@@ -31,31 +58,119 @@ namespace Scripts.MapEditor
             _lastGridPosition = new Vector3Int(-1000, -1000, -1000);
 
             _demolishMouseHotspot = new Vector2(demolishCursor.width / 2, demolishCursor.height / 2);
+            _moveCameraMouseHotspot = new Vector2(moveCameraCursor.width / 2, moveCameraCursor.height / 2);
         }
-        
+
         private void Update()
         {
-            if (Manager.MapIsPresented && !EventSystem.current.IsPointerOverGameObject())
+            if (!Manager.MapIsPresented || EventSystem.current.IsPointerOverGameObject()) return;
+            ValidateClicks();
+            SetGridPosition();
+            HandleMouseMovement();
+        }
+
+        private void TranslateCameraHorizontal(float x, float z)
+        {
+            _cameraMoveVector.x = z;
+            _cameraMoveVector.y = 0;
+            _cameraMoveVector.z = -x;
+            
+            cameraHolder.Translate(_cameraMoveVector);
+        }
+        
+        public void MoveCameraTo(float x, float y, float z)
+        {
+            _cameraMoveVector.x = x;
+            _cameraMoveVector.y = y;
+            _cameraMoveVector.z = z;
+            
+            cameraHolder.position = _cameraMoveVector;
+        }
+
+        private void ValidateClicks()
+        {
+            float currentTime = Time.time;
+
+            if (Input.GetMouseButtonDown(0))
             {
-                Vector3Int newGridPosition = Extensions.Vector3IntZero;
+                LeftClickExpired = false;
+                _lastLeftClickTime = Time.time;
+            }
 
-                Ray ray = CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
-                if (_layerPlane.Raycast(ray, out float distance))
-                {
-                    newGridPosition = ray.GetPoint(distance).ToVector3Int();
-                }
+            if (Input.GetMouseButtonDown(1))
+            {
+                RightClickExpired = false;
+                _lastRightClickTime = Time.time;
+            }
 
-                if (!newGridPosition.Equals(_lastGridPosition))
-                {
-                    EditorEvents.TriggerOnMouseGridPositionChanged(newGridPosition, _lastGridPosition);
-                    OnMouseGridPositionChanged(newGridPosition);
-                    _lastGridPosition = newGridPosition;
-                }
+            if (!LeftClickExpired && currentTime - _lastLeftClickTime > maxValidClickTime)
+            {
+                LeftClickExpired = true;
+            }
+
+            if (!RightClickExpired && currentTime - _lastRightClickTime > maxValidClickTime)
+            {
+                RightClickExpired = true;
             }
         }
 
-        public void SetLastMouseDownPosition() => LastGridMouseDownPosition = _lastGridPosition;
-        
+        private Vector3 _cameraMoveVector = Vector3.zero;
+
+        private void HandleMouseMovement()
+        {
+            if (LeftClickExpired && Input.GetMouseButton(0))
+            {
+                IsManipulatingCameraPosition = true;
+                SetCursor(moveCameraCursor, _moveCameraMouseHotspot);
+                
+                float xDelta = Input.GetAxis(Strings.MouseXAxis);
+                float yDelta = Input.GetAxis(Strings.MouseYAxis);
+                
+                if (xDelta == 0f && yDelta == 0f) return;
+
+                _cameraMoveVector.x = yDelta;
+                _cameraMoveVector.z = -xDelta;
+
+                _cameraMoveVector *= Time.deltaTime * cameraScrollSpeed;
+
+                TranslateCameraHorizontal(xDelta * Time.deltaTime * cameraScrollSpeed,  yDelta *  Time.deltaTime * cameraScrollSpeed);
+            }
+
+            if (LeftClickExpired && Input.GetMouseButtonUp(0))
+            {
+                IsManipulatingCameraPosition = false;
+            }
+        }
+
+        private void SetGridPosition()
+        {
+            if (IsManipulatingCameraPosition) return;
+            
+            if (!GetMousePlanePosition(out Vector3 position)) return;
+
+            Vector3Int newGridPosition = position.ToVector3Int();
+
+            if (!newGridPosition.Equals(_lastGridPosition))
+            {
+                EditorEvents.TriggerOnMouseGridPositionChanged(newGridPosition, _lastGridPosition);
+                OnMouseGridPositionChanged(newGridPosition);
+                _lastGridPosition = newGridPosition;
+            }
+        }
+
+        private bool GetMousePlanePosition(out Vector3 mousePlanePosition)
+        {
+            Ray ray = CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (_layerPlane.Raycast(ray, out float distance))
+            {
+                mousePlanePosition = ray.GetPoint(distance);
+                return true;
+            }
+            
+            mousePlanePosition = Vector3.negativeInfinity;
+            return false;
+        }
+
         private void OnMouseGridPositionChanged(Vector3Int newPosition)
         {
             TileDescription[,] layout = GameManager.Instance.CurrentMap.Layout;
@@ -70,7 +185,7 @@ namespace Scripts.MapEditor
             bool isNullTile = layout[newPosition.x, newPosition.z] == null;
 
             GridPositionType = isNullTile ? EGridPositionType.Null : EGridPositionType.EditableTile;
-            // Logger.Log($"GridPositionType: {GridPositionType}");
+
             Texture2D newCursor = null;
             Vector2 hotspot = _defaultMouseHotspot;
 
@@ -88,11 +203,17 @@ namespace Scripts.MapEditor
             Cursor.SetCursor(image, hotspot, CursorMode.Auto);
         }
 
-        public void RefreshMousePosition() => OnMouseGridPositionChanged(MouseGridPosition);
+        public void RefreshMousePosition()
+        {
+            if (!MapEditorManager.Instance.MapIsPresented) return;
+            
+            OnMouseGridPositionChanged(MouseGridPosition);
+        }
 
         public void ResetCursor()
         {
             SetCursor(null, Vector3.zero);
+            RefreshMousePosition();
         }
     }
 }

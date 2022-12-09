@@ -6,7 +6,7 @@ namespace Scripts.System
     {
         [SerializeField] protected GameObject body;
 
-        protected void SetActive(bool isActive)
+        public virtual void SetActive(bool isActive)
         {
             if (body)
             {

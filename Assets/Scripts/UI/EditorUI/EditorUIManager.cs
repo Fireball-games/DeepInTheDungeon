@@ -9,10 +9,11 @@ namespace Scripts.UI.EditorUI
     public class EditorUIManager : SingletonNotPersisting<EditorUIManager>
     {
         [SerializeField] private ImageButton playButton;
+        [SerializeField] private WorkModeSelection workModeSelection;
         [SerializeField] private NewMapDialog newMapDialog;
         [SerializeField] private DialogBase confirmationDialog;
         [SerializeField] private StatusBar statusBar;
-        [SerializeField] private TitleController mapTitle;
+        [SerializeField] private Title mapTitle;
         [SerializeField] private MapEditorManager manager;
 
         public StatusBar StatusBar => statusBar;
@@ -33,6 +34,8 @@ namespace Scripts.UI.EditorUI
 
         private void OnNewMapCreated()
         {
+            playButton.SetActive(true);
+            workModeSelection.SetActive(true);
             mapTitle.Show(GameManager.Instance.CurrentMap.MapName);
         }
     }

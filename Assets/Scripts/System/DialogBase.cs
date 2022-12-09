@@ -12,7 +12,7 @@ namespace Scripts.System
 {
     public class DialogBase : UIElementBase
     {
-        [SerializeField] protected TitleController title;
+        [SerializeField] protected Title title;
         [SerializeField] protected Button cancelButton;
         [SerializeField] protected Button confirmButton;
         [SerializeField] protected TMP_Text cancelText;

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.MapEditor;
 using Scripts.System;
@@ -22,14 +24,27 @@ public class BuildModeExpandedOptions : UIElementBase
             {ELevel.Upper, upperLevelButton},
             {ELevel.Lower, lowerLevelButton},
         };
-
-        upperLevelButton.OnClickWithSender += OnClick;
     }
 
-    private void OnClick(ImageButton sender)
+    private void OnEnable()
     {
-        MapEditorManager.Instance.SetWorkingLevel(_buttonsMap.GetFirstKeyByValue(sender));
+        upperLevelButton.OnClickWithSender += OnClick;
+        sameLevelButton.OnClickWithSender += OnClick;
+        lowerLevelButton.OnClickWithSender += OnClick;
+
+        EditorEvents.OnWorkingLevelChanged += SetSelected;
     }
+
+    private void OnDisable()
+    {
+        upperLevelButton.OnClickWithSender -= OnClick;
+        sameLevelButton.OnClickWithSender -= OnClick;
+        lowerLevelButton.OnClickWithSender -= OnClick;
+
+        EditorEvents.OnWorkingLevelChanged -= SetSelected;
+    }
+
+    private void OnClick(ImageButton sender) => MapEditorManager.Instance.SetWorkingLevel(_buttonsMap.GetFirstKeyByValue(sender));
 
     public void SetSelected(ELevel level)
     {

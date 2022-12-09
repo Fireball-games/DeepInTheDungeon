@@ -8,7 +8,7 @@ using static Scripts.MapEditor.Enums;
 
 namespace Scripts.UI.EditorUI
 {
-    public class WorkModeSelectionController : UIElementBase
+    public class WorkModeSelection : UIElementBase
     {
         [SerializeField] private ImageButton buildModeButton;
         [SerializeField] private BuildModeExpandedOptions buildModeOptions;
@@ -30,6 +30,8 @@ namespace Scripts.UI.EditorUI
         {
             EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
             buildModeButton.OnClickWithSender += WorkModeButtonClicked;
+            buildModeButton.OnSelected += ActivateBuildModeOptions;
+            buildModeButton.OnDeselected += DeactivateBuildModeOptions;
             selectModeButton.OnClickWithSender += WorkModeButtonClicked;
         }
 
@@ -37,7 +39,20 @@ namespace Scripts.UI.EditorUI
         {
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
             buildModeButton.OnClickWithSender -= WorkModeButtonClicked;
+            buildModeButton.OnSelected -= ActivateBuildModeOptions;
+            buildModeButton.OnDeselected -= DeactivateBuildModeOptions;
             selectModeButton.OnClickWithSender -= WorkModeButtonClicked;
+        }
+
+        private void ActivateBuildModeOptions()
+        {
+            buildModeOptions.SetActive(true);
+            buildModeOptions.SetSelected(Manager.WorkLevel);
+        }
+
+        private void DeactivateBuildModeOptions()
+        {
+            buildModeOptions.SetActive(false);
         }
 
         private void OnWorkModeChanged(EWorkMode newWorkMode)

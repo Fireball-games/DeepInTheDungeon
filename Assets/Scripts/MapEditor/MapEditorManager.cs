@@ -9,6 +9,7 @@ using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -22,7 +23,8 @@ namespace Scripts.MapEditor
         [SerializeField] private Camera sceneCamera;
         [SerializeField] private PlayerIconController playerIcon;
 
-        public EWorkMode WorkMode => _workMode;
+        public ELevel WorkLevel { get; private set; }
+        public EWorkMode WorkMode { get; private set; }
         public bool MapIsPresented { get; private set; }
         public bool MapIsChanged { get; set; }
         public bool MapIsSaved { get; set; } = true;
@@ -30,9 +32,6 @@ namespace Scripts.MapEditor
         public LayoutType EditedLayout { get; private set; }
         public MapBuilder MapBuilder { get; private set; }
         public int CurrentFloor { get; private set; }
-
-        private EWorkMode _workMode;
-        private ELevel _workingLevel;
 
         protected override void Awake()
         {
@@ -74,14 +73,14 @@ namespace Scripts.MapEditor
 
         public void SetWorkMode(EWorkMode newWorkMode)
         {
-            _workMode = newWorkMode;
-            EditorEvents.TriggerOnWorkModeChanged(_workMode);
+            WorkMode = newWorkMode;
+            EditorEvents.TriggerOnWorkModeChanged(WorkMode);
         }
 
         public void SetWorkingLevel(ELevel newLevel)
         {
-            _workingLevel = newLevel;
-            EditorEvents.TriggerOnWorkingLevelChanged(_workingLevel);
+            WorkLevel = newLevel;
+            EditorEvents.TriggerOnWorkingLevelChanged(WorkLevel);
         }
 
         public void GoToMainMenu()

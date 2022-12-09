@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Scripts.UI.Components
 {
-    public class TitleController : MonoBehaviour
+    public class Title : MonoBehaviour
     {
         [SerializeField] private TMP_Text text;
         [SerializeField] private GameObject body;

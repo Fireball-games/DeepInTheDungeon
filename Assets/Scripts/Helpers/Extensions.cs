@@ -49,6 +49,20 @@ namespace Scripts.Helpers
             return _v3i;
         }
 
+        public static Vector3 ToWorldPosition(this Vector3Int gridPosition)
+        {
+            gridPosition = gridPosition.SwapXY();
+            gridPosition.y = -gridPosition.y;
+            return gridPosition;
+        }
+        
+        public static Vector3Int ToWorldPositionV3Int(this Vector3Int gridPosition)
+        {
+            gridPosition = gridPosition.SwapXY();
+            gridPosition.y = -gridPosition.y;
+            return gridPosition;
+        }
+
         public static bool HasIndex<T>(this T[,,] source, Vector3Int gridPosition)
         {
             return gridPosition.x >= 0 && gridPosition.x < source.GetLength(0)
@@ -65,7 +79,7 @@ namespace Scripts.Helpers
 
         public static T ByGridV3int<T>(this T[,,] source, Vector3Int position)
         {
-            return source[position.y, position.x, position.z];
+            return source[position.x, position.y, position.z];
         }
 
         public static Vector3 SwapXY(this Vector3 source)

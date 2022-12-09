@@ -7,7 +7,7 @@ namespace Scripts.Building
 {
     public class EditorModeBuilder : TileBuilderBase
     {
-        private readonly Vector3 _tileScaleInEditor = new(0.99f, 0.99f, 0.99f);
+        private readonly Vector3 _tileScaleInEditor = new(0.95f, 0.95f, 0.95f);
         
         public EditorModeBuilder(MapBuilder mapBuilder) : base(mapBuilder)
         {

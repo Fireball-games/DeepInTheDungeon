@@ -18,6 +18,8 @@ namespace Scripts.MapEditor
         [SerializeField] private float cameraPanSpeed = 100f;
         [SerializeField] private float cameraZoomSpeed = 100f;
         [SerializeField] private Transform cameraHolder;
+        [SerializeField] private Cursor3D cursor3D;
+        
         private static MapEditorManager Manager => MapEditorManager.Instance;
 
         public Vector3Int MouseGridPosition => _lastGridPosition;
@@ -60,6 +62,7 @@ namespace Scripts.MapEditor
             base.Awake();
 
             _buildService = new MapBuildService();
+            cursor3D.SetMapBuildService(_buildService);
             
             _lastGridPosition = new Vector3Int(-1000, -1000, -1000);
 
@@ -267,6 +270,14 @@ namespace Scripts.MapEditor
 
             if (Manager.WorkMode == EWorkMode.Build)
             {
+                if (Manager.WorkLevel == ELevel.Upper && !isNullTile)
+                {
+                    _buildService.ShowUpperLevelStoneCubesAround(newGridPosition);
+                    cursor3D.ShowAt(newGridPosition);
+                    return;
+                }
+                
+                cursor3D.Hide();
                 newCursor = isNullTile ? digCursor : demolishCursor;
                 hotspot = isNullTile ? _defaultMouseHotspot : _demolishMouseHotspot;
             }
@@ -279,7 +290,7 @@ namespace Scripts.MapEditor
         private void SetDefaultCursor()
         {
             if (_isDefaultCursorSet) return;
-            
+            cursor3D.Hide();
             SetCursor(null, Vector3.zero);
             _isDefaultCursorSet = true;
         }
@@ -299,7 +310,8 @@ namespace Scripts.MapEditor
 
         public void ResetCursor()
         {
-            SetCursor(null, Vector3.zero);
+            cursor3D.Hide();
+            SetDefaultCursor();
             RefreshMousePosition();
         }
     }

@@ -8,6 +8,7 @@ namespace Scripts.Helpers
     public static class TileDirections
     {
         public static IEnumerable<Vector3Int> VectorDirections { get; }
+        public static IEnumerable<Vector3Int> HorizontalGridDirections { get; }
 
         public static Dictionary<Vector3Int, ETileDirection> WallDirectionByVector { get; }
         public static Dictionary<ETileDirection, Vector3Int> VectorByTileDirection { get; }
@@ -16,13 +17,24 @@ namespace Scripts.Helpers
         {
             VectorDirections = new[]
             {
-                // TODO: these will be used once Layout will be 3D
                 Extensions.Vector3IntUp,
                 Extensions.Vector3IntDown,
                 Extensions.Vector3IntNorth,
                 Extensions.Vector3IntEast,
                 Extensions.Vector3IntSouth,
                 Extensions.Vector3IntWest
+            };
+
+            HorizontalGridDirections = new[]
+            {
+                new Vector3Int(0, 1, 0),
+                new Vector3Int(0, -1, 0),
+                new Vector3Int(0, 0, 1),
+                new Vector3Int(0, 0, -1),
+                new Vector3Int(0, 1, 1),
+                new Vector3Int(0, -1, 1),
+                new Vector3Int(0, -1, -1),
+                new Vector3Int(0, 1, -1),
             };
 
             WallDirectionByVector = new Dictionary<Vector3Int, ETileDirection>

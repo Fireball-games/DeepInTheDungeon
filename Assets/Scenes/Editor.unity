@@ -427,6 +427,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2004d37bfe0c342a5eca5762cae25f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &705119930
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5109511457564199519, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142485, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109511457786142486, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+        type: 3}
+      propertyPath: m_Name
+      value: Cursor3D
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: feb2c46dd69382e4bb25bb1fd20fb05d, type: 3}
 --- !u!1 &712252866
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,6 +601,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a8f20371b207284e98c9bd1b4ccc16a, type: 3}
+--- !u!114 &927258422 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9005751764103396800, guid: feb2c46dd69382e4bb25bb1fd20fb05d,
+    type: 3}
+  m_PrefabInstance: {fileID: 705119930}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a75fb3cdb94875bd06ceed441ce71d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1108850761 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 465443413000390010, guid: 9a8f20371b207284e98c9bd1b4ccc16a,
@@ -1174,6 +1260,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6547159520619869986, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: cursor3D
+      value: 
+      objectReference: {fileID: 927258422}
     - target: {fileID: 6547159520619869986, guid: 2089c85b97fa7ee4690ad8c3ced77346,
         type: 3}
       propertyPath: cameraHolder

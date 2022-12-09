@@ -4,8 +4,7 @@ using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System;
 using UnityEngine;
-using LayoutType =
-    System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 
 namespace Scripts.MapEditor
 {
@@ -15,9 +14,22 @@ namespace Scripts.MapEditor
         private LayoutType EditedLayout => Manager.EditedLayout;
         private MapBuilder MapBuilder => Manager.MapBuilder;
         private static EditorMouseService Mouse => EditorMouseService.Instance;
+        private readonly Color _fullColor = new(1, 1, 1, 1);
+        private readonly Color _nearTransparentColor = new(1, 1, 1, 0.85f);
 
         internal MapBuildService()
         {
+        }
+        
+        public void ResetShownNullTilesColors()
+        {
+            foreach (GameObject shownNullTile in shownNullTiles)
+            {
+                shownNullTile.GetComponentInChildren<MeshRenderer>().material.color = _fullColor;
+                shownNullTile.SetActive(false);
+            }
+            
+            shownNullTiles.Clear();
         }
 
         private void AdjustEditedLayout(int floor, int row, int column,
@@ -270,6 +282,36 @@ namespace Scripts.MapEditor
             }
 
             return result;
+        }
+
+        private HashSet<GameObject> shownNullTiles = new();
+
+        public void ShowUpperLevelStoneCubesAround(Vector3Int centerGridPosition)
+        {
+            ResetShownNullTilesColors();
+            centerGridPosition.x -= 1;
+
+            SetColorForNullTile(centerGridPosition, _fullColor);
+
+            foreach (Vector3Int direction in TileDirections.HorizontalGridDirections)
+            {
+                Vector3Int targetDirection = centerGridPosition + direction;
+
+                SetColorForNullTile(targetDirection, _nearTransparentColor);
+            }
+        }
+
+        private void SetColorForNullTile(Vector3Int griPosition, Color newColor)
+        {
+            if (!MapBuilder.Layout.HasIndex(griPosition) 
+                || MapBuilder.Layout.ByGridV3int(griPosition) != null) 
+                return;
+
+            GameObject nullTile = MapBuilder.PhysicalTiles[griPosition.ToWorldPositionV3Int()];
+            nullTile.GetComponentInChildren<MeshRenderer>().material.color = newColor;
+            nullTile.SetActive(true);
+
+            shownNullTiles.Add(nullTile);
         }
     }
 }

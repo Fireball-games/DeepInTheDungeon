@@ -4,7 +4,8 @@ using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System;
 using UnityEngine;
-using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using LayoutType =
+    System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 
 namespace Scripts.MapEditor
 {
@@ -15,12 +16,12 @@ namespace Scripts.MapEditor
         private MapBuilder MapBuilder => Manager.MapBuilder;
         private static EditorMouseService Mouse => EditorMouseService.Instance;
         private readonly Color _fullColor = new(1, 1, 1, 1);
-        private readonly Color _nearTransparentColor = new(1, 1, 1, 0.85f);
+        private readonly Color _nearTransparentColor = new(0.5f, 1, 0.5f, 0.65f);
 
         internal MapBuildService()
         {
         }
-        
+
         public void ResetShownNullTilesColors()
         {
             foreach (GameObject shownNullTile in shownNullTiles)
@@ -28,7 +29,7 @@ namespace Scripts.MapEditor
                 shownNullTile.GetComponentInChildren<MeshRenderer>().material.color = _fullColor;
                 shownNullTile.SetActive(false);
             }
-            
+
             shownNullTiles.Clear();
         }
 
@@ -144,7 +145,7 @@ namespace Scripts.MapEditor
                 floor.Insert(0, new List<TileDescription>());
             }
 
-            PopulateRows(0);
+            PopulateRowOnAllFloors(0);
         }
 
         private void AddRowToFront()
@@ -154,36 +155,40 @@ namespace Scripts.MapEditor
                 floor.Add(new List<TileDescription>());
             }
 
-            PopulateRows(EditedLayout[0].Count - 1);
+            PopulateRowOnAllFloors(EditedLayout[0].Count - 1);
         }
 
         private void InsertFloorToTop()
         {
-            EditedLayout.Add( new List<List<TileDescription>>());
+            EditedLayout.Insert(0, new List<List<TileDescription>>());
 
-            foreach (List<TileDescription> row in EditedLayout[0])
-            {
-                for (int index = 0; index < row.Count; index++)
-                {
-                    row.Add(null);
-                }
-            }
+            PopulateFloor(0);
         }
 
         private void AddFloorToBottom()
         {
-            EditedLayout.Insert(0, new List<List<TileDescription>>());
+            EditedLayout.Add(new List<List<TileDescription>>());
 
-            foreach (List<TileDescription> row in EditedLayout[^1])
+            PopulateFloor(EditedLayout.Count - 1);
+        }
+
+        private void PopulateFloor(int index)
+        {
+            for (int row = 0; row < EditedLayout[1].Count; row++)
             {
-                for (int index = 0; index < row.Count; index++)
+                EditedLayout[index].Add(new List<TileDescription>());
+            }
+
+            foreach (List<TileDescription> row in EditedLayout[index])
+            {
+                for (int i = 0; i < EditedLayout[1][1].Count; i++)
                 {
                     row.Add(null);
                 }
             }
         }
 
-        private void PopulateRows(int index)
+        private void PopulateRowOnAllFloors(int index)
         {
             foreach (List<List<TileDescription>> floor in EditedLayout)
             {
@@ -197,50 +202,61 @@ namespace Scripts.MapEditor
         internal void ProcessBuildClick()
         {
             Vector3Int position = Mouse.MouseGridPosition;
-            
-            if (Mouse.LeftClickExpired) return;
-            
+
+            if (Mouse.LeftClickExpired 
+                || Manager.WorkLevel == Enums.ELevel.Upper && Mouse.GridPositionType != Enums.EGridPositionType.UpperEligibleForRebuild)
+            {
+                return;
+            }
+
             Manager.MapIsChanged = true;
             Manager.MapIsSaved = false;
             
+            ResetShownNullTilesColors();
+
             int floor = position.x;
             int row = position.y;
             int column = position.z;
-            
+
             if (!Manager.EditedLayout.HasIndex(floor, row, column)) return;
             
-            Enums.EGridPositionType tileType = EditorMouseService.Instance.GridPositionType;
-            
-            AdjustEditedLayout(floor, row, column, out int floorAdjustment, out int rowAdjustment, out int columnAdjustment, out bool wasLayoutAdjusted);
+            if (Manager.WorkLevel == Enums.ELevel.Upper)
+            {
+                floor -= 1;
+            }
+
+            AdjustEditedLayout(floor, row, column, out int floorAdjustment, out int rowAdjustment, out int columnAdjustment,
+                out bool wasLayoutAdjusted);
 
             int adjustedFloor = floor + floorAdjustment;
             int adjustedRow = row + rowAdjustment;
             int adjustedColumn = column + columnAdjustment;
-            
-            EditedLayout[adjustedFloor][adjustedRow][adjustedColumn] = tileType == Enums.EGridPositionType.Null 
-                ? DefaultMapProvider.FullTile 
-                : null;
-            
+
+            EditedLayout[adjustedFloor][adjustedRow][adjustedColumn] =
+                EditedLayout[adjustedFloor][adjustedRow][adjustedColumn] == null
+                    ? DefaultMapProvider.FullTile
+                    : null;
+
             MapDescription newMap = GameManager.Instance.CurrentMap;
             TileDescription[,,] newLayout = ConvertEditedLayoutToArray();
             newMap.Layout = newLayout;
-            
+
             newMap.StartGridPosition = new Vector3Int(
                 newMap.StartGridPosition.x + floorAdjustment,
                 newMap.StartGridPosition.y + rowAdjustment,
                 newMap.StartGridPosition.z + columnAdjustment);
-            
+
             GameManager.Instance.SetCurrentMap(newMap);
-            
+
             Mouse.RefreshMousePosition();
-            
+
             if (!wasLayoutAdjusted)
             {
                 MapBuilder.RebuildTile(adjustedFloor, adjustedRow, adjustedColumn);
                 MapBuilder.RegenerateTilesAround(adjustedFloor, adjustedRow, adjustedColumn);
                 return;
             }
-            
+
             Manager.OrderMapConstruction(newMap, mapIsPresented: true);
         }
 
@@ -303,8 +319,8 @@ namespace Scripts.MapEditor
 
         private void SetColorForNullTile(Vector3Int griPosition, Color newColor)
         {
-            if (!MapBuilder.Layout.HasIndex(griPosition) 
-                || MapBuilder.Layout.ByGridV3int(griPosition) != null) 
+            if (!MapBuilder.Layout.HasIndex(griPosition)
+                || MapBuilder.Layout.ByGridV3int(griPosition) != null)
                 return;
 
             GameObject nullTile = MapBuilder.PhysicalTiles[griPosition.ToWorldPositionV3Int()];

@@ -24,10 +24,10 @@ namespace Scripts.MapEditor
 
         public ELevel WorkLevel { get; private set; }
         public EWorkMode WorkMode { get; private set; }
-        public bool MapIsPresented { get; private set; }
+        public bool MapIsPresented { get; set; }
         public bool MapIsChanged { get; set; }
         public bool MapIsSaved { get; set; } = true;
-        public static bool MapIsBeingBuilt { get; private set; }
+        public bool MapIsBeingBuilt { get; set; }
         public LayoutType EditedLayout { get; private set; }
         public MapBuilder MapBuilder { get; private set; }
         public int CurrentFloor { get; private set; }
@@ -54,7 +54,7 @@ namespace Scripts.MapEditor
 
         public void OrderMapConstruction(MapDescription map, bool markMapAsSaved = false, bool mapIsPresented = false)
         {
-            if (MapIsBeingBuilt) return;
+            // if (MapIsBeingBuilt) return;
             
             MapIsBeingBuilt = true;
             MapIsPresented = mapIsPresented;

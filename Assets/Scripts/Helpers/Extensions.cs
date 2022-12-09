@@ -7,7 +7,6 @@ namespace Scripts.Helpers
 {
     public static class Extensions
     {
-        public static readonly Vector3Int Vector3IntZero;
         public static readonly Vector3Int Vector3IntUp;
         public static readonly Vector3Int Vector3IntDown;
         public static readonly Vector3Int Vector3IntNorth;
@@ -22,9 +21,8 @@ namespace Scripts.Helpers
         {
             _v3 = Vector3.zero;
             _v3i = Vector3Int.zero;
-            Vector3IntZero = new(0, 0, 0);
-            Vector3IntUp = Vector3Int.up;
-            Vector3IntDown = Vector3Int.down;
+            Vector3IntUp = Vector3Int.down;
+            Vector3IntDown = Vector3Int.up;
             Vector3IntNorth = Vector3Int.left;
             Vector3IntEast = Vector3Int.forward;
             Vector3IntSouth = Vector3Int.right;
@@ -111,7 +109,8 @@ namespace Scripts.Helpers
         {
             while (go.transform.childCount > 0)
             {
-                Logger.Log("Shooing kids to pool");
+                // TODO: seems sometimes not returning all the kids, check it out
+                // Logger.Log("Shooing kids to pool");
                 foreach (Transform child in go.transform)
                 {
                     ObjectPool.Instance.ReturnToPool(child.gameObject, isUiObject);

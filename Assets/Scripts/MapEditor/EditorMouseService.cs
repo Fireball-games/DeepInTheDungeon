@@ -77,7 +77,7 @@ namespace Scripts.MapEditor
 
         private void Update()
         {
-            if (!Manager.MapIsPresented) return;
+            if (!Manager.MapIsPresented || Manager.MapIsBeingBuilt) return;
 
             if (EventSystem.current.IsPointerOverGameObject())
             {
@@ -94,14 +94,21 @@ namespace Scripts.MapEditor
             
             ValidateClicks();
 
-            if (!LeftClickExpired && Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0))
             {
+                RefreshMousePosition();
+            }
+            
+            if (!LeftClickExpired && Input.GetMouseButtonUp(0))
+            {   
                 ProcessMouseButtonUp(0);
             }
-
-            HandleMouseWheel();
-            SetGridPosition();
-            HandleMouseMovement();
+            else
+            {
+                HandleMouseWheel();
+                SetGridPosition();
+                HandleMouseMovement();
+            }
         }
 
         private void OnDisable()
@@ -272,6 +279,7 @@ namespace Scripts.MapEditor
             {
                 if (Manager.WorkLevel == ELevel.Upper && !isNullTile)
                 {
+                    GridPositionType = EGridPositionType.UpperEligibleForRebuild;
                     _buildService.ShowUpperLevelStoneCubesAround(newGridPosition);
                     cursor3D.ShowAt(newGridPosition);
                     return;

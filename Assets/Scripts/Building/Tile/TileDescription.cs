@@ -43,6 +43,7 @@ namespace Scripts.Building.Tile
         
         public WallDescription GetWall(Vector3Int direction)
         {
+            // TODO: not sure if floor and ceiling should not be reversed
             if (direction == Extensions.Vector3IntDown) return Walls.Floor;
             if (direction == Extensions.Vector3IntUp) return Walls.Ceiling;
             if (direction == Extensions.Vector3IntNorth) return Walls.North;

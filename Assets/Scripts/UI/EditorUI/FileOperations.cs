@@ -101,7 +101,7 @@ namespace Scripts.UI.EditorUI
         
         private void OnNewMapClicked()
         {
-            if (MapEditorManager.MapIsBeingBuilt) return;
+            if (MapEditorManager.Instance.MapIsBeingBuilt) return;
 
             if (Manager.MapIsChanged || !Manager.MapIsSaved)
             {

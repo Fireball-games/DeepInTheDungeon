@@ -101,6 +101,7 @@ namespace Scripts.Building
             }
             else
             {
+                // Logger.Log($"Rebuilding tile: {floor},{row},{column}");
                 _editorBuilder.BuildTile(floor, row, column);
             }
         }
@@ -125,11 +126,11 @@ namespace Scripts.Building
         private void RegenerateTile(int floor, int row, int column)
         {
             Vector3Int worldKey = new (row, -floor, column);
+            
             TileController tileController = PhysicalTiles[worldKey].GetComponent<TileController>();
 
             if (!tileController)
             {
-                Logger.LogWarning($"Attempt to regenerate tile which is null tile on position: [{floor}][{row}][{column}]");
                 return;
             }
             

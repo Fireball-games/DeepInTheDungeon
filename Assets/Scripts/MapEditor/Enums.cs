@@ -21,6 +21,7 @@
             None = 0,
             Null = 1,
             EditableTile = 2,
+            UpperEligibleForRebuild = 3,
         }
     }
 }

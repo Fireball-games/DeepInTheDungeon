@@ -17,6 +17,9 @@ namespace Scripts.ScenesManagement
         
         [MenuItem("Scenes/PlayIndoor Scene", false)]
         private static void ShowPlayIndoorScene() => LoadScene(Scenes.PlayIndoorSceneName);
+        
+        [MenuItem("Scenes/Sandbox Scene", false)]
+        private static void ShowSandboxScene() => LoadScene(Scenes.SandboxSceneName);
 
         private static void LoadScene(string sceneName)
         {

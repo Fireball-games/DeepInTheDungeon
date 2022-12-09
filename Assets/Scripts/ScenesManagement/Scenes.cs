@@ -8,6 +8,7 @@ namespace Scripts.ScenesManagement
         public const string MainSceneName = "Main";
         public const string PlayIndoorSceneName = "PlayIndoor";
         public const string PlayOutdoorSceneName = "PlayOutdoor";
+        public const string SandboxSceneName = "Sandbox";
 
         private static readonly string[] SceneNames =
         {

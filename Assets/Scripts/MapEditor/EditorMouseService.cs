@@ -268,7 +268,7 @@ namespace Scripts.MapEditor
 
         public void RefreshMousePosition()
         {
-            if (!MapEditorManager.Instance.MapIsPresented) return;
+            if (!Manager.MapIsPresented) return;
 
             OnMouseGridPositionChanged(MouseGridPosition);
         }

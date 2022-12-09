@@ -11,6 +11,7 @@ namespace Scripts.UI.EditorUI
     public class WorkModeSelectionController : UIElementBase
     {
         [SerializeField] private ImageButton buildModeButton;
+        [SerializeField] private BuildModeExpandedOptions buildModeOptions;
         [SerializeField] private ImageButton selectModeButton;
 
         private static MapEditorManager Manager => MapEditorManager.Instance;

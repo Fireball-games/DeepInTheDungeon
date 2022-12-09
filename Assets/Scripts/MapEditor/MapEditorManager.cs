@@ -32,7 +32,8 @@ namespace Scripts.MapEditor
         public int CurrentFloor { get; private set; }
 
         private EWorkMode _workMode;
-        
+        private ELevel _workingLevel;
+
         protected override void Awake()
         {
             base.Awake();
@@ -75,6 +76,12 @@ namespace Scripts.MapEditor
         {
             _workMode = newWorkMode;
             EditorEvents.TriggerOnWorkModeChanged(_workMode);
+        }
+
+        public void SetWorkingLevel(ELevel newLevel)
+        {
+            _workingLevel = newLevel;
+            EditorEvents.TriggerOnWorkingLevelChanged(_workingLevel);
         }
 
         public void GoToMainMenu()

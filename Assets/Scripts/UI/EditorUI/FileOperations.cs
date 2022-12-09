@@ -77,7 +77,7 @@ namespace Scripts.UI.EditorUI
 
         private void LoadMapConfirmedWithSave()
         {
-            MapEditorManager.Instance.SaveMap();
+            Manager.SaveMap();
             LoadMapConfirmed();
         }
 

@@ -9,6 +9,13 @@
             Select = 2,
         }
 
+        public enum ELevel
+        {
+            Equal = 0,
+            Upper = 1,
+            Lower = 2
+        }
+
         public enum EGridPositionType
         {
             None = 0,

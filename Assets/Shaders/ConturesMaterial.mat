@@ -38,23 +38,26 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _CastShadows: 1
     - _Cull: 2
     - _DstBlend: 10
+    - _MovementSpeed: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _SrcBlend: 5
-    - _Strength: 0.1
+    - _Strength: 0.05
     - _Surface: 1
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - _ContureColor: {r: 1, g: 0.8792537, b: 0, a: 0}
+    - _ContureColor: {r: 1, g: 0.8942049, b: 0.25943398, a: 0}
+    - _SecondColor: {r: 0.9339623, g: 0.47662303, b: 0.057271298, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &583607456825109376
 MonoBehaviour:

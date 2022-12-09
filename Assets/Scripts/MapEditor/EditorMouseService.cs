@@ -36,6 +36,8 @@ namespace Scripts.MapEditor
         private float _lastRightClickTime;
 
         private bool _isManipulatingCameraPosition;
+        private bool _isDefaultCursorSet;
+        private bool _uiIsBlocking;
 
         private bool IsManipulatingCameraPosition
         {
@@ -72,8 +74,21 @@ namespace Scripts.MapEditor
 
         private void Update()
         {
-            if (!Manager.MapIsPresented || EventSystem.current.IsPointerOverGameObject()) return;
+            if (!Manager.MapIsPresented) return;
 
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                _uiIsBlocking = true;
+                SetDefaultCursor();
+                return;
+            }
+
+            if (_uiIsBlocking)
+            {
+                RefreshMousePosition();
+                _uiIsBlocking = false;
+            }
+            
             ValidateClicks();
 
             if (!LeftClickExpired && Input.GetMouseButtonUp(0))
@@ -261,9 +276,18 @@ namespace Scripts.MapEditor
 
         private void SetCursorToCameraMovement() => SetCursor(moveCameraCursor, _moveCameraMouseHotspot);
 
+        private void SetDefaultCursor()
+        {
+            if (_isDefaultCursorSet) return;
+            
+            SetCursor(null, Vector3.zero);
+            _isDefaultCursorSet = true;
+        }
+
         private void SetCursor(Texture2D image, Vector3 hotspot)
         {
             Cursor.SetCursor(image, hotspot, CursorMode.Auto);
+            _isDefaultCursorSet = false;
         }
 
         public void RefreshMousePosition()

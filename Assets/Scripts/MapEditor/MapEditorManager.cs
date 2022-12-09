@@ -9,7 +9,6 @@ using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {

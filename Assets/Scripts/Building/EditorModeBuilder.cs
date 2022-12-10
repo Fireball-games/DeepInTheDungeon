@@ -16,7 +16,7 @@ namespace Scripts.Building
         {
         }
 
-        protected override void BuildNullTile(int floor, int row,int column)
+        protected override void BuildNullTile(int floor, int row,int column, bool isRebuilding = false)
         {
             WorldKey.x = row;
             WorldKey.y = -floor;
@@ -43,31 +43,27 @@ namespace Scripts.Building
             cube.transform.position = new Vector3(row, 0 - floor, column);
             cube.transform.localScale = _tileScaleInEditor;
 
-            int checkedLevel = MapBuilder.MapDescription.StartGridPosition.x;
-            
-            if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor && MapEditorManager.Instance.WorkLevel == ELevel.Upper)
-            {
-                checkedLevel -= 1;
-            }
-            
-            if (floor != checkedLevel)
-            {
-                cube.SetActive(false);
-            }
+            SetDisabledIfApplicable(cube, floor, isRebuilding);
 
             PhysicalTiles.Add(cube.transform.position.ToVector3Int(), cube);
         }
 
-        protected override void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription)
+        protected override void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription, bool isRebuilding = false)
         {
-            base.BuildNormalTile(floor, row, column, tileDescription);
+            base.BuildNormalTile(floor, row, column, tileDescription, isRebuilding);
 
             LastBuiltTile.HideWall(TileDescription.ETileDirection.Ceiling);
             LastBuiltTile.transform.localScale = _tileScaleInEditor;
 
-            if (floor != MapBuilder.MapDescription.StartGridPosition.x)
+            SetDisabledIfApplicable(LastBuiltTile.gameObject, floor, isRebuilding);
+        }
+
+        private void SetDisabledIfApplicable(GameObject tile, int floor, bool isRebuilding = false)
+        {
+            // Means on or bellow start level TODO: replace with list of displayed floors when implemented floor show status
+            if (!isRebuilding && floor < MapBuilder.MapDescription.StartGridPosition.x)
             {
-                LastBuiltTile.gameObject.SetActive(false);
+                tile.SetActive(false);
             }
         }
     }

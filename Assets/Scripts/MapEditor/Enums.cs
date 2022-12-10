@@ -23,6 +23,8 @@
             EditableTile = 2,
             NullTileAbove = 3,
             EditableTileAbove = 4,
+            NullTileBellow = 5,
+            EditableTileBellow = 6,
         }
     }
 }

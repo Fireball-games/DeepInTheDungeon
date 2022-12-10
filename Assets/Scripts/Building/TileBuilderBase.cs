@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System.Pooling;
@@ -27,24 +26,24 @@ namespace Scripts.Building
             _tileDefaultPrefab = mapBuilder.defaultsProvider.defaultTilePrefab;
         }
 
-        public void BuildTile(int floor, int row, int column, TileDescription tileDescription = null)
+        public void BuildTile(int floor, int row, int column, TileDescription tileDescription = null, bool isRebuilding = false)
         {
             tileDescription ??= Layout[floor, row, column];
             if(tileDescription == null)
             {
-                BuildNullTile(floor, row, column);
+                BuildNullTile(floor, row, column, isRebuilding);
             } 
             else
             {
-                BuildNormalTile(floor, row, column, tileDescription);
+                BuildNormalTile(floor, row, column, tileDescription, isRebuilding);
             }
         }
 
-        protected virtual void BuildNullTile(int floor, int row, int column)
+        protected virtual void BuildNullTile(int floor, int row, int column, bool isRebuilding = false)
         {
         }
         
-        protected virtual void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription)
+        protected virtual void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription, bool isRebuilding = false)
         {
             // Physical position
             WorldKey.x = row;

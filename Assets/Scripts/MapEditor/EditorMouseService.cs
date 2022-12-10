@@ -295,6 +295,21 @@ namespace Scripts.MapEditor
                         GridPositionType = EGridPositionType.None;
                     }
                 }
+                else if (Manager.WorkLevel == ELevel.Lower)
+                {
+                    if (!isNullTile)
+                    {
+                        Vector3Int bellowGridPosition = newGridPosition.AddToX(1);
+
+                        bool isNullTileBellow = layout.ByGridV3int(bellowGridPosition) == null;
+                        
+                        GridPositionType = isNullTileBellow ? EGridPositionType.NullTileBellow : EGridPositionType.EditableTileBellow;
+                    }
+                    else
+                    {
+                        GridPositionType = EGridPositionType.None;
+                    }
+                }
             }
 
             SetCursor(GridPositionType);
@@ -338,6 +353,14 @@ namespace Scripts.MapEditor
                     break;
                 case EGridPositionType.EditableTileAbove:
                     cursor3D.ShowAt(MouseGridPosition, true);
+                    SetCursor(demolishCursor, _demolishMouseHotspot);
+                    break;
+                case EGridPositionType.NullTileBellow:
+                    cursor3D.ShowAt(MouseGridPosition, withCopyBellow: true);
+                    SetCursor(digCursor, _defaultMouseHotspot);
+                    break;
+                case EGridPositionType.EditableTileBellow:
+                    cursor3D.ShowAt(MouseGridPosition, withCopyBellow: true);
                     SetCursor(demolishCursor, _demolishMouseHotspot);
                     break;
                 default:

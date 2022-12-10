@@ -22,7 +22,7 @@ namespace Scripts.MapEditor
             _service = service;
         }
 
-        public void ShowAt(Vector3Int gridPosition, bool withCopyAbove = false)
+        public void ShowAt(Vector3Int gridPosition, bool withCopyAbove = false, bool withCopyBellow = false)
         {
             Vector3 worldPosition = gridPosition.ToWorldPosition();
             ShowAt(worldPosition);
@@ -30,6 +30,13 @@ namespace Scripts.MapEditor
             if (withCopyAbove)
             {
                 copy.transform.position = worldPosition + Vector3.up;
+                copy.SetActive(true);
+                return;
+            }
+            
+            if (withCopyBellow)
+            {
+                copy.transform.position = worldPosition + Vector3.down;
                 copy.SetActive(true);
                 return;
             }

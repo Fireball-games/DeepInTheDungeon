@@ -204,16 +204,19 @@ namespace Scripts.MapEditor
         {
             Vector3Int position = Mouse.MouseGridPosition;
 
-            if (Mouse.LeftClickExpired 
+            if (Mouse.LeftClickExpired
                 || Manager.WorkLevel == ELevel.Upper && (Mouse.GridPositionType != EGridPositionType.EditableTileAbove &&
-                                                         Mouse.GridPositionType != EGridPositionType.NullTileAbove))
+                                                         Mouse.GridPositionType != EGridPositionType.NullTileAbove)
+                || Manager.WorkLevel == ELevel.Lower && (Mouse.GridPositionType != EGridPositionType.EditableTileBellow &&
+                                                         Mouse.GridPositionType != EGridPositionType.NullTileBellow)
+               )
             {
                 return;
             }
 
             Manager.MapIsChanged = true;
             Manager.MapIsSaved = false;
-            
+
             ResetShownNullTilesColors();
 
             int floor = position.x;
@@ -221,10 +224,15 @@ namespace Scripts.MapEditor
             int column = position.z;
 
             if (!Manager.EditedLayout.HasIndex(floor, row, column)) return;
-            
+
             if (Manager.WorkLevel == ELevel.Upper)
             {
                 floor -= 1;
+            }
+            
+            if (Manager.WorkLevel == ELevel.Lower)
+            {
+                floor += 1;
             }
 
             AdjustEditedLayout(floor, row, column, out int floorAdjustment, out int rowAdjustment, out int columnAdjustment,
@@ -250,16 +258,17 @@ namespace Scripts.MapEditor
 
             GameManager.Instance.SetCurrentMap(newMap);
 
-            Mouse.RefreshMousePosition();
-
             if (!wasLayoutAdjusted)
             {
                 MapBuilder.RebuildTile(adjustedFloor, adjustedRow, adjustedColumn);
                 MapBuilder.RegenerateTilesAround(adjustedFloor, adjustedRow, adjustedColumn);
-                return;
+            }
+            else
+            {
+                Manager.OrderMapConstruction(newMap, mapIsPresented: true);
             }
 
-            Manager.OrderMapConstruction(newMap, mapIsPresented: true);
+            Mouse.RefreshMousePosition();
         }
 
         private TileDescription[,,] ConvertEditedLayoutToArray()

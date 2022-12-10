@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
+using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.Pooling;
 using UnityEngine;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building
 {
@@ -97,11 +97,12 @@ namespace Scripts.Building
         {
             if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
             {
-                _playBuilder.BuildTile( floor, row, column);
+                _playBuilder.BuildTile( floor, row, column, isRebuilding: true);
             }
             else
             {
                 // Logger.Log($"Rebuilding tile: {floor},{row},{column}");
+                // _editorBuilder.BuildTile(floor, row, column, isRebuilding: MapEditorManager.Instance.WorkLevel == Enums.ELevel.Upper);
                 _editorBuilder.BuildTile(floor, row, column);
             }
         }

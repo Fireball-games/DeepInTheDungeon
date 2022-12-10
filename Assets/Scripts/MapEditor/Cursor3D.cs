@@ -22,14 +22,14 @@ namespace Scripts.MapEditor
             _service = service;
         }
 
-        public void ShowAt(Vector3Int gridPosition, bool withCopyBelow = false)
+        public void ShowAt(Vector3Int gridPosition, bool withCopyAbove = false)
         {
             Vector3 worldPosition = gridPosition.ToWorldPosition();
             ShowAt(worldPosition);
 
-            if (withCopyBelow)
+            if (withCopyAbove)
             {
-                copy.transform.position = worldPosition + Vector3.down;
+                copy.transform.position = worldPosition + Vector3.up;
                 copy.SetActive(true);
                 return;
             }

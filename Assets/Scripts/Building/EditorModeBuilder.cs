@@ -1,7 +1,10 @@
 ﻿using Scripts.Building.Tile;
 using Scripts.Helpers;
+using Scripts.MapEditor;
+using Scripts.System;
 using Scripts.System.Pooling;
 using UnityEngine;
+using static Scripts.MapEditor.Enums;
 
 namespace Scripts.Building
 {
@@ -39,8 +42,15 @@ namespace Scripts.Building
             cube.transform.parent = LayoutParent;
             cube.transform.position = new Vector3(row, 0 - floor, column);
             cube.transform.localScale = _tileScaleInEditor;
+
+            int checkedLevel = MapBuilder.MapDescription.StartGridPosition.x;
             
-            if (floor != MapBuilder.MapDescription.StartGridPosition.x)
+            if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor && MapEditorManager.Instance.WorkLevel == ELevel.Upper)
+            {
+                checkedLevel -= 1;
+            }
+            
+            if (floor != checkedLevel)
             {
                 cube.SetActive(false);
             }

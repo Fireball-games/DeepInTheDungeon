@@ -239,8 +239,8 @@ namespace Scripts.MapEditor
             if (!newGridPosition.Equals(_lastGridPosition))
             {
                 EditorEvents.TriggerOnMouseGridPositionChanged(newGridPosition, _lastGridPosition);
-                OnMouseGridPositionChanged(newGridPosition);
                 _lastGridPosition = newGridPosition;
+                OnMouseGridPositionChanged(newGridPosition);
             }
         }
 
@@ -277,8 +277,6 @@ namespace Scripts.MapEditor
                 if (Manager.WorkLevel == ELevel.Equal)
                 {
                     GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
-                    
-                    cursor3D.ShowAt(newGridPosition);
                 }
                 else if (Manager.WorkLevel == ELevel.Upper)
                 {
@@ -286,26 +284,17 @@ namespace Scripts.MapEditor
                     {
                         Vector3Int aboveGridPosition = newGridPosition.AddToX(-1);
 
-                        isNullTile = layout.ByGridV3int(aboveGridPosition) == null;
+                        bool isNullTileAbove = layout.ByGridV3int(aboveGridPosition) == null;
                         
-                        GridPositionType = isNullTile ? EGridPositionType.NullTileAbove : EGridPositionType.EditableTileAbove;
+                        GridPositionType = isNullTileAbove ? EGridPositionType.NullTileAbove : EGridPositionType.EditableTileAbove;
                     
                         _buildService.ShowUpperLevelStoneCubesAround(aboveGridPosition);
-                        cursor3D.ShowAt(aboveGridPosition, true);
                     }
                     else
                     {
                         GridPositionType = EGridPositionType.None;
-                        cursor3D.Hide();
                     }
                 }
-                else
-                {
-                    cursor3D.Hide();
-                }
-                
-                // newCursor = isNullTile ? digCursor : demolishCursor;
-                // hotspot = isNullTile ? _defaultMouseHotspot : _demolishMouseHotspot;
             }
 
             SetCursor(GridPositionType);
@@ -332,21 +321,27 @@ namespace Scripts.MapEditor
             switch (type)
             {
                 case EGridPositionType.None:
+                    cursor3D.Hide();
                     SetDefaultCursor();
                     break;
                 case EGridPositionType.NullTile:
+                    cursor3D.ShowAt(MouseGridPosition);
                     SetCursor(digCursor, _defaultMouseHotspot);
                     break;
                 case EGridPositionType.EditableTile:
+                    cursor3D.ShowAt(MouseGridPosition);
                     SetCursor(demolishCursor, _demolishMouseHotspot);
                     break;
                 case EGridPositionType.NullTileAbove:
+                    cursor3D.ShowAt(MouseGridPosition, true);
                     SetCursor(digCursor, _defaultMouseHotspot);
                     break;
                 case EGridPositionType.EditableTileAbove:
+                    cursor3D.ShowAt(MouseGridPosition, true);
                     SetCursor(demolishCursor, _demolishMouseHotspot);
                     break;
                 default:
+                    cursor3D.Hide();
                     SetDefaultCursor();
                     break;
             }

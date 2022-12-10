@@ -117,11 +117,11 @@ namespace Scripts.UI.Components
                 backgroundImage.sprite = background;
             }
 
-            if (icon)
+            if (iconImage)
             {
                 iconImage.sprite = icon;
             }
-
+            
             backgroundImage.color = idleColor;
         }
 #endif

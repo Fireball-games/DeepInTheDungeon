@@ -68,7 +68,12 @@ public class FloorManagement : UIElementBase
     {
         for (int i = 0; i < _floorCount - 2; i++)
         {
-            _floorButtons.Add(ObjectPool.Instance.GetFromPool(floorButtonPrefab, body, true).GetComponent<FloorButton>());
+            FloorButton newButton = ObjectPool.Instance.GetFromPool(floorButtonPrefab, body, true)
+                .GetComponent<FloorButton>();
+            
+            newButton.SetActive(true, (i + 1).ToString());
+            
+            _floorButtons.Add(newButton);
         }
     }
 

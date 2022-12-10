@@ -26,24 +26,24 @@ namespace Scripts.Building
             _tileDefaultPrefab = mapBuilder.defaultsProvider.defaultTilePrefab;
         }
 
-        public void BuildTile(int floor, int row, int column, TileDescription tileDescription = null, bool isRebuilding = false)
+        public void BuildTile(int floor, int row, int column, TileDescription tileDescription = null)
         {
             tileDescription ??= Layout[floor, row, column];
             if(tileDescription == null)
             {
-                BuildNullTile(floor, row, column, isRebuilding);
+                BuildNullTile(floor, row, column);
             } 
             else
             {
-                BuildNormalTile(floor, row, column, tileDescription, isRebuilding);
+                BuildNormalTile(floor, row, column, tileDescription);
             }
         }
 
-        protected virtual void BuildNullTile(int floor, int row, int column, bool isRebuilding = false)
+        protected virtual void BuildNullTile(int floor, int row, int column)
         {
         }
         
-        protected virtual void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription, bool isRebuilding = false)
+        protected virtual void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription)
         {
             // Physical position
             WorldKey.x = row;

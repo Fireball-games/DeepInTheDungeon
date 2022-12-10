@@ -1,10 +1,7 @@
 ﻿using Scripts.Building.Tile;
 using Scripts.Helpers;
-using Scripts.MapEditor;
-using Scripts.System;
 using Scripts.System.Pooling;
 using UnityEngine;
-using static Scripts.MapEditor.Enums;
 
 namespace Scripts.Building
 {
@@ -16,7 +13,7 @@ namespace Scripts.Building
         {
         }
 
-        protected override void BuildNullTile(int floor, int row,int column, bool isRebuilding = false)
+        protected override void BuildNullTile(int floor, int row,int column)
         {
             WorldKey.x = row;
             WorldKey.y = -floor;
@@ -43,25 +40,25 @@ namespace Scripts.Building
             cube.transform.position = new Vector3(row, 0 - floor, column);
             cube.transform.localScale = _tileScaleInEditor;
 
-            SetDisabledIfApplicable(cube, floor, isRebuilding);
+            SetDisabledIfApplicable(cube, floor);
 
             PhysicalTiles.Add(cube.transform.position.ToVector3Int(), cube);
         }
 
-        protected override void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription, bool isRebuilding = false)
+        protected override void BuildNormalTile(int floor, int row, int column, TileDescription tileDescription)
         {
-            base.BuildNormalTile(floor, row, column, tileDescription, isRebuilding);
+            base.BuildNormalTile(floor, row, column, tileDescription);
 
             LastBuiltTile.HideWall(TileDescription.ETileDirection.Ceiling);
             LastBuiltTile.transform.localScale = _tileScaleInEditor;
 
-            SetDisabledIfApplicable(LastBuiltTile.gameObject, floor, isRebuilding);
+            SetDisabledIfApplicable(LastBuiltTile.gameObject, floor);
         }
 
-        private void SetDisabledIfApplicable(GameObject tile, int floor, bool isRebuilding = false)
+        private void SetDisabledIfApplicable(GameObject tile, int floor)
         {
             // Means on or bellow start level TODO: replace with list of displayed floors when implemented floor show status
-            if (!isRebuilding && floor < MapBuilder.MapDescription.StartGridPosition.x)
+            if (floor < MapBuilder.MapDescription.StartGridPosition.x)
             {
                 tile.SetActive(false);
             }

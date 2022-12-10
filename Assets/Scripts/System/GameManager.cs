@@ -55,13 +55,19 @@ namespace Scripts.System
 
         private void StartBuildingLevel()
         {
+            // TODO: once applicable -> ensure, that first map loaded after install of the game is main campaign
+            
             _gameMode = EGameMode.Play;
             
             _movementEnabled = false;
 
             _startLevelAfterBuildFinishes = true;
 
+            _currentMap ??= FileOperationsHelper.LoadLastPlayedMap();
+
             _currentMap ??= MapBuilder.GenerateDefaultMap(3, 5, 5);
+            
+            PlayerPrefs.SetString(Strings.LastPlayedMap, _currentMap.MapName);
             
             mapBuilder.BuildMap(_currentMap);
         }

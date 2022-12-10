@@ -54,7 +54,7 @@ namespace Scripts.MapEditor
 
         public void OrderMapConstruction(MapDescription map, bool markMapAsSaved = false, bool mapIsPresented = false)
         {
-            // if (MapIsBeingBuilt) return;
+            if (MapIsBeingBuilt) return;
             
             MapIsBeingBuilt = true;
             MapIsPresented = mapIsPresented;
@@ -96,6 +96,33 @@ namespace Scripts.MapEditor
             
             LoadMainSceneClear();
         }
+        
+        public void PlayMap()
+        {
+            if (!MapIsPresented)
+            {
+                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.NoMapToPlayLoaded), StatusBar.EMessageType.Negative);
+                return;
+            }
+
+            MapDescription currentMap = GameManager.Instance.CurrentMap;
+            
+            SaveMap();
+
+            GameManager.Instance.IsPlayingFromEditor = true;
+            SceneLoader.Instance.LoadScene(currentMap.SceneName);
+        }
+        
+        public void SaveMap()
+        {
+            MapDescription currentMap = GameManager.Instance.CurrentMap;
+            
+            string mapName = currentMap.MapName;
+            ES3.Save(mapName, currentMap, FileOperationsHelper.GetSavePath(mapName));
+
+            MapIsChanged = false;
+            MapIsSaved = true;
+        }
 
         private void GoToMainScreenWithSave()
         {
@@ -110,32 +137,6 @@ namespace Scripts.MapEditor
             GameManager.Instance.SetCurrentMap(null);
             GameManager.Instance.IsPlayingFromEditor = false;
             SceneLoader.Instance.LoadMainScene();
-        }
-        
-        public void PlayMap()
-        {
-            if (!MapIsPresented)
-            {
-                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.NoMapToPlayLoaded), StatusBar.EMessageType.Negative);
-                return;
-            }
-
-            MapDescription currentMap = GameManager.Instance.CurrentMap;
-            
-            SaveMap();
-            GameManager.Instance.IsPlayingFromEditor = true;
-            SceneLoader.Instance.LoadScene(currentMap.SceneName);
-        }
-        
-        public void SaveMap()
-        {
-            MapDescription currentMap = GameManager.Instance.CurrentMap;
-            
-            string mapName = currentMap.MapName;
-            ES3.Save(mapName, currentMap, FileOperationsHelper.GetSavePath(mapName));
-
-            MapIsChanged = false;
-            MapIsSaved = true;
         }
 
         private void OnLayoutBuilt()

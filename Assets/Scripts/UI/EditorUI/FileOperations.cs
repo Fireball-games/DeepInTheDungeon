@@ -40,7 +40,7 @@ namespace Scripts.UI.EditorUI
         {
             string newMapName = T.Get(LocalizationKeys.NewMap);
             
-            string[] fileNames = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectory);
+            string[] fileNames = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectoryName);
 
             fileNames = fileNames.Select(Path.GetFileName).ToArray();
 
@@ -56,7 +56,7 @@ namespace Scripts.UI.EditorUI
         
         private void OnLoadClicked()
         {
-            _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectory);
+            _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectoryName);
 
             if (_existingFiles == null || !_existingFiles.Any())
             {

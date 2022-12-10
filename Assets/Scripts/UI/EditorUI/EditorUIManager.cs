@@ -10,6 +10,7 @@ namespace Scripts.UI.EditorUI
     {
         [SerializeField] private ImageButton playButton;
         [SerializeField] private WorkModeSelection workModeSelection;
+        [SerializeField] private FloorManagement floorManagement;
         [SerializeField] private NewMapDialog newMapDialog;
         [SerializeField] private DialogBase confirmationDialog;
         [SerializeField] private StatusBar statusBar;
@@ -36,6 +37,7 @@ namespace Scripts.UI.EditorUI
         {
             playButton.SetActive(true);
             workModeSelection.SetActive(true);
+            floorManagement.SetActive(true);
             mapTitle.Show(GameManager.Instance.CurrentMap.MapName);
         }
     }

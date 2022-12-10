@@ -34,9 +34,6 @@ namespace Scripts.Player
             playerTransform.rotation = rotation;
             _targetRotation = rotation.eulerAngles;
             _isStartPositionSet = true;
-            Debug.DrawRay(playerTransform.position, Vector3.down, Color.red, 60);
-            Debug.DrawRay(playerTransform.position, Vector3.up, Color.yellow, 60);
-            Debug.DrawRay(playerTransform.position, Vector3.left, Color.blue, 60);
         }
 
         public void RotateLeft() => SetMovement(() => _targetRotation -= Vector3.up * 90f);

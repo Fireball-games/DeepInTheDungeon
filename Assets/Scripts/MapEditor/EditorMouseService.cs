@@ -234,7 +234,7 @@ namespace Scripts.MapEditor
 
             Vector3Int newGridPosition = Vector3Int.RoundToInt(worldPosition);
             newGridPosition.y = newGridPosition.x;
-            newGridPosition.x = -Manager.CurrentFloor;
+            newGridPosition.x = Manager.CurrentFloor;
 
             if (!newGridPosition.Equals(_lastGridPosition))
             {

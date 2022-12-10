@@ -45,11 +45,13 @@ namespace Scripts.MapEditor
         private void OnEnable()
         {
             MapBuilder.OnLayoutBuilt += OnLayoutBuilt;
+            EditorEvents.OnFloorChanged += OnFloorChanged;
         }
 
         private void OnDisable()
         {
             MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
+            EditorEvents.OnFloorChanged -= OnFloorChanged;
         }
 
         public void OrderMapConstruction(MapDescription map, bool markMapAsSaved = false, bool mapIsPresented = false)
@@ -61,7 +63,7 @@ namespace Scripts.MapEditor
             MapIsSaved = markMapAsSaved;
             
             EditedLayout = MapBuildService.ConvertToLayoutType(map.Layout);
-            CurrentFloor = -map.StartGridPosition.x;
+            CurrentFloor = map.StartGridPosition.x;
 
             GameManager.Instance.SetCurrentMap(map);
 
@@ -159,5 +161,7 @@ namespace Scripts.MapEditor
             playerIcon.SetArrowRotation(map.PlayerRotation);
             playerIcon.SetActive(true);
         }
+
+        private void OnFloorChanged(int floor) => CurrentFloor = floor;
     }
 }

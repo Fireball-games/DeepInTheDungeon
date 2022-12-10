@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Scripts.Building;
 using Scripts.Building.Tile;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.System;
 using UnityEngine;
@@ -265,6 +266,7 @@ namespace Scripts.MapEditor
             }
             else
             {
+                EditorEvents.TriggerOnLayoutChanged();
                 Manager.OrderMapConstruction(newMap, mapIsPresented: true);
             }
 

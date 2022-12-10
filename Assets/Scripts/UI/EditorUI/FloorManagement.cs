@@ -1,80 +1,124 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Scripts.Building;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.Pooling;
 using Scripts.UI.Components;
-using Scripts.UI.EditorUI;
 using UnityEngine;
 
-public class FloorManagement : UIElementBase
+namespace Scripts.UI.EditorUI
 {
-    [SerializeField] private GameObject upButtonPrefab;
-    [SerializeField] private GameObject downButtonPrefab;
-    [SerializeField] private GameObject floorButtonPrefab;
-
-    private ImageButton _upButton;
-    private ImageButton _downButton;
-    private List<FloorButton> _floorButtons;
-
-    private int _floorCount;
-    private int _currentFloor;
-
-    private enum EButton
+    public class FloorManagement : UIElementBase
     {
-        Up,
-        Down,
-        Floor
-    };
+        [SerializeField] private GameObject floorButtonPrefab;
+        [SerializeField] private ImageButton upButton;
+        [SerializeField] private ImageButton downButton;
 
-    private void Awake()
-    {
-        _floorButtons = new List<FloorButton>();
-    }
+        private List<FloorButton> _floorButtons;
 
-    public override void SetActive(bool isActive)
-    {
-        base.SetActive(isActive);
-        
-        ConstructButtons();
-    }
+        private MapEditorManager Manager => MapEditorManager.Instance;
 
-    private void ConstructButtons()
-    {
-        body.DismissAllChildrenToPool(true);
-        _floorButtons.Clear();
-        
-        MapDescription map = MapEditorManager.Instance.MapBuilder.MapDescription;
-        _floorCount = map.Layout.GetLength(0);
-        _currentFloor = map.StartGridPosition.x;
+        private int _floorCount;
+        private int _currentFloor;
 
-        GetButton(EButton.Up);
-        AddFloorButtons();
-        GetButton(EButton.Down);
-    }
-
-    private GameObject GetButton(EButton whichButton) => whichButton switch
-    {
-        EButton.Up => ObjectPool.Instance.GetFromPool(upButtonPrefab, body, true),
-        EButton.Down => ObjectPool.Instance.GetFromPool(downButtonPrefab, body, true),
-        EButton.Floor => ObjectPool.Instance.GetFromPool(floorButtonPrefab, body, true),
-        _ => throw new ArgumentOutOfRangeException(nameof(whichButton), whichButton, null)
-    };
-
-    private void AddFloorButtons()
-    {
-        for (int i = 0; i < _floorCount - 2; i++)
+        private void Awake()
         {
-            FloorButton newButton = ObjectPool.Instance.GetFromPool(floorButtonPrefab, body, true)
-                .GetComponent<FloorButton>();
-            
-            newButton.SetActive(true, (i + 1).ToString());
-            
-            _floorButtons.Add(newButton);
+            _floorButtons = new List<FloorButton>();
         }
-    }
 
+        private void OnEnable()
+        {
+            EditorEvents.OnLayoutChanged += ConstructButtons;
+            EditorEvents.OnFloorChanged += ConstructButtons;
+            
+            upButton.OnClick += ChangeGridFloorUp;
+            downButton.OnClick += ChangeGridFloorDown;
+        }
+    
+        private void OnDisable()
+        {
+            EditorEvents.OnLayoutChanged -= ConstructButtons;
+            EditorEvents.OnFloorChanged -= ConstructButtons;
+            
+            upButton.OnClick -= ChangeGridFloorUp;
+            downButton.OnClick -= ChangeGridFloorDown;
+        }
+
+        public override void SetActive(bool isActive)
+        {
+            base.SetActive(isActive);
+        
+            ConstructButtons();
+        }
+
+        private void ConstructButtons(int _) => ConstructButtons();
+        private void ConstructButtons()
+        {
+            upButton.transform.SetParent(transform);
+            downButton.transform.SetParent(transform);
+            
+            body.DismissAllChildrenToPool(true);
+            
+            _floorButtons.Clear();
+        
+            MapDescription map = Manager.MapBuilder.MapDescription;
+            _floorCount = map.Layout.GetLength(0);
+            _currentFloor = Manager.CurrentFloor;
+
+            upButton.SetActive(true);
+            upButton.transform.SetParent(body.transform);
+            
+            AddFloorButtons();
+            
+            downButton.SetActive(true);
+            downButton.transform.SetParent(body.transform);
+
+            SetInteractivity();
+        }
+
+        private void SetInteractivity()
+        {
+            if (_floorCount <= 3)
+            {
+                _floorButtons[0].SetInteractable(false);
+            }
+
+            if (_currentFloor == 1)
+            {
+                upButton.SetInteractable(false);
+            }
+
+            if (_currentFloor == _floorCount - 2)
+            {
+                downButton.SetInteractable(false);
+            }
+        }
+
+        private void AddFloorButtons()
+        {
+            for (int i = 0; i < _floorCount - 2; i++)
+            {
+                FloorButton newButton = ObjectPool.Instance.GetFromPool(floorButtonPrefab, body, true)
+                    .GetComponent<FloorButton>();
+            
+                newButton.SetActive(true, (i + 1));
+
+                newButton.SetSelected(_currentFloor == i + 1, true);
+
+                _floorButtons.Add(newButton);
+            }
+        }
+
+        /// <summary>
+        /// Changes current floor grid-wise, so top floor is 0
+        /// </summary>
+        private void ChangeGridFloorUp() => EditorEvents.TriggerOnFloorChanged(Manager.CurrentFloor - 1);
+        
+        /// <summary>
+        /// Changes current floor grid-wise, so top floor is 0
+        /// </summary>
+        private void ChangeGridFloorDown() => EditorEvents.TriggerOnFloorChanged(Manager.CurrentFloor + 1);
+    }
 }

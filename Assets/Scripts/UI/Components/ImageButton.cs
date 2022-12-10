@@ -18,9 +18,8 @@ namespace Scripts.UI.Components
         [Header("Options")] [SerializeField] private float clickedEffectDuration = 0.2f;
         [SerializeField] private MouseClickOverlay mouseClickOverlay;
 
-        [Header("Assignables")] [SerializeField]
-        private Image frameImage;
-
+        [Header("Assignables")] 
+        [SerializeField] private Image frameImage;
         [SerializeField] private Image iconImage;
         [SerializeField] private Image backgroundImage;
 
@@ -31,6 +30,7 @@ namespace Scripts.UI.Components
 
         private bool _isMouseEntered;
         private bool _isSelected;
+        private bool _isInteractable = true;
 
         private void OnEnable()
         {
@@ -41,7 +41,16 @@ namespace Scripts.UI.Components
             SetBackgroundColor();
         }
 
-        public void SetActive(bool isActive) => gameObject.SetActive(isActive); 
+        private void OnDisable()
+        {
+            mouseClickOverlay.OnClick -= OnClickInternal;
+            mouseClickOverlay.OnMouseEnter -= OnMouseEnter;
+            mouseClickOverlay.OnMouseLeave -= OnMouseExit;
+        }
+
+        public void SetActive(bool isActive) => gameObject.SetActive(isActive);
+
+        public void SetInteractable(bool isInteractable) => _isInteractable = isInteractable;
 
         public void SetSelected(bool isSelected, bool silent = false)
         {
@@ -58,6 +67,8 @@ namespace Scripts.UI.Components
 
         private void OnClickInternal()
         {
+            if (!_isInteractable) return;
+            
             OnClickWithSender?.Invoke(this);
             OnClick?.Invoke();
             StartCoroutine(ClickedCoroutine());
@@ -65,12 +76,16 @@ namespace Scripts.UI.Components
 
         private void OnMouseEnter()
         {
+            if (!_isInteractable) return;
+            
             _isMouseEntered = true;
             SetBackgroundColor();
         }
 
         private void OnMouseExit()
         {
+            if (!_isInteractable) return;
+            
             _isMouseEntered = false;
             SetBackgroundColor();
         }

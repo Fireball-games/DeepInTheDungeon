@@ -261,36 +261,54 @@ namespace Scripts.MapEditor
         {
             TileDescription[,,] layout = GameManager.Instance.CurrentMap.Layout;
 
+            GridPositionType = EGridPositionType.None;
+            
             if (!layout.HasIndex(newGridPosition))
             {
                 Cursor.SetCursor(null, _defaultMouseHotspot, CursorMode.Auto);
-                GridPositionType = EGridPositionType.None;
+                cursor3D.Hide();
                 return;
             }
 
-            bool isNullTile = layout[newGridPosition.x, newGridPosition.y, newGridPosition.z] == null;
-
-            GridPositionType = isNullTile ? EGridPositionType.Null : EGridPositionType.EditableTile;
-
-            Texture2D newCursor = null;
-            Vector2 hotspot = _defaultMouseHotspot;
-
+            bool isNullTile = layout.ByGridV3int(newGridPosition) == null;
+            
             if (Manager.WorkMode == EWorkMode.Build)
             {
-                if (Manager.WorkLevel == ELevel.Upper && !isNullTile)
+                if (Manager.WorkLevel == ELevel.Equal)
                 {
-                    GridPositionType = EGridPositionType.UpperEligibleForRebuild;
-                    _buildService.ShowUpperLevelStoneCubesAround(newGridPosition);
+                    GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
+                    
                     cursor3D.ShowAt(newGridPosition);
-                    return;
+                }
+                else if (Manager.WorkLevel == ELevel.Upper)
+                {
+                    if (!isNullTile)
+                    {
+                        Vector3Int aboveGridPosition = newGridPosition.AddToX(-1);
+
+                        isNullTile = layout.ByGridV3int(aboveGridPosition) == null;
+                        
+                        GridPositionType = isNullTile ? EGridPositionType.NullTileAbove : EGridPositionType.EditableTileAbove;
+                    
+                        _buildService.ShowUpperLevelStoneCubesAround(aboveGridPosition);
+                        cursor3D.ShowAt(aboveGridPosition, true);
+                    }
+                    else
+                    {
+                        GridPositionType = EGridPositionType.None;
+                        cursor3D.Hide();
+                    }
+                }
+                else
+                {
+                    cursor3D.Hide();
                 }
                 
-                cursor3D.Hide();
-                newCursor = isNullTile ? digCursor : demolishCursor;
-                hotspot = isNullTile ? _defaultMouseHotspot : _demolishMouseHotspot;
+                // newCursor = isNullTile ? digCursor : demolishCursor;
+                // hotspot = isNullTile ? _defaultMouseHotspot : _demolishMouseHotspot;
             }
 
-            SetCursor(newCursor, hotspot);
+            SetCursor(GridPositionType);
         }
 
         private void SetCursorToCameraMovement() => SetCursor(moveCameraCursor, _moveCameraMouseHotspot);
@@ -307,6 +325,31 @@ namespace Scripts.MapEditor
         {
             Cursor.SetCursor(image, hotspot, CursorMode.Auto);
             _isDefaultCursorSet = false;
+        }
+
+        private void SetCursor(EGridPositionType type)
+        {
+            switch (type)
+            {
+                case EGridPositionType.None:
+                    SetDefaultCursor();
+                    break;
+                case EGridPositionType.NullTile:
+                    SetCursor(digCursor, _defaultMouseHotspot);
+                    break;
+                case EGridPositionType.EditableTile:
+                    SetCursor(demolishCursor, _demolishMouseHotspot);
+                    break;
+                case EGridPositionType.NullTileAbove:
+                    SetCursor(digCursor, _defaultMouseHotspot);
+                    break;
+                case EGridPositionType.EditableTileAbove:
+                    SetCursor(demolishCursor, _demolishMouseHotspot);
+                    break;
+                default:
+                    SetDefaultCursor();
+                    break;
+            }
         }
 
         public void RefreshMousePosition()

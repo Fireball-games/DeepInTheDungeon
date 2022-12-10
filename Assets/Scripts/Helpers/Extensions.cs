@@ -7,26 +7,26 @@ namespace Scripts.Helpers
 {
     public static class Extensions
     {
-        public static readonly Vector3Int Vector3IntUp;
-        public static readonly Vector3Int Vector3IntDown;
-        public static readonly Vector3Int Vector3IntNorth;
-        public static readonly Vector3Int Vector3IntEast;
-        public static readonly Vector3Int Vector3IntSouth;
-        public static readonly Vector3Int Vector3IntWest;
+        public static readonly Vector3Int GridUp;
+        public static readonly Vector3Int GridDown;
+        public static readonly Vector3Int GridNorth;
+        public static readonly Vector3Int GridEast;
+        public static readonly Vector3Int GridSouth;
+        public static readonly Vector3Int GridWest;
 
         private static Vector3 _v3;
-        private static Vector3Int _v3i;
+        private static Vector3Int _v3I;
 
         static Extensions()
         {
             _v3 = Vector3.zero;
-            _v3i = Vector3Int.zero;
-            Vector3IntUp = Vector3Int.down;
-            Vector3IntDown = Vector3Int.up;
-            Vector3IntNorth = Vector3Int.left;
-            Vector3IntEast = Vector3Int.forward;
-            Vector3IntSouth = Vector3Int.right;
-            Vector3IntWest = Vector3Int.back;
+            _v3I = Vector3Int.zero;
+            GridUp = Vector3Int.down;
+            GridDown = Vector3Int.up;
+            GridNorth = Vector3Int.left;
+            GridEast = Vector3Int.forward;
+            GridSouth = Vector3Int.right;
+            GridWest = Vector3Int.back;
         }
 
         public static Vector3 ToVector3(this Vector3Int source)
@@ -40,11 +40,11 @@ namespace Scripts.Helpers
 
         public static Vector3Int ToVector3Int(this Vector3 source)
         {
-            _v3i.x = Mathf.RoundToInt(source.x);
-            _v3i.y = Mathf.RoundToInt(source.y);
-            _v3i.z = Mathf.RoundToInt(source.z);
+            _v3I.x = Mathf.RoundToInt(source.x);
+            _v3I.y = Mathf.RoundToInt(source.y);
+            _v3I.z = Mathf.RoundToInt(source.z);
 
-            return _v3i;
+            return _v3I;
         }
 
         public static Vector3 ToWorldPosition(this Vector3Int gridPosition)
@@ -89,6 +89,12 @@ namespace Scripts.Helpers
         public static Vector3Int SwapXY(this Vector3Int source)
         {
             (source.y, source.x) = (source.x, source.y);
+            return source;
+        }
+
+        public static Vector3Int AddToX(this Vector3Int source, int value)
+        {
+            source.x += value;
             return source;
         }
 

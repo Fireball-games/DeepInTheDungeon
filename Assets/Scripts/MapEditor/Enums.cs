@@ -19,9 +19,10 @@
         public enum EGridPositionType
         {
             None = 0,
-            Null = 1,
+            NullTile = 1,
             EditableTile = 2,
-            UpperEligibleForRebuild = 3,
+            NullTileAbove = 3,
+            EditableTileAbove = 4,
         }
     }
 }

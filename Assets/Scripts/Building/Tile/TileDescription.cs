@@ -44,12 +44,12 @@ namespace Scripts.Building.Tile
         public WallDescription GetWall(Vector3Int direction)
         {
             // TODO: not sure if floor and ceiling should not be reversed
-            if (direction == Extensions.Vector3IntDown) return Walls.Floor;
-            if (direction == Extensions.Vector3IntUp) return Walls.Ceiling;
-            if (direction == Extensions.Vector3IntNorth) return Walls.North;
-            if (direction == Extensions.Vector3IntEast) return Walls.East;
-            if (direction == Extensions.Vector3IntSouth) return Walls.South;
-            if (direction == Extensions.Vector3IntWest) return Walls.West;
+            if (direction == Extensions.GridDown) return Walls.Floor;
+            if (direction == Extensions.GridUp) return Walls.Ceiling;
+            if (direction == Extensions.GridNorth) return Walls.North;
+            if (direction == Extensions.GridEast) return Walls.East;
+            if (direction == Extensions.GridSouth) return Walls.South;
+            if (direction == Extensions.GridWest) return Walls.West;
             return null;
         }
 
@@ -62,10 +62,10 @@ namespace Scripts.Building.Tile
                 {
                     Ceiling = new WallDescription(),
                     Floor = new WallDescription(),
-                    North = WallForDirection(row, column, Extensions.Vector3IntNorth, layout),
-                    East = WallForDirection(row, column, Extensions.Vector3IntEast, layout),
-                    South = WallForDirection(row, column, Extensions.Vector3IntSouth, layout),
-                    West = WallForDirection(row, column, Extensions.Vector3IntWest, layout),
+                    North = WallForDirection(row, column, Extensions.GridNorth, layout),
+                    East = WallForDirection(row, column, Extensions.GridEast, layout),
+                    South = WallForDirection(row, column, Extensions.GridSouth, layout),
+                    West = WallForDirection(row, column, Extensions.GridWest, layout),
                 }
             };
         }

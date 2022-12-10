@@ -4,6 +4,7 @@ using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.System;
 using UnityEngine;
+using static Scripts.MapEditor.Enums;
 using LayoutType =
     System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 
@@ -204,7 +205,8 @@ namespace Scripts.MapEditor
             Vector3Int position = Mouse.MouseGridPosition;
 
             if (Mouse.LeftClickExpired 
-                || Manager.WorkLevel == Enums.ELevel.Upper && Mouse.GridPositionType != Enums.EGridPositionType.UpperEligibleForRebuild)
+                || Manager.WorkLevel == ELevel.Upper && (Mouse.GridPositionType != EGridPositionType.EditableTileAbove &&
+                                                         Mouse.GridPositionType != EGridPositionType.NullTileAbove))
             {
                 return;
             }
@@ -220,7 +222,7 @@ namespace Scripts.MapEditor
 
             if (!Manager.EditedLayout.HasIndex(floor, row, column)) return;
             
-            if (Manager.WorkLevel == Enums.ELevel.Upper)
+            if (Manager.WorkLevel == ELevel.Upper)
             {
                 floor -= 1;
             }
@@ -305,7 +307,6 @@ namespace Scripts.MapEditor
         public void ShowUpperLevelStoneCubesAround(Vector3Int centerGridPosition)
         {
             ResetShownNullTilesColors();
-            centerGridPosition.x -= 1;
 
             SetColorForNullTile(centerGridPosition, _fullColor);
 

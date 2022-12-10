@@ -46,6 +46,15 @@ namespace Scripts.Helpers
 
             return _v3I;
         }
+        
+        public static Vector3Int ToGridPosition(this Vector3 source)
+        {
+            _v3I.x = Mathf.RoundToInt(source.y);
+            _v3I.y = Mathf.RoundToInt(-source.x);
+            _v3I.z = Mathf.RoundToInt(source.z);
+
+            return _v3I;
+        }
 
         public static Vector3 ToWorldPosition(this Vector3Int gridPosition)
         {

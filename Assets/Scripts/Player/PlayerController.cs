@@ -19,8 +19,8 @@ namespace Scripts.Player
 
         public static float TransitionRotationSpeed { get; private set; }
 
-        private Vector3 _targetGridPos;
-        private Vector3 _prevTargetGridPos;
+        private Vector3 _targetPosition;
+        private Vector3 _prevTargetPosition;
         private Vector3 _targetRotation;
 
         private bool _isStartPositionSet;
@@ -30,18 +30,21 @@ namespace Scripts.Player
         public void SetPositionAndRotation(Vector3 gridPosition, Quaternion rotation)
         {
             Transform playerTransform = transform;
-            playerTransform.position = _targetGridPos = _prevTargetGridPos = new Vector3(gridPosition.y, -gridPosition.x, gridPosition.z);
+            playerTransform.position = _targetPosition = _prevTargetPosition = new Vector3(gridPosition.y, -gridPosition.x, gridPosition.z);
             playerTransform.rotation = rotation;
             _targetRotation = rotation.eulerAngles;
             _isStartPositionSet = true;
+            Debug.DrawRay(playerTransform.position, Vector3.down, Color.red, 60);
+            Debug.DrawRay(playerTransform.position, Vector3.up, Color.yellow, 60);
+            Debug.DrawRay(playerTransform.position, Vector3.left, Color.blue, 60);
         }
 
         public void RotateLeft() => SetMovement(() => _targetRotation -= Vector3.up * 90f);
         public void RotateRight() => SetMovement(() => _targetRotation += Vector3.up * 90f);
-        public void MoveForward() => SetMovement(() => _targetGridPos += transform.forward);
-        public void MoveBackwards() => SetMovement(() => _targetGridPos -= transform.forward);
-        public void MoveLeft() => SetMovement(() => _targetGridPos -= transform.right);
-        public void MoveRight() => SetMovement(() => _targetGridPos += transform.right);
+        public void MoveForward() => SetMovement(() => _targetPosition += transform.forward);
+        public void MoveBackwards() => SetMovement(() => _targetPosition -= transform.forward);
+        public void MoveLeft() => SetMovement(() => _targetPosition -= transform.right);
+        public void MoveRight() => SetMovement(() => _targetPosition += transform.right);
 
         private void SetMovement(Action movementSetter)
         {
@@ -52,19 +55,19 @@ namespace Scripts.Player
             if (IsTargetPositionValid())
             {
                 _atRest = false;
-                _prevTargetGridPos = _targetGridPos;
+                _prevTargetPosition = _targetPosition;
                 StartCoroutine(PerformMovementCoroutine());
                 return;
             }
 
-            if (!_isBashingIntoWall && _targetGridPos != _prevTargetGridPos)
+            if (!_isBashingIntoWall && (_targetPosition != _prevTargetPosition))
             {
                 _atRest = false;
                 StartCoroutine(BashIntoWallCoroutine());
                 return;
             }
 
-            _targetGridPos = _prevTargetGridPos;
+            _targetPosition = _prevTargetPosition;
         }
 
         private IEnumerator PerformMovementCoroutine()
@@ -73,10 +76,9 @@ namespace Scripts.Player
             float currentRotY = myTransform.eulerAngles.y;
             Vector3 currentPosition = myTransform.position;
             
-            while (Vector3.Distance(transform.position, _targetGridPos) > 0.05f
-                   || Vector3.Distance(transform.eulerAngles, _targetRotation) > 0.05)
+            while (NotAtTargetPosition(_targetPosition) || NotAtTargetRotation())
             {
-                Vector3 targetPosition = _targetGridPos;
+                Vector3 targetPosition = _targetPosition;
 
                 if (_targetRotation.y is > 270f and < 361f) _targetRotation.y = 0f;
                 if (_targetRotation.y < 0f) _targetRotation.y = 270f;
@@ -96,8 +98,23 @@ namespace Scripts.Player
                 yield return null;
             }
 
+            while (!GroundCheck())
+            {
+                Vector3 targetPosition = transform.position + Vector3.down;
+                
+                while (NotAtTargetPosition(targetPosition))
+                {
+                    transform.position = Vector3.MoveTowards(myTransform.position, targetPosition, Time.deltaTime * transitionSpeed);
+                    yield return null;
+                }
+                
+                transform.position = _targetPosition = _prevTargetPosition = transform.position.ToVector3Int();
+
+                yield return null;
+            }
+
             _atRest = true;
-            _prevTargetGridPos = _targetGridPos;
+            _prevTargetPosition = _targetPosition;
             
             if (Math.Abs(currentRotY - transform.rotation.eulerAngles.y) > float.Epsilon)
             {
@@ -105,7 +122,7 @@ namespace Scripts.Player
                 EventsManager.TriggerOnPlayerRotationChanged(_targetRotation);
             }
 
-            if (Vector3.Magnitude(transform.position - currentPosition) > 0.5f)
+            if (NotAtTargetPosition(currentPosition))
             {
                 EventsManager.TriggerOnPlayerPositionChanged(transform.position);
             }
@@ -114,18 +131,18 @@ namespace Scripts.Player
         private IEnumerator BashIntoWallCoroutine()
         {
             Vector3 position = transform.position;
-            Vector3 targetPosition = position + ((_targetGridPos - position) * 0.2f);
+            Vector3 targetPosition = position + ((_targetPosition - position) * 0.2f);
 
-            while (Vector3.Distance(transform.position, targetPosition) > 0.05f)
+            while (NotAtTargetPosition(targetPosition))
             {
-                transform.position = Vector3.MoveTowards(transform.position, _targetGridPos,
+                transform.position = Vector3.MoveTowards(transform.position, _targetPosition,
                     Time.deltaTime * wallBashSpeed);
                 yield return null;
             }
 
-            while (Vector3.Distance(transform.position, _prevTargetGridPos) > 0.05f)
+            while (NotAtTargetPosition(_prevTargetPosition))
             {
-                transform.position = Vector3.MoveTowards(transform.position, _prevTargetGridPos,
+                transform.position = Vector3.MoveTowards(transform.position, _prevTargetPosition,
                     Time.deltaTime * wallBashSpeed * wallBashSpeedReturnMultiplier);
                 yield return null;
             }
@@ -140,15 +157,36 @@ namespace Scripts.Player
 
         private bool IsTargetPositionValid()
         {
-            Vector3Int intTargetPosition = Vector3Int.RoundToInt(_targetGridPos);
+            Vector3Int intTargetPosition = Vector3Int.RoundToInt(_targetPosition);
             intTargetPosition.y = -intTargetPosition.y;
             
-            return GameManager.Instance.CurrentMap.Layout[intTargetPosition.y,intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
+            return GameManager.Instance.CurrentMap.Layout[intTargetPosition.y,intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true} 
+                   && !IsMidWallInTargetDirection();
+        }
+
+        private bool IsMidWallInTargetDirection()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if bellow player position is collider with wall tag and if not, returns true (as ground is there - check).
+        /// </summary>
+        /// <returns>False means player will fall</returns>
+        private bool GroundCheck()
+        {
+            Vector3 currentPosition = transform.position; 
+            Ray ray = new(currentPosition, Vector3.down);
+            return Physics.Raycast(ray, 0.7f, LayerMask.GetMask(LayersManager.WallMaskName));
         }
 
         public void SetCamera()
         {
             CameraManager.Instance.SetMainCamera(playerCamera);
         }
+
+        private bool NotAtTargetPosition(Vector3 targetPosition) => Vector3.Distance(transform.position, targetPosition) > 0.05f;
+
+        private bool NotAtTargetRotation() => Vector3.Distance(transform.eulerAngles, _targetRotation) > 0.05;
     }
 }

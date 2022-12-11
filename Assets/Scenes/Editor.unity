@@ -1632,11 +1632,6 @@ PrefabInstance:
       propertyPath: mapEditorManager
       value: 
       objectReference: {fileID: 2051228926}
-    - target: {fileID: 6547159520619869986, guid: 2089c85b97fa7ee4690ad8c3ced77346,
-        type: 3}
-      propertyPath: maxValidClickTime
-      value: 0.1
-      objectReference: {fileID: 0}
     - target: {fileID: 6547159520619869991, guid: 2089c85b97fa7ee4690ad8c3ced77346,
         type: 3}
       propertyPath: m_Name
@@ -1652,5 +1647,10 @@ PrefabInstance:
       propertyPath: cameraHolder
       value: 
       objectReference: {fileID: 2033699653}
+    - target: {fileID: 8119083429710413764, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: cameraRotator
+      value: 
+      objectReference: {fileID: 98147760}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2089c85b97fa7ee4690ad8c3ced77346, type: 3}

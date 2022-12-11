@@ -67,7 +67,11 @@ MonoBehaviour:
   maxValidClickTime: 0.1
   cameraPanSpeed: 100
   cameraZoomSpeed: 1500
+  maxZoomHeight: 20
+  cameraRotationSpeed: 400
   cameraHolder: {fileID: 0}
+  cameraRotator: {fileID: 0}
+  cursor3D: {fileID: 0}
 --- !u!114 &8119083429710413764
 MonoBehaviour:
   m_ObjectHideFlags: 0

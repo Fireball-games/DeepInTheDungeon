@@ -7,6 +7,7 @@ using Scripts.System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -18,6 +19,7 @@ namespace Scripts.MapEditor
         [SerializeField] private float maxValidClickTime = 0.1f;
         [SerializeField] private float cameraPanSpeed = 100f;
         [SerializeField] private float cameraZoomSpeed = 100f;
+        [SerializeField] private float maxZoomHeight = 20f;
         [SerializeField] private float cameraRotationSpeed = 100f;
         [SerializeField] private Transform cameraHolder;
         [SerializeField] private Transform cameraRotator;
@@ -44,7 +46,7 @@ namespace Scripts.MapEditor
         private bool _isDefaultCursorSet;
         private bool _uiIsBlocking;
 
-        private bool IsManipulatingCameraPosition
+        public bool IsManipulatingCameraPosition
         {
             get => _isManipulatingCameraPosition;
             set
@@ -133,7 +135,13 @@ namespace Scripts.MapEditor
             _cameraMoveVector.y = y;
             _cameraMoveVector.z = -x;
 
-            cameraHolder.Translate(_cameraMoveVector);
+            Vector3 newPosition = cameraHolder.position + _cameraMoveVector;
+
+            newPosition.y = Mathf.Clamp(
+                newPosition.y,
+                -Manager.EditedLayout.Count + 3, maxZoomHeight);
+            
+            cameraHolder.position = newPosition;
         }
 
         public void MoveCameraTo(float x, float y, float z)
@@ -226,6 +234,32 @@ namespace Scripts.MapEditor
             if (LeftClickExpired && Input.GetMouseButtonUp(0))
             {
                 IsManipulatingCameraPosition = false;
+            }
+
+            if (RightClickExpired && Input.GetMouseButton(1))
+            {
+                IsManipulatingCameraPosition = true;
+                SetCursorToCameraMovement();
+
+                float xDelta = Input.GetAxis(Strings.MouseXAxis);
+                float yDelta = Input.GetAxis(Strings.MouseYAxis);
+
+                if (xDelta == 0f && yDelta == 0f) return;
+
+                Vector3 cameraRotation = cameraRotator.localRotation.eulerAngles;
+                _cameraMoveVector.x = cameraRotation.x - (xDelta * Time.deltaTime * cameraRotationSpeed);
+                _cameraMoveVector.y = cameraRotation.y;
+                _cameraMoveVector.z = cameraRotation.z - (yDelta * Time.deltaTime * cameraRotationSpeed);
+                
+                cameraRotator.localRotation = Quaternion.Euler(_cameraMoveVector);
+            }
+            
+            if (LeftClickExpired && Input.GetMouseButtonUp(1))
+            {
+                IsManipulatingCameraPosition = false;
+                Vector3 cameraRotation = cameraRotator.localRotation.eulerAngles;
+                cameraRotation.x = cameraRotation.z = 0;
+                cameraRotator.localRotation = Quaternion.Euler(cameraRotation);
             }
         }
 

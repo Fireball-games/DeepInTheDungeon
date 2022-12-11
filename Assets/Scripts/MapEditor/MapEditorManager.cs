@@ -32,7 +32,7 @@ namespace Scripts.MapEditor
         public LayoutType EditedLayout { get; private set; }
         public MapBuilder MapBuilder { get; private set; }
         public int CurrentFloor { get; private set; }
-        public Dictionary<int, bool> FloorVisibilityMap { get; private set; }
+        public Dictionary<int, bool> FloorVisibilityMap { get; internal set; }
 
         private bool _dontChangeCameraAfterLayoutIsBuild;
 
@@ -195,7 +195,7 @@ namespace Scripts.MapEditor
         {
             FloorVisibilityMap.Clear();
             
-            for (int floor = 1; floor < EditedLayout.Count - 1; floor++)
+            for (int floor = 1; floor <= EditedLayout.Count - 2; floor++)
             {
                 FloorVisibilityMap.Add(floor, floor >= CurrentFloor);
             }

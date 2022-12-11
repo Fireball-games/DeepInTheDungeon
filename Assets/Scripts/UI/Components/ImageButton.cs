@@ -8,7 +8,7 @@ namespace Scripts.UI.Components
     public class ImageButton : MonoBehaviour
     {
         [Header("Sprites")] [SerializeField] private Sprite frame;
-        [SerializeField] private Sprite icon;
+        [SerializeField] protected Sprite icon;
         [SerializeField] private Sprite background;
         [Header("Colors")] [SerializeField] private Color idleColor;
         [SerializeField] private Color enteredColor;
@@ -20,11 +20,11 @@ namespace Scripts.UI.Components
 
         [Header("Assignables")] 
         [SerializeField] private Image frameImage;
-        [SerializeField] private Image iconImage;
+        [SerializeField] protected Image iconImage;
         [SerializeField] private Image backgroundImage;
 
         public event Action<ImageButton> OnClickWithSender;
-        public event Action OnClick;
+        public virtual event Action OnClick;
         public event Action OnSelected;
         public event Action OnDeselected;
 
@@ -60,7 +60,7 @@ namespace Scripts.UI.Components
             SetBackgroundColor();
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             _isMouseEntered = false;
             
@@ -89,7 +89,7 @@ namespace Scripts.UI.Components
                 OnDeselected?.Invoke();
         }
 
-        private void OnClickInternal()
+        protected virtual void OnClickInternal()
         {
             if (!IsInteractable) return;
             
@@ -150,7 +150,7 @@ namespace Scripts.UI.Components
         }
 
 #if UNITY_EDITOR
-        private void OnValidate()
+        protected virtual void OnValidate()
         {
             if (frame)
             {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Scripts.Building;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
@@ -11,7 +10,6 @@ using static Scripts.MapEditor.Enums;
 using LayoutType =
     System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 using FloorType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.MapEditor
 {
@@ -23,7 +21,7 @@ namespace Scripts.MapEditor
         private static EditorMouseService Mouse => EditorMouseService.Instance;
         private readonly Color _fullColor = new(1, 1, 1, 1);
         private readonly Color _nearTransparentColor = new(0.5f, 1, 0.5f, 0.65f);
-        
+
         private readonly HashSet<GameObject> _shownNullTiles = new();
 
         internal MapBuildService()
@@ -40,7 +38,7 @@ namespace Scripts.MapEditor
 
             _shownNullTiles.Clear();
         }
-        
+
         public static LayoutType ConvertToLayoutType(TileDescription[,,] layout)
         {
             LayoutType result = new();
@@ -79,14 +77,15 @@ namespace Scripts.MapEditor
 
         public static void SetMapFloorsVisibility(Dictionary<int, bool> visibleFloors)
         {
-            foreach (KeyValuePair<int,bool> floor in visibleFloors)
+            foreach (KeyValuePair<int, bool> floor in visibleFloors)
             {
                 SetFloorVisible(floor.Key, floor.Value);
             }
         }
 
-        private static void SetFloorVisible(int floor, bool isVisible)
+        public static void SetFloorVisible(int floor, bool isVisible)
         {
+            //TODO change FloorVisibilityMap in manager too, maybe optional?
             for (int row = 0; row < Manager.EditedLayout[floor].Count; row++)
             {
                 for (int column = 0; column < Manager.EditedLayout[floor][row].Count; column++)
@@ -168,7 +167,10 @@ namespace Scripts.MapEditor
             }
             else if (floor == 0)
             {
+                AddToFloorVisibilityMap(ELevel.Upper);
+                
                 InsertFloorToTop();
+                
                 floorAdjustment += 1;
                 wasAdjusted = true;
             }
@@ -291,7 +293,7 @@ namespace Scripts.MapEditor
             {
                 floor -= 1;
             }
-            
+
             if (Manager.WorkLevel == ELevel.Lower)
             {
                 floor += 1;
@@ -363,6 +365,31 @@ namespace Scripts.MapEditor
             nullTile.SetActive(true);
 
             _shownNullTiles.Add(nullTile);
+        }
+
+        private void AddToFloorVisibilityMap(ELevel whatLevel)
+        {
+            Dictionary<int, bool> floorMap = Manager.FloorVisibilityMap;
+
+            if (whatLevel == ELevel.Upper)
+            {
+                // Add last floor to new map
+                floorMap.Add(Manager.CurrentFloor + 1, floorMap[Manager.CurrentFloor]);
+                // set all floors one higher, but already added floor
+                for (int floor = Manager.FloorVisibilityMap.Count - 2; floor >= 0; floor--)
+                {
+                    floorMap[floor] = Manager.FloorVisibilityMap[floor - 1];
+                }
+
+                // new floor set to hidden
+                floorMap[0] = false;
+
+                Manager.FloorVisibilityMap = floorMap;
+            }
+            else if (whatLevel == ELevel.Lower)
+            {
+                Manager.FloorVisibilityMap.Add(Manager.CurrentFloor + 1, true);
+            }
         }
     }
 }

@@ -95,6 +95,7 @@ namespace Scripts.UI.EditorUI
                 foreach (FloorButton floorButton in _floorButtons)
                 {
                     floorButton.SetSelected(floorButton.Floor == _currentFloor, true);
+                    floorButton.SetVisibilityToggle();
                 }
             }
 

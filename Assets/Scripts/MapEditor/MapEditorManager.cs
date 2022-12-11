@@ -45,13 +45,11 @@ namespace Scripts.MapEditor
         private void OnEnable()
         {
             MapBuilder.OnLayoutBuilt += OnLayoutBuilt;
-            EditorEvents.OnFloorChanged += OnFloorChanged;
         }
 
         private void OnDisable()
         {
             MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
-            EditorEvents.OnFloorChanged -= OnFloorChanged;
         }
 
         public void OrderMapConstruction(MapDescription map, bool markMapAsSaved = false, bool mapIsPresented = false)
@@ -125,6 +123,12 @@ namespace Scripts.MapEditor
             MapIsChanged = false;
             MapIsSaved = true;
         }
+        
+        public void SetFloor(int floor)
+        {
+            CurrentFloor = floor;
+            EditorEvents.TriggerOnFloorChanged(CurrentFloor);
+        }
 
         private void GoToMainScreenWithSave()
         {
@@ -161,7 +165,5 @@ namespace Scripts.MapEditor
             playerIcon.SetArrowRotation(map.PlayerRotation);
             playerIcon.SetActive(true);
         }
-
-        private void OnFloorChanged(int floor) => CurrentFloor = floor;
     }
 }

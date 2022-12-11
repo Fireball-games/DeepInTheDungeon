@@ -30,7 +30,26 @@ namespace Scripts.UI.Components
 
         private bool _isMouseEntered;
         private bool _isSelected;
+
         private bool _isInteractable = true;
+
+        private bool IsInteractable
+        {
+            get => _isInteractable;
+            set
+            {
+                _isInteractable = value;
+
+                if (value)
+                {
+                    SetBackgroundColor();
+                }
+                else
+                {
+                    backgroundImage.color = enteredColor;
+                }
+            }
+        }
 
         private void OnEnable()
         {
@@ -43,6 +62,11 @@ namespace Scripts.UI.Components
 
         private void OnDisable()
         {
+            _isMouseEntered = false;
+            
+            backgroundImage.color = idleColor;
+            StopAllCoroutines();
+            
             mouseClickOverlay.OnClick -= OnClickInternal;
             mouseClickOverlay.OnMouseEnter -= OnMouseEnter;
             mouseClickOverlay.OnMouseLeave -= OnMouseExit;
@@ -50,7 +74,7 @@ namespace Scripts.UI.Components
 
         public void SetActive(bool isActive) => gameObject.SetActive(isActive);
 
-        public void SetInteractable(bool isInteractable) => _isInteractable = isInteractable;
+        public void SetInteractable(bool isInteractable) => IsInteractable = isInteractable;
 
         public void SetSelected(bool isSelected, bool silent = false)
         {
@@ -67,26 +91,32 @@ namespace Scripts.UI.Components
 
         private void OnClickInternal()
         {
-            if (!_isInteractable) return;
+            if (!IsInteractable) return;
             
             OnClickWithSender?.Invoke(this);
             OnClick?.Invoke();
-            StartCoroutine(ClickedCoroutine());
+            
+            if (isActiveAndEnabled)
+            {
+                StartCoroutine(ClickedCoroutine());
+            }
         }
 
         private void OnMouseEnter()
         {
-            if (!_isInteractable) return;
-            
             _isMouseEntered = true;
+            
+            if (!IsInteractable) return;
+            
             SetBackgroundColor();
         }
 
         private void OnMouseExit()
         {
-            if (!_isInteractable) return;
-            
             _isMouseEntered = false;
+
+            if (!IsInteractable) return;
+            
             SetBackgroundColor();
         }
 

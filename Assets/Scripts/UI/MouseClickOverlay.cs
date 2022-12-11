@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 //Fireball Games * * * PetrZavodny.com

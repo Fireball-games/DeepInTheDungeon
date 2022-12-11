@@ -31,17 +31,17 @@ namespace Scripts.UI.EditorUI
         private void OnEnable()
         {
             EditorEvents.OnLayoutChanged += ConstructButtons;
-            EditorEvents.OnFloorChanged += ConstructButtons;
-            
+            EditorEvents.OnFloorChanged += OnFloorChanged;
+
             upButton.OnClick += ChangeGridFloorUp;
             downButton.OnClick += ChangeGridFloorDown;
         }
-    
+
         private void OnDisable()
         {
             EditorEvents.OnLayoutChanged -= ConstructButtons;
-            EditorEvents.OnFloorChanged -= ConstructButtons;
-            
+            EditorEvents.OnFloorChanged -= OnFloorChanged;
+
             upButton.OnClick -= ChangeGridFloorUp;
             downButton.OnClick -= ChangeGridFloorDown;
         }
@@ -49,32 +49,37 @@ namespace Scripts.UI.EditorUI
         public override void SetActive(bool isActive)
         {
             base.SetActive(isActive);
-        
+
             ConstructButtons();
         }
 
-        private void ConstructButtons(int _) => ConstructButtons();
         private void ConstructButtons()
         {
             upButton.transform.SetParent(transform);
             downButton.transform.SetParent(transform);
-            
+
             body.DismissAllChildrenToPool(true);
-            
+
             _floorButtons.Clear();
-        
+
             MapDescription map = Manager.MapBuilder.MapDescription;
             _floorCount = map.Layout.GetLength(0);
             _currentFloor = Manager.CurrentFloor;
 
             upButton.SetActive(true);
             upButton.transform.SetParent(body.transform);
-            
+
             AddFloorButtons();
-            
+
             downButton.SetActive(true);
             downButton.transform.SetParent(body.transform);
 
+            SetInteractivity();
+        }
+
+        private void OnFloorChanged(int currentFloor)
+        {
+            _currentFloor = currentFloor;
             SetInteractivity();
         }
 
@@ -82,18 +87,20 @@ namespace Scripts.UI.EditorUI
         {
             if (_floorCount <= 3)
             {
+                _floorButtons[0].SetSelected(true, true);
                 _floorButtons[0].SetInteractable(false);
             }
-
-            if (_currentFloor == 1)
+            else
             {
-                upButton.SetInteractable(false);
+                foreach (FloorButton floorButton in _floorButtons)
+                {
+                    floorButton.SetSelected(floorButton.Floor == _currentFloor, true);
+                }
             }
 
-            if (_currentFloor == _floorCount - 2)
-            {
-                downButton.SetInteractable(false);
-            }
+            upButton.SetInteractable(_currentFloor != 1);
+
+            downButton.SetInteractable(_currentFloor != _floorCount - 2);
         }
 
         private void AddFloorButtons()
@@ -102,7 +109,7 @@ namespace Scripts.UI.EditorUI
             {
                 FloorButton newButton = ObjectPool.Instance.GetFromPool(floorButtonPrefab, body, true)
                     .GetComponent<FloorButton>();
-            
+
                 newButton.SetActive(true, (i + 1));
 
                 newButton.SetSelected(_currentFloor == i + 1, true);
@@ -114,11 +121,11 @@ namespace Scripts.UI.EditorUI
         /// <summary>
         /// Changes current floor grid-wise, so top floor is 0
         /// </summary>
-        private void ChangeGridFloorUp() => EditorEvents.TriggerOnFloorChanged(Manager.CurrentFloor - 1);
-        
+        private void ChangeGridFloorUp() => Manager.SetFloor(Manager.CurrentFloor - 1);
+
         /// <summary>
         /// Changes current floor grid-wise, so top floor is 0
         /// </summary>
-        private void ChangeGridFloorDown() => EditorEvents.TriggerOnFloorChanged(Manager.CurrentFloor + 1);
+        private void ChangeGridFloorDown() => Manager.SetFloor(Manager.CurrentFloor + 1);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using Scripts.EventsManagement;
+using Scripts.MapEditor;
 using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
@@ -27,7 +27,7 @@ namespace Scripts.UI.EditorUI
 
         private void ChangeFloor()
         {
-            EditorEvents.TriggerOnFloorChanged(Floor);
+            MapEditorManager.Instance.SetFloor(Floor);
         }
     }
 }

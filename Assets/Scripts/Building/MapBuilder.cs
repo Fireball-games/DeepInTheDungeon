@@ -46,36 +46,6 @@ namespace Scripts.Building
 
         public void SetLayout(TileDescription[,,] layout) => Layout = layout;
 
-        private IEnumerator BuildLayoutCoroutine(TileDescription[,,] layout)
-        {
-            Layout = layout;
-            
-            _playBuilder = new PlayModeBuilder(this);
-            _editorBuilder = new EditorModeBuilder(this);
-            
-            for (int floor = 0; floor < layout.GetLength(0); floor++)
-            {
-                for (int row = 0; row < layout.GetLength(1); row++)
-                {
-                    for (int column = 0; column < layout.GetLength(2); column++)
-                    {
-                        if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
-                        {
-                            _playBuilder.BuildTile(floor, row, column);
-                        }
-                        else
-                        {
-                            _editorBuilder.BuildTile(floor, row, column);
-                        }
-                    
-                        yield return null;
-                    }
-                }
-            }
-
-            OnLayoutBuilt?.Invoke();
-        }
-
         public void DemolishMap()
         {
             foreach (GameObject tile in PhysicalTiles.Values)
@@ -115,6 +85,58 @@ namespace Scripts.Building
                 }
             }
         }
+        
+        public static MapDescription GenerateDefaultMap(int floors, int rows, int columns)
+        {
+            TileDescription[,,] layout = new TileDescription[floors, rows, columns];
+
+            Vector3Int center = new(floors / 2, rows / 2, columns / 2);
+
+            layout = AddTilesToCenterOfLayout(layout);
+
+            return new MapDescription
+            {
+                Layout = layout,
+                StartGridPosition = center,
+            };
+        }
+        
+        public GameObject GetPhysicalTileByGridPosition(int floor, int row, int column)
+        {
+            Vector3Int worldPosition = new(row, -floor, column);
+
+            return PhysicalTiles[worldPosition];
+        }
+        
+        private IEnumerator BuildLayoutCoroutine(TileDescription[,,] layout)
+        {
+            Layout = layout;
+            
+            _playBuilder = new PlayModeBuilder(this);
+            _editorBuilder = new EditorModeBuilder(this);
+            
+            for (int floor = 0; floor < layout.GetLength(0); floor++)
+            {
+                for (int row = 0; row < layout.GetLength(1); row++)
+                {
+                    for (int column = 0; column < layout.GetLength(2); column++)
+                    {
+                        if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
+                        {
+                            _playBuilder.BuildTile(floor, row, column);
+                        }
+                        else
+                        {
+                            _editorBuilder.BuildTile(floor, row, column);
+                        }
+                    
+                        yield return null;
+                    }
+                }
+            }
+
+            OnLayoutBuilt?.Invoke();
+        }
 
         /// <summary>
         /// Works over physical tile, shows or hides walls after assumed changed layout. 
@@ -140,21 +162,6 @@ namespace Scripts.Building
                 else
                     tileController.HideWall(TileDirections.WallDirectionByVector[direction]);
             }
-        }
-
-        public static MapDescription GenerateDefaultMap(int floors, int rows, int columns)
-        {
-            TileDescription[,,] layout = new TileDescription[floors, rows, columns];
-
-            Vector3Int center = new(floors / 2, rows / 2, columns / 2);
-
-            layout = AddTilesToCenterOfLayout(layout);
-
-            return new MapDescription
-            {
-                Layout = layout,
-                StartGridPosition = center,
-            };
         }
 
         private static TileDescription[,,] AddTilesToCenterOfLayout(TileDescription[,,] layout)

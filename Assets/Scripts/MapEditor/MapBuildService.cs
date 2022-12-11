@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Scripts.Building;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.System;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 using LayoutType =
     System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using FloorType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.MapEditor
 {
@@ -19,6 +23,8 @@ namespace Scripts.MapEditor
         private static EditorMouseService Mouse => EditorMouseService.Instance;
         private readonly Color _fullColor = new(1, 1, 1, 1);
         private readonly Color _nearTransparentColor = new(0.5f, 1, 0.5f, 0.65f);
+        
+        private readonly HashSet<GameObject> _shownNullTiles = new();
 
         internal MapBuildService()
         {
@@ -26,13 +32,68 @@ namespace Scripts.MapEditor
 
         public void ResetShownNullTilesColors()
         {
-            foreach (GameObject shownNullTile in shownNullTiles)
+            foreach (GameObject shownNullTile in _shownNullTiles)
             {
                 shownNullTile.GetComponentInChildren<MeshRenderer>().material.color = _fullColor;
                 shownNullTile.SetActive(false);
             }
 
-            shownNullTiles.Clear();
+            _shownNullTiles.Clear();
+        }
+        
+        public static LayoutType ConvertToLayoutType(TileDescription[,,] layout)
+        {
+            LayoutType result = new();
+
+            for (int floor = 0; floor < layout.GetLength(0); floor++)
+            {
+                result.Add(new List<List<TileDescription>>());
+
+                for (int row = 0; row < layout.GetLength(1); row++)
+                {
+                    result[floor].Add(new List<TileDescription>());
+
+                    for (int column = 0; column < layout.GetLength(2); column++)
+                    {
+                        result[floor][row].Add(layout[floor, row, column]);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public void ShowUpperLevelStoneCubesAround(Vector3Int centerGridPosition)
+        {
+            ResetShownNullTilesColors();
+
+            SetColorForNullTile(centerGridPosition, _fullColor);
+
+            foreach (Vector3Int direction in TileDirections.HorizontalGridDirections)
+            {
+                Vector3Int targetDirection = centerGridPosition + direction;
+
+                SetColorForNullTile(targetDirection, _nearTransparentColor);
+            }
+        }
+
+        public static void SetMapFloorsVisibility(Dictionary<int, bool> visibleFloors)
+        {
+            foreach (KeyValuePair<int,bool> floor in visibleFloors)
+            {
+                SetFloorVisible(floor.Key, floor.Value);
+            }
+        }
+
+        private static void SetFloorVisible(int floor, bool isVisible)
+        {
+            for (int row = 0; row < Manager.EditedLayout[floor].Count; row++)
+            {
+                for (int column = 0; column < Manager.EditedLayout[floor][row].Count; column++)
+                {
+                    Manager.MapBuilder.GetPhysicalTileByGridPosition(floor, row, column).SetActive(isVisible);
+                }
+            }
         }
 
         private void AdjustEditedLayout(int floor, int row, int column,
@@ -267,7 +328,7 @@ namespace Scripts.MapEditor
             else
             {
                 EditorEvents.TriggerOnLayoutChanged();
-                Manager.OrderMapConstruction(newMap, mapIsPresented: true);
+                Manager.OrderMapConstruction(newMap, mapIsPresented: true, useStartPosition: false);
             }
 
             Mouse.RefreshMousePosition();
@@ -291,44 +352,6 @@ namespace Scripts.MapEditor
             return result;
         }
 
-        public static LayoutType ConvertToLayoutType(TileDescription[,,] layout)
-        {
-            LayoutType result = new();
-
-            for (int floor = 0; floor < layout.GetLength(0); floor++)
-            {
-                result.Add(new List<List<TileDescription>>());
-
-                for (int row = 0; row < layout.GetLength(1); row++)
-                {
-                    result[floor].Add(new List<TileDescription>());
-
-                    for (int column = 0; column < layout.GetLength(2); column++)
-                    {
-                        result[floor][row].Add(layout[floor, row, column]);
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private HashSet<GameObject> shownNullTiles = new();
-
-        public void ShowUpperLevelStoneCubesAround(Vector3Int centerGridPosition)
-        {
-            ResetShownNullTilesColors();
-
-            SetColorForNullTile(centerGridPosition, _fullColor);
-
-            foreach (Vector3Int direction in TileDirections.HorizontalGridDirections)
-            {
-                Vector3Int targetDirection = centerGridPosition + direction;
-
-                SetColorForNullTile(targetDirection, _nearTransparentColor);
-            }
-        }
-
         private void SetColorForNullTile(Vector3Int griPosition, Color newColor)
         {
             if (!MapBuilder.Layout.HasIndex(griPosition)
@@ -339,7 +362,7 @@ namespace Scripts.MapEditor
             nullTile.GetComponentInChildren<MeshRenderer>().material.color = newColor;
             nullTile.SetActive(true);
 
-            shownNullTiles.Add(nullTile);
+            _shownNullTiles.Add(nullTile);
         }
     }
 }

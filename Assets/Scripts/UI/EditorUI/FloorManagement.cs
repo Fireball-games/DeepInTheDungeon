@@ -77,9 +77,9 @@ namespace Scripts.UI.EditorUI
             SetInteractivity();
         }
 
-        private void OnFloorChanged(int currentFloor)
+        private void OnFloorChanged(int? currentFloor)
         {
-            _currentFloor = currentFloor;
+            _currentFloor = currentFloor ?? 0;
             SetInteractivity();
         }
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Android;
 using static Scripts.Building.Tile.TileDescription;
+using static Scripts.Helpers.GeneralExtensions;
 
 namespace Scripts.Helpers
 {
@@ -17,12 +17,12 @@ namespace Scripts.Helpers
         {
             VectorDirections = new[]
             {
-                Extensions.GridUp,
-                Extensions.GridDown,
-                Extensions.GridNorth,
-                Extensions.GridEast,
-                Extensions.GridSouth,
-                Extensions.GridWest
+                GridUp,
+                GridDown,
+                GridNorth,
+                GridEast,
+                GridSouth,
+                GridWest
             };
 
             HorizontalGridDirections = new[]
@@ -39,22 +39,22 @@ namespace Scripts.Helpers
 
             WallDirectionByVector = new Dictionary<Vector3Int, ETileDirection>
             {
-                {Extensions.GridUp, ETileDirection.Ceiling},
-                {Extensions.GridDown, ETileDirection.Floor},
-                {Extensions.GridNorth, ETileDirection.North},
-                {Extensions.GridEast, ETileDirection.East},
-                {Extensions.GridSouth, ETileDirection.South},
-                {Extensions.GridWest, ETileDirection.West}
+                {GridUp, ETileDirection.Ceiling},
+                {GridDown, ETileDirection.Floor},
+                {GridNorth, ETileDirection.North},
+                {GridEast, ETileDirection.East},
+                {GridSouth, ETileDirection.South},
+                {GridWest, ETileDirection.West}
             };
 
             VectorByTileDirection = new Dictionary<ETileDirection, Vector3Int>
             {
-                {ETileDirection.Ceiling, Extensions.GridUp},
-                {ETileDirection.Floor, Extensions.GridDown},
-                {ETileDirection.North, Extensions.GridNorth},
-                {ETileDirection.East, Extensions.GridEast},
-                {ETileDirection.South, Extensions.GridSouth},
-                {ETileDirection.West, Extensions.GridWest}
+                {ETileDirection.Ceiling, GridUp},
+                {ETileDirection.Floor, GridDown},
+                {ETileDirection.North, GridNorth},
+                {ETileDirection.East, GridEast},
+                {ETileDirection.South, GridSouth},
+                {ETileDirection.West, GridWest}
             };
         }
     }

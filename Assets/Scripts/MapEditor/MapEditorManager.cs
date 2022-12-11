@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Scripts.Building;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -31,11 +32,15 @@ namespace Scripts.MapEditor
         public LayoutType EditedLayout { get; private set; }
         public MapBuilder MapBuilder { get; private set; }
         public int CurrentFloor { get; private set; }
+        public Dictionary<int, bool> FloorVisibilityMap { get; private set; }
+
+        private bool _dontChangeCameraAfterLayoutIsBuild;
 
         protected override void Awake()
         {
             base.Awake();
-            
+
+            FloorVisibilityMap = new Dictionary<int, bool>(); 
             sceneCamera ??= Camera.main;
             CameraManager.Instance.SetMainCamera(sceneCamera);
 
@@ -52,7 +57,7 @@ namespace Scripts.MapEditor
             MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
         }
 
-        public void OrderMapConstruction(MapDescription map, bool markMapAsSaved = false, bool mapIsPresented = false)
+        public void OrderMapConstruction(MapDescription map, bool markMapAsSaved = false, bool mapIsPresented = false, bool useStartPosition = true)
         {
             if (MapIsBeingBuilt) return;
             
@@ -61,7 +66,18 @@ namespace Scripts.MapEditor
             MapIsSaved = markMapAsSaved;
             
             EditedLayout = MapBuildService.ConvertToLayoutType(map.Layout);
-            CurrentFloor = map.StartGridPosition.x;
+            
+            if (useStartPosition)
+            {
+                _dontChangeCameraAfterLayoutIsBuild = false;
+                CurrentFloor = map.StartGridPosition.x;
+            }
+            else
+            {
+                _dontChangeCameraAfterLayoutIsBuild = false;
+            }
+            
+            RefreshFloorVisibilityMap();
 
             GameManager.Instance.SetCurrentMap(map);
 
@@ -119,14 +135,23 @@ namespace Scripts.MapEditor
             
             string mapName = currentMap.MapName;
             ES3.Save(mapName, currentMap, FileOperationsHelper.GetSavePath(mapName));
+            
+            EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.MapSaved), StatusBar.EMessageType.Positive);
 
             MapIsChanged = false;
             MapIsSaved = true;
         }
         
-        public void SetFloor(int floor)
+        public void SetFloor(int newFloor)
         {
-            CurrentFloor = floor;
+            if (CurrentFloor == newFloor) return;
+            
+            CurrentFloor = newFloor;
+            
+            RefreshFloorVisibilityMap();
+            
+            MapBuildService.SetMapFloorsVisibility(FloorVisibilityMap);
+            
             EditorEvents.TriggerOnFloorChanged(CurrentFloor);
         }
 
@@ -149,7 +174,7 @@ namespace Scripts.MapEditor
         {
             Vector3 startPosition = GameManager.Instance.CurrentMap.StartGridPosition;
             
-            if (!MapIsPresented)
+            if (!MapIsPresented && !_dontChangeCameraAfterLayoutIsBuild)
             {
                 EditorMouseService.Instance.MoveCameraTo(startPosition.y, cameraHeight, startPosition.z);
             }
@@ -164,6 +189,16 @@ namespace Scripts.MapEditor
             playerIcon.SetPositionByGrid(map.StartGridPosition);
             playerIcon.SetArrowRotation(map.PlayerRotation);
             playerIcon.SetActive(true);
+        }
+
+        private void RefreshFloorVisibilityMap()
+        {
+            FloorVisibilityMap.Clear();
+            
+            for (int floor = 1; floor < EditedLayout.Count - 1; floor++)
+            {
+                FloorVisibilityMap.Add(floor, floor >= CurrentFloor);
+            }
         }
     }
 }

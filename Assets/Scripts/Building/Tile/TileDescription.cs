@@ -44,12 +44,12 @@ namespace Scripts.Building.Tile
         public WallDescription GetWall(Vector3Int direction)
         {
             // TODO: not sure if floor and ceiling should not be reversed
-            if (direction == Extensions.GridDown) return Walls.Floor;
-            if (direction == Extensions.GridUp) return Walls.Ceiling;
-            if (direction == Extensions.GridNorth) return Walls.North;
-            if (direction == Extensions.GridEast) return Walls.East;
-            if (direction == Extensions.GridSouth) return Walls.South;
-            if (direction == Extensions.GridWest) return Walls.West;
+            if (direction == GeneralExtensions.GridDown) return Walls.Floor;
+            if (direction == GeneralExtensions.GridUp) return Walls.Ceiling;
+            if (direction == GeneralExtensions.GridNorth) return Walls.North;
+            if (direction == GeneralExtensions.GridEast) return Walls.East;
+            if (direction == GeneralExtensions.GridSouth) return Walls.South;
+            if (direction == GeneralExtensions.GridWest) return Walls.West;
             return null;
         }
 
@@ -62,10 +62,10 @@ namespace Scripts.Building.Tile
                 {
                     Ceiling = new WallDescription(),
                     Floor = new WallDescription(),
-                    North = WallForDirection(row, column, Extensions.GridNorth, layout),
-                    East = WallForDirection(row, column, Extensions.GridEast, layout),
-                    South = WallForDirection(row, column, Extensions.GridSouth, layout),
-                    West = WallForDirection(row, column, Extensions.GridWest, layout),
+                    North = WallForDirection(row, column, GeneralExtensions.GridNorth, layout),
+                    East = WallForDirection(row, column, GeneralExtensions.GridEast, layout),
+                    South = WallForDirection(row, column, GeneralExtensions.GridSouth, layout),
+                    West = WallForDirection(row, column, GeneralExtensions.GridWest, layout),
                 }
             };
         }

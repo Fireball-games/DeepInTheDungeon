@@ -1,7 +1,5 @@
-﻿using Scripts.Helpers;
-using Scripts.UI;
+﻿using Scripts.Helpers.Extensions;
 using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {

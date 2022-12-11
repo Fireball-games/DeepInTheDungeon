@@ -1,4 +1,4 @@
-using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using UnityEngine;
 
 namespace Scripts.MapEditor

@@ -1,5 +1,6 @@
 ﻿using Scripts.Building.Tile;
-using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
+using Scripts.MapEditor;
 using Scripts.System.Pooling;
 using UnityEngine;
 
@@ -57,8 +58,7 @@ namespace Scripts.Building
 
         private void SetDisabledIfApplicable(GameObject tile, int floor)
         {
-            // Means on or bellow start level TODO: replace with list of displayed floors when implemented floor show status
-            if (floor < MapBuilder.MapDescription.StartGridPosition.x)
+            if (!MapEditorManager.Instance.FloorVisibilityMap.ContainsKey(floor) || floor < MapEditorManager.Instance.CurrentFloor)
             {
                 tile.SetActive(false);
             }

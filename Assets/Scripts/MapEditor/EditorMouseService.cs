@@ -18,7 +18,9 @@ namespace Scripts.MapEditor
         [SerializeField] private float maxValidClickTime = 0.1f;
         [SerializeField] private float cameraPanSpeed = 100f;
         [SerializeField] private float cameraZoomSpeed = 100f;
+        [SerializeField] private float cameraRotationSpeed = 100f;
         [SerializeField] private Transform cameraHolder;
+        [SerializeField] private Transform cameraRotator;
         [SerializeField] private Cursor3D cursor3D;
         
         private static MapEditorManager Manager => MapEditorManager.Instance;
@@ -73,7 +75,7 @@ namespace Scripts.MapEditor
 
         private void OnEnable()
         {
-            EditorEvents.OnNewMapCreated += OnNewMapCreated;
+            EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
         }
 
         private void Update()
@@ -114,10 +116,10 @@ namespace Scripts.MapEditor
 
         private void OnDisable()
         {
-            EditorEvents.OnNewMapCreated -= OnNewMapCreated;
+            EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
         }
 
-        private void OnNewMapCreated()
+        private void OnNewMapStartedCreation()
         {
             _layerPlane = _layerPlane = new Plane(Vector3.up, 
                 new Vector3(0f, 0.5f - GameManager.Instance.CurrentMap.StartGridPosition.x, 0f));

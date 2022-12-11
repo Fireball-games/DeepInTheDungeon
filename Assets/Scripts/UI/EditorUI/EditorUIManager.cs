@@ -24,16 +24,16 @@ namespace Scripts.UI.EditorUI
         private void OnEnable()
         {
             playButton.OnClick += manager.PlayMap;
-            EditorEvents.OnNewMapCreated += OnNewMapCreated;
+            EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
         }
 
         private void OnDisable()
         {
             playButton.OnClick -= manager.PlayMap;
-            EditorEvents.OnNewMapCreated -= OnNewMapCreated;
+            EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
         }
 
-        private void OnNewMapCreated()
+        private void OnNewMapStartedCreation()
         {
             playButton.SetActive(true);
             workModeSelection.SetActive(true);

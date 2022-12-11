@@ -6,7 +6,7 @@ namespace Scripts.EventsManagement
 {
     public static class EditorEvents
     {
-        public static event Action OnNewMapCreated;
+        public static event Action OnNewMapStartedCreation;
         public static event Action<EWorkMode> OnWorkModeChanged;
 
         public static event Action<Vector3Int, Vector3Int> OnMouseGridPositionChanged;
@@ -16,7 +16,7 @@ namespace Scripts.EventsManagement
 
         // ***********    Triggers    ***********
 
-        public static void TriggerOnNewMapCreated() => OnNewMapCreated?.Invoke();
+        public static void TriggerOnNewMapStartedCreation() => OnNewMapStartedCreation?.Invoke();
 
         public static void TriggerOnWorkModeChanged(EWorkMode workMode) => OnWorkModeChanged?.Invoke(workMode);
 

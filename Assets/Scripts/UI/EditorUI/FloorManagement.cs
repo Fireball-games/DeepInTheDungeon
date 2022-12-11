@@ -30,7 +30,7 @@ namespace Scripts.UI.EditorUI
 
         private void OnEnable()
         {
-            EditorEvents.OnNewMapCreated += ConstructButtons;
+            EditorEvents.OnNewMapStartedCreation += ConstructButtons;
             EditorEvents.OnFloorChanged += OnFloorChanged;
 
             upButton.OnClick += ChangeGridFloorUp;
@@ -39,7 +39,7 @@ namespace Scripts.UI.EditorUI
 
         private void OnDisable()
         {
-            EditorEvents.OnNewMapCreated -= ConstructButtons;
+            EditorEvents.OnNewMapStartedCreation -= ConstructButtons;
             EditorEvents.OnFloorChanged -= OnFloorChanged;
 
             upButton.OnClick -= ChangeGridFloorUp;

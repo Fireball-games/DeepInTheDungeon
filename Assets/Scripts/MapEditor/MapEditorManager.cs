@@ -92,7 +92,7 @@ namespace Scripts.MapEditor
 
             MapBuilder.BuildMap(map);
 
-            EditorEvents.TriggerOnNewMapCreated();
+            EditorEvents.TriggerOnNewMapStartedCreation();
         }
 
         public void SetWorkMode(EWorkMode newWorkMode)

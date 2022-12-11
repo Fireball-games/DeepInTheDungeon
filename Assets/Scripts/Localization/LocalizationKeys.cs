@@ -9,6 +9,7 @@
         public const string Default = "Default";
         public const string DontSave = "DontSave";
         public const string Exit = "Exit";
+        public const string Floors = "Floors";
         public const string Load = "Load";
         public const string LoadingFileFailed = "LoadingFileFailed";
         public const string MapSaved = "MapSaved";

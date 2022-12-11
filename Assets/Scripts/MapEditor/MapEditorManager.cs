@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Scripts.Building;
 using Scripts.EventsManagement;
@@ -17,8 +16,11 @@ namespace Scripts.MapEditor
     public class MapEditorManager : SingletonNotPersisting<MapEditorManager>
     {
         public const int MinRows = 5;
+        public const int MaxRows = 30;
         public const int MinColumns = 5;
+        public const int MaxColumns = 30;
         public const int MinFloors = 3;
+        public const int MaxFloors = 10;
         
         [SerializeField] private float cameraHeight = 10f;
         [SerializeField] private Camera sceneCamera;

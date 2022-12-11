@@ -19,7 +19,8 @@ namespace Scripts.MapEditor
 
         private void SetArrowRotation(Vector3 rotation)
         {
-            Vector3 arrowRotation = arrow.transform.localRotation.eulerAngles;
+            Vector3 arrowRotation = rotation;
+            arrowRotation.x = 90f;
             arrowRotation.z = rotation.y - 90;
             arrow.transform.localRotation = Quaternion.Euler(arrowRotation);
         }

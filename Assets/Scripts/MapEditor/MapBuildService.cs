@@ -167,10 +167,8 @@ namespace Scripts.MapEditor
             }
             else if (floor == 0)
             {
-                AddToFloorVisibilityMap(ELevel.Upper);
-                
                 InsertFloorToTop();
-                
+
                 floorAdjustment += 1;
                 wasAdjusted = true;
             }
@@ -326,14 +324,19 @@ namespace Scripts.MapEditor
             {
                 MapBuilder.RebuildTile(adjustedFloor, adjustedRow, adjustedColumn);
                 MapBuilder.RegenerateTilesAround(adjustedFloor, adjustedRow, adjustedColumn);
+                Mouse.RefreshMousePosition();
             }
             else
             {
                 EditorEvents.TriggerOnLayoutChanged();
-                Manager.OrderMapConstruction(newMap, mapIsPresented: true, useStartPosition: false);
+                
+                ELevel floorsAdded = floorAdjustment == 1 
+                    ? ELevel.Upper 
+                    : floorAdjustment == -1 
+                        ? ELevel.Lower : ELevel.Equal;
+                
+                Manager.OrderMapConstruction(newMap, mapIsPresented: true, useStartPosition: false, floorsCountChange: floorsAdded);
             }
-
-            Mouse.RefreshMousePosition();
         }
 
         private TileDescription[,,] ConvertEditedLayoutToArray()
@@ -365,31 +368,6 @@ namespace Scripts.MapEditor
             nullTile.SetActive(true);
 
             _shownNullTiles.Add(nullTile);
-        }
-
-        private void AddToFloorVisibilityMap(ELevel whatLevel)
-        {
-            Dictionary<int, bool> floorMap = Manager.FloorVisibilityMap;
-
-            if (whatLevel == ELevel.Upper)
-            {
-                // Add last floor to new map
-                floorMap.Add(Manager.CurrentFloor + 1, floorMap[Manager.CurrentFloor]);
-                // set all floors one higher, but already added floor
-                for (int floor = Manager.FloorVisibilityMap.Count - 2; floor >= 0; floor--)
-                {
-                    floorMap[floor] = Manager.FloorVisibilityMap[floor - 1];
-                }
-
-                // new floor set to hidden
-                floorMap[0] = false;
-
-                Manager.FloorVisibilityMap = floorMap;
-            }
-            else if (whatLevel == ELevel.Lower)
-            {
-                Manager.FloorVisibilityMap.Add(Manager.CurrentFloor + 1, true);
-            }
         }
     }
 }

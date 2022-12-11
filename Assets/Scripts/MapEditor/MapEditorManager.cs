@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Scripts.Building;
 using Scripts.EventsManagement;
@@ -57,7 +58,11 @@ namespace Scripts.MapEditor
             MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
         }
 
-        public void OrderMapConstruction(MapDescription map, bool markMapAsSaved = false, bool mapIsPresented = false, bool useStartPosition = true)
+        public void OrderMapConstruction(MapDescription map,
+            bool markMapAsSaved = false,
+            bool mapIsPresented = false,
+            bool useStartPosition = true,
+            ELevel floorsCountChange = ELevel.Equal)
         {
             if (MapIsBeingBuilt) return;
             
@@ -69,13 +74,15 @@ namespace Scripts.MapEditor
             
             if (useStartPosition)
             {
-                _dontChangeCameraAfterLayoutIsBuild = false;
                 CurrentFloor = map.StartGridPosition.x;
             }
-            else
+
+            if (floorsCountChange == ELevel.Upper)
             {
-                _dontChangeCameraAfterLayoutIsBuild = false;
+                CurrentFloor += 1;
             }
+            
+            _dontChangeCameraAfterLayoutIsBuild = false;
             
             RefreshFloorVisibilityMap();
 

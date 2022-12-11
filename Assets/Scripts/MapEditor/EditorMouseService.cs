@@ -375,7 +375,7 @@ namespace Scripts.MapEditor
         {
             if (!Manager.MapIsPresented) return;
 
-            OnMouseGridPositionChanged(MouseGridPosition);
+            SetGridPosition();
         }
 
         public void ResetCursor()

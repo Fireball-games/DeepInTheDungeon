@@ -7,6 +7,7 @@
             None = 0,
             Build = 1,
             Select = 2,
+            Walls = 3,
         }
 
         public enum ELevel

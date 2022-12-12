@@ -1,22 +1,23 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static Scripts.Building.Tile.TileDescription;
 
 namespace Scripts.MapEditor
 {
-    public class WallGizmo : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class WallGizmo : MonoBehaviour
     {
         public ETileDirection direction;
         public WallGizmoController controller;
-        
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            controller.OnGizmoEntered(direction);
-        }
 
-        public void OnPointerExit(PointerEventData eventData)
+        private void OnMouseEnter()
         {
             controller.OnGizmoExited();
+        }
+
+        private void OnMouseExit()
+        {
+            controller.OnGizmoEntered(direction);
         }
     }
 }

@@ -222,13 +222,14 @@ namespace Scripts.MapEditor
                 float yDelta = Input.GetAxis(Strings.MouseYAxis);
 
                 if (xDelta == 0f && yDelta == 0f) return;
-
-                _cameraMoveVector.x = yDelta;
-                _cameraMoveVector.z = -xDelta;
-
-                _cameraMoveVector *= Time.deltaTime * cameraPanSpeed;
-
-                TranslateCameraHorizontal(xDelta * Time.deltaTime * cameraPanSpeed, yDelta * Time.deltaTime * cameraPanSpeed);
+                
+                Matrix4x4 worldToLocalMatrix = transform.worldToLocalMatrix;
+                Vector3 localForward = worldToLocalMatrix.MultiplyVector(-cameraHolder.forward);
+                Vector3 localRight = worldToLocalMatrix.MultiplyVector(cameraHolder.right);
+                Vector3 moveVector = localRight * (yDelta * Time.deltaTime * cameraPanSpeed);
+                moveVector += localForward * (xDelta * Time.deltaTime * cameraPanSpeed); 
+                
+                cameraHolder.position += moveVector;
             }
 
             if (LeftClickExpired && Input.GetMouseButtonUp(0))

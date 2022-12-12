@@ -28,14 +28,14 @@ namespace Scripts.MapEditor
 
         public ELevel WorkLevel { get; private set; }
         public EWorkMode WorkMode { get; private set; }
-        public bool MapIsPresented { get; set; }
+        public bool MapIsPresented { get; private set; }
         public bool MapIsChanged { get; set; }
         public bool MapIsSaved { get; set; } = true;
-        public bool MapIsBeingBuilt { get; set; }
+        public bool MapIsBeingBuilt { get; private set; }
         public LayoutType EditedLayout { get; private set; }
         public MapBuilder MapBuilder { get; private set; }
         public int CurrentFloor { get; private set; }
-        public Dictionary<int, bool> FloorVisibilityMap { get; internal set; }
+        public Dictionary<int, bool> FloorVisibilityMap { get; private set; }
 
         private bool _dontChangeCameraAfterLayoutIsBuild;
 

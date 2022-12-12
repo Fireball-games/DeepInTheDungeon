@@ -16,12 +16,8 @@ namespace Scripts.MapEditor
         [SerializeField] private Texture2D demolishCursor;
         [SerializeField] private Texture2D moveCameraCursor;
         [SerializeField] private float maxValidClickTime = 0.1f;
-        [SerializeField] private float cameraPanSpeed = 100f;
-        [SerializeField] private float cameraZoomSpeed = 100f;
-        [SerializeField] private float maxZoomHeight = 20f;
-        [SerializeField] private float cameraRotationSpeed = 100f;
-        [SerializeField] private Transform cameraHolder;
         [SerializeField] private Cursor3D cursor3D;
+        [SerializeField] private EditorCameraService cameraService;
         
         private static MapEditorManager Manager => MapEditorManager.Instance;
 
@@ -60,6 +56,8 @@ namespace Scripts.MapEditor
                 _isManipulatingCameraPosition = value;
             }
         }
+
+        public void MoveCameraTo(float x, float y, float z) => cameraService.MoveCameraTo(x, y, z);
 
         protected override void Awake()
         {
@@ -109,9 +107,9 @@ namespace Scripts.MapEditor
             }
             else
             {
-                HandleMouseWheel();
+                cameraService.HandleMouseWheel();
                 SetGridPosition();
-                HandleMouseMovement();
+                cameraService.HandleMouseMovement();
             }
         }
 
@@ -124,30 +122,6 @@ namespace Scripts.MapEditor
         {
             _layerPlane = _layerPlane = new Plane(Vector3.up, 
                 new Vector3(0f, 0.5f - GameManager.Instance.CurrentMap.StartGridPosition.x, 0f));
-        }
-
-        private void TranslateCamera(float x, float y, float z)
-        {
-            _cameraMoveVector.x = z;
-            _cameraMoveVector.y = y;
-            _cameraMoveVector.z = -x;
-
-            Vector3 newPosition = cameraHolder.position + _cameraMoveVector;
-
-            newPosition.y = Mathf.Clamp(
-                newPosition.y,
-                -Manager.EditedLayout.Count + 3, maxZoomHeight);
-            
-            cameraHolder.position = newPosition;
-        }
-
-        public void MoveCameraTo(float x, float y, float z)
-        {
-            _cameraMoveVector.x = x;
-            _cameraMoveVector.y = y;
-            _cameraMoveVector.z = z;
-
-            cameraHolder.position = _cameraMoveVector;
         }
 
         private void ValidateClicks()
@@ -177,15 +151,6 @@ namespace Scripts.MapEditor
             }
         }
 
-        private void HandleMouseWheel()
-        {
-            float wheelDelta = Input.GetAxis(Strings.MouseWheel);
-            if (wheelDelta != 0)
-            {
-                TranslateCamera(0, -wheelDelta * Time.deltaTime * cameraZoomSpeed, 0);
-            }
-        }
-
         private void ProcessMouseButtonUp(int mouseButtonUpped)
         {
             switch (Manager.WorkMode)
@@ -203,58 +168,6 @@ namespace Scripts.MapEditor
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private Vector3 _cameraMoveVector = Vector3.zero;
-
-        private void HandleMouseMovement()
-        {
-            if (LeftClickExpired && Input.GetMouseButton(0))
-            {
-                IsManipulatingCameraPosition = true;
-                SetCursorToCameraMovement();
-
-                float xDelta = Input.GetAxis(Strings.MouseXAxis);
-                float yDelta = Input.GetAxis(Strings.MouseYAxis);
-
-                if (xDelta == 0f && yDelta == 0f) return;
-                
-                Matrix4x4 worldToLocalMatrix = transform.worldToLocalMatrix;
-                Vector3 localForward = worldToLocalMatrix.MultiplyVector(-cameraHolder.forward);
-                Vector3 localRight = worldToLocalMatrix.MultiplyVector(cameraHolder.right);
-                Vector3 moveVector = localRight * (yDelta * Time.deltaTime * cameraPanSpeed);
-                moveVector += localForward * (xDelta * Time.deltaTime * cameraPanSpeed); 
-                
-                cameraHolder.position += moveVector;
-            }
-
-            if (LeftClickExpired && Input.GetMouseButtonUp(0))
-            {
-                IsManipulatingCameraPosition = false;
-            }
-
-            if (RightClickExpired && Input.GetMouseButton(1))
-            {
-                IsManipulatingCameraPosition = true;
-                SetCursorToCameraMovement();
-
-                float xDelta = Input.GetAxis(Strings.MouseXAxis);
-                float yDelta = Input.GetAxis(Strings.MouseYAxis);
-
-                if (xDelta == 0f && yDelta == 0f) return;
-
-                Vector3 cameraRotation = cameraHolder.localRotation.eulerAngles;
-                _cameraMoveVector.x = cameraRotation.x;
-                _cameraMoveVector.y = cameraRotation.y + (xDelta * Time.deltaTime * cameraRotationSpeed);
-                _cameraMoveVector.z = cameraRotation.z - (yDelta * Time.deltaTime * cameraRotationSpeed);
-                
-                cameraHolder.localRotation = Quaternion.Euler(_cameraMoveVector);
-            }
-            
-            if (LeftClickExpired && Input.GetMouseButtonUp(1))
-            {
-                IsManipulatingCameraPosition = false;
             }
         }
 
@@ -352,7 +265,7 @@ namespace Scripts.MapEditor
             SetCursor(GridPositionType);
         }
 
-        private void SetCursorToCameraMovement() => SetCursor(moveCameraCursor, _moveCameraMouseHotspot);
+        internal void SetCursorToCameraMovement() => SetCursor(moveCameraCursor, _moveCameraMouseHotspot);
 
         private void SetDefaultCursor()
         {

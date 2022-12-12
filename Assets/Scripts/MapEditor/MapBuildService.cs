@@ -360,7 +360,7 @@ namespace Scripts.MapEditor
         private void SetColorForNullTile(Vector3Int griPosition, Color newColor)
         {
             if (!MapBuilder.Layout.HasIndex(griPosition)
-                || MapBuilder.Layout.ByGridV3int(griPosition) != null)
+                || MapBuilder.Layout.ByGridV3Int(griPosition) != null)
                 return;
 
             GameObject nullTile = MapBuilder.PhysicalTiles[griPosition.ToWorldPositionV3Int()];

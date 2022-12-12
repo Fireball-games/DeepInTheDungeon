@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using Scripts.Building.Tile;
 using Scripts.EventsManagement;
+using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
+using static Scripts.MapEditor.Enums;
 using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.MapEditor
@@ -16,9 +19,12 @@ namespace Scripts.MapEditor
         [SerializeField] private WallGizmo westGizmo;
         [SerializeField] private GameObject wall;
 
+        private Vector3Int currentMousePosition;
+
         private Dictionary<ETileDirection, Quaternion> _wallRotationMap;
 
         private EditorMouseService Mouse => EditorMouseService.Instance;
+        private MapEditorManager Manager => MapEditorManager.Instance;
 
         private void Awake()
         {
@@ -35,11 +41,13 @@ namespace Scripts.MapEditor
 
         private void OnEnable()
         {
+            EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
             EditorEvents.OnMouseGridPositionChanged += OnMouseGridPositionChanged;
         }
 
         private void OnDisable()
         {
+            EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
             EditorEvents.OnMouseGridPositionChanged -= OnMouseGridPositionChanged;
         }
         
@@ -53,11 +61,37 @@ namespace Scripts.MapEditor
 
         private void OnMouseGridPositionChanged(Vector3Int currentGridPosition, Vector3Int previousGridPosition)
         {
-            if (Mouse.GridPositionType is Enums.EGridPositionType.EditableTile &&
-                MapEditorManager.Instance.WorkMode is Enums.EWorkMode.Walls)
+            if (Manager.EditedLayout.HasIndex(currentGridPosition) 
+                && Manager.EditedLayout.ByGridV3Int(currentGridPosition) != null 
+                && MapEditorManager.Instance.WorkMode is EWorkMode.Walls)
             {
+                northGizmo.SetActive(false);
+                eastGizmo.SetActive(false);
+                southGizmo.SetActive(false);
+                westGizmo.SetActive(false);
+                
+                currentMousePosition = currentGridPosition;
                 body.SetActive(true);
                 body.transform.position = currentGridPosition.ToWorldPosition();
+
+                List<List<List<TileDescription>>> layout = Manager.EditedLayout;
+
+                northGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + new Vector3Int(0, -1, 0)) != null);
+                eastGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + new Vector3Int(0, 0, 1)) != null);
+                southGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + new Vector3Int(0, 1, 0)) != null);
+                westGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + new Vector3Int(0, 0, -1)) != null);
+            }
+            else
+            {
+                body.SetActive(false);
+            }
+        }
+
+        private void OnWorkModeChanged(EWorkMode workMode)
+        {
+            if (workMode is not EWorkMode.Walls)
+            {
+                body.SetActive(false);
             }
         }
     }

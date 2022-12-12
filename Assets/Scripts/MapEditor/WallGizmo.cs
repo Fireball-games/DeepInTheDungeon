@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using static Scripts.Building.Tile.TileDescription;
 
 namespace Scripts.MapEditor
@@ -10,14 +8,16 @@ namespace Scripts.MapEditor
         public ETileDirection direction;
         public WallGizmoController controller;
 
+        public void SetActive(bool isActive) => gameObject.SetActive(isActive);
+        
         private void OnMouseEnter()
         {
-            controller.OnGizmoExited();
+            controller.OnGizmoEntered(direction);
         }
 
         private void OnMouseExit()
         {
-            controller.OnGizmoEntered(direction);
+            controller.OnGizmoExited();
         }
     }
 }

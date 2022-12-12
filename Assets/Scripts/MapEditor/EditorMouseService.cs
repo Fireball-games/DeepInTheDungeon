@@ -230,7 +230,7 @@ namespace Scripts.MapEditor
                 return;
             }
 
-            bool isNullTile = layout.ByGridV3int(newGridPosition) == null;
+            bool isNullTile = layout.ByGridV3Int(newGridPosition) == null;
             
             ResolveBuildModePosition(isNullTile, newGridPosition, layout);
             ResolveWallModePosition(isNullTile, newGridPosition, layout);
@@ -262,7 +262,7 @@ namespace Scripts.MapEditor
                 {
                     Vector3Int aboveGridPosition = newGridPosition.AddToX(-1);
 
-                    bool isNullTileAbove = layout.ByGridV3int(aboveGridPosition) == null;
+                    bool isNullTileAbove = layout.ByGridV3Int(aboveGridPosition) == null;
                         
                     GridPositionType = isNullTileAbove ? EGridPositionType.NullTileAbove : EGridPositionType.EditableTileAbove;
                     
@@ -279,7 +279,7 @@ namespace Scripts.MapEditor
                 {
                     Vector3Int bellowGridPosition = newGridPosition.AddToX(1);
 
-                    bool isNullTileBellow = layout.ByGridV3int(bellowGridPosition) == null;
+                    bool isNullTileBellow = layout.ByGridV3Int(bellowGridPosition) == null;
                         
                     GridPositionType = isNullTileBellow ? EGridPositionType.NullTileBellow : EGridPositionType.EditableTileBellow;
                 }

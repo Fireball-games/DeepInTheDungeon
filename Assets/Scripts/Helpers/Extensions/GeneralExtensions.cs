@@ -43,11 +43,19 @@ namespace Scripts.Helpers
                               && row >= 0 && row < source[0].Count
                               && column >= 0 && column < source[0][0].Count;
         }
+        
+        public static T ByGridV3Int<T>(this List<List<List<T>>> source, Vector3Int gridPosition)
+        {
+            return source[gridPosition.x][gridPosition.y][gridPosition.z];
+        }
 
-        public static T ByGridV3int<T>(this T[,,] source, Vector3Int position)
+        public static T ByGridV3Int<T>(this T[,,] source, Vector3Int position)
         {
             return source[position.x, position.y, position.z];
         }
+
+        public static bool HasIndex<T>(this List<List<List<T>>> source, Vector3Int gridPosition) 
+            => source.HasIndex(gridPosition.x, gridPosition.y, gridPosition.z);
 
         public static bool HasIndex<T>(this List<List<T>> source, int row, int column)
         {

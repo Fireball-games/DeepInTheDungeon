@@ -324,7 +324,7 @@ namespace Scripts.MapEditor
             {
                 MapBuilder.RebuildTile(adjustedFloor, adjustedRow, adjustedColumn);
                 MapBuilder.RegenerateTilesAround(adjustedFloor, adjustedRow, adjustedColumn);
-                Mouse.RefreshMousePosition();
+                Mouse.RefreshMousePosition(true);
             }
             else
             {

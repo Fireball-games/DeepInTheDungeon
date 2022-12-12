@@ -33,6 +33,7 @@ namespace Scripts.MapEditor
         private MapBuildService _buildService;
         private Plane _layerPlane;
         private Vector3Int _lastGridPosition;
+        private Vector3Int _invalidGridPosition = new(-10000, -10000, -10000);
         private readonly Vector2 _defaultMouseHotspot = Vector2.zero;
         private Vector2 _demolishMouseHotspot;
         private Vector2 _moveCameraMouseHotspot;
@@ -257,11 +258,16 @@ namespace Scripts.MapEditor
             }
         }
 
-        private void SetGridPosition()
+        private void SetGridPosition(bool invalidateLastPosition = false)
         {
             if (IsManipulatingCameraPosition) return;
 
             if (!GetMousePlanePosition(out Vector3 worldPosition)) return;
+
+            if (invalidateLastPosition)
+            {
+                _lastGridPosition = _invalidGridPosition;
+            }
 
             Vector3Int newGridPosition = Vector3Int.RoundToInt(worldPosition);
             newGridPosition.y = newGridPosition.x;
@@ -401,18 +407,18 @@ namespace Scripts.MapEditor
             }
         }
 
-        public void RefreshMousePosition()
+        public void RefreshMousePosition(bool invalidateLastPosition = false)
         {
             if (!Manager.MapIsPresented) return;
 
-            SetGridPosition();
+            SetGridPosition(invalidateLastPosition);
         }
 
         public void ResetCursor()
         {
             cursor3D.Hide();
             SetDefaultCursor();
-            RefreshMousePosition();
+            RefreshMousePosition(true);
         }
     }
 }

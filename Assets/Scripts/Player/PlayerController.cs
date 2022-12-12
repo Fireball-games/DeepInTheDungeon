@@ -35,6 +35,8 @@ namespace Scripts.Player
             playerTransform.rotation = rotation;
             _targetRotation = rotation.eulerAngles;
             _isStartPositionSet = true;
+
+            StartCoroutine(GroundCheckCoroutine(true));
         }
 
         public void RotateLeft() => SetMovement(() => _targetRotation -= Vector3.up * 90f);
@@ -96,20 +98,7 @@ namespace Scripts.Player
                 yield return null;
             }
 
-            while (!GroundCheck())
-            {
-                Vector3 targetPosition = transform.position + Vector3.down;
-                
-                while (NotAtTargetPosition(targetPosition))
-                {
-                    transform.position = Vector3.MoveTowards(myTransform.position, targetPosition, Time.deltaTime * transitionSpeed);
-                    yield return null;
-                }
-                
-                transform.position = _targetPosition = _prevTargetPosition = transform.position.ToVector3Int();
-
-                yield return null;
-            }
+            yield return GroundCheckCoroutine();
 
             _atRest = true;
             _prevTargetPosition = _targetPosition;
@@ -124,6 +113,28 @@ namespace Scripts.Player
             {
                 EventsManager.TriggerOnPlayerPositionChanged(transform.position);
             }
+        }
+
+        private IEnumerator GroundCheckCoroutine(bool setAtRestAtTheEnd = false)
+        {
+            while (!GroundCheck())
+            {
+                _atRest = false;
+                
+                Vector3 targetPosition = transform.position + Vector3.down;
+                
+                while (NotAtTargetPosition(targetPosition))
+                {
+                    transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * transitionSpeed);
+                    yield return null;
+                }
+                
+                transform.position = _targetPosition = _prevTargetPosition = transform.position.ToVector3Int();
+
+                yield return null;
+            }
+
+            if (setAtRestAtTheEnd) _atRest = true;
         }
 
         private IEnumerator BashIntoWallCoroutine()

@@ -29,7 +29,7 @@ namespace Scripts.MapEditor
         private MapBuildService _buildService;
         private Plane _layerPlane;
         private Vector3Int _lastGridPosition;
-        private Vector3Int _invalidGridPosition = new(-10000, -10000, -10000);
+        private readonly Vector3Int _invalidGridPosition = new(-10000, -10000, -10000);
         private readonly Vector2 _defaultMouseHotspot = Vector2.zero;
         private Vector2 _demolishMouseHotspot;
         private Vector2 _moveCameraMouseHotspot;
@@ -75,6 +75,7 @@ namespace Scripts.MapEditor
         private void OnEnable()
         {
             EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
+            EditorEvents.OnFloorChanged += OnFloorChanged;
         }
 
         private void Update()
@@ -116,13 +117,15 @@ namespace Scripts.MapEditor
         private void OnDisable()
         {
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
+            EditorEvents.OnFloorChanged -= OnFloorChanged;
         }
 
-        private void OnNewMapStartedCreation()
-        {
-            _layerPlane = _layerPlane = new Plane(Vector3.up, 
-                new Vector3(0f, 0.5f - GameManager.Instance.CurrentMap.StartGridPosition.x, 0f));
-        }
+        private void OnNewMapStartedCreation() => RecreateMousePlane();
+
+        private void OnFloorChanged(int? _) => RecreateMousePlane();
+        
+        private void RecreateMousePlane() => _layerPlane = _layerPlane = new Plane(Vector3.up, 
+            new Vector3(0f, 0.5f - Manager.CurrentFloor, 0f));
 
         private void ValidateClicks()
         {

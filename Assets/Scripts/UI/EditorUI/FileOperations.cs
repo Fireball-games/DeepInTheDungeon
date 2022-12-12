@@ -42,6 +42,8 @@ namespace Scripts.UI.EditorUI
             
             string[] fileNames = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectoryName);
 
+            fileNames ??= new string[]{};
+
             fileNames = fileNames.Select(Path.GetFileName).ToArray();
 
             int number = 1;

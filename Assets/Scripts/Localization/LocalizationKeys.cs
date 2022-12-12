@@ -24,6 +24,7 @@
         public const string ReturnToMainScene = "ReturnToMainScene";
         public const string Rows = "Rows";
         public const string Save = "Save";
+        public const string SaveFailed = "SaveFailed";
         public const string SaveMap = "SaveMap";
         public const string SaveEditedMapPrompt = "SaveEditedMapPrompt";
         public const string SelectMapToLoad = "SelectMapToLoad";

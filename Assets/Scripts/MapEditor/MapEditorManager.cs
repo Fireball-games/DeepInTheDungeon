@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Scripts.Building;
 using Scripts.EventsManagement;
@@ -10,6 +11,7 @@ using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -143,7 +145,21 @@ namespace Scripts.MapEditor
             MapDescription currentMap = GameManager.Instance.CurrentMap;
             
             string mapName = currentMap.MapName;
-            ES3.Save(mapName, currentMap, FileOperationsHelper.GetSavePath(mapName));
+
+            string mapDirectoryPath = FileOperationsHelper.MapDirectoryPath;
+            
+            mapDirectoryPath.CreateDirectoryIfNotExists();
+
+            try
+            {
+                ES3.Save(mapName, currentMap, FileOperationsHelper.GetSavePath(mapName));
+            }
+            catch (Exception e)
+            {
+                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.SaveFailed), StatusBar.EMessageType.Negative);
+                Logger.Log($"Saving file failed: {e.Message}");
+                return;
+            }
             
             EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.MapSaved), StatusBar.EMessageType.Positive);
 

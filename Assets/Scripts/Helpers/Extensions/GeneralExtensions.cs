@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Scripts.System.Pooling;
 using UnityEngine;
@@ -78,6 +79,14 @@ namespace Scripts.Helpers
         {
             return dictionary.FirstOrDefault(entry =>
                 EqualityComparer<TValue>.Default.Equals(entry.Value, value)).Key;
+        }
+
+        public static void CreateDirectoryIfNotExists(this string directoryPath)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
         }
     }
 }

@@ -7,7 +7,6 @@ using Scripts.System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -22,7 +21,6 @@ namespace Scripts.MapEditor
         [SerializeField] private float maxZoomHeight = 20f;
         [SerializeField] private float cameraRotationSpeed = 100f;
         [SerializeField] private Transform cameraHolder;
-        [SerializeField] private Transform cameraRotator;
         [SerializeField] private Cursor3D cursor3D;
         
         private static MapEditorManager Manager => MapEditorManager.Instance;
@@ -126,8 +124,6 @@ namespace Scripts.MapEditor
             _layerPlane = _layerPlane = new Plane(Vector3.up, 
                 new Vector3(0f, 0.5f - GameManager.Instance.CurrentMap.StartGridPosition.x, 0f));
         }
-
-        private void TranslateCameraHorizontal(float x, float z) => TranslateCamera(x, 0, z);
 
         private void TranslateCamera(float x, float y, float z)
         {
@@ -247,12 +243,12 @@ namespace Scripts.MapEditor
 
                 if (xDelta == 0f && yDelta == 0f) return;
 
-                Vector3 cameraRotation = cameraRotator.localRotation.eulerAngles;
+                Vector3 cameraRotation = cameraHolder.localRotation.eulerAngles;
                 _cameraMoveVector.x = cameraRotation.x;
                 _cameraMoveVector.y = cameraRotation.y + (xDelta * Time.deltaTime * cameraRotationSpeed);
                 _cameraMoveVector.z = cameraRotation.z - (yDelta * Time.deltaTime * cameraRotationSpeed);
                 
-                cameraRotator.localRotation = Quaternion.Euler(_cameraMoveVector);
+                cameraHolder.localRotation = Quaternion.Euler(_cameraMoveVector);
             }
             
             if (LeftClickExpired && Input.GetMouseButtonUp(1))

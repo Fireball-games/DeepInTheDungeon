@@ -1,4 +1,3 @@
-using System;
 using Scripts.EventsManagement;
 using UnityEngine;
 
@@ -26,7 +25,11 @@ namespace Scripts.MapEditor
 
         private void OnMouseGridPositionChanged(Vector3Int current, Vector3Int previous)
         {
-            
+            if (Mouse.GridPositionType is Enums.EGridPositionType.EditableTile &&
+                MapEditorManager.Instance.WorkMode is Enums.EWorkMode.Walls)
+            {
+                
+            }
         }
     }
 }

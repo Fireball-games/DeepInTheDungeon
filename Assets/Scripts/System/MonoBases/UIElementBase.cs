@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Scripts.System
+namespace Scripts.System.MonoBases
 {
     public class UIElementBase : MonoBehaviour
     {

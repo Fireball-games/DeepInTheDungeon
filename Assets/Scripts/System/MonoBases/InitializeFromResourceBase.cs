@@ -7,7 +7,7 @@ using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
 using Object = UnityEngine.Object;
 
-namespace Scripts.System
+namespace Scripts.System.MonoBases
 {
     /// <summary>
     /// Base class for using InstantiateFromResource and AssignFromResource attributes to automatically instantiate

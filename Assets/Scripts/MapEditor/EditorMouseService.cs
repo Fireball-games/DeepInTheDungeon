@@ -169,6 +169,13 @@ namespace Scripts.MapEditor
                     break;
                 case EWorkMode.Select:
                     break;
+                case EWorkMode.Walls:
+                    if (mouseButtonUpped == 0)
+                    {
+                        
+                    }
+
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -225,50 +232,63 @@ namespace Scripts.MapEditor
 
             bool isNullTile = layout.ByGridV3int(newGridPosition) == null;
             
-            if (Manager.WorkMode == EWorkMode.Build)
-            {
-                if (Manager.WorkLevel == ELevel.Equal)
-                {
-                    GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
-                }
-                else if (Manager.WorkLevel == ELevel.Upper)
-                {
-                    if (!isNullTile)
-                    {
-                        Vector3Int aboveGridPosition = newGridPosition.AddToX(-1);
-
-                        bool isNullTileAbove = layout.ByGridV3int(aboveGridPosition) == null;
-                        
-                        GridPositionType = isNullTileAbove ? EGridPositionType.NullTileAbove : EGridPositionType.EditableTileAbove;
-                    
-                        _buildService.ShowUpperLevelStoneCubesAround(aboveGridPosition);
-                    }
-                    else
-                    {
-                        GridPositionType = EGridPositionType.None;
-                    }
-                }
-                else if (Manager.WorkLevel == ELevel.Lower)
-                {
-                    if (!isNullTile)
-                    {
-                        Vector3Int bellowGridPosition = newGridPosition.AddToX(1);
-
-                        bool isNullTileBellow = layout.ByGridV3int(bellowGridPosition) == null;
-                        
-                        GridPositionType = isNullTileBellow ? EGridPositionType.NullTileBellow : EGridPositionType.EditableTileBellow;
-                    }
-                    else
-                    {
-                        GridPositionType = EGridPositionType.None;
-                    }
-                }
-            }
+            ResolveBuildModePosition(isNullTile, newGridPosition, layout);
+            ResolveWallModePosition(isNullTile, newGridPosition, layout);
 
             SetCursor(GridPositionType);
         }
 
+        private void ResolveWallModePosition(bool isNullTile, Vector3Int newGridPosition, TileDescription[,,] layout)
+        {
+            if (Manager.WorkMode != EWorkMode.Walls) return;
+            
+            GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
+        }
+
         internal void SetCursorToCameraMovement() => SetCursor(moveCameraCursor, _moveCameraMouseHotspot);
+
+        private void ResolveBuildModePosition(bool isNullTile, Vector3Int newGridPosition,
+            TileDescription[,,] layout)
+        {
+            if (Manager.WorkMode != EWorkMode.Build) return;
+            
+            if (Manager.WorkLevel == ELevel.Equal)
+            {
+                GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
+            }
+            else if (Manager.WorkLevel == ELevel.Upper)
+            {
+                if (!isNullTile)
+                {
+                    Vector3Int aboveGridPosition = newGridPosition.AddToX(-1);
+
+                    bool isNullTileAbove = layout.ByGridV3int(aboveGridPosition) == null;
+                        
+                    GridPositionType = isNullTileAbove ? EGridPositionType.NullTileAbove : EGridPositionType.EditableTileAbove;
+                    
+                    _buildService.ShowUpperLevelStoneCubesAround(aboveGridPosition);
+                }
+                else
+                {
+                    GridPositionType = EGridPositionType.None;
+                }
+            }
+            else if (Manager.WorkLevel == ELevel.Lower)
+            {
+                if (!isNullTile)
+                {
+                    Vector3Int bellowGridPosition = newGridPosition.AddToX(1);
+
+                    bool isNullTileBellow = layout.ByGridV3int(bellowGridPosition) == null;
+                        
+                    GridPositionType = isNullTileBellow ? EGridPositionType.NullTileBellow : EGridPositionType.EditableTileBellow;
+                }
+                else
+                {
+                    GridPositionType = EGridPositionType.None;
+                }
+            }
+        }
 
         private void SetDefaultCursor()
         {
@@ -286,40 +306,48 @@ namespace Scripts.MapEditor
 
         private void SetCursor(EGridPositionType type)
         {
-            switch (type)
+            if (Manager.WorkMode == EWorkMode.Walls)
             {
-                case EGridPositionType.None:
-                    cursor3D.Hide();
-                    SetDefaultCursor();
-                    break;
-                case EGridPositionType.NullTile:
-                    cursor3D.ShowAt(MouseGridPosition);
-                    SetCursor(digCursor, _defaultMouseHotspot);
-                    break;
-                case EGridPositionType.EditableTile:
-                    cursor3D.ShowAt(MouseGridPosition);
-                    SetCursor(demolishCursor, _demolishMouseHotspot);
-                    break;
-                case EGridPositionType.NullTileAbove:
-                    cursor3D.ShowAt(MouseGridPosition, true);
-                    SetCursor(digCursor, _defaultMouseHotspot);
-                    break;
-                case EGridPositionType.EditableTileAbove:
-                    cursor3D.ShowAt(MouseGridPosition, true);
-                    SetCursor(demolishCursor, _demolishMouseHotspot);
-                    break;
-                case EGridPositionType.NullTileBellow:
-                    cursor3D.ShowAt(MouseGridPosition, withCopyBellow: true);
-                    SetCursor(digCursor, _defaultMouseHotspot);
-                    break;
-                case EGridPositionType.EditableTileBellow:
-                    cursor3D.ShowAt(MouseGridPosition, withCopyBellow: true);
-                    SetCursor(demolishCursor, _demolishMouseHotspot);
-                    break;
-                default:
-                    cursor3D.Hide();
-                    SetDefaultCursor();
-                    break;
+                SetDefaultCursor();
+            }
+            
+            if (Manager.WorkMode == EWorkMode.Build)
+            {
+                switch (type)
+                {
+                    case EGridPositionType.None:
+                        cursor3D.Hide();
+                        SetDefaultCursor();
+                        break;
+                    case EGridPositionType.NullTile:
+                        cursor3D.ShowAt(MouseGridPosition);
+                        SetCursor(digCursor, _defaultMouseHotspot);
+                        break;
+                    case EGridPositionType.EditableTile:
+                        cursor3D.ShowAt(MouseGridPosition);
+                        SetCursor(demolishCursor, _demolishMouseHotspot);
+                        break;
+                    case EGridPositionType.NullTileAbove:
+                        cursor3D.ShowAt(MouseGridPosition, true);
+                        SetCursor(digCursor, _defaultMouseHotspot);
+                        break;
+                    case EGridPositionType.EditableTileAbove:
+                        cursor3D.ShowAt(MouseGridPosition, true);
+                        SetCursor(demolishCursor, _demolishMouseHotspot);
+                        break;
+                    case EGridPositionType.NullTileBellow:
+                        cursor3D.ShowAt(MouseGridPosition, withCopyBellow: true);
+                        SetCursor(digCursor, _defaultMouseHotspot);
+                        break;
+                    case EGridPositionType.EditableTileBellow:
+                        cursor3D.ShowAt(MouseGridPosition, withCopyBellow: true);
+                        SetCursor(demolishCursor, _demolishMouseHotspot);
+                        break;
+                    default:
+                        cursor3D.Hide();
+                        SetDefaultCursor();
+                        break;
+                }
             }
         }
 

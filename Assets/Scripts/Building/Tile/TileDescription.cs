@@ -1,6 +1,5 @@
 ﻿using System;
 using Scripts.Helpers;
-using UnityEditor;
 using UnityEngine;
 
 namespace Scripts.Building.Tile
@@ -17,16 +16,6 @@ namespace Scripts.Building.Tile
             West = 6
         }
 
-        // public static ETileDirection[] TileDirections => new[]
-        // {
-        //     ETileDirection.Floor,
-        //     ETileDirection.Ceiling,
-        //     ETileDirection.North,
-        //     ETileDirection.East,
-        //     ETileDirection.South,
-        //     ETileDirection.West
-        // };
-        
         public Walls Walls;
         public bool IsForMovement;
 
@@ -43,7 +32,6 @@ namespace Scripts.Building.Tile
         
         public WallDescription GetWall(Vector3Int direction)
         {
-            // TODO: not sure if floor and ceiling should not be reversed
             if (direction == GeneralExtensions.GridDown) return Walls.Floor;
             if (direction == GeneralExtensions.GridUp) return Walls.Ceiling;
             if (direction == GeneralExtensions.GridNorth) return Walls.North;

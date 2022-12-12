@@ -20,8 +20,8 @@ namespace Scripts.EventsManagement
 
         public static void TriggerOnWorkModeChanged(EWorkMode workMode) => OnWorkModeChanged?.Invoke(workMode);
 
-        public static void TriggerOnMouseGridPositionChanged(Vector3Int newPosition, Vector3Int previousPosition) =>
-            OnMouseGridPositionChanged?.Invoke(newPosition, previousPosition);
+        public static void TriggerOnMouseGridPositionChanged(Vector3Int newGridPosition, Vector3Int previousGridPosition) =>
+            OnMouseGridPositionChanged?.Invoke(newGridPosition, previousGridPosition);
 
         public static void TriggerOnWorkingLevelChanged(ELevel workingLevel) => OnWorkingLevelChanged?.Invoke(workingLevel);
 

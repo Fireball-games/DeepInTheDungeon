@@ -247,8 +247,8 @@ namespace Scripts.MapEditor
                 if (xDelta == 0f && yDelta == 0f) return;
 
                 Vector3 cameraRotation = cameraRotator.localRotation.eulerAngles;
-                _cameraMoveVector.x = cameraRotation.x - (xDelta * Time.deltaTime * cameraRotationSpeed);
-                _cameraMoveVector.y = cameraRotation.y;
+                _cameraMoveVector.x = cameraRotation.x;
+                _cameraMoveVector.y = cameraRotation.y + (xDelta * Time.deltaTime * cameraRotationSpeed);
                 _cameraMoveVector.z = cameraRotation.z - (yDelta * Time.deltaTime * cameraRotationSpeed);
                 
                 cameraRotator.localRotation = Quaternion.Euler(_cameraMoveVector);
@@ -257,9 +257,6 @@ namespace Scripts.MapEditor
             if (LeftClickExpired && Input.GetMouseButtonUp(1))
             {
                 IsManipulatingCameraPosition = false;
-                Vector3 cameraRotation = cameraRotator.localRotation.eulerAngles;
-                cameraRotation.x = cameraRotation.z = 0;
-                cameraRotator.localRotation = Quaternion.Euler(cameraRotation);
             }
         }
 

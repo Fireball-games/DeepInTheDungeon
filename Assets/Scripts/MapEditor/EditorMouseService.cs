@@ -233,12 +233,12 @@ namespace Scripts.MapEditor
             bool isNullTile = layout.ByGridV3Int(newGridPosition) == null;
             
             ResolveBuildModePosition(isNullTile, newGridPosition, layout);
-            ResolveWallModePosition(isNullTile, newGridPosition, layout);
+            ResolveWallModePosition(isNullTile);
 
             SetCursor(GridPositionType);
         }
 
-        private void ResolveWallModePosition(bool isNullTile, Vector3Int newGridPosition, TileDescription[,,] layout)
+        private void ResolveWallModePosition(bool isNullTile)
         {
             if (Manager.WorkMode != EWorkMode.Walls) return;
             

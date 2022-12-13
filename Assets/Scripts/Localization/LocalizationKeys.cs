@@ -2,6 +2,7 @@
 {
     public static class LocalizationKeys
     {
+        public const string AvailablePrefabs = "AvailablePrefabs";
         public const string Cancel = "Cancel";
         public const string Columns = "Columns";
         public const string Confirm = "Confirm";

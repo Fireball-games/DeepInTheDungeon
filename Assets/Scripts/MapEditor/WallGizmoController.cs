@@ -3,9 +3,11 @@ using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
+using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
 using static Scripts.MapEditor.Enums;
+using Logger = Scripts.Helpers.Logger;
 using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.MapEditor
@@ -19,12 +21,15 @@ namespace Scripts.MapEditor
         [SerializeField] private WallGizmo westGizmo;
         [SerializeField] private GameObject wall;
 
+        internal EWallType wallType;
+
         private Vector3Int currentMousePosition;
 
         private Dictionary<ETileDirection, Quaternion> _wallRotationMap;
 
         private EditorMouseService Mouse => EditorMouseService.Instance;
         private MapEditorManager Manager => MapEditorManager.Instance;
+        private bool _isWallPlacementValid;
 
         private void Awake()
         {
@@ -45,6 +50,14 @@ namespace Scripts.MapEditor
             EditorEvents.OnMouseGridPositionChanged += OnMouseGridPositionChanged;
         }
 
+        private void Update()
+        {
+            if (_isWallPlacementValid && Input.GetMouseButtonUp(0))
+            {
+                EditorUIManager.Instance.OpenTileEditorWindow(wallType, wall.transform.position);
+            }
+        }
+
         private void OnDisable()
         {
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
@@ -53,34 +66,44 @@ namespace Scripts.MapEditor
         
         public void OnGizmoEntered(ETileDirection direction)
         {
+            _isWallPlacementValid = true;
             wall.SetActive(true);
             wall.transform.localRotation = _wallRotationMap[direction];
+
+            wallType = EWallType.Between;
+            
+            if (direction == ETileDirection.North && Manager.EditedLayout.ByGridV3Int(currentMousePosition + GeneralExtensions.GridNorth) == null
+                || direction == ETileDirection.East && Manager.EditedLayout.ByGridV3Int(currentMousePosition + GeneralExtensions.GridEast) == null
+                || direction == ETileDirection.South && Manager.EditedLayout.ByGridV3Int(currentMousePosition + GeneralExtensions.GridSouth) == null
+                || direction == ETileDirection.West && Manager.EditedLayout.ByGridV3Int(currentMousePosition + GeneralExtensions.GridWest) == null
+                )
+            {
+                wallType = EWallType.OnWall;
+            }
         }
 
-        public void OnGizmoExited() => wall.SetActive(false);
+        public void OnGizmoExited()
+        {
+            _isWallPlacementValid = false;
+            wall.SetActive(false);
+        }
 
         private void OnMouseGridPositionChanged(Vector3Int currentGridPosition, Vector3Int previousGridPosition)
         {
-            if (Manager.EditedLayout.HasIndex(currentGridPosition) 
+            if (!EditorUIManager.Instance.IsAnyObjectEdited
+                && Manager.EditedLayout.HasIndex(currentGridPosition) 
                 && Manager.EditedLayout.ByGridV3Int(currentGridPosition) != null 
-                && MapEditorManager.Instance.WorkMode is EWorkMode.Walls)
+                && Manager.WorkMode is EWorkMode.Walls)
             {
-                SetWallsActive(false);
-                
-                currentMousePosition = currentGridPosition;
-                body.SetActive(true);
                 body.transform.position = currentGridPosition.ToWorldPosition();
 
-                List<List<List<TileDescription>>> layout = Manager.EditedLayout;
-
-                northGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + GeneralExtensions.GridNorth) != null);
-                eastGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + GeneralExtensions.GridEast) != null);
-                southGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + GeneralExtensions.GridSouth) != null);
-                westGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + GeneralExtensions.GridWest) != null);
+                currentMousePosition = currentGridPosition;
+                body.SetActive(true);
             }
             else
             {
                 body.SetActive(false);
+                _isWallPlacementValid = false;
             }
         }
 

@@ -1,11 +1,12 @@
 ﻿using Scripts.Helpers;
+using Scripts.System;
 using UnityEngine;
 
 namespace Scripts.MapEditor
 {
-    public class EditorCameraService : MonoBehaviour
+    public class EditorCameraService : SingletonNotPersisting<EditorCameraService>
     {
-        [SerializeField] private float cameraPanSpeed = 100f;
+        public float cameraPanSpeed = 100f;
         [SerializeField] private float cameraZoomSpeed = 100f;
         [SerializeField] private float maxZoomHeight = 20f;
         [SerializeField] private float cameraRotationSpeed = 100f;
@@ -30,7 +31,7 @@ namespace Scripts.MapEditor
                 Vector3 localForward = worldToLocalMatrix.MultiplyVector(-cameraHolder.forward);
                 Vector3 localRight = worldToLocalMatrix.MultiplyVector(cameraHolder.right);
                 Vector3 moveVector = localRight * (yDelta * Time.deltaTime * cameraPanSpeed);
-                moveVector += localForward * (xDelta * Time.deltaTime * cameraPanSpeed); 
+                moveVector += localForward * (xDelta * Time.deltaTime * cameraPanSpeed);
                 
                 cameraHolder.position += moveVector;
             }
@@ -73,7 +74,7 @@ namespace Scripts.MapEditor
             }
         }
         
-        public void MoveCameraTo(float x, float y, float z)
+        internal void MoveCameraTo(float x, float y, float z)
         {
             _cameraMoveVector.x = x;
             _cameraMoveVector.y = y;
@@ -81,6 +82,8 @@ namespace Scripts.MapEditor
 
             cameraHolder.position = _cameraMoveVector;
         }
+
+        internal void TranslateCamera(Vector3 positionDelta) => TranslateCamera(positionDelta.x, positionDelta.y, positionDelta.z);
         
         private void TranslateCamera(float x, float y, float z)
         {

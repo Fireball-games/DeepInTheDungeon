@@ -3,6 +3,7 @@ using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.UI.Components;
 using UnityEngine;
+using static Scripts.MapEditor.Enums;
 
 namespace Scripts.UI.EditorUI
 {
@@ -13,6 +14,7 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private FloorManagement floorManagement;
         [SerializeField] private NewMapDialog newMapDialog;
         [SerializeField] private DialogBase confirmationDialog;
+        [SerializeField] private WallEditorWindow wallEditor;
         [SerializeField] private StatusBar statusBar;
         [SerializeField] private Title mapTitle;
         [SerializeField] private MapEditorManager manager;
@@ -20,6 +22,7 @@ namespace Scripts.UI.EditorUI
         public StatusBar StatusBar => statusBar;
         public NewMapDialog NewMapDialog => newMapDialog;
         public DialogBase ConfirmationDialog => confirmationDialog;
+        public bool IsAnyObjectEdited;
 
         private void OnEnable()
         {
@@ -39,6 +42,18 @@ namespace Scripts.UI.EditorUI
             workModeSelection.SetActive(true);
             floorManagement.SetActive(true);
             mapTitle.Show(GameManager.Instance.CurrentMap.MapName);
+        }
+
+        public void OpenTileEditorWindow(EWallType wallType, Vector3 placeholderPosition)
+        {
+            IsAnyObjectEdited = true;
+            wallEditor.Open(wallType, placeholderPosition);
+        }
+
+        public void CloseTileEditorWindow()
+        {
+            IsAnyObjectEdited = false;
+            wallEditor.Close();
         }
     }
 }

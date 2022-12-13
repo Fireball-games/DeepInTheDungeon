@@ -1,6 +1,7 @@
 using Scripts.EventsManagement;
 using Scripts.MapEditor;
 using Scripts.System;
+using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;

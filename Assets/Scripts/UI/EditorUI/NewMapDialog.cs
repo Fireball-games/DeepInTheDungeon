@@ -1,6 +1,6 @@
 using System;
 using Scripts.Localization;
-using Scripts.System;
+using Scripts.System.MonoBases;
 using UnityEngine;
 
 namespace Scripts.UI.EditorUI

@@ -1,5 +1,4 @@
-﻿using System;
-using Scripts.Building.Walls;
+﻿using Scripts.Building.Walls;
 using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.System.MonoBases;

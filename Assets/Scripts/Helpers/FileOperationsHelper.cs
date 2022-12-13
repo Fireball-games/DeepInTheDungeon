@@ -2,7 +2,6 @@
 using System.Linq;
 using Scripts.Building;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Helpers
 {

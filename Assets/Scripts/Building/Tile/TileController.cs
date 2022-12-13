@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Scripts.System.Pooling;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
-using Logger = Scripts.Helpers.Logger;
 
 
 namespace Scripts.Building.Tile

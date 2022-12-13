@@ -1,8 +1,6 @@
-﻿using System;
-using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
+﻿using UnityEngine;
 
-namespace Scripts.System
+namespace Scripts.System.MonoBases
 {
     public class SingletonNotPersisting<T> : MonoBehaviour where T : MonoBehaviour
     {

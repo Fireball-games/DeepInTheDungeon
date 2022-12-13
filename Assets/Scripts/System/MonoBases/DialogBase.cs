@@ -2,14 +2,13 @@
 using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.MapEditor;
-using Scripts.System.MonoBases;
 using Scripts.UI;
 using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Scripts.System
+namespace Scripts.System.MonoBases
 {
     public class DialogBase : UIElementBase
     {

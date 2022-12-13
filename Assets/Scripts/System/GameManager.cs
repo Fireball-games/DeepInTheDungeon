@@ -5,6 +5,7 @@ using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.Player;
 using Scripts.ScenesManagement;
+using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using UnityEngine;
 

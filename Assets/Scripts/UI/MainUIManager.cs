@@ -1,6 +1,6 @@
 using Scripts.EventsManagement;
 using Scripts.ScenesManagement;
-using Scripts.System;
+using Scripts.System.MonoBases;
 using UnityEngine;
 using UnityEngine.UI;
 

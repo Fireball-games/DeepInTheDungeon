@@ -6,6 +6,7 @@ using Scripts.Helpers;
 using Scripts.Localization;
 using Scripts.ScenesManagement;
 using Scripts.System;
+using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI;
 using UnityEngine;

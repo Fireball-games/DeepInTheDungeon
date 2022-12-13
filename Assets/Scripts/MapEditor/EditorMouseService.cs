@@ -4,6 +4,7 @@ using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.System;
+using Scripts.System.MonoBases;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;

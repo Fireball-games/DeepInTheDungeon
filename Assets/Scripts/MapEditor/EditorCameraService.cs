@@ -1,5 +1,5 @@
 ﻿using Scripts.Helpers;
-using Scripts.System;
+using Scripts.System.MonoBases;
 using UnityEngine;
 
 namespace Scripts.MapEditor

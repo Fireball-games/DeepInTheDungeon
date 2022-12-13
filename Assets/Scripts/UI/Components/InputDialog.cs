@@ -1,4 +1,4 @@
-using Scripts.System;
+using Scripts.System.MonoBases;
 using UnityEngine;
 
 public class InputDialog : DialogBase

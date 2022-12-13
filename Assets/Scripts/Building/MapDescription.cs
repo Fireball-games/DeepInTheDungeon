@@ -1,8 +1,6 @@
-using System;
 using Scripts.Building.Tile;
 using Scripts.ScenesManagement;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {

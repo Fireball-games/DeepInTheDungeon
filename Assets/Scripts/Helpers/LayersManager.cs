@@ -1,5 +1,4 @@
-﻿using Scripts.System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Scripts.Helpers
 {

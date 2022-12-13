@@ -1,6 +1,6 @@
 namespace Scripts.Building.Tile
 {
-    public class Walls
+    public class TileWalls
     {
         public WallDescription Floor;
         public WallDescription Ceiling;

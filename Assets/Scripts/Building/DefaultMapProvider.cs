@@ -33,7 +33,7 @@ namespace Scripts.Building
         public static TileDescription FullTile { get; } = new()
         {
             IsForMovement = true,
-            Walls = new Walls
+            TileWalls = new TileWalls
             {
                 Floor = new WallDescription(),
                 Ceiling = new WallDescription(),

@@ -16,28 +16,28 @@ namespace Scripts.Building.Tile
             West = 6
         }
 
-        public Walls Walls;
+        public TileWalls TileWalls;
         public bool IsForMovement;
 
         public WallDescription GetWall(ETileDirection direction) => direction switch
         {
-            ETileDirection.Floor => Walls.Floor,
-            ETileDirection.Ceiling => Walls.Ceiling,
-            ETileDirection.North => Walls.North,
-            ETileDirection.East => Walls.East,
-            ETileDirection.South => Walls.South,
-            ETileDirection.West => Walls.West,
+            ETileDirection.Floor => TileWalls.Floor,
+            ETileDirection.Ceiling => TileWalls.Ceiling,
+            ETileDirection.North => TileWalls.North,
+            ETileDirection.East => TileWalls.East,
+            ETileDirection.South => TileWalls.South,
+            ETileDirection.West => TileWalls.West,
             _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
         };
         
         public WallDescription GetWall(Vector3Int direction)
         {
-            if (direction == GeneralExtensions.WorldDown) return Walls.Floor;
-            if (direction == GeneralExtensions.WorldUp) return Walls.Ceiling;
-            if (direction == GeneralExtensions.WorldNorth) return Walls.North;
-            if (direction == GeneralExtensions.WorldEast) return Walls.East;
-            if (direction == GeneralExtensions.WorldSouth) return Walls.South;
-            if (direction == GeneralExtensions.WorldWest) return Walls.West;
+            if (direction == GeneralExtensions.WorldDown) return TileWalls.Floor;
+            if (direction == GeneralExtensions.WorldUp) return TileWalls.Ceiling;
+            if (direction == GeneralExtensions.WorldNorth) return TileWalls.North;
+            if (direction == GeneralExtensions.WorldEast) return TileWalls.East;
+            if (direction == GeneralExtensions.WorldSouth) return TileWalls.South;
+            if (direction == GeneralExtensions.WorldWest) return TileWalls.West;
             return null;
         }
 
@@ -46,7 +46,7 @@ namespace Scripts.Building.Tile
             return  new TileDescription
             {
                 IsForMovement = true,
-                Walls = new Walls
+                TileWalls = new TileWalls
                 {
                     Ceiling = new WallDescription(),
                     Floor = new WallDescription(),

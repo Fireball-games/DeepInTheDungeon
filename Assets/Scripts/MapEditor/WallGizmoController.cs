@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
+using Scripts.System;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
@@ -18,26 +19,43 @@ namespace Scripts.MapEditor
         [SerializeField] private WallGizmo westGizmo;
         [SerializeField] private GameObject wall;
 
-        internal EWallType wallType;
-
-        private Vector3Int currentMousePosition;
-
-        private Dictionary<ETileDirection, Quaternion> _wallRotationMap;
-
         private EditorMouseService Mouse => EditorMouseService.Instance;
         private MapEditorManager Manager => MapEditorManager.Instance;
+        
+        private EWallType wallType;
+        private Vector3Int currentMousePosition;
+        private Dictionary<ETileDirection, PositionRotation> _wallRotationMap;
+        private PositionRotation _wallData;
         private bool _isWallPlacementValid;
 
         private void Awake()
         {
             body.SetActive(false);
+
+            _wallData = new PositionRotation();
             
-            _wallRotationMap = new Dictionary<ETileDirection, Quaternion>
+            _wallRotationMap = new Dictionary<ETileDirection, PositionRotation>
             {
-                { ETileDirection.North, Quaternion.Euler(Vector3.zero) },
-                { ETileDirection.East, Quaternion.Euler(new Vector3(0, 90, 0)) },
-                { ETileDirection.South, Quaternion.Euler(new Vector3(0, 180, 0)) },
-                { ETileDirection.West, Quaternion.Euler(new Vector3(0, 270, 0)) },
+                { ETileDirection.North, new PositionRotation
+                {
+                    Position = new Vector3(-0.5f, 0, 0f), 
+                    Rotation = Quaternion.Euler(Vector3.zero)
+                }}, 
+                { ETileDirection.East, new PositionRotation
+                {
+                    Position = new Vector3(0f, 0f, 0.5f), 
+                    Rotation = Quaternion.Euler(new Vector3(0, 90, 0))
+                }}, 
+                { ETileDirection.South, new PositionRotation
+                {
+                    Position = new Vector3(0.5f, 0f, 0f), 
+                    Rotation = Quaternion.Euler(Vector3.zero)
+                }}, 
+                { ETileDirection.West, new PositionRotation
+                {
+                    Position = new Vector3(0f, 0f, -0.5f), 
+                    Rotation = Quaternion.Euler(new Vector3(0, 90, 0))
+                }},
             };
         }
 
@@ -49,9 +67,12 @@ namespace Scripts.MapEditor
 
         private void Update()
         {
-            if (_isWallPlacementValid && Input.GetMouseButtonUp(0))
+            if (_isWallPlacementValid && Input.GetMouseButtonUp(0) && !Mouse.LeftClickExpired)
             {
-                EditorUIManager.Instance.OpenTileEditorWindow(wallType, wall.transform.position);
+                _wallData.Position = wall.transform.position;
+                _wallData.Rotation = wall.transform.localRotation;
+                
+                EditorUIManager.Instance.OpenTileEditorWindow(wallType, _wallData);
             }
         }
 
@@ -65,7 +86,11 @@ namespace Scripts.MapEditor
         {
             _isWallPlacementValid = true;
             wall.SetActive(true);
-            wall.transform.localRotation = _wallRotationMap[direction];
+
+            PositionRotation positionData = _wallRotationMap[direction];
+
+            wall.transform.localPosition = positionData.Position;
+            wall.transform.localRotation = positionData.Rotation;
 
             wallType = EWallType.Between;
             
@@ -104,7 +129,7 @@ namespace Scripts.MapEditor
             }
         }
 
-        private void SetWallsActive(bool areActive)
+        private void SetGizmosActive(bool areActive)
         {
             northGizmo.SetActive(areActive);
             eastGizmo.SetActive(areActive);

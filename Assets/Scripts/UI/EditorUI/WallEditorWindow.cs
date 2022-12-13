@@ -1,6 +1,7 @@
 ﻿using Scripts.Building.Walls;
 using Scripts.EventsManagement;
 using Scripts.Localization;
+using Scripts.System;
 using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine;
@@ -33,14 +34,16 @@ namespace Scripts.UI.EditorUI
             EditorEvents.OnWorkModeChanged -= Close;
         }
 
-        public void Open(EWallType wallType, Vector3 placeholderPosition)
+        public void Open(EWallType wallType, PositionRotation placeholderTransformData)
         {
             SetActive(true);
 
             CancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
             string title = T.Get(LocalizationKeys.AvailablePrefabs);
 
-            placeholderWall.transform.position = placeholderPosition;
+            placeholderWall.transform.position = placeholderTransformData.Position;
+            placeholderWall.transform.rotation = placeholderTransformData.Rotation;
+            placeholderWall.transform.parent = null;
             placeholderWall.SetActive(true);
 
             prefabList.Open(title, new []{ "Prefab 1", "Prefab 2"}, SetPrefab);

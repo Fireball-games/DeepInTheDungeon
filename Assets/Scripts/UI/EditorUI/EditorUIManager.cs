@@ -45,10 +45,10 @@ namespace Scripts.UI.EditorUI
             mapTitle.Show(GameManager.Instance.CurrentMap.MapName);
         }
 
-        public void OpenTileEditorWindow(EWallType wallType, Vector3 placeholderPosition)
+        public void OpenTileEditorWindow(EWallType wallType, PositionRotation placeholderTransformData)
         {
             IsAnyObjectEdited = true;
-            wallEditor.Open(wallType, placeholderPosition);
+            wallEditor.Open(wallType, placeholderTransformData);
         }
 
         public void CloseTileEditorWindow()

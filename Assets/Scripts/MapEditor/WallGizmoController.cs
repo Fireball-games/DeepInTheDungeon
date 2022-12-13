@@ -65,10 +65,7 @@ namespace Scripts.MapEditor
                 && Manager.EditedLayout.ByGridV3Int(currentGridPosition) != null 
                 && MapEditorManager.Instance.WorkMode is EWorkMode.Walls)
             {
-                northGizmo.SetActive(false);
-                eastGizmo.SetActive(false);
-                southGizmo.SetActive(false);
-                westGizmo.SetActive(false);
+                SetWallsActive(false);
                 
                 currentMousePosition = currentGridPosition;
                 body.SetActive(true);
@@ -76,15 +73,23 @@ namespace Scripts.MapEditor
 
                 List<List<List<TileDescription>>> layout = Manager.EditedLayout;
 
-                northGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + new Vector3Int(0, -1, 0)) != null);
-                eastGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + new Vector3Int(0, 0, 1)) != null);
-                southGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + new Vector3Int(0, 1, 0)) != null);
-                westGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + new Vector3Int(0, 0, -1)) != null);
+                northGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + GeneralExtensions.GridNorth) != null);
+                eastGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + GeneralExtensions.GridEast) != null);
+                southGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + GeneralExtensions.GridSouth) != null);
+                westGizmo.SetActive(layout.ByGridV3Int(currentGridPosition + GeneralExtensions.GridWest) != null);
             }
             else
             {
                 body.SetActive(false);
             }
+        }
+
+        private void SetWallsActive(bool areActive)
+        {
+            northGizmo.SetActive(areActive);
+            eastGizmo.SetActive(areActive);
+            southGizmo.SetActive(areActive);
+            westGizmo.SetActive(areActive);
         }
 
         private void OnWorkModeChanged(EWorkMode workMode)

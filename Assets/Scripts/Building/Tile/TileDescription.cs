@@ -32,12 +32,12 @@ namespace Scripts.Building.Tile
         
         public WallDescription GetWall(Vector3Int direction)
         {
-            if (direction == GeneralExtensions.GridDown) return Walls.Floor;
-            if (direction == GeneralExtensions.GridUp) return Walls.Ceiling;
-            if (direction == GeneralExtensions.GridNorth) return Walls.North;
-            if (direction == GeneralExtensions.GridEast) return Walls.East;
-            if (direction == GeneralExtensions.GridSouth) return Walls.South;
-            if (direction == GeneralExtensions.GridWest) return Walls.West;
+            if (direction == GeneralExtensions.WorldDown) return Walls.Floor;
+            if (direction == GeneralExtensions.WorldUp) return Walls.Ceiling;
+            if (direction == GeneralExtensions.WorldNorth) return Walls.North;
+            if (direction == GeneralExtensions.WorldEast) return Walls.East;
+            if (direction == GeneralExtensions.WorldSouth) return Walls.South;
+            if (direction == GeneralExtensions.WorldWest) return Walls.West;
             return null;
         }
 
@@ -50,10 +50,10 @@ namespace Scripts.Building.Tile
                 {
                     Ceiling = new WallDescription(),
                     Floor = new WallDescription(),
-                    North = WallForDirection(row, column, GeneralExtensions.GridNorth, layout),
-                    East = WallForDirection(row, column, GeneralExtensions.GridEast, layout),
-                    South = WallForDirection(row, column, GeneralExtensions.GridSouth, layout),
-                    West = WallForDirection(row, column, GeneralExtensions.GridWest, layout),
+                    North = WallForDirection(row, column, GeneralExtensions.WorldNorth, layout),
+                    East = WallForDirection(row, column, GeneralExtensions.WorldEast, layout),
+                    South = WallForDirection(row, column, GeneralExtensions.WorldSouth, layout),
+                    West = WallForDirection(row, column, GeneralExtensions.WorldWest, layout),
                 }
             };
         }

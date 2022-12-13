@@ -17,12 +17,12 @@ namespace Scripts.Helpers
         {
             VectorDirections = new[]
             {
-                GridUp,
-                GridDown,
-                GridNorth,
-                GridEast,
-                GridSouth,
-                GridWest
+                WorldUp,
+                WorldDown,
+                WorldNorth,
+                WorldEast,
+                WorldSouth,
+                WorldWest
             };
 
             HorizontalGridDirections = new[]
@@ -39,22 +39,22 @@ namespace Scripts.Helpers
 
             WallDirectionByVector = new Dictionary<Vector3Int, ETileDirection>
             {
-                {GridUp, ETileDirection.Ceiling},
-                {GridDown, ETileDirection.Floor},
-                {GridNorth, ETileDirection.North},
-                {GridEast, ETileDirection.East},
-                {GridSouth, ETileDirection.South},
-                {GridWest, ETileDirection.West}
+                {WorldUp, ETileDirection.Ceiling},
+                {WorldDown, ETileDirection.Floor},
+                {WorldNorth, ETileDirection.North},
+                {WorldEast, ETileDirection.East},
+                {WorldSouth, ETileDirection.South},
+                {WorldWest, ETileDirection.West}
             };
 
             VectorByTileDirection = new Dictionary<ETileDirection, Vector3Int>
             {
-                {ETileDirection.Ceiling, GridUp},
-                {ETileDirection.Floor, GridDown},
-                {ETileDirection.North, GridNorth},
-                {ETileDirection.East, GridEast},
-                {ETileDirection.South, GridSouth},
-                {ETileDirection.West, GridWest}
+                {ETileDirection.Ceiling, WorldUp},
+                {ETileDirection.Floor, WorldDown},
+                {ETileDirection.North, WorldNorth},
+                {ETileDirection.East, WorldEast},
+                {ETileDirection.South, WorldSouth},
+                {ETileDirection.West, WorldWest}
             };
         }
     }

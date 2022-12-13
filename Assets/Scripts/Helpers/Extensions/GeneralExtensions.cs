@@ -8,8 +8,13 @@ namespace Scripts.Helpers
 {
     public static class GeneralExtensions
     {
-        public static readonly Vector3Int GridUp;
-        public static readonly Vector3Int GridDown;
+        public static readonly Vector3Int WorldUp;
+        public static readonly Vector3Int WorldDown;
+        public static readonly Vector3Int WorldNorth;
+        public static readonly Vector3Int WorldEast;
+        public static readonly Vector3Int WorldSouth;
+        public static readonly Vector3Int WorldWest;
+        
         public static readonly Vector3Int GridNorth;
         public static readonly Vector3Int GridEast;
         public static readonly Vector3Int GridSouth;
@@ -22,12 +27,17 @@ namespace Scripts.Helpers
         {
             V3 = Vector3.zero;
             V3I = Vector3Int.zero;
-            GridUp = Vector3Int.down;
-            GridDown = Vector3Int.up;
-            GridNorth = Vector3Int.left;
-            GridEast = Vector3Int.forward;
-            GridSouth = Vector3Int.right;
-            GridWest = Vector3Int.back;
+            WorldUp = Vector3Int.down;
+            WorldDown = Vector3Int.up;
+            WorldNorth = Vector3Int.left;
+            WorldEast = Vector3Int.forward;
+            WorldSouth = Vector3Int.right;
+            WorldWest = Vector3Int.back;
+
+            GridNorth = new Vector3Int(0, -1, 0);
+            GridEast = new Vector3Int(0, 0, 1);
+            GridSouth = new Vector3Int(0, 1, 0);
+            GridWest = new Vector3Int(0, 0, -1);
         }
 
         public static bool HasIndex<T>(this T[,,] source, Vector3Int gridPosition)

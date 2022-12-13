@@ -19,6 +19,11 @@ namespace Scripts.Building.Tile
         public TileWalls TileWalls;
         public bool IsForMovement;
 
+        public TileDescription()
+        {
+            TileWalls = new TileWalls();
+        }
+        
         public WallDescription GetWall(ETileDirection direction) => direction switch
         {
             ETileDirection.Floor => TileWalls.Floor,
@@ -41,7 +46,7 @@ namespace Scripts.Building.Tile
             return null;
         }
 
-        public static TileDescription GetByLayout(int row, int column, TileDescription[,] layout)
+        public static TileDescription GetByLayout(int floor, int row, int column, TileDescription[,,] layout)
         {
             return  new TileDescription
             {
@@ -50,17 +55,17 @@ namespace Scripts.Building.Tile
                 {
                     Ceiling = new WallDescription(),
                     Floor = new WallDescription(),
-                    North = WallForDirection(row, column, GeneralExtensions.WorldNorth, layout),
-                    East = WallForDirection(row, column, GeneralExtensions.WorldEast, layout),
-                    South = WallForDirection(row, column, GeneralExtensions.WorldSouth, layout),
-                    West = WallForDirection(row, column, GeneralExtensions.WorldWest, layout),
+                    North = WallForDirection(floor, row, column, GeneralExtensions.WorldNorth, layout),
+                    East = WallForDirection(floor, row, column, GeneralExtensions.WorldEast, layout),
+                    South = WallForDirection(floor, row, column, GeneralExtensions.WorldSouth, layout),
+                    West = WallForDirection(floor, row, column, GeneralExtensions.WorldWest, layout),
                 }
             };
         }
 
-        private static WallDescription WallForDirection(int row, int column, Vector3Int direction, TileDescription[,] layout)
+        private static WallDescription WallForDirection(int floor, int row, int column, Vector3Int direction, TileDescription[,,] layout)
         {
-            return layout[row + direction.x, column + direction.z] == null ? new WallDescription() : null;
+            return layout[floor + direction.x, row + direction.y, column + direction.z] == null ? new WallDescription() : null;
         }
     }
 }

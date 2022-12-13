@@ -27,5 +27,11 @@
             NullTileBellow = 5,
             EditableTileBellow = 6,
         }
+
+        public enum EWallType
+        {
+            OnWall = 1,
+            Between = 2,
+        }
     }
 }

@@ -18,11 +18,11 @@ namespace Scripts.Building.Tile
         [SerializeField] private TileRenderingParts southWall;
         [SerializeField] private TileRenderingParts westWall;
         
-        private Dictionary<ETileDirection, TileRenderingParts> wallMap;
+        private Dictionary<ETileDirection, TileRenderingParts> _wallMap;
         
         private void Awake()
         {
-            wallMap = new Dictionary<ETileDirection, TileRenderingParts>
+            _wallMap = new Dictionary<ETileDirection, TileRenderingParts>
             {
                 {ETileDirection.Floor, floor},
                 {ETileDirection.Ceiling, ceiling},
@@ -33,9 +33,9 @@ namespace Scripts.Building.Tile
             };
         }
 
-        public void HideWall(ETileDirection direction) => wallMap[direction].wallParent.SetActive(false);
+        public void HideWall(ETileDirection direction) => _wallMap[direction].wallParent.SetActive(false);
 
-        public void ShowWall(ETileDirection direction) => wallMap[direction].wallParent.SetActive(true);
+        public void ShowWall(ETileDirection direction) => _wallMap[direction].wallParent.SetActive(true);
 
         public void SetMeshAndMaterial(ETileDirection direction, Material material, Mesh mesh)
         {
@@ -43,15 +43,15 @@ namespace Scripts.Building.Tile
             SetMesh(direction, mesh);
         }
 
-        public void SetMaterial(ETileDirection direction, Material material) => wallMap[direction].renderer.material = material;
+        public void SetMaterial(ETileDirection direction, Material material) => _wallMap[direction].renderer.material = material;
 
-        public void SetMesh(ETileDirection direction, Mesh mesh) => wallMap[direction].meshFilter.mesh = mesh;
+        public void SetMesh(ETileDirection direction, Mesh mesh) => _wallMap[direction].meshFilter.mesh = mesh;
         
         public void Initialize()
         {
             transform.localScale = Vector3.one;
             // TODO: probably OK to remove once map layers are implemented
-            foreach (TileRenderingParts wall in wallMap.Values)
+            foreach (TileRenderingParts wall in _wallMap.Values)
             {
                 wall.wallParent.SetActive(true);
             }

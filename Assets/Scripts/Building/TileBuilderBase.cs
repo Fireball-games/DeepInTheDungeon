@@ -91,7 +91,8 @@ namespace Scripts.Building
                 WallDescription wall = tileDescription.GetWall(direction);
                 
                 // Means default values
-                if (wall.MeshInfo == null || !string.IsNullOrEmpty(wall.MeshInfo.materialName) && !string.IsNullOrEmpty(wall.MeshInfo.meshName)) continue;
+                if (wall?.MeshInfo == null || !string.IsNullOrEmpty(wall.MeshInfo.materialName) && !string.IsNullOrEmpty(wall.MeshInfo.meshName))
+                    continue;
                 // Means only material OR mesh name is set, which is an error
                 if (!string.IsNullOrEmpty(wall.MeshInfo.materialName) ^ !string.IsNullOrEmpty(wall.MeshInfo.meshName))
                 {

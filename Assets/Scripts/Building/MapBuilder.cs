@@ -13,6 +13,7 @@ namespace Scripts.Building
     public class MapBuilder : MonoBehaviour
     {
         public DefaultBuildPartsProvider defaultsProvider;
+        [SerializeField] private Transform levelPartsParent;
 
         private TileBuilderBase _playBuilder;
         private TileBuilderBase _editorBuilder;
@@ -31,7 +32,7 @@ namespace Scripts.Building
             if(!LayoutParent)
             {
                 LayoutParent = new GameObject("Layout").transform;
-                LayoutParent.transform.parent = transform;
+                LayoutParent.transform.parent = levelPartsParent;
             }
         }
 

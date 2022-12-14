@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Scripts.Building;
@@ -51,11 +52,21 @@ namespace Scripts.Helpers
                 : ES3.Load<MapDescription>(mapName, GetFullRelativeMapPath(mapName));
         }
 
-        private static bool LoadPrefabs(EPrefabType prefabType, out IEnumerable<GameObject> loadedPrefabs)
+        public static bool LoadPrefabs(EPrefabType prefabType, out HashSet<GameObject> loadedPrefabs)
         {
-            loadedPrefabs = null;
-            return true;
+            loadedPrefabs = Resources.LoadAll<GameObject>(GetPrefabPathByType(prefabType)).ToHashSet();
+
+            return loadedPrefabs != null && loadedPrefabs.Any();
         }
+
+        private static string GetPrefabPathByType(EPrefabType prefabType) => prefabType switch
+        {
+            EPrefabType.Wall => WallsDirectoryName,
+            EPrefabType.Enemy => EnemiesDirectoryName,
+            EPrefabType.Prop => PropsDirectoryName,
+            EPrefabType.Item => ItemsDirectoryName,
+            _ => throw new ArgumentOutOfRangeException(nameof(prefabType), prefabType, null)
+        };
 
         public static string GetFullRelativeMapPath(string mapName) => Path.Combine(MapDirectoryName, $"{mapName}{MapFileExtension}");
 

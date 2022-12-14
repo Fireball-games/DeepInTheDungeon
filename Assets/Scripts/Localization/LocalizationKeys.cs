@@ -21,6 +21,7 @@
         public const string NoChangesToSave = "NoChangesToSave";
         public const string NoFilesToShow = "NoFilesToShow";
         public const string NoMapToPlayLoaded = "NoMapToPlayLoaded";
+        public const string NoPrefabsAvailable = "NoPrefabsAvailable";
         public const string ReturnToEditor = "ReturnToEditor";
         public const string ReturnToMainScene = "ReturnToMainScene";
         public const string Rows = "Rows";
@@ -29,5 +30,6 @@
         public const string SaveMap = "SaveMap";
         public const string SaveEditedMapPrompt = "SaveEditedMapPrompt";
         public const string SelectMapToLoad = "SelectMapToLoad";
+        public const string SelectPrefab = "SelectPrefab";
     }
 }

@@ -1,4 +1,5 @@
 using Scripts.Building.Tile;
+using Scripts.Building.Walls.Configurations;
 using Scripts.ScenesManagement;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ namespace Scripts.Building
 {
     public class MapDescription
     {
+        public string MapName = "DefaultMapName";
         /// <summary>
         /// Position according to Layout array
         /// </summary>
@@ -13,7 +15,7 @@ namespace Scripts.Building
         public Quaternion PlayerRotation;
         public string SceneName;
         public TileDescription[,,] Layout;
-        public string MapName = "DefaultMapName";
+        public PrefabConfiguration[] PrefabConfigurations;
 
         public MapDescription()
         {

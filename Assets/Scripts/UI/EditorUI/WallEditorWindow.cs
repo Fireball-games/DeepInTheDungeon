@@ -1,4 +1,6 @@
-﻿using Scripts.Building.Walls;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.System;
@@ -16,8 +18,10 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private PrefabList prefabList;
         [SerializeField] private Button CancelButton;
         [SerializeField] private GameObject placeholderWall;
+        [SerializeField] private TMP_Text statusText;
 
-        private IPrefab _selectedPrefab = null;
+        private WallPrefabBaseBase _selectedPrefab;
+        private HashSet<WallPrefabBaseBase> _availablePrefabs;
 
         private void Awake()
         {
@@ -37,6 +41,8 @@ namespace Scripts.UI.EditorUI
         public void Open(EWallType wallType, PositionRotation placeholderTransformData)
         {
             SetActive(true);
+            prefabList.SetActive(false);
+            SetStatusText();
 
             CancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
             string title = T.Get(LocalizationKeys.AvailablePrefabs);
@@ -46,11 +52,26 @@ namespace Scripts.UI.EditorUI
             placeholderWall.transform.parent = null;
             placeholderWall.SetActive(true);
 
-            prefabList.Open(title, new []{ "Prefab 1", "Prefab 2"}, SetPrefab);
+            _availablePrefabs = PrefabStore.GetPrefabsOfType(Enums.EPrefabType.Wall)?
+                .Select(prefab => prefab.GetComponent<WallPrefabBaseBase>())
+                .Where(prefab => prefab.GetWallType() == wallType)
+                .ToHashSet();
+
+            if (_availablePrefabs == null || !_availablePrefabs.Any())
+            {
+                SetStatusText(T.Get(LocalizationKeys.NoPrefabsAvailable));
+                return;
+            }
+            
+            SetStatusText(T.Get(LocalizationKeys.SelectPrefab));
+
+            prefabList.Open(title, _availablePrefabs.Select(prefab => prefab.gameObject.name), SetPrefab);
         }
 
         private void SetPrefab(string prefabName)
         {
+            SetStatusText();
+            _selectedPrefab = _availablePrefabs.FirstOrDefault(prefab => prefab.name == prefabName);
             Logger.Log($"Selected item: {prefabName}");
         }
 
@@ -64,6 +85,19 @@ namespace Scripts.UI.EditorUI
             EditorUIManager.Instance.IsAnyObjectEdited = false;
             
             SetActive(false);
+        }
+
+        private void SetStatusText(string text = null)
+        {
+            statusText.text = text ?? "";
+            
+            if (string.IsNullOrEmpty(text))
+            {
+                statusText.gameObject.SetActive(false);
+                return;
+            }
+            
+            statusText.gameObject.SetActive(true);
         }
     }
 }

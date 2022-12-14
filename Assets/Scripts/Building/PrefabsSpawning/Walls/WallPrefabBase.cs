@@ -4,7 +4,7 @@ using static Scripts.MapEditor.Enums;
 
 namespace Scripts.Building.PrefabsSpawning.Walls
 {
-    public abstract class WallPrefabBaseBase : MonoBehaviour
+    public abstract class WallPrefabBase : MonoBehaviour
     {
         public string PrefabName { get; set; }
         public Vector3 PositionOnMap { get; set; }

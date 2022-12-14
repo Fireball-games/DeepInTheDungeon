@@ -30,6 +30,7 @@
 
         public enum EWallType
         {
+            Invalid = 0,
             OnWall = 1,
             Between = 2,
         }

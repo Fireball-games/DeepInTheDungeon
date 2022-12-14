@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using static Scripts.MapEditor.Enums;
 
 namespace Scripts.Building.Walls.Configurations
@@ -7,6 +8,6 @@ namespace Scripts.Building.Walls.Configurations
     {
         public EWallType WallType;
         public float Offset;
-        public Vector3[] WayPoints;
+        public List<Vector3> WayPoints;
     }
 }

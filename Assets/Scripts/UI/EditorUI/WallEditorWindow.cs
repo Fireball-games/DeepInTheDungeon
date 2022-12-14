@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building;
 using Scripts.Building.PrefabsSpawning.Walls;
+using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Localization;
+using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI
 {
@@ -20,8 +23,10 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private GameObject placeholderWall;
         [SerializeField] private TMP_Text statusText;
 
-        private WallPrefabBaseBase _selectedPrefab;
-        private HashSet<WallPrefabBaseBase> _availablePrefabs;
+        private MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
+        private WallConfiguration _editedWallConfiguration;
+        private EWallType _editedWallType;
+        private HashSet<WallPrefabBase> _availablePrefabs;
 
         private void Awake()
         {
@@ -52,16 +57,19 @@ namespace Scripts.UI.EditorUI
             placeholderWall.transform.parent = null;
             placeholderWall.SetActive(true);
 
-            _availablePrefabs = PrefabStore.GetPrefabsOfType(Enums.EPrefabType.Wall)?
-                .Select(prefab => prefab.GetComponent<WallPrefabBaseBase>())
+            _availablePrefabs = PrefabStore.GetPrefabsOfType(EPrefabType.Wall)?
+                .Select(prefab => prefab.GetComponent<WallPrefabBase>())
                 .Where(prefab => prefab.GetWallType() == wallType)
                 .ToHashSet();
 
             if (_availablePrefabs == null || !_availablePrefabs.Any())
             {
+                _editedWallType = EWallType.Invalid;
                 SetStatusText(T.Get(LocalizationKeys.NoPrefabsAvailable));
                 return;
             }
+
+            _editedWallType = wallType;
             
             SetStatusText(T.Get(LocalizationKeys.SelectPrefab));
 
@@ -70,9 +78,29 @@ namespace Scripts.UI.EditorUI
 
         private void SetPrefab(string prefabName)
         {
+            if (_editedWallConfiguration != null)
+            {
+                MapBuilder.RemovePrefab(_editedWallConfiguration);
+                _editedWallConfiguration = null;
+            }
+            
             SetStatusText();
-            _selectedPrefab = _availablePrefabs.FirstOrDefault(prefab => prefab.name == prefabName);
-            Logger.Log($"Selected item: {prefabName}");
+            _editedWallConfiguration = new WallConfiguration
+            {
+                WallType = _editedWallType,
+                PrefabName = _availablePrefabs.FirstOrDefault(prefab => prefab.name == prefabName)?.name,
+                TransformData = new PositionRotation(placeholderWall.transform.position, placeholderWall.transform.rotation),
+                WayPoints = new List<Vector3>(),
+                Offset = 0f
+            };
+            
+            if(!MapBuilder.BuildPrefab(_editedWallConfiguration))
+            {
+                SetStatusText(T.Get(LocalizationKeys.ErrorBuildingPrefab));
+                return;
+            }
+
+            placeholderWall.SetActive(false);
         }
 
         private void Close(EWorkMode _) => Close();

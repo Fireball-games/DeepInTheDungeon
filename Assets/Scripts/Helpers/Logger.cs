@@ -94,6 +94,15 @@ namespace Scripts.Helpers
             }
         }
 
+        public static void LogNotImplemented(UnityEngine.Object logObject = null,
+            [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
+        {
+            if (_severityLevel <= ELogSeverity.Debug)
+            {
+                Debug.LogWarning(ResolveMessage(callerFilePath, callerMemberName, "NOT IMPLEMENTED YET"), logObject);
+            }
+        }
+
         private void OnValidate()
         {
             _severityLevel = (ELogSeverity)Mathf.Max((int)severityLevel, (int)_defaultSeverity);

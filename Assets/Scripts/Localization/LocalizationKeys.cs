@@ -9,6 +9,7 @@
         public const string CreateMap = "CreateMap";
         public const string Default = "Default";
         public const string DontSave = "DontSave";
+        public const string ErrorBuildingPrefab = "ErrorBuildingPref";
         public const string Exit = "Exit";
         public const string Floors = "Floors";
         public const string Load = "Load";

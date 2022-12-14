@@ -81,8 +81,8 @@ namespace Scripts.MapEditor
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
             EditorEvents.OnMouseGridPositionChanged -= OnMouseGridPositionChanged;
         }
-        
-        public void OnGizmoEntered(ETileDirection direction)
+
+        internal void OnGizmoEntered(ETileDirection direction)
         {
             _isWallPlacementValid = true;
             wall.SetActive(true);
@@ -104,7 +104,7 @@ namespace Scripts.MapEditor
             }
         }
 
-        public void OnGizmoExited()
+        internal void OnGizmoExited()
         {
             _isWallPlacementValid = false;
             wall.SetActive(false);

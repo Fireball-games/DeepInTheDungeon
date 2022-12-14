@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.Building.Walls.Configurations;
 using Scripts.Helpers;
@@ -237,8 +238,19 @@ namespace Scripts.Building
                 Vector3 position = newPrefab.transform.position;
                 position.y += wallConfiguration.Offset;
                 newPrefab.transform.position = position;
+
+                WallPrefabBase prefabScript = newPrefab.GetComponent<WallPrefabBase>();
+
+                prefabScript.waypoints = wallConfiguration.WayPoints;
+
+                if (prefabScript is WallBetween wallBetweenScript)
+                {
+                    wallBetweenScript.offset = wallConfiguration.Offset;
+                }
             }
 
+            MapDescription.PrefabConfigurations ??= new List<PrefabConfiguration>();
+            
             if (!MapDescription.PrefabConfigurations.Contains(configuration))
             {
                 MapDescription.PrefabConfigurations.Add(configuration);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
@@ -175,6 +176,35 @@ namespace Scripts.Player
 
         private bool IsMidWallInTargetDirection()
         {
+            if (_targetPosition == _prevTargetPosition) return false;
+            
+            Vector3 currentPosition = transform.position; 
+            Ray ray = new(currentPosition, _targetPosition - currentPosition);
+            RaycastHit[] hits = new RaycastHit[5];
+            int size = Physics.RaycastNonAlloc(ray, hits, 0.7f, LayerMask.GetMask(LayersManager.WallMaskName));
+
+            if (size == 0) return false;
+
+            bool isSpecialWallHit = false;
+            
+            foreach (RaycastHit hit in hits)
+            {
+                if (!hit.collider) continue;
+                
+                GameObject hitGo = hit.collider.gameObject;
+
+                WallPrefabBase wallScript = hitGo.GetComponent<WallPrefabBase>();
+                if (!wallScript) continue;
+
+                if (wallScript.waypoints.Count == 0) continue;
+
+                isSpecialWallHit = true;
+                // TODO add special hits int to some list or something for processing further down the road
+            }
+
+            if (!isSpecialWallHit) return true;
+            
+            // TODO: process waypoint or other effects walls here
             return false;
         }
 

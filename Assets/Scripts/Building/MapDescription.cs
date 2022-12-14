@@ -16,21 +16,7 @@ namespace Scripts.Building
         public Quaternion PlayerRotation;
         public string SceneName;
         public TileDescription[,,] Layout;
-
-        private List<PrefabConfiguration> _prefabConfigurations;
-        public List<PrefabConfiguration> PrefabConfigurations
-        {
-            get
-            {
-                if (_prefabConfigurations == null)
-                {
-                    _prefabConfigurations = new List<PrefabConfiguration>();
-                }
-
-                return _prefabConfigurations;
-            }
-            set => _prefabConfigurations = value;
-        }
+        public List<PrefabConfiguration> PrefabConfigurations;
 
         public MapDescription()
         {

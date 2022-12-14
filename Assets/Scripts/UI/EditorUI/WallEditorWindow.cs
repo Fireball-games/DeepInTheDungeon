@@ -112,7 +112,8 @@ namespace Scripts.UI.EditorUI
                 SetStatusText(T.Get(LocalizationKeys.ErrorBuildingPrefab));
                 return;
             }
-
+            
+            EditorEvents.TriggerOnMapChanged();
             confirmButton.gameObject.SetActive(true);
             placeholderWall.SetActive(false);
         }

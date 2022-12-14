@@ -56,11 +56,13 @@ namespace Scripts.MapEditor
         private void OnEnable()
         {
             MapBuilder.OnLayoutBuilt += OnLayoutBuilt;
+            EditorEvents.OnMapChanged += OnMapChanged;
         }
 
         private void OnDisable()
         {
             MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
+            EditorEvents.OnMapChanged -= OnMapChanged;
         }
 
         public void OrderMapConstruction(MapDescription map,
@@ -215,6 +217,12 @@ namespace Scripts.MapEditor
             playerIcon.SetPositionByGrid(map.StartGridPosition);
             playerIcon.SetArrowRotation(map.PlayerRotation);
             playerIcon.SetActive(true);
+        }
+        
+        private void OnMapChanged()
+        {
+            MapIsChanged = true;
+            MapIsSaved = false;
         }
 
         private void RefreshFloorVisibilityMap()

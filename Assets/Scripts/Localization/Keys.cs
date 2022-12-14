@@ -24,6 +24,7 @@
         public const string NoFilesToShow = "NoFilesToShow";
         public const string NoMapToPlayLoaded = "NoMapToPlayLoaded";
         public const string NoPrefabsAvailable = "NoPrefabsAvailable";
+        public const string Offset = "Offset";
         public const string ReturnToEditor = "ReturnToEditor";
         public const string ReturnToMainScene = "ReturnToMainScene";
         public const string Rows = "Rows";

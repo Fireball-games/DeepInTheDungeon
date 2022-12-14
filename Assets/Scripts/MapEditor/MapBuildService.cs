@@ -328,7 +328,7 @@ namespace Scripts.MapEditor
             }
             else
             {
-                EditorEvents.TriggerOnMapChanged();
+                EditorEvents.TriggerOnMapEdited();
                 
                 ELevel floorsAdded = floorAdjustment == 1 
                     ? ELevel.Upper 

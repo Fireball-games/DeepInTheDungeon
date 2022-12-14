@@ -1,3 +1,4 @@
+using System;
 using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine;
@@ -5,8 +6,13 @@ using UnityEngine.UI;
 
 public class LabeledSlider : UIElementBase
 {
-    [SerializeField] private Slider slider;
+    public Slider slider;
     [SerializeField] private TMP_Text label;
+
+    private void OnDisable()
+    {
+        slider.onValueChanged.RemoveAllListeners();
+    }
 
     public float Value
     {

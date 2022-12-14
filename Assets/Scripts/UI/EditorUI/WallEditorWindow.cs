@@ -8,6 +8,7 @@ using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.MonoBases;
+using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,12 +23,15 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private Button cancelButton;
         [SerializeField] private Button confirmButton;
         [SerializeField] private Button deleteButton;
+        [SerializeField] private Title prefabTitle;
+        [SerializeField] private LabeledSlider offsetSlider;
         [SerializeField] private GameObject placeholderWall;
         [SerializeField] private TMP_Text statusText;
 
         private MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
         private WallConfiguration _editedWallConfiguration;
         private EWallType _editedWallType;
+        private GameObject _physicalWall;
         private HashSet<WallPrefabBase> _availablePrefabs;
         private Cursor3D _cursor3D;
 
@@ -67,6 +71,19 @@ namespace Scripts.UI.EditorUI
             _cursor3D.ShowAt(configuration.TransformData.Position,
                 new Vector3(0.15f, 1f, 1f),
                 configuration.TransformData.Rotation);
+
+            _physicalWall = MapBuilder.GetWallByConfiguration(configuration).GetComponentInChildren<MeshFilter>()?.gameObject;
+            
+            if (_physicalWall)
+            {
+                offsetSlider.SetActive(true);
+                offsetSlider.Value = configuration.Offset;
+                offsetSlider.slider.onValueChanged.RemoveAllListeners();
+                offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
+            }
+            
+            prefabTitle.SetActive(true);
+            prefabTitle.SetTitle(configuration.PrefabName);
             
             prefabList.Open(prefabListTitle, _availablePrefabs!.Select(prefab => prefab.gameObject.name), SetPrefab);
         }
@@ -102,10 +119,16 @@ namespace Scripts.UI.EditorUI
             _isEditingExistingWall = false;
 
             cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Cancel);
+            
             confirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Confirm);
-            deleteButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Delete);
             confirmButton.gameObject.SetActive(false);
+            
+            deleteButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Delete);
             deleteButton.gameObject.SetActive(deleteButtonActive);
+            
+            offsetSlider.SetLabel(T.Get(Keys.Offset));
+            offsetSlider.SetActive(false);
+            
             string prefabListTitle = T.Get(Keys.AvailablePrefabs);
 
             _availablePrefabs = PrefabStore.GetPrefabsOfType(EPrefabType.Wall)?
@@ -127,6 +150,7 @@ namespace Scripts.UI.EditorUI
             }
 
             SetStatusText();
+            
             _editedWallConfiguration = new WallConfiguration
             {
                 WallType = _editedWallType,
@@ -142,7 +166,20 @@ namespace Scripts.UI.EditorUI
                 return;
             }
 
-            EditorEvents.TriggerOnMapChanged();
+            prefabTitle.SetActive(true);
+            prefabTitle.SetTitle(_editedWallConfiguration.PrefabName);
+
+            _physicalWall = MapBuilder.GetWallByConfiguration(_editedWallConfiguration)?
+                .GetComponentInChildren<MeshFilter>()?.gameObject;
+
+            if (_physicalWall)
+            {
+                offsetSlider.SetActive(true);
+                offsetSlider.Value = _editedWallConfiguration.Offset;
+                offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
+            }
+            
+            EditorEvents.TriggerOnMapEdited();
             deleteButton.gameObject.SetActive(true);
             confirmButton.gameObject.SetActive(true);
             placeholderWall.SetActive(false);
@@ -152,6 +189,8 @@ namespace Scripts.UI.EditorUI
         {
             WallConfiguration oldConfiguration = new (_editedWallConfiguration);
             _editedWallConfiguration = null;
+            _physicalWall = null;
+            prefabTitle.SetActive(false);
             
             Open(_editedWallType,
                 new PositionRotation(oldConfiguration.TransformData.Position,
@@ -198,6 +237,9 @@ namespace Scripts.UI.EditorUI
             placeholderWall.transform.parent = body.transform;
             placeholderWall.SetActive(false);
             EditorUIManager.Instance.IsAnyObjectEdited = false;
+
+            prefabTitle.SetActive(false);
+            _physicalWall = null;
             
             _cursor3D.Hide();
             EditorUIManager.Instance.WallGizmo.Reset();
@@ -216,6 +258,16 @@ namespace Scripts.UI.EditorUI
             }
 
             statusText.gameObject.SetActive(true);
+        }
+
+        private void OnOffsetSliderValueChanged(float value)
+        {
+            confirmButton.gameObject.SetActive(true);
+            EditorEvents.TriggerOnMapEdited();
+            Vector3 newPosition = _physicalWall.transform.localPosition;
+            newPosition.x = value;
+            _editedWallConfiguration.Offset = value;
+            _physicalWall.transform.localPosition = newPosition;
         }
     }
 }

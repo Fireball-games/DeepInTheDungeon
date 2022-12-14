@@ -56,13 +56,13 @@ namespace Scripts.MapEditor
         private void OnEnable()
         {
             MapBuilder.OnLayoutBuilt += OnLayoutBuilt;
-            EditorEvents.OnMapChanged += OnMapChanged;
+            EditorEvents.OnMapEdited += OnMapEdited;
         }
 
         private void OnDisable()
         {
             MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
-            EditorEvents.OnMapChanged -= OnMapChanged;
+            EditorEvents.OnMapEdited -= OnMapEdited;
         }
 
         public void OrderMapConstruction(MapDescription map,
@@ -219,7 +219,7 @@ namespace Scripts.MapEditor
             playerIcon.SetActive(true);
         }
         
-        private void OnMapChanged()
+        private void OnMapEdited()
         {
             MapIsChanged = true;
             MapIsSaved = false;

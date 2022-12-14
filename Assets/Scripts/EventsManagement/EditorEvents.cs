@@ -12,7 +12,7 @@ namespace Scripts.EventsManagement
         public static event Action<Vector3Int, Vector3Int> OnMouseGridPositionChanged;
         public static event Action<ELevel> OnWorkingLevelChanged;
         public static event Action<int?> OnFloorChanged;
-        public static event Action OnMapChanged;
+        public static event Action OnMapEdited;
 
         // ***********    Triggers    ***********
 
@@ -27,6 +27,6 @@ namespace Scripts.EventsManagement
 
         public static void TriggerOnFloorChanged(int? floor) => OnFloorChanged?.Invoke(floor);
 
-        public static void TriggerOnMapChanged() => OnMapChanged?.Invoke();
+        public static void TriggerOnMapEdited() => OnMapEdited?.Invoke();
     }
 }

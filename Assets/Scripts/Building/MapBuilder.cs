@@ -25,23 +25,24 @@ namespace Scripts.Building
         public event Action OnLayoutBuilt;
 
         internal Transform LayoutParent;
-        internal GameObject PrefabsParent;
         internal TileDescription[,,] Layout;
         internal Dictionary<Vector3Int, GameObject> PhysicalTiles;
-        internal HashSet<GameObject> Prefabs;
         internal MapDescription MapDescription;
+        
+        private GameObject _prefabsParent;
+        private HashSet<GameObject> _prefabs;
 
         private void Awake()
         {
             PhysicalTiles = new Dictionary<Vector3Int, GameObject>();
-            Prefabs = new HashSet<GameObject>();
+            _prefabs = new HashSet<GameObject>();
 
             if (!LayoutParent)
             {
                 LayoutParent = new GameObject("Layout").transform;
                 LayoutParent.transform.parent = levelPartsParent.transform;
 
-                PrefabsParent = new GameObject("Prefabs")
+                _prefabsParent = new GameObject("Prefabs")
                 {
                     transform =
                     {
@@ -70,13 +71,13 @@ namespace Scripts.Building
                 ObjectPool.Instance.ReturnToPool(tile);
             }
             
-            foreach (GameObject prefab in Prefabs)
+            foreach (GameObject prefab in _prefabs)
             {
                 ObjectPool.Instance.ReturnToPool(prefab);
             }
 
             PhysicalTiles.Clear();
-            Prefabs.Clear();
+            _prefabs.Clear();
         }
 
         /// <summary>
@@ -129,6 +130,89 @@ namespace Scripts.Building
             Vector3Int worldPosition = new(row, -floor, column);
 
             return PhysicalTiles[worldPosition];
+        }
+        
+        /// <summary>
+        /// Builds new prefab and both stores configuration in MapDescription and GameObject in Prefabs list.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public bool BuildPrefab(PrefabConfiguration configuration)
+        {
+            GameObject newPrefab = PrefabStore.Instantiate(configuration.PrefabName, _prefabsParent);
+
+            if (!newPrefab)
+            {
+                Logger.LogError($"Prefab \"{configuration.PrefabName}\" was not found.");
+                return false;
+            }
+
+            newPrefab.transform.position = configuration.TransformData.Position;
+            newPrefab.transform.localRotation = configuration.TransformData.Rotation;
+            
+            WallPrefabBase prefabScript = newPrefab.GetComponent<WallPrefabBase>();
+
+            prefabScript.TransformData = configuration.TransformData;
+            prefabScript.PrefabName = configuration.PrefabName;
+
+            if (configuration is WallConfiguration wallConfiguration)
+            {
+                Transform physicalPart = newPrefab.GetComponentInChildren<MeshFilter>().transform;
+
+                if (physicalPart)
+                {
+                    Vector3 position = physicalPart.localPosition;
+                    position.x += wallConfiguration.Offset;
+                    physicalPart.localPosition = position;   
+                }
+
+                prefabScript.waypoints = wallConfiguration.WayPoints;
+            }
+
+            MapDescription.PrefabConfigurations ??= new List<PrefabConfiguration>();
+            
+            if (!MapDescription.PrefabConfigurations.Contains(configuration))
+            {
+                MapDescription.PrefabConfigurations.Add(configuration);
+            }
+
+            _prefabs.Add(newPrefab);
+
+            return true;
+        }
+
+        public void RemovePrefab(PrefabConfiguration configuration)
+        {
+            PrefabConfiguration config = MapDescription.PrefabConfigurations.FirstOrDefault(c =>
+                c.PrefabName == configuration.PrefabName && c.TransformData.Position == configuration.TransformData.Position);
+
+            if (config == null)
+            {
+                Logger.LogWarning($"No prefab of name \"{configuration.PrefabName}\" was found for removal in PrefabConfigurations.");
+                return;
+            }
+
+            MapDescription.PrefabConfigurations.Remove(config);
+
+            GameObject prefabGo = _prefabs.FirstOrDefault(go =>
+                go.name == configuration.PrefabName && go.transform.position == configuration.TransformData.Position);
+            
+            if (!prefabGo)
+            {
+                Logger.LogWarning($"No prefab of name \"{configuration.PrefabName}\" found for removal in Prefabs.");
+                return;
+            }
+
+            _prefabs.Remove(prefabGo);
+            ObjectPool.Instance.ReturnToPool(prefabGo);
+        }
+        
+        public GameObject GetWallByConfiguration(PrefabConfiguration configuration)
+        {
+            GameObject result = _prefabs.FirstOrDefault(p => p.transform.position == configuration.TransformData.Position
+                                                            && p.name == configuration.PrefabName);
+
+            return !result ? null : result;
         }
 
         private IEnumerator BuildLayoutCoroutine(TileDescription[,,] layout)
@@ -213,81 +297,6 @@ namespace Scripts.Building
             layout[floor, center.x + 1, center.y + 1] = DefaultMapProvider.FullTile;
 
             return layout;
-        }
-
-        /// <summary>
-        /// Builds new prefab and both stores configuration in MapDescription and GameObject in Prefabs list.
-        /// </summary>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
-        public bool BuildPrefab(PrefabConfiguration configuration)
-        {
-            GameObject newPrefab = PrefabStore.Instantiate(configuration.PrefabName, PrefabsParent);
-
-            if (!newPrefab)
-            {
-                Logger.LogError($"Prefab \"{configuration.PrefabName}\" was not found.");
-                return false;
-            }
-
-            newPrefab.transform.position = configuration.TransformData.Position;
-            newPrefab.transform.localRotation = configuration.TransformData.Rotation;
-            
-            WallPrefabBase prefabScript = newPrefab.GetComponent<WallPrefabBase>();
-
-            prefabScript.TransformData = configuration.TransformData;
-            prefabScript.PrefabName = configuration.PrefabName;
-
-            if (configuration is WallConfiguration wallConfiguration)
-            {
-                Vector3 position = newPrefab.transform.position;
-                position.y += wallConfiguration.Offset;
-                newPrefab.transform.position = position;
-
-                prefabScript.waypoints = wallConfiguration.WayPoints;
-
-                if (prefabScript is WallBetween wallBetweenScript)
-                {
-                    wallBetweenScript.offset = wallConfiguration.Offset;
-                }
-            }
-
-            MapDescription.PrefabConfigurations ??= new List<PrefabConfiguration>();
-            
-            if (!MapDescription.PrefabConfigurations.Contains(configuration))
-            {
-                MapDescription.PrefabConfigurations.Add(configuration);
-            }
-
-            Prefabs.Add(newPrefab);
-
-            return true;
-        }
-
-        public void RemovePrefab(PrefabConfiguration configuration)
-        {
-            PrefabConfiguration config = MapDescription.PrefabConfigurations.FirstOrDefault(c =>
-                c.PrefabName == configuration.PrefabName && c.TransformData.Position == configuration.TransformData.Position);
-
-            if (config == null)
-            {
-                Logger.LogWarning($"No prefab of name \"{configuration.PrefabName}\" was found for removal in PrefabConfigurations.");
-                return;
-            }
-
-            MapDescription.PrefabConfigurations.Remove(config);
-
-            GameObject prefabGo = Prefabs.FirstOrDefault(go =>
-                go.name == configuration.PrefabName && go.transform.position == configuration.TransformData.Position);
-            
-            if (!prefabGo)
-            {
-                Logger.LogWarning($"No prefab of name \"{configuration.PrefabName}\" found for removal in Prefabs.");
-                return;
-            }
-
-            Prefabs.Remove(prefabGo);
-            ObjectPool.Instance.ReturnToPool(prefabGo);
         }
     }
 }

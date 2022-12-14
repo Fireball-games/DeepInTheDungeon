@@ -8,6 +8,7 @@
         public const string Confirm = "Confirm";
         public const string CreateMap = "CreateMap";
         public const string Default = "Default";
+        public const string Delete = "Delete";
         public const string DontSave = "DontSave";
         public const string ErrorBuildingPrefab = "ErrorBuildingPref";
         public const string Exit = "Exit";

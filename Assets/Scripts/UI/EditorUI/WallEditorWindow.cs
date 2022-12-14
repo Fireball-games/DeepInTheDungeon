@@ -21,6 +21,7 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private PrefabList prefabList;
         [SerializeField] private Button cancelButton;
         [SerializeField] private Button confirmButton;
+        [SerializeField] private Button deleteButton;
         [SerializeField] private GameObject placeholderWall;
         [SerializeField] private TMP_Text statusText;
 
@@ -28,11 +29,17 @@ namespace Scripts.UI.EditorUI
         private WallConfiguration _editedWallConfiguration;
         private EWallType _editedWallType;
         private HashSet<WallPrefabBase> _availablePrefabs;
+        private Cursor3D _cursor3D;
+
+        private bool _isEditingExistingWall;
 
         private void Awake()
         {
             cancelButton.onClick.AddListener(CloseWithChangeCheck);
             confirmButton.onClick.AddListener(Close);
+            deleteButton.onClick.AddListener(Delete);
+
+            _cursor3D = FindObjectOfType<Cursor3D>();
         }
 
         private void OnEnable()
@@ -47,33 +54,31 @@ namespace Scripts.UI.EditorUI
 
         public void Open(WallConfiguration configuration)
         {
-            SetActive(true);
-            prefabList.SetActive(false);
-            cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
-            confirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Confirm);
-            string title = T.Get(LocalizationKeys.AvailablePrefabs);
+            string prefabListTitle = SetupWindow(configuration.WallType, true);
+
+            _isEditingExistingWall = true;
+
+            placeholderWall.transform.position = configuration.TransformData.Position;
+            placeholderWall.transform.rotation = configuration.TransformData.Rotation;
+
+            _editedWallType = configuration.WallType;
+            _editedWallConfiguration = configuration;
+            
+            _cursor3D.ShowAt(configuration.TransformData.Position,
+                new Vector3(0.15f, 1f, 1f),
+                configuration.TransformData.Rotation);
+            
+            prefabList.Open(prefabListTitle, _availablePrefabs!.Select(prefab => prefab.gameObject.name), SetPrefab);
         }
 
         public void Open(EWallType wallType, PositionRotation placeholderTransformData)
         {
-            SetActive(true);
-            prefabList.SetActive(false);
-            SetStatusText();
-
-            cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
-            confirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Confirm);
-            confirmButton.gameObject.SetActive(false);
-            string prefabListTitle = T.Get(LocalizationKeys.AvailablePrefabs);
+            string prefabListTitle = SetupWindow(wallType, false);
 
             placeholderWall.transform.position = placeholderTransformData.Position;
             placeholderWall.transform.rotation = placeholderTransformData.Rotation;
             placeholderWall.transform.parent = null;
             placeholderWall.SetActive(true);
-
-            _availablePrefabs = PrefabStore.GetPrefabsOfType(EPrefabType.Wall)?
-                .Select(prefab => prefab.GetComponent<WallPrefabBase>())
-                .Where(prefab => prefab.GetWallType() == wallType)
-                .ToHashSet();
 
             if (_availablePrefabs == null || !_availablePrefabs.Any())
             {
@@ -89,8 +94,32 @@ namespace Scripts.UI.EditorUI
             prefabList.Open(prefabListTitle, _availablePrefabs.Select(prefab => prefab.gameObject.name), SetPrefab);
         }
 
+        private string SetupWindow(EWallType wallType, bool deleteButtonActive)
+        {
+            SetActive(true);
+            prefabList.SetActive(false);
+            SetStatusText();
+            _isEditingExistingWall = false;
+
+            cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
+            confirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Confirm);
+            deleteButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Delete);
+            confirmButton.gameObject.SetActive(false);
+            deleteButton.gameObject.SetActive(deleteButtonActive);
+            string prefabListTitle = T.Get(LocalizationKeys.AvailablePrefabs);
+
+            _availablePrefabs = PrefabStore.GetPrefabsOfType(EPrefabType.Wall)?
+                .Select(prefab => prefab.GetComponent<WallPrefabBase>())
+                .Where(prefab => prefab.GetWallType() == wallType)
+                .ToHashSet();
+
+            return prefabListTitle;
+        }
+
         private void SetPrefab(string prefabName)
         {
+            _isEditingExistingWall = false;
+            
             if (_editedWallConfiguration != null)
             {
                 MapBuilder.RemovePrefab(_editedWallConfiguration);
@@ -112,17 +141,32 @@ namespace Scripts.UI.EditorUI
                 SetStatusText(T.Get(LocalizationKeys.ErrorBuildingPrefab));
                 return;
             }
-            
+
             EditorEvents.TriggerOnMapChanged();
+            deleteButton.gameObject.SetActive(true);
             confirmButton.gameObject.SetActive(true);
             placeholderWall.SetActive(false);
+        }
+
+        private void Delete()
+        {
+            WallConfiguration oldConfiguration = new (_editedWallConfiguration);
+            _editedWallConfiguration = null;
+            
+            Open(_editedWallType,
+                new PositionRotation(oldConfiguration.TransformData.Position,
+                    oldConfiguration.TransformData.Rotation));
+            
+            _cursor3D.Hide();
+            
+            MapBuilder.RemovePrefab(oldConfiguration);
         }
 
         private void Close(EWorkMode _) => CloseWithChangeCheck();
 
         public void CloseWithChangeCheck()
         {
-            if (_editedWallConfiguration != null)
+            if (!_isEditingExistingWall && _editedWallConfiguration != null)
             {
                 EditorUIManager.Instance.ConfirmationDialog.Open(T.Get(LocalizationKeys.SaveEditedMapPrompt),
                     SaveMapAndClose,
@@ -149,11 +193,14 @@ namespace Scripts.UI.EditorUI
         {
             _editedWallConfiguration = null;
             _editedWallType = EWallType.Invalid;
-            
+
             placeholderWall.transform.position = Vector3.zero;
             placeholderWall.transform.parent = body.transform;
             placeholderWall.SetActive(false);
             EditorUIManager.Instance.IsAnyObjectEdited = false;
+            
+            _cursor3D.Hide();
+            EditorUIManager.Instance.WallGizmo.Reset();
 
             SetActive(false);
         }

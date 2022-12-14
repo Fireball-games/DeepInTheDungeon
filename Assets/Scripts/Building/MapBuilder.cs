@@ -232,14 +232,17 @@ namespace Scripts.Building
 
             newPrefab.transform.position = configuration.TransformData.Position;
             newPrefab.transform.localRotation = configuration.TransformData.Rotation;
+            
+            WallPrefabBase prefabScript = newPrefab.GetComponent<WallPrefabBase>();
+
+            prefabScript.TransformData = configuration.TransformData;
+            prefabScript.PrefabName = configuration.PrefabName;
 
             if (configuration is WallConfiguration wallConfiguration)
             {
                 Vector3 position = newPrefab.transform.position;
                 position.y += wallConfiguration.Offset;
                 newPrefab.transform.position = position;
-
-                WallPrefabBase prefabScript = newPrefab.GetComponent<WallPrefabBase>();
 
                 prefabScript.waypoints = wallConfiguration.WayPoints;
 

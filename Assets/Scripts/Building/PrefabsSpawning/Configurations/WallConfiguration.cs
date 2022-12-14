@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Scripts.System;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building.Walls.Configurations
 {
@@ -9,5 +11,20 @@ namespace Scripts.Building.Walls.Configurations
         public EWallType WallType;
         public float Offset;
         public List<Vector3> WayPoints;
+
+        public WallConfiguration()
+        {
+        }
+        
+        public WallConfiguration(WallConfiguration configuration)
+        {
+            WallType = configuration.WallType;
+            Offset = configuration.Offset;
+            WayPoints = configuration.WayPoints;
+
+            PrefabName = configuration.PrefabName;
+            TransformData = new PositionRotation(configuration.TransformData.Position, configuration.TransformData.Rotation);
+        }
+
     }
 }

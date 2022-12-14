@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.CompilerServices;
 using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
 using Scripts.MapEditor;
@@ -21,21 +23,33 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private Title mapTitle;
         [SerializeField] private MapEditorManager manager;
 
+        [NonSerialized] public WallGizmoController WallGizmo;
         public StatusBar StatusBar => statusBar;
         public NewMapDialog NewMapDialog => newMapDialog;
         public DialogBase ConfirmationDialog => confirmationDialog;
         public bool IsAnyObjectEdited;
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            WallGizmo = FindObjectOfType<WallGizmoController>();
+        }
+
         private void OnEnable()
         {
             playButton.OnClick += manager.PlayMap;
             EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
+            EditorEvents.OnFloorChanged += OnFloorChanged;
+            EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
         }
 
         private void OnDisable()
         {
             playButton.OnClick -= manager.PlayMap;
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
+            EditorEvents.OnFloorChanged -= OnFloorChanged;
+            EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
         }
 
         private void OnNewMapStartedCreation()
@@ -45,6 +59,16 @@ namespace Scripts.UI.EditorUI
             floorManagement.SetActive(true);
             mapTitle.Show(GameManager.Instance.CurrentMap.MapName);
         }
+
+        private void OnWorkModeChanged(EWorkMode _) => OnEditingInterruptionImminent();
+
+        private void OnFloorChanged(int? _) => OnEditingInterruptionImminent();
+
+        private void OnEditingInterruptionImminent()
+        {
+            IsAnyObjectEdited = false;
+            CloseWallEditorWindow();
+        } 
 
         public void OpenTileEditorWindow(EWallType wallType, PositionRotation placeholderTransformData)
         {
@@ -58,7 +82,7 @@ namespace Scripts.UI.EditorUI
             wallEditor.Open(wallConfiguration);
         }
 
-        public void CloseTileEditorWindow()
+        public void CloseWallEditorWindow()
         {
             IsAnyObjectEdited = false;
             wallEditor.CloseWithChangeCheck();

@@ -1,5 +1,4 @@
 ﻿using Scripts.System;
-using UnityEngine;
 
 namespace Scripts.Building.Walls.Configurations
 {

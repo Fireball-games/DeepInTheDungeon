@@ -63,8 +63,13 @@ namespace Scripts.MapEditor
         {
             if (_service != null)
                 _service.ResetShownNullTilesColors();
-            
+
             copy.SetActive(false);
+
+            Transform ownTransform = transform;
+            ownTransform.localScale = Vector3.one;
+            ownTransform.position = Vector3.zero;
+            transform.localRotation = Quaternion.Euler(Vector3.zero);
             cursor.SetActive(false);
         }
     }

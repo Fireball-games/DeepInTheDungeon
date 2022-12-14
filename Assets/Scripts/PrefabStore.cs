@@ -58,7 +58,7 @@ namespace Scripts
             {
                 if (!FileOperationsHelper.LoadPrefabs(prefabType, out HashSet<GameObject> loadedPrefabs))
                 {
-                    Logger.LogWarning($"No prefabs found for type \"{prefabType}\".");
+                    // Logger.LogWarning($"No prefabs found for type \"{prefabType}\".");
                 }
             
                 foreach (GameObject gameObject in loadedPrefabs.Where(gameObject => !PrefabMap.ContainsKey(gameObject.name)))

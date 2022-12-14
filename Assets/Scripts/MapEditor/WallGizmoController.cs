@@ -9,6 +9,7 @@ using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
 using static Scripts.MapEditor.Enums;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.MapEditor
 {
@@ -78,6 +79,8 @@ namespace Scripts.MapEditor
         {
             if (_isWallPlacementValid && Input.GetMouseButtonUp(0) && !Mouse.LeftClickExpired)
             {
+                SetGizmosActive(false);
+                
                 if (!_isWallAlreadyExisting)
                 {
                     _wallData.Position = wall.transform.position;
@@ -160,13 +163,13 @@ namespace Scripts.MapEditor
             }
         }
 
-        // private void SetGizmosActive(bool areActive)
-        // {
-        //     northGizmo.SetActive(areActive);
-        //     eastGizmo.SetActive(areActive);
-        //     southGizmo.SetActive(areActive);
-        //     westGizmo.SetActive(areActive);
-        // }
+        private void SetGizmosActive(bool areActive)
+        {
+            northGizmo.SetActive(areActive);
+            eastGizmo.SetActive(areActive);
+            southGizmo.SetActive(areActive);
+            westGizmo.SetActive(areActive);
+        }
 
         private void OnWorkModeChanged(EWorkMode workMode)
         {
@@ -174,6 +177,11 @@ namespace Scripts.MapEditor
             {
                 body.SetActive(false);
             }
+        }
+
+        public void Reset()
+        {
+            SetGizmosActive(true);
         }
     }
 }

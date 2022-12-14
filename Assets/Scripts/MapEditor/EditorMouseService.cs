@@ -5,6 +5,7 @@ using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.System;
 using Scripts.System.MonoBases;
+using Scripts.UI.EditorUI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;
@@ -87,6 +88,12 @@ namespace Scripts.MapEditor
             {
                 _uiIsBlocking = true;
                 SetDefaultCursor();
+
+                if (!_isManipulatingCameraPosition) return;
+                
+                cameraService.HandleMouseMovement();
+                cameraService.HandleMouseWheel();
+
                 return;
             }
 
@@ -294,7 +301,9 @@ namespace Scripts.MapEditor
         private void SetDefaultCursor()
         {
             if (_isDefaultCursorSet) return;
+            
             cursor3D.Hide();
+            
             SetCursor(null, Vector3.zero);
             _isDefaultCursorSet = true;
         }

@@ -24,7 +24,13 @@ namespace Scripts.UI.EditorUI
         {
             base.Open(dialogTitle, onClose);
             
-            fileItemsParent.DismissAllChildrenToPool(true);
+            // fileItemsParent.DismissAllChildrenToPool(true);
+
+            foreach (Button button in fileItemsParent.GetComponentsInChildren<Button>())
+            {
+                button.onClick.RemoveAllListeners();
+                ObjectPool.Instance.ReturnToPool(button.transform.parent.gameObject, true);
+            }
 
             foreach (string file in files)  
             {

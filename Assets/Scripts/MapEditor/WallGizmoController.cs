@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
@@ -19,18 +21,25 @@ namespace Scripts.MapEditor
         [SerializeField] private WallGizmo westGizmo;
         [SerializeField] private GameObject wall;
 
-        private EditorMouseService Mouse => EditorMouseService.Instance;
-        private MapEditorManager Manager => MapEditorManager.Instance;
+        private static EditorMouseService Mouse => EditorMouseService.Instance;
+        private static MapEditorManager Manager => MapEditorManager.Instance;
+
+        private Cursor3D _cursor3D;
         
-        private EWallType wallType;
-        private Vector3Int currentMousePosition;
+        private EWallType _wallType;
+        private readonly Vector3 _cursor3DScale = new(0.11f, 1.1f, 1.1f);
+        private Vector3Int _currentMousePosition;
         private Dictionary<ETileDirection, PositionRotation> _wallRotationMap;
         private PositionRotation _wallData;
         private bool _isWallPlacementValid;
+        private bool _isWallAlreadyExisting;
+        private WallConfiguration _existingConfiguration;
 
         private void Awake()
         {
             body.SetActive(false);
+
+            _cursor3D = FindObjectOfType<Cursor3D>();
 
             _wallData = new PositionRotation();
             
@@ -69,10 +78,16 @@ namespace Scripts.MapEditor
         {
             if (_isWallPlacementValid && Input.GetMouseButtonUp(0) && !Mouse.LeftClickExpired)
             {
-                _wallData.Position = wall.transform.position;
-                _wallData.Rotation = wall.transform.localRotation;
+                if (!_isWallAlreadyExisting)
+                {
+                    _wallData.Position = wall.transform.position;
+                    _wallData.Rotation = wall.transform.localRotation;
                 
-                EditorUIManager.Instance.OpenTileEditorWindow(wallType, _wallData);
+                    EditorUIManager.Instance.OpenTileEditorWindow(_wallType, _wallData);
+                    return;
+                }
+                
+                EditorUIManager.Instance.OpenTileEditorWindow(_existingConfiguration);
             }
         }
 
@@ -85,23 +100,39 @@ namespace Scripts.MapEditor
         internal void OnGizmoEntered(ETileDirection direction)
         {
             _isWallPlacementValid = true;
-            wall.SetActive(true);
 
             PositionRotation positionData = _wallRotationMap[direction];
 
             wall.transform.localPosition = positionData.Position;
             wall.transform.localRotation = positionData.Rotation;
 
-            wallType = EWallType.Between;
+            _wallType = EWallType.Between;
             
-            if (direction == ETileDirection.North && Manager.EditedLayout.ByGridV3Int(currentMousePosition + GeneralExtensions.GridNorth) == null
-                || direction == ETileDirection.East && Manager.EditedLayout.ByGridV3Int(currentMousePosition + GeneralExtensions.GridEast) == null
-                || direction == ETileDirection.South && Manager.EditedLayout.ByGridV3Int(currentMousePosition + GeneralExtensions.GridSouth) == null
-                || direction == ETileDirection.West && Manager.EditedLayout.ByGridV3Int(currentMousePosition + GeneralExtensions.GridWest) == null
+            if (direction == ETileDirection.North && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridNorth) == null
+                || direction == ETileDirection.East && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridEast) == null
+                || direction == ETileDirection.South && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridSouth) == null
+                || direction == ETileDirection.West && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridWest) == null
                 )
             {
-                wallType = EWallType.OnWall;
+                _wallType = EWallType.OnWall;
             }
+
+            PrefabConfiguration existingConfiguration =
+                Manager.MapBuilder.MapDescription.PrefabConfigurations
+                    .FirstOrDefault(c => c.TransformData.Position == wall.transform.position);
+
+            if (existingConfiguration is WallConfiguration configuration)
+            {
+                _isWallAlreadyExisting = true;
+                _existingConfiguration = configuration;
+                _cursor3D.ShowAt(wall.transform.position, _cursor3DScale, wall.transform.rotation);
+                return;
+            }
+
+            _isWallAlreadyExisting = false;
+            _existingConfiguration = null;
+            _cursor3D.Hide();
+            wall.SetActive(true);
         }
 
         internal void OnGizmoExited()
@@ -119,7 +150,7 @@ namespace Scripts.MapEditor
             {
                 body.transform.position = currentGridPosition.ToWorldPosition();
 
-                currentMousePosition = currentGridPosition;
+                _currentMousePosition = currentGridPosition;
                 body.SetActive(true);
             }
             else
@@ -129,13 +160,13 @@ namespace Scripts.MapEditor
             }
         }
 
-        private void SetGizmosActive(bool areActive)
-        {
-            northGizmo.SetActive(areActive);
-            eastGizmo.SetActive(areActive);
-            southGizmo.SetActive(areActive);
-            westGizmo.SetActive(areActive);
-        }
+        // private void SetGizmosActive(bool areActive)
+        // {
+        //     northGizmo.SetActive(areActive);
+        //     eastGizmo.SetActive(areActive);
+        //     southGizmo.SetActive(areActive);
+        //     westGizmo.SetActive(areActive);
+        // }
 
         private void OnWorkModeChanged(EWorkMode workMode)
         {

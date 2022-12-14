@@ -22,7 +22,11 @@ namespace Scripts.UI.EditorUI
             SetActive(true);
             title.SetTitle(listTitle);
 
-            listContent.DismissAllChildrenToPool(true);
+            foreach (Button button in listContent.GetComponentsInChildren<Button>())
+            {
+                button.onClick.RemoveAllListeners();
+                ObjectPool.Instance.ReturnToPool(button.transform.parent.gameObject, true);
+            }
 
             foreach (string prefabName in prefabNames)  
             {

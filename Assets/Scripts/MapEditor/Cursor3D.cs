@@ -20,6 +20,16 @@ namespace Scripts.MapEditor
             _service = service;
         }
 
+        public void ShowAt(Vector3 position, Vector3 scale, Quaternion rotation)
+        {
+            Transform ownTransform = transform;
+            ownTransform.position = position;
+            ownTransform.localRotation = rotation;
+            ownTransform.localScale = scale;
+            
+            cursor.SetActive(true);
+        }
+
         public void ShowAt(Vector3Int gridPosition, bool withCopyAbove = false, bool withCopyBellow = false)
         {
             Vector3 worldPosition = gridPosition.ToWorldPosition();
@@ -51,7 +61,9 @@ namespace Scripts.MapEditor
 
         public void Hide()
         {
-            _service.ResetShownNullTilesColors();
+            if (_service != null)
+                _service.ResetShownNullTilesColors();
+            
             copy.SetActive(false);
             cursor.SetActive(false);
         }

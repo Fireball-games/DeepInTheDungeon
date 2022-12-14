@@ -57,6 +57,7 @@ namespace Scripts.Building
             MapDescription = mapDescription;
 
             StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
+            StartCoroutine(BuildPrefabsCoroutine(mapDescription.PrefabConfigurations));
         }
 
         public void SetLayout(TileDescription[,,] layout) => Layout = layout;
@@ -67,8 +68,14 @@ namespace Scripts.Building
             {
                 ObjectPool.Instance.ReturnToPool(tile);
             }
+            
+            foreach (GameObject prefab in Prefabs)
+            {
+                ObjectPool.Instance.ReturnToPool(prefab);
+            }
 
             PhysicalTiles.Clear();
+            Prefabs.Clear();
         }
 
         /// <summary>
@@ -151,6 +158,16 @@ namespace Scripts.Building
             }
 
             OnLayoutBuilt?.Invoke();
+        }
+        
+        private IEnumerator BuildPrefabsCoroutine(List<PrefabConfiguration> configurations)
+        {
+            foreach (PrefabConfiguration configuration in configurations)
+            {
+                BuildPrefab(configuration);
+
+                yield return null;
+            }
         }
 
         /// <summary>

@@ -1,3 +1,4 @@
+using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
 using Scripts.MapEditor;
 using Scripts.System;
@@ -51,10 +52,16 @@ namespace Scripts.UI.EditorUI
             wallEditor.Open(wallType, placeholderTransformData);
         }
 
+        public void OpenTileEditorWindow(WallConfiguration wallConfiguration)
+        {
+            IsAnyObjectEdited = true;
+            wallEditor.Open(wallConfiguration);
+        }
+
         public void CloseTileEditorWindow()
         {
             IsAnyObjectEdited = false;
-            wallEditor.Close();
+            wallEditor.CloseWithChangeCheck();
         }
     }
 }

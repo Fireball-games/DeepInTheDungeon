@@ -19,7 +19,8 @@ namespace Scripts.UI.EditorUI
     public class WallEditorWindow : EditorWindowBase
     {
         [SerializeField] private PrefabList prefabList;
-        [SerializeField] private Button CancelButton;
+        [SerializeField] private Button cancelButton;
+        [SerializeField] private Button confirmButton;
         [SerializeField] private GameObject placeholderWall;
         [SerializeField] private TMP_Text statusText;
 
@@ -30,7 +31,8 @@ namespace Scripts.UI.EditorUI
 
         private void Awake()
         {
-            CancelButton.onClick.AddListener(Close);
+            cancelButton.onClick.AddListener(CloseWithChangeCheck);
+            confirmButton.onClick.AddListener(Close);
         }
 
         private void OnEnable()
@@ -43,14 +45,25 @@ namespace Scripts.UI.EditorUI
             EditorEvents.OnWorkModeChanged -= Close;
         }
 
+        public void Open(WallConfiguration configuration)
+        {
+            SetActive(true);
+            prefabList.SetActive(false);
+            cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
+            confirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Confirm);
+            string title = T.Get(LocalizationKeys.AvailablePrefabs);
+        }
+
         public void Open(EWallType wallType, PositionRotation placeholderTransformData)
         {
             SetActive(true);
             prefabList.SetActive(false);
             SetStatusText();
 
-            CancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
-            string title = T.Get(LocalizationKeys.AvailablePrefabs);
+            cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
+            confirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Confirm);
+            confirmButton.gameObject.SetActive(false);
+            string prefabListTitle = T.Get(LocalizationKeys.AvailablePrefabs);
 
             placeholderWall.transform.position = placeholderTransformData.Position;
             placeholderWall.transform.rotation = placeholderTransformData.Rotation;
@@ -70,10 +83,10 @@ namespace Scripts.UI.EditorUI
             }
 
             _editedWallType = wallType;
-            
+
             SetStatusText(T.Get(LocalizationKeys.SelectPrefab));
 
-            prefabList.Open(title, _availablePrefabs.Select(prefab => prefab.gameObject.name), SetPrefab);
+            prefabList.Open(prefabListTitle, _availablePrefabs.Select(prefab => prefab.gameObject.name), SetPrefab);
         }
 
         private void SetPrefab(string prefabName)
@@ -83,7 +96,7 @@ namespace Scripts.UI.EditorUI
                 MapBuilder.RemovePrefab(_editedWallConfiguration);
                 _editedWallConfiguration = null;
             }
-            
+
             SetStatusText();
             _editedWallConfiguration = new WallConfiguration
             {
@@ -93,38 +106,67 @@ namespace Scripts.UI.EditorUI
                 WayPoints = new List<Vector3>(),
                 Offset = 0f
             };
-            
-            if(!MapBuilder.BuildPrefab(_editedWallConfiguration))
+
+            if (!MapBuilder.BuildPrefab(_editedWallConfiguration))
             {
                 SetStatusText(T.Get(LocalizationKeys.ErrorBuildingPrefab));
                 return;
             }
 
+            confirmButton.gameObject.SetActive(true);
             placeholderWall.SetActive(false);
         }
 
-        private void Close(EWorkMode _) => Close();
-        
-        public void Close()
+        private void Close(EWorkMode _) => CloseWithChangeCheck();
+
+        public void CloseWithChangeCheck()
         {
+            if (_editedWallConfiguration != null)
+            {
+                EditorUIManager.Instance.ConfirmationDialog.Open(T.Get(LocalizationKeys.SaveEditedMapPrompt),
+                    SaveMapAndClose,
+                    RemoveAndClose);
+                return;
+            }
+
+            Close();
+        }
+
+        private void RemoveAndClose()
+        {
+            MapBuilder.RemovePrefab(_editedWallConfiguration);
+            Close();
+        }
+
+        private void SaveMapAndClose()
+        {
+            MapEditorManager.Instance.SaveMap();
+            Close();
+        }
+
+        private void Close()
+        {
+            _editedWallConfiguration = null;
+            _editedWallType = EWallType.Invalid;
+            
             placeholderWall.transform.position = Vector3.zero;
             placeholderWall.transform.parent = body.transform;
             placeholderWall.SetActive(false);
             EditorUIManager.Instance.IsAnyObjectEdited = false;
-            
+
             SetActive(false);
         }
 
         private void SetStatusText(string text = null)
         {
             statusText.text = text ?? "";
-            
+
             if (string.IsNullOrEmpty(text))
             {
                 statusText.gameObject.SetActive(false);
                 return;
             }
-            
+
             statusText.gameObject.SetActive(true);
         }
     }

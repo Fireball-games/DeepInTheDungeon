@@ -26,13 +26,13 @@ namespace Scripts.System.MonoBases
             if (cancelButton)
             {
                 cancelButton.onClick.AddListener(OnCancelClicked);
-                cancelText.text = T.Get(LocalizationKeys.Cancel);
+                cancelText.text = T.Get(Keys.Cancel);
             }
 
             if (confirmButton)
             {
                 confirmButton.onClick.AddListener(OnOKClicked);
-                confirmText.text = T.Get(LocalizationKeys.Confirm);
+                confirmText.text = T.Get(Keys.Confirm);
             }
         }
 

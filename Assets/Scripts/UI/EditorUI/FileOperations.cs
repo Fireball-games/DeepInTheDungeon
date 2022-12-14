@@ -27,18 +27,18 @@ namespace Scripts.UI.EditorUI
         private void OnEnable()
         {
             loadButton.onClick.AddListener(OnLoadClicked);
-            loadButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Load);
+            loadButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Load);
             exitButton.onClick.AddListener(OnExitClicked);
-            exitButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Exit);
+            exitButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Exit);
             saveButton.onClick.AddListener(OnSaveClicked);
-            saveButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Save);
+            saveButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Save);
             newMapButton.onClick.AddListener(OnNewMapClicked);
-            newMapButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.NewMap);
+            newMapButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.NewMap);
         }
         
         private static string GetDefaultMapName()
         {
-            string newMapName = T.Get(LocalizationKeys.NewMap);
+            string newMapName = T.Get(Keys.NewMap);
             
             string[] fileNames = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectoryName);
 
@@ -48,7 +48,7 @@ namespace Scripts.UI.EditorUI
 
             int number = 1;
 
-            while (fileNames.Contains($"{T.Get(LocalizationKeys.NewMap)}{number}.map"))
+            while (fileNames.Contains($"{T.Get(Keys.NewMap)}{number}.map"))
             {
                 number++;
             }
@@ -63,7 +63,7 @@ namespace Scripts.UI.EditorUI
             if (_existingFiles == null || !_existingFiles.Any())
             {
                 EditorUIManager.Instance.StatusBar.RegisterMessage(
-                    T.Get(LocalizationKeys.NoFilesToShow),
+                    T.Get(Keys.NoFilesToShow),
                     StatusBar.EMessageType.Warning);
                 return;
             }
@@ -85,7 +85,7 @@ namespace Scripts.UI.EditorUI
 
         private void LoadMapConfirmed()
         {
-            openFileDialog.Open(T.Get(LocalizationKeys.SelectMapToLoad), _existingFiles, LoadMap);
+            openFileDialog.Open(T.Get(Keys.SelectMapToLoad), _existingFiles, LoadMap);
         }
         
         private void OnSaveClicked()
@@ -97,7 +97,7 @@ namespace Scripts.UI.EditorUI
             }
 
             EditorUIManager.Instance.StatusBar.RegisterMessage(
-                    T.Get(LocalizationKeys.NoChangesToSave),
+                    T.Get(Keys.NoChangesToSave),
                     StatusBar.EMessageType.Warning);
         }
         
@@ -117,11 +117,11 @@ namespace Scripts.UI.EditorUI
         private void OpenConfirmationDialog(Action onOk, Action onCancel)
         {
             EditorUIManager.Instance.ConfirmationDialog.Open(
-                T.Get(LocalizationKeys.SaveEditedMapPrompt),
+                T.Get(Keys.SaveEditedMapPrompt),
                 onOk,
                 onCancel,
-                T.Get(LocalizationKeys.SaveMap),
-                T.Get(LocalizationKeys.DontSave)
+                T.Get(Keys.SaveMap),
+                T.Get(Keys.DontSave)
             );
         }
 
@@ -133,7 +133,7 @@ namespace Scripts.UI.EditorUI
 
         private void OpenNewMapDialog()
         {
-            EditorUIManager.Instance.NewMapDialog.Open(T.Get(LocalizationKeys.NewMapDialogTitle),
+            EditorUIManager.Instance.NewMapDialog.Open(T.Get(Keys.NewMapDialogTitle),
                 GetDefaultMapName(),
                 OnNewMapDialogOK
             );
@@ -179,7 +179,7 @@ namespace Scripts.UI.EditorUI
 
             if (loadedMap == null)
             {
-                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.LoadingFileFailed), StatusBar.EMessageType.Negative);
+                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(Keys.LoadingFileFailed), StatusBar.EMessageType.Negative);
                 return;
             }
             

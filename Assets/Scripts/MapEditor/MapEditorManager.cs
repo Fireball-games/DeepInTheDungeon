@@ -117,7 +117,7 @@ namespace Scripts.MapEditor
             if (!MapIsSaved)
             {
                 EditorUIManager.Instance.ConfirmationDialog.Open(
-                    T.Get(LocalizationKeys.SaveEditedMapPrompt),
+                    T.Get(Keys.SaveEditedMapPrompt),
                     GoToMainScreenWithSave,
                     LoadMainSceneClear);
                 
@@ -131,7 +131,7 @@ namespace Scripts.MapEditor
         {
             if (!MapIsPresented)
             {
-                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.NoMapToPlayLoaded), StatusBar.EMessageType.Negative);
+                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(Keys.NoMapToPlayLoaded), StatusBar.EMessageType.Negative);
                 return;
             }
 
@@ -159,12 +159,12 @@ namespace Scripts.MapEditor
             }
             catch (Exception e)
             {
-                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.SaveFailed), StatusBar.EMessageType.Negative);
+                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(Keys.SaveFailed), StatusBar.EMessageType.Negative);
                 Logger.Log($"Saving file failed: {e.Message}");
                 return;
             }
             
-            EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(LocalizationKeys.MapSaved), StatusBar.EMessageType.Positive);
+            EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(Keys.MapSaved), StatusBar.EMessageType.Positive);
 
             MapIsChanged = false;
             MapIsSaved = true;

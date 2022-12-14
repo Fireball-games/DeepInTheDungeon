@@ -1,6 +1,6 @@
 ﻿namespace Scripts.Localization
 {
-    public static class LocalizationKeys
+    public static class Keys
     {
         public const string AvailablePrefabs = "AvailablePrefabs";
         public const string Cancel = "Cancel";

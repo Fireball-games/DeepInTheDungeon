@@ -83,13 +83,13 @@ namespace Scripts.UI.EditorUI
             if (_availablePrefabs == null || !_availablePrefabs.Any())
             {
                 _editedWallType = EWallType.Invalid;
-                SetStatusText(T.Get(LocalizationKeys.NoPrefabsAvailable));
+                SetStatusText(T.Get(Keys.NoPrefabsAvailable));
                 return;
             }
 
             _editedWallType = wallType;
 
-            SetStatusText(T.Get(LocalizationKeys.SelectPrefab));
+            SetStatusText(T.Get(Keys.SelectPrefab));
 
             prefabList.Open(prefabListTitle, _availablePrefabs.Select(prefab => prefab.gameObject.name), SetPrefab);
         }
@@ -101,12 +101,12 @@ namespace Scripts.UI.EditorUI
             SetStatusText();
             _isEditingExistingWall = false;
 
-            cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Cancel);
-            confirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Confirm);
-            deleteButton.GetComponentInChildren<TMP_Text>().text = T.Get(LocalizationKeys.Delete);
+            cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Cancel);
+            confirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Confirm);
+            deleteButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Delete);
             confirmButton.gameObject.SetActive(false);
             deleteButton.gameObject.SetActive(deleteButtonActive);
-            string prefabListTitle = T.Get(LocalizationKeys.AvailablePrefabs);
+            string prefabListTitle = T.Get(Keys.AvailablePrefabs);
 
             _availablePrefabs = PrefabStore.GetPrefabsOfType(EPrefabType.Wall)?
                 .Select(prefab => prefab.GetComponent<WallPrefabBase>())
@@ -138,7 +138,7 @@ namespace Scripts.UI.EditorUI
 
             if (!MapBuilder.BuildPrefab(_editedWallConfiguration))
             {
-                SetStatusText(T.Get(LocalizationKeys.ErrorBuildingPrefab));
+                SetStatusText(T.Get(Keys.ErrorBuildingPrefab));
                 return;
             }
 
@@ -168,7 +168,7 @@ namespace Scripts.UI.EditorUI
         {
             if (!_isEditingExistingWall && _editedWallConfiguration != null)
             {
-                EditorUIManager.Instance.ConfirmationDialog.Open(T.Get(LocalizationKeys.SaveEditedMapPrompt),
+                EditorUIManager.Instance.ConfirmationDialog.Open(T.Get(Keys.SaveEditedMapPrompt),
                     SaveMapAndClose,
                     RemoveAndClose);
                 return;

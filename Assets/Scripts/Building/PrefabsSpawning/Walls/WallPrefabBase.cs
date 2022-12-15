@@ -46,9 +46,7 @@ namespace Scripts.Building.PrefabsSpawning.Walls
                 Vector3 position = ownTransform.position;
                 Quaternion rotation = ownTransform.rotation;
 
-                _cursor3D ??= FindObjectOfType<Cursor3D>();
-                
-                _cursor3D.ShowAt(position, Cursor3D.EditorWallCursorScale, rotation);
+                FindObjectOfType<Cursor3D>().ShowAt(position, Cursor3D.EditorWallCursorScale, rotation);
                 
                 _ownConfiguration ??= Manager.MapBuilder
                     .GetPrefabConfigurationByTransformData(new PositionRotation(position, rotation)) as WallConfiguration;
@@ -66,6 +64,8 @@ namespace Scripts.Building.PrefabsSpawning.Walls
         }
 
         private bool IsInEditor() =>
-            GameManager.Instance.GameMode == GameManager.EGameMode.Editor && MapEditorManager.Instance.WorkMode == EWorkMode.Walls;
+            GameManager.Instance.GameMode == GameManager.EGameMode.Editor 
+            && MapEditorManager.Instance.WorkMode == EWorkMode.Walls
+            && !EditorUIManager.Instance.IsAnyObjectEdited;
     }
 }

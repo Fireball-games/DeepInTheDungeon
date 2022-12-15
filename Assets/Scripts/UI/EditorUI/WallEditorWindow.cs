@@ -14,6 +14,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI
 {
@@ -59,6 +60,15 @@ namespace Scripts.UI.EditorUI
 
         public void Open(WallConfiguration configuration)
         {
+            if (body.activeSelf) return;
+            
+            if (configuration == null)
+            {
+                Logger.LogWarning("Configuration is null");
+                Close();
+                return;
+            }
+            
             string prefabListTitle = SetupWindow(configuration.WallType, true);
 
             _isEditingExistingWall = true;
@@ -92,6 +102,8 @@ namespace Scripts.UI.EditorUI
 
         public void Open(EWallType wallType, PositionRotation placeholderTransformData)
         {
+            if (body.activeSelf) return;
+            
             string prefabListTitle = SetupWindow(wallType, false);
 
             placeholderWall.transform.position = placeholderTransformData.Position;
@@ -200,7 +212,10 @@ namespace Scripts.UI.EditorUI
             
             _cursor3D.Hide();
             
+            MapBuilder.RemovePrefab(_editedWallConfiguration);
             MapBuilder.RemovePrefab(oldConfiguration);
+            
+            Close();
         }
 
         private void Close(EWorkMode _) => CloseWithChangeCheck();
@@ -240,6 +255,7 @@ namespace Scripts.UI.EditorUI
         private void Close()
         {
             _editedWallConfiguration = null;
+            _originalConfiguration = null;
             _editedWallType = EWallType.Invalid;
 
             placeholderWall.transform.position = Vector3.zero;

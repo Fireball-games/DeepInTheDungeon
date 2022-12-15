@@ -77,17 +77,13 @@ namespace Scripts.MapEditor
             if (_isWallPlacementValid && Input.GetMouseButtonUp(0) && !Mouse.LeftClickExpired)
             {
                 SetGizmosActive(false);
+
+                if (_isWallAlreadyExisting) return;
                 
-                if (!_isWallAlreadyExisting)
-                {
-                    _wallData.Position = wall.transform.position;
-                    _wallData.Rotation = wall.transform.localRotation;
+                _wallData.Position = wall.transform.position;
+                _wallData.Rotation = wall.transform.localRotation;
                 
-                    EditorUIManager.Instance.OpenWallEditorWindow(_wallType, _wallData);
-                    return;
-                }
-                
-                EditorUIManager.Instance.OpenWallEditorWindow(_existingConfiguration);
+                EditorUIManager.Instance.OpenWallEditorWindow(_wallType, _wallData);
             }
         }
 
@@ -120,13 +116,11 @@ namespace Scripts.MapEditor
             PrefabConfiguration existingConfiguration =
                 Manager.MapBuilder.GetPrefabConfigurationByTransformData(new(wall.transform.position, wall.transform.rotation));
 
-            if (existingConfiguration is WallConfiguration configuration)
+            if (existingConfiguration is WallConfiguration)
             {
+                _isWallAlreadyExisting = true;
                 _isWallPlacementValid = false;
-                // // EditorMouseService.Instancee.
-                // _isWallAlreadyExisting = true;
-                // _existingConfiguration = configuration;
-                // _cursor3D.ShowAt(wall.transform.position, Cursor3D.EditorWallCursorScale, wall.transform.rotation);
+                
                 return;
             }
 
@@ -139,6 +133,7 @@ namespace Scripts.MapEditor
         internal void OnGizmoExited()
         {
             _isWallPlacementValid = false;
+            SetGizmosActive(true);
             wall.SetActive(false);
         }
 

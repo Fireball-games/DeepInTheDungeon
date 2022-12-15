@@ -22,11 +22,6 @@ namespace Scripts.MapEditor
             cursor.gameObject.SetActive(false);
         }
 
-        private void OnDestroy()
-        {
-            Logger.Log("BOOM");
-        }
-
         public void SetMapBuildService(MapBuildService service)
         {
             _service = service;

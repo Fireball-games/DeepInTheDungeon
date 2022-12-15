@@ -60,7 +60,7 @@ namespace Scripts.UI.EditorUI
 
         public void Open(WallConfiguration configuration)
         {
-            if (CanOpen) return;
+            if (!CanOpen) return;
             
             if (configuration == null)
             {
@@ -101,7 +101,7 @@ namespace Scripts.UI.EditorUI
 
         public void Open(EWallType wallType, PositionRotation placeholderTransformData)
         {
-            if (CanOpen) return;
+            if (!CanOpen) return;
             
             string prefabListTitle = SetupWindow(wallType, false);
 
@@ -217,7 +217,10 @@ namespace Scripts.UI.EditorUI
             Close();
         }
 
-        private void Close(EWorkMode _) => CloseWithChangeCheck();
+        private void Close(EWorkMode _)
+        {
+            if(!CanOpen) CloseWithChangeCheck();
+        }
 
         public void CloseWithChangeCheck()
         {
@@ -255,6 +258,7 @@ namespace Scripts.UI.EditorUI
         {
             _editedWallConfiguration = null;
             _originalConfiguration = null;
+            _isEditingExistingWall = false;
             _editedWallType = EWallType.Invalid;
 
             placeholderWall.transform.position = Vector3.zero;
@@ -273,7 +277,7 @@ namespace Scripts.UI.EditorUI
             SetActive(false);
         }
 
-        private bool CanOpen => body.activeSelf;
+        private bool CanOpen => !body.activeSelf;
 
         private void SetStatusText(string text = null)
         {

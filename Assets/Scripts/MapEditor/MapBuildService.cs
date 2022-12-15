@@ -106,6 +106,19 @@ namespace Scripts.MapEditor
             int columnCount = EditedLayout[0][0].Count;
             wasAdjusted = false;
 
+            // TODO: corners of the map are prohibited from building up or down, but move this someplace in general where is check if position
+            // is available to be built
+            if ((floor == 0 && row == 0 && column == 0)
+                || (floor == 0 && row == 0 && column == columnCount - 1)
+                || (floor == 0 && row == rowCount - 1 && column == columnCount - 1)
+                || (floor == 0 && row == rowCount - 1 && column == 0)
+                || (floor == floorCount - 1 && row == 0 && column == 0)
+                || (floor == floorCount - 1 && row == 0 && column == columnCount - 1)
+                || (floor == floorCount - 1 && row == rowCount - 1 && column == columnCount - 1)
+                || (floor == floorCount - 1 && row == rowCount - 1 && column == 0)
+               )
+                return;
+
             // NW corner
             if (row == 0 && column == 0)
             {
@@ -255,7 +268,7 @@ namespace Scripts.MapEditor
         {
             foreach (List<List<TileDescription>> floor in EditedLayout)
             {
-                for (int row = 0; row < floor[0].Count; row++)
+                for (int row = 0; row < floor[1].Count; row++)
                 {
                     floor[index].Add(null);
                 }
@@ -329,6 +342,8 @@ namespace Scripts.MapEditor
             else
             {
                 EditorEvents.TriggerOnMapEdited();
+
+                MapBuilder.ChangePrefabPositionsBy(new Vector3(rowAdjustment, floorAdjustment, columnAdjustment));
                 
                 ELevel floorsAdded = floorAdjustment == 1 
                     ? ELevel.Upper 

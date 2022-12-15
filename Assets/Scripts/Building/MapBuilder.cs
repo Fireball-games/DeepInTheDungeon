@@ -213,6 +213,20 @@ namespace Scripts.Building
 
             return !result ? null : result;
         }
+        
+        public void ReplacePrefabConfiguration(PrefabConfiguration newConfiguration)
+        {
+            int replaceIndex = MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData == newConfiguration.TransformData);
+            MapDescription.PrefabConfigurations[replaceIndex] = newConfiguration;
+        }
+
+        public void ChangePrefabPositionsBy(Vector3 positionChangeDelta)
+        {
+            foreach (PrefabConfiguration configuration in MapDescription.PrefabConfigurations)
+            {
+                configuration.TransformData.Position += positionChangeDelta;
+            }
+        }
 
         public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation transformData) => 
             MapDescription.PrefabConfigurations.FirstOrDefault(c => c.TransformData == transformData);
@@ -299,12 +313,6 @@ namespace Scripts.Building
             layout[floor, center.x + 1, center.y + 1] = DefaultMapProvider.FullTile;
 
             return layout;
-        }
-
-        public void ReplacePrefabConfiguration(PrefabConfiguration newConfiguration)
-        {
-            int replaceIndex = MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData == newConfiguration.TransformData);
-            MapDescription.PrefabConfigurations[replaceIndex] = newConfiguration;
         }
     }
 }

@@ -23,21 +23,16 @@ namespace Scripts.MapEditor
         private static EditorMouseService Mouse => EditorMouseService.Instance;
         private static MapEditorManager Manager => MapEditorManager.Instance;
 
-        private Cursor3D _cursor3D;
-        
         private EWallType _wallType;
         private Vector3Int _currentMousePosition;
         private Dictionary<ETileDirection, PositionRotation> _wallRotationMap;
         private PositionRotation _wallData;
         private bool _isWallPlacementValid;
         private bool _isWallAlreadyExisting;
-        private WallConfiguration _existingConfiguration;
 
         private void Awake()
         {
             body.SetActive(false);
-
-            _cursor3D = FindObjectOfType<Cursor3D>();
 
             _wallData = new PositionRotation();
             
@@ -127,8 +122,6 @@ namespace Scripts.MapEditor
             }
 
             _isWallAlreadyExisting = false;
-            _existingConfiguration = null;
-            _cursor3D.Hide();
             wall.SetActive(true);
         }
 

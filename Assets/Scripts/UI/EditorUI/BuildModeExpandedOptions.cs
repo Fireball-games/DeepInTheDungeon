@@ -17,16 +17,6 @@ namespace Scripts.UI.EditorUI
 
         private Dictionary<ELevel, ImageButton> _buttonsMap;
 
-        private void Awake()
-        {
-            _buttonsMap = new Dictionary<ELevel, ImageButton>
-            {
-                {ELevel.Equal, sameLevelButton},
-                {ELevel.Upper, upperLevelButton},
-                {ELevel.Lower, lowerLevelButton},
-            };
-        }
-
         private void OnEnable()
         {
             upperLevelButton.OnClickWithSender += OnClick;
@@ -49,10 +39,20 @@ namespace Scripts.UI.EditorUI
 
         public void SetSelected(ELevel level)
         {
+            _buttonsMap ??= BuildButtonsMap();
+            
             foreach (ELevel eLevel in _buttonsMap.Keys)
             {
                 _buttonsMap[eLevel].SetSelected(eLevel == level);
             }
         }
+
+        private Dictionary<ELevel, ImageButton> BuildButtonsMap() =>
+            _buttonsMap = new Dictionary<ELevel, ImageButton>
+            {
+                {ELevel.Equal, sameLevelButton},
+                {ELevel.Upper, upperLevelButton},
+                {ELevel.Lower, lowerLevelButton},
+            };
     }
 }

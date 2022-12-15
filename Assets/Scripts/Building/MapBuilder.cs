@@ -72,6 +72,10 @@ namespace Scripts.Building
 
             foreach (GameObject prefab in _prefabs)
             {
+                Transform offsetTransform = prefab.GetComponentInChildren<MeshFilter>().transform;
+                
+                if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
+                
                 ObjectPool.Instance.ReturnToPool(prefab);
             }
 
@@ -175,19 +179,13 @@ namespace Scripts.Building
 
         public void RemovePrefab(PrefabConfiguration configuration)
         {
-            if (configuration == null)
-            {
-                return;
-            }
-            
-            PrefabConfiguration config = MapDescription.PrefabConfigurations.FirstOrDefault(c =>
-                c.PrefabName == configuration.PrefabName && c.TransformData.Position == configuration.TransformData.Position);
+            if (configuration == null) return;
 
-            if (config == null)
-            {
-                // Logger.LogWarning($"No prefab of name \"{configuration.PrefabName}\" was found for removal in PrefabConfigurations.");
-                return;
-            }
+            PrefabConfiguration config = MapDescription.PrefabConfigurations.FirstOrDefault(c =>
+                c.PrefabName == configuration.PrefabName 
+                && c.TransformData == configuration.TransformData);
+
+            if (config == null) return;
 
             MapDescription.PrefabConfigurations.Remove(config);
 
@@ -201,8 +199,9 @@ namespace Scripts.Building
             }
 
             _prefabs.Remove(prefabGo);
-            
-            prefabGo.GetComponentInChildren<MeshFilter>().transform.localPosition = Vector3.zero;
+
+            Transform offsetTransform = prefabGo.GetComponentInChildren<MeshFilter>().transform;
+            if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
             
             ObjectPool.Instance.ReturnToPool(prefabGo);
         }

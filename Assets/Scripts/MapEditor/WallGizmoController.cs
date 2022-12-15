@@ -83,6 +83,8 @@ namespace Scripts.MapEditor
                 _wallData.Position = wall.transform.position;
                 _wallData.Rotation = wall.transform.localRotation;
                 
+                wall.SetActive(false);
+                
                 EditorUIManager.Instance.OpenWallEditorWindow(_wallType, _wallData);
             }
         }

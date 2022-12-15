@@ -64,7 +64,6 @@ namespace Scripts.UI.EditorUI
             
             if (configuration == null)
             {
-                Logger.LogWarning("Configuration is null");
                 Close();
                 return;
             }

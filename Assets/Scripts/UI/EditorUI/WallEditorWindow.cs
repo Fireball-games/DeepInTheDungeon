@@ -14,7 +14,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI
 {
@@ -56,11 +55,12 @@ namespace Scripts.UI.EditorUI
         private void OnDisable()
         {
             EditorEvents.OnWorkModeChanged -= Close;
+            StopAllCoroutines();
         }
 
         public void Open(WallConfiguration configuration)
         {
-            if (body.activeSelf) return;
+            if (CanOpen) return;
             
             if (configuration == null)
             {
@@ -101,7 +101,7 @@ namespace Scripts.UI.EditorUI
 
         public void Open(EWallType wallType, PositionRotation placeholderTransformData)
         {
-            if (body.activeSelf) return;
+            if (CanOpen) return;
             
             string prefabListTitle = SetupWindow(wallType, false);
 
@@ -272,6 +272,8 @@ namespace Scripts.UI.EditorUI
 
             SetActive(false);
         }
+
+        private bool CanOpen => body.activeSelf;
 
         private void SetStatusText(string text = null)
         {

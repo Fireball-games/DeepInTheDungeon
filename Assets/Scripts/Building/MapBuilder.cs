@@ -295,6 +295,11 @@ namespace Scripts.Building
                 else
                     tileController.HideWall(TileDirections.WallDirectionByVector[direction]);
             }
+
+            if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
+            {
+                tileController.HideWall(TileDescription.ETileDirection.Ceiling);
+            }
         }
 
         private static TileDescription[,,] AddTilesToCenterOfLayout(TileDescription[,,] layout)

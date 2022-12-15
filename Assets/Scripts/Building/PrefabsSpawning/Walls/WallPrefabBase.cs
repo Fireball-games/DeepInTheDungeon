@@ -32,8 +32,8 @@ namespace Scripts.Building.PrefabsSpawning.Walls
             {
                 if (_wallEligibleForEditing && Input.GetMouseButtonUp(0))
                 {
-                    var ownTransform = transform;
                     EditorUIManager.Instance.OpenWallEditorWindow(_ownConfiguration);
+                    _wallEligibleForEditing = false;
                 }
             }
         }
@@ -58,6 +58,7 @@ namespace Scripts.Building.PrefabsSpawning.Walls
         {
             if (IsInEditor())
             {
+                FindObjectOfType<Cursor3D>().Hide();
                 EditorUIManager.Instance.WallGizmo.Reset();
                 _wallEligibleForEditing = false;
             }

@@ -51,7 +51,6 @@ namespace Scripts.Building
             base.BuildNormalTile(floor, row, column, tileDescription);
 
             LastBuiltTile.HideWall(TileDescription.ETileDirection.Ceiling);
-            // LastBuiltTile.transform.localScale = _tileScaleInEditor;
 
             SetDisabledIfApplicable(LastBuiltTile.gameObject, floor);
         }

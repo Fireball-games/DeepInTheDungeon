@@ -22,11 +22,13 @@ namespace Scripts.MapEditor
         [SerializeField] private EditorCameraService cameraService;
         
         private static MapEditorManager Manager => MapEditorManager.Instance;
+        private static EditorUIManager UIManager => EditorUIManager.Instance;
 
         public Vector3Int MouseGridPosition => _lastGridPosition;
         public EGridPositionType GridPositionType { get; private set; } = EGridPositionType.None;
         public bool LeftClickExpired { get; private set; }
         public bool RightClickExpired { get; private set; }
+        public bool LeftClickedOnUI { get; private set; }
 
         private MapBuildService _buildService;
         private Plane _layerPlane;
@@ -84,15 +86,14 @@ namespace Scripts.MapEditor
         {
             if (!Manager.MapIsPresented || Manager.MapIsBeingBuilt) return;
 
+            ValidateClicks();
+            cameraService.HandleMouseMovement();
+            cameraService.HandleMouseWheel();
+            
             if (EventSystem.current.IsPointerOverGameObject())
             {
                 _uiIsBlocking = true;
                 SetDefaultCursor();
-
-                if (!_isManipulatingCameraPosition) return;
-                
-                cameraService.HandleMouseMovement();
-                cameraService.HandleMouseWheel();
 
                 return;
             }
@@ -102,8 +103,6 @@ namespace Scripts.MapEditor
                 RefreshMousePosition();
                 _uiIsBlocking = false;
             }
-            
-            ValidateClicks();
 
             if (Input.GetMouseButtonUp(0))
             {
@@ -143,6 +142,13 @@ namespace Scripts.MapEditor
             {
                 LeftClickExpired = false;
                 _lastLeftClickTime = Time.time;
+
+                LeftClickedOnUI = false;
+
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    LeftClickedOnUI = true;
+                }
             }
 
             if (Input.GetMouseButtonDown(1))
@@ -234,7 +240,7 @@ namespace Scripts.MapEditor
             if (!layout.HasIndex(newGridPosition))
             {
                 Cursor.SetCursor(null, _defaultMouseHotspot, CursorMode.Auto);
-                cursor3D.Hide();
+                Hide3DCursor();
                 return;
             }
 
@@ -301,8 +307,8 @@ namespace Scripts.MapEditor
         private void SetDefaultCursor()
         {
             if (_isDefaultCursorSet) return;
-            
-            cursor3D.Hide();
+
+            Hide3DCursor();
             
             SetCursor(null, Vector3.zero);
             _isDefaultCursorSet = true;
@@ -326,7 +332,7 @@ namespace Scripts.MapEditor
                 switch (type)
                 {
                     case EGridPositionType.None:
-                        cursor3D.Hide();
+                        Hide3DCursor();
                         SetDefaultCursor();
                         break;
                     case EGridPositionType.NullTile:
@@ -354,7 +360,7 @@ namespace Scripts.MapEditor
                         SetCursor(demolishCursor, _demolishMouseHotspot);
                         break;
                     default:
-                        cursor3D.Hide();
+                        Hide3DCursor();
                         SetDefaultCursor();
                         break;
                 }
@@ -370,9 +376,18 @@ namespace Scripts.MapEditor
 
         public void ResetCursor()
         {
-            cursor3D.Hide();
+            Hide3DCursor();
+            
             SetDefaultCursor();
             RefreshMousePosition(true);
+        }
+
+        private void Hide3DCursor()
+        {
+            if (!UIManager.IsAnyObjectEdited)
+            {
+                cursor3D.Hide();
+            }
         }
     }
 }

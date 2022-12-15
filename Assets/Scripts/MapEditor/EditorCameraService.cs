@@ -17,7 +17,14 @@ namespace Scripts.MapEditor
         
         internal void HandleMouseMovement()
         {
-            if (Mouse.LeftClickExpired && Input.GetMouseButton(0))
+            if (Mouse.LeftClickExpired && Input.GetMouseButtonUp(0)
+                || Mouse.RightClickExpired && Input.GetMouseButtonUp(1))
+            {
+                Mouse.IsManipulatingCameraPosition = false;
+                Mouse.RefreshMousePosition(true);
+            }
+            
+            if (!Mouse.LeftClickedOnUI && Mouse.LeftClickExpired && Input.GetMouseButton(0))
             {
                 Mouse.IsManipulatingCameraPosition = true;
                 Mouse.SetCursorToCameraMovement();
@@ -36,11 +43,6 @@ namespace Scripts.MapEditor
                 cameraHolder.position += moveVector;
             }
 
-            if (Mouse.LeftClickExpired && Input.GetMouseButtonUp(0))
-            {
-                Mouse.IsManipulatingCameraPosition = false;
-            }
-
             if (Mouse.RightClickExpired && Input.GetMouseButton(1))
             {
                 Mouse.IsManipulatingCameraPosition = true;
@@ -57,11 +59,6 @@ namespace Scripts.MapEditor
                 _cameraMoveVector.z = cameraRotation.z - (yDelta * Time.deltaTime * cameraRotationSpeed);
                 
                 cameraHolder.localRotation = Quaternion.Euler(_cameraMoveVector);
-            }
-            
-            if (Mouse.LeftClickExpired && Input.GetMouseButtonUp(1))
-            {
-                Mouse.IsManipulatingCameraPosition = false;
             }
         }
         

@@ -45,7 +45,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.01, y: 1, z: 1}
+  m_Size: {x: 0.1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6485418180559858531
 MonoBehaviour:
@@ -59,6 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c51bb7df5bbb4491814019e972ebc9b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  waypoints: []
   offset: 0
 --- !u!1 &9134063150869527306
 GameObject:

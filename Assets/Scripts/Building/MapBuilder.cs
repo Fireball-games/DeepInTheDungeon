@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.Building.Walls.Configurations;
 using Scripts.Helpers;
@@ -28,7 +27,7 @@ namespace Scripts.Building
         internal TileDescription[,,] Layout;
         internal Dictionary<Vector3Int, GameObject> PhysicalTiles;
         internal MapDescription MapDescription;
-        
+
         private GameObject _prefabsParent;
         private HashSet<GameObject> _prefabs;
 
@@ -70,7 +69,7 @@ namespace Scripts.Building
             {
                 ObjectPool.Instance.ReturnToPool(tile);
             }
-            
+
             foreach (GameObject prefab in _prefabs)
             {
                 ObjectPool.Instance.ReturnToPool(prefab);
@@ -131,7 +130,7 @@ namespace Scripts.Building
 
             return PhysicalTiles[worldPosition];
         }
-        
+
         /// <summary>
         /// Builds new prefab and both stores configuration in MapDescription and GameObject in Prefabs list.
         /// </summary>
@@ -149,11 +148,6 @@ namespace Scripts.Building
 
             newPrefab.transform.position = configuration.TransformData.Position;
             newPrefab.transform.localRotation = configuration.TransformData.Rotation;
-            
-            WallPrefabBase prefabScript = newPrefab.GetComponent<WallPrefabBase>();
-
-            prefabScript.TransformData = configuration.TransformData;
-            prefabScript.PrefabName = configuration.PrefabName;
 
             if (configuration is WallConfiguration wallConfiguration)
             {
@@ -163,14 +157,12 @@ namespace Scripts.Building
                 {
                     Vector3 position = physicalPart.localPosition;
                     position.x += wallConfiguration.Offset;
-                    physicalPart.localPosition = position;   
+                    physicalPart.localPosition = position;
                 }
-
-                prefabScript.waypoints = wallConfiguration.WayPoints;
             }
 
             MapDescription.PrefabConfigurations ??= new List<PrefabConfiguration>();
-            
+
             if (!MapDescription.PrefabConfigurations.Contains(configuration))
             {
                 MapDescription.PrefabConfigurations.Add(configuration);
@@ -196,7 +188,7 @@ namespace Scripts.Building
 
             GameObject prefabGo = _prefabs.FirstOrDefault(go =>
                 go.name == configuration.PrefabName && go.transform.position == configuration.TransformData.Position);
-            
+
             if (!prefabGo)
             {
                 Logger.LogWarning($"No prefab of name \"{configuration.PrefabName}\" found for removal in Prefabs.");
@@ -206,14 +198,17 @@ namespace Scripts.Building
             _prefabs.Remove(prefabGo);
             ObjectPool.Instance.ReturnToPool(prefabGo);
         }
-        
+
         public GameObject GetWallByConfiguration(PrefabConfiguration configuration)
         {
             GameObject result = _prefabs.FirstOrDefault(p => p.transform.position == configuration.TransformData.Position
-                                                            && p.name == configuration.PrefabName);
+                                                             && p.name == configuration.PrefabName);
 
             return !result ? null : result;
         }
+
+        public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation transformData) => 
+            MapDescription.PrefabConfigurations.FirstOrDefault(c => c.TransformData == transformData);
 
         private IEnumerator BuildLayoutCoroutine(TileDescription[,,] layout)
         {
@@ -244,7 +239,7 @@ namespace Scripts.Building
 
             OnLayoutBuilt?.Invoke();
         }
-        
+
         private IEnumerator BuildPrefabsCoroutine(List<PrefabConfiguration> configurations)
         {
             foreach (PrefabConfiguration configuration in configurations)
@@ -297,6 +292,12 @@ namespace Scripts.Building
             layout[floor, center.x + 1, center.y + 1] = DefaultMapProvider.FullTile;
 
             return layout;
+        }
+
+        public void ReplacePrefabConfiguration(PrefabConfiguration newConfiguration)
+        {
+            int replaceIndex = MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData == newConfiguration.TransformData);
+            MapDescription.PrefabConfigurations[replaceIndex] = newConfiguration;
         }
     }
 }

@@ -70,13 +70,13 @@ namespace Scripts.UI.EditorUI
             CloseWallEditorWindow();
         } 
 
-        public void OpenTileEditorWindow(EWallType wallType, PositionRotation placeholderTransformData)
+        public void OpenWallEditorWindow(EWallType wallType, PositionRotation placeholderTransformData)
         {
             IsAnyObjectEdited = true;
             wallEditor.Open(wallType, placeholderTransformData);
         }
 
-        public void OpenTileEditorWindow(WallConfiguration wallConfiguration)
+        public void OpenWallEditorWindow(WallConfiguration wallConfiguration)
         {
             IsAnyObjectEdited = true;
             wallEditor.Open(wallConfiguration);

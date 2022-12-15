@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -9,7 +8,6 @@ using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
 using static Scripts.MapEditor.Enums;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.MapEditor
 {
@@ -28,7 +26,6 @@ namespace Scripts.MapEditor
         private Cursor3D _cursor3D;
         
         private EWallType _wallType;
-        private readonly Vector3 _cursor3DScale = new(0.11f, 1.1f, 1.1f);
         private Vector3Int _currentMousePosition;
         private Dictionary<ETileDirection, PositionRotation> _wallRotationMap;
         private PositionRotation _wallData;
@@ -86,11 +83,11 @@ namespace Scripts.MapEditor
                     _wallData.Position = wall.transform.position;
                     _wallData.Rotation = wall.transform.localRotation;
                 
-                    EditorUIManager.Instance.OpenTileEditorWindow(_wallType, _wallData);
+                    EditorUIManager.Instance.OpenWallEditorWindow(_wallType, _wallData);
                     return;
                 }
                 
-                EditorUIManager.Instance.OpenTileEditorWindow(_existingConfiguration);
+                EditorUIManager.Instance.OpenWallEditorWindow(_existingConfiguration);
             }
         }
 
@@ -121,14 +118,15 @@ namespace Scripts.MapEditor
             }
 
             PrefabConfiguration existingConfiguration =
-                Manager.MapBuilder.MapDescription.PrefabConfigurations
-                    .FirstOrDefault(c => c.TransformData.Position == wall.transform.position);
+                Manager.MapBuilder.GetPrefabConfigurationByTransformData(new(wall.transform.position, wall.transform.rotation));
 
             if (existingConfiguration is WallConfiguration configuration)
             {
-                _isWallAlreadyExisting = true;
-                _existingConfiguration = configuration;
-                _cursor3D.ShowAt(wall.transform.position, _cursor3DScale, wall.transform.rotation);
+                _isWallPlacementValid = false;
+                // // EditorMouseService.Instancee.
+                // _isWallAlreadyExisting = true;
+                // _existingConfiguration = configuration;
+                // _cursor3D.ShowAt(wall.transform.position, Cursor3D.EditorWallCursorScale, wall.transform.rotation);
                 return;
             }
 
@@ -154,6 +152,7 @@ namespace Scripts.MapEditor
                 body.transform.position = currentGridPosition.ToWorldPosition();
 
                 _currentMousePosition = currentGridPosition;
+                wall.SetActive(false);
                 body.SetActive(true);
             }
             else

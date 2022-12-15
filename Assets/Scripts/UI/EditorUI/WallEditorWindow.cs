@@ -30,6 +30,7 @@ namespace Scripts.UI.EditorUI
 
         private MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
         private WallConfiguration _editedWallConfiguration;
+        private WallConfiguration _originalConfiguration;
         private EWallType _editedWallType;
         private GameObject _physicalWall;
         private HashSet<WallPrefabBase> _availablePrefabs;
@@ -40,7 +41,7 @@ namespace Scripts.UI.EditorUI
         private void Awake()
         {
             cancelButton.onClick.AddListener(CloseWithChangeCheck);
-            confirmButton.onClick.AddListener(Close);
+            confirmButton.onClick.AddListener(SaveMapAndClose);
             deleteButton.onClick.AddListener(Delete);
 
             _cursor3D = FindObjectOfType<Cursor3D>();
@@ -67,6 +68,7 @@ namespace Scripts.UI.EditorUI
 
             _editedWallType = configuration.WallType;
             _editedWallConfiguration = configuration;
+            _originalConfiguration = new WallConfiguration(configuration);
             
             _cursor3D.ShowAt(configuration.TransformData.Position,
                 new Vector3(0.15f, 1f, 1f),
@@ -205,6 +207,12 @@ namespace Scripts.UI.EditorUI
 
         public void CloseWithChangeCheck()
         {
+            if (_isEditingExistingWall)
+            {
+                MapBuilder.RemovePrefab(_editedWallConfiguration);
+                MapBuilder.BuildPrefab(_originalConfiguration);
+            }
+            
             if (!_isEditingExistingWall && _editedWallConfiguration != null)
             {
                 EditorUIManager.Instance.ConfirmationDialog.Open(T.Get(Keys.SaveEditedMapPrompt),
@@ -224,6 +232,7 @@ namespace Scripts.UI.EditorUI
 
         private void SaveMapAndClose()
         {
+            MapBuilder.ReplacePrefabConfiguration(_editedWallConfiguration);
             MapEditorManager.Instance.SaveMap();
             Close();
         }
@@ -236,13 +245,15 @@ namespace Scripts.UI.EditorUI
             placeholderWall.transform.position = Vector3.zero;
             placeholderWall.transform.parent = body.transform;
             placeholderWall.SetActive(false);
-            EditorUIManager.Instance.IsAnyObjectEdited = false;
 
             prefabTitle.SetActive(false);
             _physicalWall = null;
             
             _cursor3D.Hide();
+            
+            EditorUIManager.Instance.IsAnyObjectEdited = false;
             EditorUIManager.Instance.WallGizmo.Reset();
+            EditorMouseService.Instance.RefreshMousePosition();
 
             SetActive(false);
         }

@@ -47,18 +47,29 @@ namespace Scripts.MapEditor
                 {
                     move += localRight * (-keyboardSpeed * Time.deltaTime);
                 }
-                // Move Camera up
+                // Move Camera forward
                 if (Input.GetKey(KeyCode.W))
                 {
                     move += localForward * (keyboardSpeed * Time.deltaTime);
                 }
-                // Move Camera down
+                // Move Camera backward
                 if (Input.GetKey(KeyCode.S))
                 {
                     move += localForward * (-keyboardSpeed * Time.deltaTime);
                 }
 
                 move.y = 0;
+                
+                // Move Camera down
+                if (Input.GetKey(KeyCode.Q))
+                {
+                    move += Vector3.down * (keyboardSpeed * Time.deltaTime);
+                }
+                // Move Camera up
+                if (Input.GetKey(KeyCode.E))
+                {
+                    move += Vector3.up * (keyboardSpeed * Time.deltaTime);
+                }
                 
                 EditorCameraService.Instance.TranslateCamera(move);
             }

@@ -1,5 +1,6 @@
 ﻿using Scripts.Helpers.Extensions;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -8,11 +9,22 @@ namespace Scripts.MapEditor
         [SerializeField] private GameObject cursor;
         [SerializeField] private GameObject copy;
 
+        public static Vector3 EditorWallCursorScale;
         private MapBuildService _service;
+
+        static Cursor3D()
+        {
+            EditorWallCursorScale = new Vector3(0.15f, 1.2f, 1.2f);
+        }
 
         private void OnEnable()
         {
             cursor.gameObject.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            Logger.Log("BOOM");
         }
 
         public void SetMapBuildService(MapBuildService service)

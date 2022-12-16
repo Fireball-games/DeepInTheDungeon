@@ -25,29 +25,18 @@ namespace Scripts.Building.PrefabsSpawning.Walls
         public void Initialize()
         {
             WallEligibleForEditing = false;
-        }
-        
-        private void OnDisable()
-        {
             _ownConfiguration = null;
         }
 
-        private void Update()
+        public void OnClickInEditor()
         {
-            if (!IsInEditor()) return;
-
-            if (WallEligibleForEditing && Input.GetMouseButtonUp(0))
-            {
-                EditorUIManager.Instance.OpenWallEditorWindow(_ownConfiguration);
-                WallEligibleForEditing = false;
-            }
+            EditorUIManager.Instance.OpenWallEditorWindow(_ownConfiguration);
+            WallEligibleForEditing = false;
         }
 
-        private bool IsInEditor() =>
-            GameManager.Instance.GameMode == GameManager.EGameMode.Editor 
-            && MapEditorManager.Instance.WorkMode == EWorkMode.Walls
-            && !EditorUIManager.Instance.IsAnyObjectEdited;
-
+        /// <summary>
+        /// Editor uses this method for editing existing walls in editor. 
+        /// </summary>
         public void OnMouseEntered()
         {
             Transform ownTransform = transform;

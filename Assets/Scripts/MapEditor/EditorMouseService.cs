@@ -213,7 +213,7 @@ namespace Scripts.MapEditor
                 case EWorkMode.Walls:
                     if (mouseButtonUpped == 0)
                     {
-                        
+                        if (_lastEnteredWall is {WallEligibleForEditing: true}) _lastEnteredWall.OnClickInEditor();
                     }
 
                     break;

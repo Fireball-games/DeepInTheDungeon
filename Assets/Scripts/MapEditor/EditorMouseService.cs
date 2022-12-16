@@ -1,4 +1,5 @@
 using System;
+using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -86,6 +87,8 @@ namespace Scripts.MapEditor
         {
             if (!Manager.MapIsPresented || Manager.MapIsBeingBuilt) return;
 
+            CheckMouseOverWall();
+
             ValidateClicks();
             cameraService.HandleMouseMovement();
             cameraService.HandleMouseWheel();
@@ -125,6 +128,30 @@ namespace Scripts.MapEditor
         {
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged -= OnFloorChanged;
+        }
+
+        private WallPrefabBase _lastEnteredWall;
+        private void CheckMouseOverWall()
+        {
+            if (Manager.WorkMode != EWorkMode.Walls || EditorUIManager.Instance.IsAnyObjectEdited) return;
+            
+            if (LayersManager.CheckRayHit(LayersManager.WallMaskName, out GameObject hitWall))
+            {
+                WallPrefabBase wall = hitWall.GetComponentInParent<WallPrefabBase>();
+                if (wall)
+                {
+                    _lastEnteredWall = wall;
+                    wall.OnMouseEntered();
+                    return;
+                }
+            }
+
+            if (!_lastEnteredWall) return;
+            
+            _lastEnteredWall.WallEligibleForEditing = false;
+            _lastEnteredWall = null;
+            cursor3D.Hide();
+            EditorUIManager.Instance.WallGizmo.Reset();
         }
 
         private void OnNewMapStartedCreation() => RecreateMousePlane();

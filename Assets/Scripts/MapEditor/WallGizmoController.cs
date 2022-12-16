@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
@@ -9,7 +8,6 @@ using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
 using static Scripts.MapEditor.Enums;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -32,16 +30,12 @@ namespace Scripts.MapEditor
         private bool _isWallPlacementValid;
         private bool _isWallAlreadyExisting;
 
-        private WallGizmo[] _gizmos;
-
         private void Awake()
         {
             body.SetActive(false);
 
             _wallData = new PositionRotation();
 
-            _gizmos = new[] {northGizmo, eastGizmo, southGizmo, eastGizmo};
-            
             _wallRotationMap = new Dictionary<ETileDirection, PositionRotation>
             {
                 { ETileDirection.North, new PositionRotation
@@ -97,20 +91,12 @@ namespace Scripts.MapEditor
 
         private void HandleMouseOverGizmos()
         {
-            Ray ray = CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask(LayersManager.WallGizmoMaskName)))
+            if (LayersManager.CheckRayHit(LayersManager.WallGizmoMaskName, out GameObject hitGizmo))
             {
-                WallGizmo hitGizmo = hit.collider.gameObject.GetComponent<WallGizmo>();
-                ETileDirection direction = hitGizmo.direction;
+                ETileDirection direction = hitGizmo.GetComponent<WallGizmo>().direction;
                 
-                foreach (WallGizmo gizmo in _gizmos)
-                {
-                    if (gizmo.direction == direction)
-                    {
-                        OnGizmoEntered(direction);
-                    }
-                }
-                // Logger.Log($"Hit gizmo: {hit.collider.gameObject.GetComponent<WallGizmo>().direction}");
+                OnGizmoEntered(direction);
+                
                 return;
             }
             
@@ -123,7 +109,7 @@ namespace Scripts.MapEditor
             EditorEvents.OnMouseGridPositionChanged -= OnMouseGridPositionChanged;
         }
 
-        internal void OnGizmoEntered(ETileDirection direction)
+        private void OnGizmoEntered(ETileDirection direction)
         {
             _isWallPlacementValid = true;
 
@@ -158,7 +144,7 @@ namespace Scripts.MapEditor
             wall.SetActive(true);
         }
 
-        internal void OnGizmoExited()
+        private void OnGizmoExited()
         {
             _isWallPlacementValid = false;
             SetGizmosActive(true);

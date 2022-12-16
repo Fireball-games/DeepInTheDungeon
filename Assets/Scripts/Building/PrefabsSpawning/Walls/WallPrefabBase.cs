@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using Scripts.Building.Walls.Configurations;
 using Scripts.MapEditor;
 using Scripts.System;
+using Scripts.System.Pooling;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 
 namespace Scripts.Building.PrefabsSpawning.Walls
 {
-    public abstract class WallPrefabBase : MonoBehaviour
+    public abstract class WallPrefabBase : MonoBehaviour, IPoolInitializable
     {
         public abstract EWallType GetWallType();
         public List<Vector3> waypoints;
@@ -18,9 +19,14 @@ namespace Scripts.Building.PrefabsSpawning.Walls
         private MapEditorManager Manager => MapEditorManager.Instance;
         
         private Cursor3D _cursor3D;
-        private bool _wallEligibleForEditing;
+        [NonSerialized] public bool WallEligibleForEditing;
         private WallConfiguration _ownConfiguration;
 
+        public void Initialize()
+        {
+            WallEligibleForEditing = false;
+        }
+        
         private void OnDisable()
         {
             _ownConfiguration = null;
@@ -28,39 +34,12 @@ namespace Scripts.Building.PrefabsSpawning.Walls
 
         private void Update()
         {
-            if (IsInEditor())
-            {
-                if (_wallEligibleForEditing && Input.GetMouseButtonUp(0))
-                {
-                    EditorUIManager.Instance.OpenWallEditorWindow(_ownConfiguration);
-                    _wallEligibleForEditing = false;
-                }
-            }
-        }
+            if (!IsInEditor()) return;
 
-        private void OnMouseEnter()
-        {
-            if (IsInEditor())
+            if (WallEligibleForEditing && Input.GetMouseButtonUp(0))
             {
-                Transform ownTransform = transform;
-                Vector3 position = ownTransform.position;
-                Quaternion rotation = ownTransform.rotation;
-
-                FindObjectOfType<Cursor3D>().ShowAt(position, Cursor3D.EditorWallCursorScale, rotation);
-                
-                _ownConfiguration ??= Manager.MapBuilder
-                    .GetPrefabConfigurationByTransformData(new PositionRotation(position, rotation)) as WallConfiguration;
-                _wallEligibleForEditing = true;
-            }
-        }
-
-        private void OnMouseExit()
-        {
-            if (IsInEditor())
-            {
-                FindObjectOfType<Cursor3D>().Hide();
-                EditorUIManager.Instance.WallGizmo.Reset();
-                _wallEligibleForEditing = false;
+                EditorUIManager.Instance.OpenWallEditorWindow(_ownConfiguration);
+                WallEligibleForEditing = false;
             }
         }
 
@@ -68,5 +47,18 @@ namespace Scripts.Building.PrefabsSpawning.Walls
             GameManager.Instance.GameMode == GameManager.EGameMode.Editor 
             && MapEditorManager.Instance.WorkMode == EWorkMode.Walls
             && !EditorUIManager.Instance.IsAnyObjectEdited;
+
+        public void OnMouseEntered()
+        {
+            Transform ownTransform = transform;
+            Vector3 position = ownTransform.position;
+            Quaternion rotation = ownTransform.rotation;
+
+            FindObjectOfType<Cursor3D>().ShowAt(position, Cursor3D.EditorWallCursorScale, rotation);
+                
+            _ownConfiguration ??= Manager.MapBuilder
+                .GetPrefabConfigurationByTransformData(new PositionRotation(position, rotation)) as WallConfiguration;
+            WallEligibleForEditing = true;
+        }
     }
 }

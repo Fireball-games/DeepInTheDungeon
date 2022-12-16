@@ -54,11 +54,13 @@ namespace Scripts.UI.EditorUI
         private void OnVisibilityButtonToggleOn()
         {
             MapBuildService.SetFloorVisible(Floor, true);
+            MapEditorManager.Instance.MapBuilder.SetPrefabsVisibility();
         }
         
         private void OnVisibilityButtonToggleOff()
         {
             MapBuildService.SetFloorVisible(Floor, false);
+            MapEditorManager.Instance.MapBuilder.SetPrefabsVisibility();
         }
     }
 }

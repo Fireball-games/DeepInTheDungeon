@@ -247,6 +247,16 @@ namespace Scripts.Building
             return !isFloorInMap || !EditorManager.FloorVisibilityMap[floor];
         }
 
+        public void SetPrefabsVisibility() => SetPrefabsVisibility(EditorManager.FloorVisibilityMap);
+        
+        public void SetPrefabsVisibility(Dictionary<int, bool> floorVisibilityMap)
+        {
+            foreach (GameObject prefab in _prefabs)
+            {
+                prefab.SetActive(floorVisibilityMap[Mathf.RoundToInt(-prefab.transform.position.y)]);
+            }
+        }
+
         private IEnumerator BuildLayoutCoroutine(TileDescription[,,] layout)
         {
             Layout = layout;

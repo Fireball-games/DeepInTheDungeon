@@ -179,6 +179,8 @@ namespace Scripts.MapEditor
             RefreshFloorVisibilityMap();
             
             MapBuildService.SetMapFloorsVisibility(FloorVisibilityMap);
+
+            MapBuilder.SetPrefabsVisibility(FloorVisibilityMap);
             
             EditorEvents.TriggerOnFloorChanged(CurrentFloor);
         }

@@ -19,6 +19,7 @@ namespace Scripts.MapEditor
         [SerializeField] private Texture2D moveCameraCursor;
         [SerializeField] private float maxValidClickTime = 0.1f;
         [SerializeField] private Cursor3D cursor3D;
+        [SerializeField] private GameObject upperFloorTrigger;
         [SerializeField] private EditorCameraService cameraService;
         
         private static MapEditorManager Manager => MapEditorManager.Instance;
@@ -68,7 +69,6 @@ namespace Scripts.MapEditor
             base.Awake();
 
             _buildService = new MapBuildService();
-            cursor3D.SetMapBuildService(_buildService);
             
             _lastGridPosition = new Vector3Int(-1000, -1000, -1000);
 
@@ -280,10 +280,15 @@ namespace Scripts.MapEditor
                         
                     GridPositionType = isNullTileAbove ? EGridPositionType.NullTileAbove : EGridPositionType.EditableTileAbove;
                     
-                    _buildService.ShowUpperLevelStoneCubesAround(aboveGridPosition);
+                    upperFloorTrigger.transform.position = MouseGridPosition.ToWorldPosition();
+                    upperFloorTrigger.SetActive(true);
                 }
                 else
                 {
+                    upperFloorTrigger.SetActive(false);
+                    
+                    _buildService.HandleUpperFloorVisibility();
+
                     GridPositionType = EGridPositionType.None;
                 }
             }

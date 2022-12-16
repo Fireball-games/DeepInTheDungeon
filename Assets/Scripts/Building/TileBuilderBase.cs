@@ -14,6 +14,7 @@ namespace Scripts.Building
         protected readonly DefaultBuildPartsProvider DefaultsProvider;
         private readonly GameObject _tileDefaultPrefab;
         protected Dictionary<Vector3Int, GameObject> PhysicalTiles => MapBuilder.PhysicalTiles;
+        protected Dictionary<int, List<NullTile>> NullTiles => MapBuilder.NullTilesMap;
         protected TileController LastBuiltTile;
         protected Vector3Int WorldKey;
         protected readonly MapBuilder MapBuilder;

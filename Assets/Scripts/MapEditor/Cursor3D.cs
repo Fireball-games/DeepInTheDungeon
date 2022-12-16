@@ -1,6 +1,5 @@
 ﻿using Scripts.Helpers.Extensions;
 using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -10,7 +9,6 @@ namespace Scripts.MapEditor
         [SerializeField] private GameObject copy;
 
         public static Vector3 EditorWallCursorScale;
-        private MapBuildService _service;
 
         static Cursor3D()
         {
@@ -20,11 +18,6 @@ namespace Scripts.MapEditor
         private void OnEnable()
         {
             cursor.gameObject.SetActive(false);
-        }
-
-        public void SetMapBuildService(MapBuildService service)
-        {
-            _service = service;
         }
 
         public void ShowAt(Vector3 position, Vector3 scale, Quaternion rotation)
@@ -58,8 +51,8 @@ namespace Scripts.MapEditor
             
             copy.SetActive(false);
         }
-        
-        public void ShowAt(Vector3 worldPosition)
+
+        private void ShowAt(Vector3 worldPosition)
         {
             transform.position = worldPosition;
             // Logger.Log($"Activating cursor on worldPosition: {worldPosition}");
@@ -68,9 +61,6 @@ namespace Scripts.MapEditor
 
         public void Hide()
         {
-            if (_service != null)
-                _service.ResetShownNullTilesColors();
-
             copy.SetActive(false);
 
             Transform ownTransform = transform;

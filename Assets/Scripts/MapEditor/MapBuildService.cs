@@ -3,12 +3,10 @@ using Scripts.Building;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
-using Scripts.Helpers.Extensions;
 using Scripts.System;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
-using LayoutType =
-    System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 using FloorType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
 
 namespace Scripts.MapEditor
@@ -19,25 +17,6 @@ namespace Scripts.MapEditor
         private LayoutType EditedLayout => Manager.EditedLayout;
         private MapBuilder MapBuilder => Manager.MapBuilder;
         private static EditorMouseService Mouse => EditorMouseService.Instance;
-        private readonly Color _fullColor = new(1, 1, 1, 1);
-        private readonly Color _nearTransparentColor = new(0.5f, 1, 0.5f, 0.65f);
-
-        private readonly HashSet<GameObject> _shownNullTiles = new();
-
-        internal MapBuildService()
-        {
-        }
-
-        public void ResetShownNullTilesColors()
-        {
-            foreach (GameObject shownNullTile in _shownNullTiles)
-            {
-                shownNullTile.GetComponentInChildren<MeshRenderer>().material.color = _fullColor;
-                shownNullTile.SetActive(false);
-            }
-
-            _shownNullTiles.Clear();
-        }
 
         public static LayoutType ConvertToLayoutType(TileDescription[,,] layout)
         {
@@ -61,23 +40,19 @@ namespace Scripts.MapEditor
             return result;
         }
 
-        public void ShowUpperLevelStoneCubesAround(Vector3Int centerGridPosition)
+        public void HandleUpperFloorVisibility()
         {
-            ResetShownNullTilesColors();
-
-            SetColorForNullTile(centerGridPosition, _fullColor);
-
-            foreach (Vector3Int direction in TileDirections.HorizontalGridDirections)
+            bool shouldBeHidden = MapBuilder.ShouldBeInvisible(Manager.CurrentFloor - 1);
+            
+            foreach (NullTile nullTile in Manager.MapBuilder.NullTilesMap[Manager.CurrentFloor - 1])
             {
-                Vector3Int targetDirection = centerGridPosition + direction;
-
-                SetColorForNullTile(targetDirection, _nearTransparentColor);
+                nullTile.ShowTile(!shouldBeHidden);
             }
         }
 
         public static void SetMapFloorsVisibility(Dictionary<int, bool> visibleFloors)
         {
-            foreach (KeyValuePair<int, bool> floor in visibleFloors)
+            foreach (KeyValuePair<int, bool> floor in new Dictionary<int, bool>(visibleFloors))
             {
                 SetFloorVisible(floor.Key, floor.Value);
             }
@@ -85,12 +60,21 @@ namespace Scripts.MapEditor
 
         public static void SetFloorVisible(int floor, bool isVisible)
         {
-            //TODO change FloorVisibilityMap in manager too, maybe optional?
+            Manager.FloorVisibilityMap[floor] = isVisible;
+            
             for (int row = 0; row < Manager.EditedLayout[floor].Count; row++)
             {
                 for (int column = 0; column < Manager.EditedLayout[floor][row].Count; column++)
                 {
-                    Manager.MapBuilder.GetPhysicalTileByGridPosition(floor, row, column).SetActive(isVisible);
+                    GameObject physicalTile = Manager.MapBuilder.GetPhysicalTileByGridPosition(floor, row, column);
+                    if (Manager.EditedLayout[floor][row][column] == null)
+                    {
+                        physicalTile.GetComponent<NullTile>().ShowTile(isVisible);
+                    }
+                    else
+                    {
+                        physicalTile.SetActive(isVisible);
+                    }
                 }
             }
         }
@@ -292,7 +276,7 @@ namespace Scripts.MapEditor
             Manager.MapIsChanged = true;
             Manager.MapIsSaved = false;
 
-            ResetShownNullTilesColors();
+            // ResetShownNullTilesColors();
 
             int floor = position.x;
             int row = position.y;
@@ -343,13 +327,14 @@ namespace Scripts.MapEditor
             {
                 EditorEvents.TriggerOnMapEdited();
 
-                MapBuilder.ChangePrefabPositionsBy(new Vector3(rowAdjustment, floorAdjustment, columnAdjustment));
-                
-                ELevel floorsAdded = floorAdjustment == 1 
-                    ? ELevel.Upper 
-                    : floorAdjustment == -1 
-                        ? ELevel.Lower : ELevel.Equal;
-                
+                MapBuilder.ChangePrefabPositionsBy(new Vector3(rowAdjustment, -floorAdjustment, columnAdjustment));
+
+                ELevel floorsAdded = floorAdjustment == 1
+                    ? ELevel.Upper
+                    : floorAdjustment == -1
+                        ? ELevel.Lower
+                        : ELevel.Equal;
+
                 Manager.OrderMapConstruction(newMap, mapIsPresented: true, useStartPosition: false, floorsCountChange: floorsAdded);
             }
         }
@@ -370,19 +355,6 @@ namespace Scripts.MapEditor
             }
 
             return result;
-        }
-
-        private void SetColorForNullTile(Vector3Int griPosition, Color newColor)
-        {
-            if (!MapBuilder.Layout.HasIndex(griPosition)
-                || MapBuilder.Layout.ByGridV3Int(griPosition) != null)
-                return;
-
-            GameObject nullTile = MapBuilder.PhysicalTiles[griPosition.ToWorldPositionV3Int()];
-            nullTile.GetComponentInChildren<MeshRenderer>().material.color = newColor;
-            nullTile.SetActive(true);
-
-            _shownNullTiles.Add(nullTile);
         }
     }
 }

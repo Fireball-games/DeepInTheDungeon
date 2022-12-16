@@ -5,6 +5,7 @@ using System.Linq;
 using Scripts.Building.Tile;
 using Scripts.Building.Walls.Configurations;
 using Scripts.Helpers;
+using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.Pooling;
 using UnityEngine;
@@ -26,14 +27,17 @@ namespace Scripts.Building
         internal Transform LayoutParent;
         internal TileDescription[,,] Layout;
         internal Dictionary<Vector3Int, GameObject> PhysicalTiles;
+        internal Dictionary<int, List<NullTile>> NullTilesMap;
         internal MapDescription MapDescription;
 
+        private MapEditorManager EditorManager => MapEditorManager.Instance;
         private GameObject _prefabsParent;
         private HashSet<GameObject> _prefabs;
 
         private void Awake()
         {
             PhysicalTiles = new Dictionary<Vector3Int, GameObject>();
+            NullTilesMap = new Dictionary<int, List<NullTile>>();
             _prefabs = new HashSet<GameObject>();
 
             if (!LayoutParent)
@@ -73,12 +77,13 @@ namespace Scripts.Building
             foreach (GameObject prefab in _prefabs)
             {
                 Transform offsetTransform = prefab.GetComponentInChildren<MeshFilter>().transform;
-                
+
                 if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
-                
+
                 ObjectPool.Instance.ReturnToPool(prefab);
             }
 
+            NullTilesMap.Clear();
             PhysicalTiles.Clear();
             _prefabs.Clear();
         }
@@ -182,7 +187,7 @@ namespace Scripts.Building
             if (configuration == null) return;
 
             PrefabConfiguration config = MapDescription.PrefabConfigurations.FirstOrDefault(c =>
-                c.PrefabName == configuration.PrefabName 
+                c.PrefabName == configuration.PrefabName
                 && c.TransformData == configuration.TransformData);
 
             if (config == null) return;
@@ -202,7 +207,7 @@ namespace Scripts.Building
 
             Transform offsetTransform = prefabGo.GetComponentInChildren<MeshFilter>().transform;
             if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
-            
+
             ObjectPool.Instance.ReturnToPool(prefabGo);
         }
 
@@ -213,7 +218,7 @@ namespace Scripts.Building
 
             return !result ? null : result;
         }
-        
+
         public void ReplacePrefabConfiguration(PrefabConfiguration newConfiguration)
         {
             int replaceIndex = MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData == newConfiguration.TransformData);
@@ -228,8 +233,19 @@ namespace Scripts.Building
             }
         }
 
-        public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation transformData) => 
+        public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation transformData) =>
             MapDescription.PrefabConfigurations.FirstOrDefault(c => c.TransformData == transformData);
+
+        /// <summary>
+        /// Determinate if floor should be visible, usable only from Editor
+        /// </summary>
+        /// <param name="floor"></param>
+        /// <returns></returns>
+        public bool ShouldBeInvisible(int floor)
+        {
+            bool isFloorInMap = EditorManager.FloorVisibilityMap.ContainsKey(floor);
+            return !isFloorInMap || !EditorManager.FloorVisibilityMap[floor];
+        }
 
         private IEnumerator BuildLayoutCoroutine(TileDescription[,,] layout)
         {

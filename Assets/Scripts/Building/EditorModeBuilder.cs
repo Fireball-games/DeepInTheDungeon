@@ -1,6 +1,6 @@
-﻿using Scripts.Building.Tile;
+﻿using System.Collections.Generic;
+using Scripts.Building.Tile;
 using Scripts.Helpers.Extensions;
-using Scripts.MapEditor;
 using Scripts.System.Pooling;
 using UnityEngine;
 
@@ -41,8 +41,16 @@ namespace Scripts.Building
             cube.transform.position = new Vector3(row, 0 - floor, column);
             cube.transform.localScale = _tileScaleInEditor;
 
-            SetDisabledIfApplicable(cube, floor);
+            NullTile script = cube.GetComponent<NullTile>();
+            
+            if (MapBuilder.ShouldBeInvisible(floor))
+            {
+                script.ShowTile(false);
+            }
 
+            if (!NullTiles.ContainsKey(floor)) NullTiles.Add(floor, new List<NullTile>());
+            NullTiles[floor].Add(script);
+            
             PhysicalTiles.Add(cube.transform.position.ToVector3Int(), cube);
         }
 
@@ -57,7 +65,7 @@ namespace Scripts.Building
 
         private void SetDisabledIfApplicable(GameObject tile, int floor)
         {
-            if (!MapEditorManager.Instance.FloorVisibilityMap.ContainsKey(floor) || floor < MapEditorManager.Instance.CurrentFloor)
+            if (MapBuilder.ShouldBeInvisible(floor))
             {
                 tile.SetActive(false);
             }

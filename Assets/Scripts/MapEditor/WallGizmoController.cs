@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
@@ -8,6 +9,7 @@ using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
 using static Scripts.MapEditor.Enums;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -30,11 +32,15 @@ namespace Scripts.MapEditor
         private bool _isWallPlacementValid;
         private bool _isWallAlreadyExisting;
 
+        private WallGizmo[] _gizmos;
+
         private void Awake()
         {
             body.SetActive(false);
 
             _wallData = new PositionRotation();
+
+            _gizmos = new[] {northGizmo, eastGizmo, southGizmo, eastGizmo};
             
             _wallRotationMap = new Dictionary<ETileDirection, PositionRotation>
             {
@@ -69,19 +75,46 @@ namespace Scripts.MapEditor
 
         private void Update()
         {
-            if (_isWallPlacementValid && Input.GetMouseButtonUp(0) && !Mouse.LeftClickExpired)
-            {
-                SetGizmosActive(false);
+            HandleMouseclick();
+            HandleMouseOverGizmos();
+        }
 
-                if (_isWallAlreadyExisting) return;
+        private void HandleMouseclick()
+        {
+            if (!_isWallPlacementValid || !Input.GetMouseButtonUp(0) || Mouse.LeftClickExpired) return;
+            
+            SetGizmosActive(false);
+
+            if (_isWallAlreadyExisting) return;
                 
-                _wallData.Position = wall.transform.position;
-                _wallData.Rotation = wall.transform.localRotation;
+            _wallData.Position = wall.transform.position;
+            _wallData.Rotation = wall.transform.localRotation;
                 
-                wall.SetActive(false);
+            wall.SetActive(false);
                 
-                EditorUIManager.Instance.OpenWallEditorWindow(_wallType, _wallData);
+            EditorUIManager.Instance.OpenWallEditorWindow(_wallType, _wallData);
+        }
+
+        private void HandleMouseOverGizmos()
+        {
+            Ray ray = CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask(LayersManager.WallGizmoMaskName)))
+            {
+                WallGizmo hitGizmo = hit.collider.gameObject.GetComponent<WallGizmo>();
+                ETileDirection direction = hitGizmo.direction;
+                
+                foreach (WallGizmo gizmo in _gizmos)
+                {
+                    if (gizmo.direction == direction)
+                    {
+                        OnGizmoEntered(direction);
+                    }
+                }
+                // Logger.Log($"Hit gizmo: {hit.collider.gameObject.GetComponent<WallGizmo>().direction}");
+                return;
             }
+            
+            OnGizmoExited();
         }
 
         private void OnDisable()

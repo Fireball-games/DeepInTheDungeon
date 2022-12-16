@@ -10,14 +10,14 @@ namespace Scripts.MapEditor
 
         public void SetActive(bool isActive) => gameObject.SetActive(isActive);
         
-        private void OnMouseEnter()
-        {
-            controller.OnGizmoEntered(direction);
-        }
-
-        private void OnMouseExit()
-        {
-            controller.OnGizmoExited();
-        }
+        // private void OnMouseEnter()
+        // {
+        //     controller.OnGizmoEntered(direction);
+        // }
+        //
+        // private void OnMouseExit()
+        // {
+        //     controller.OnGizmoExited();
+        // }
     }
 }

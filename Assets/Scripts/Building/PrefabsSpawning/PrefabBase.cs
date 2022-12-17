@@ -2,10 +2,10 @@
 
 namespace Scripts.Building.Walls
 {
-    public abstract class PrefabBase
+    public abstract class PrefabBase : MonoBehaviour
     {
-        public string PrefabName { get; set; }
-        public Vector3 PositionOnMap { get; set; }
-        public Vector3 Rotation { get; set; }
+        public string prefabName;
+        public Vector3 positionOnMap;
+        public Vector3 rotation;
     }
 }

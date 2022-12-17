@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Scripts.Building.Walls;
 using Scripts.Building.Walls.Configurations;
 using Scripts.MapEditor;
 using Scripts.System;
@@ -10,7 +11,7 @@ using static Scripts.MapEditor.Enums;
 
 namespace Scripts.Building.PrefabsSpawning.Walls
 {
-    public abstract class WallPrefabBase : MonoBehaviour, IPoolInitializable
+    public abstract class WallPrefabBase : PrefabBase, IPoolInitializable
     {
         public abstract EWallType GetWallType();
         public List<Vector3> waypoints;

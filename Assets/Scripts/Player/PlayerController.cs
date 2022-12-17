@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Scripts.Building.PrefabsSpawning.Walls;
+using Scripts.Building.PrefabsSpawning.Walls.Indentificators;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
@@ -185,26 +186,19 @@ namespace Scripts.Player
 
             if (size == 0) return false;
 
-            bool isSpecialWallHit = false;
-            
             foreach (RaycastHit hit in hits)
             {
                 if (!hit.collider) continue;
                 
-                GameObject hitGo = hit.collider.gameObject;
-
-                WallPrefabBase wallScript = hitGo.GetComponent<WallPrefabBase>();
+                WallPrefabBase wallScript = hit.collider.gameObject.GetComponent<WallPrefabBase>();
+                
                 if (!wallScript) continue;
 
-                if (wallScript.waypoints.Count == 0) continue;
+                if (wallScript is IObstacle) return true;
 
-                isSpecialWallHit = true;
                 // TODO add special hits int to some list or something for processing further down the road
             }
 
-            if (!isSpecialWallHit) return true;
-            
-            // TODO: process waypoint or other effects walls here
             return false;
         }
 

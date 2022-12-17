@@ -2,7 +2,6 @@
 using Scripts.System;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building.Walls.Configurations
 {

@@ -130,8 +130,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyRenderer: {fileID: 7871651242684183645}
-  fullColor: {r: 1, g: 1, b: 1, a: 1}
-  nearTransparentColor: {r: 0.6745283, g: 1, b: 0.6745283, a: 0.53333336}
+  normalMaterial: {fileID: 2100000, guid: bb4f3e79c6ba27144bbab6e4c190d213, type: 2}
+  transparentMaterial: {fileID: 2100000, guid: 3bc8e42481e475a46a0ed83e3117fdce, type: 2}
 --- !u!65 &3849087620245773690
 BoxCollider:
   m_ObjectHideFlags: 0

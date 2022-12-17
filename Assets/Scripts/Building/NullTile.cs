@@ -6,8 +6,8 @@ using UnityEngine;
 public class NullTile : MonoBehaviour, IPoolInitializable
 {
     [SerializeField] private MeshRenderer bodyRenderer;
-    public Color fullColor = new(1, 1, 1, 1);
-    public Color nearTransparentColor = new(0.5f, 1, 0.5f, 0.65f);
+    public Material normalMaterial;
+    public Material transparentMaterial;
 
     private MapEditorManager Manager => MapEditorManager.Instance;
     private bool _isOnUpperFloor => Math.Abs(-transform.position.y - (Manager.CurrentFloor - 1)) < float.Epsilon;
@@ -22,7 +22,7 @@ public class NullTile : MonoBehaviour, IPoolInitializable
     public void ShowTile(bool show = true)
     {
         bodyRenderer.enabled = show;
-        SetColor(fullColor);
+        SetMaterial(normalMaterial);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -32,7 +32,7 @@ public class NullTile : MonoBehaviour, IPoolInitializable
         if (_isOnUpperFloor)
         {
             bodyRenderer.enabled = true;
-            SetColor(nearTransparentColor);
+            SetMaterial(transparentMaterial);
         }
     }
 
@@ -43,5 +43,5 @@ public class NullTile : MonoBehaviour, IPoolInitializable
         ShowTile(!Manager.MapBuilder.ShouldBeInvisible(-_myFloor));
     }
 
-    private void SetColor(Color newColor) => bodyRenderer.material.color = newColor;
+    private void SetMaterial(Material material) => bodyRenderer.material = material;
 }

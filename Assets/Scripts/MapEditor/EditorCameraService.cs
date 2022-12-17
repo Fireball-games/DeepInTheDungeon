@@ -1,4 +1,6 @@
-﻿using Scripts.Helpers;
+﻿using Scripts.EventsManagement;
+using Scripts.Helpers;
+using Scripts.System;
 using Scripts.System.MonoBases;
 using UnityEngine;
 
@@ -81,6 +83,13 @@ namespace Scripts.MapEditor
         }
 
         internal void TranslateCamera(Vector3 positionDelta) => TranslateCamera(positionDelta.x, positionDelta.y, positionDelta.z);
+
+        internal static void ToggleCameraPerspective()
+        {
+            bool newPerspective = !CameraManager.Instance.mainCamera.orthographic;
+            CameraManager.Instance.mainCamera.orthographic = newPerspective;
+            EditorEvents.TriggerOnCameraPerspectiveChanged(newPerspective);
+        }
         
         private void TranslateCamera(float x, float y, float z)
         {

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Scripts.EventsManagement;
+using Scripts.System;
+using UnityEngine;
 
 namespace Scripts.MapEditor
 {
@@ -29,6 +31,11 @@ namespace Scripts.MapEditor
                 if (Input.GetKeyDown(KeyCode.W))
                 {
                     cameraHolder.localRotation = Quaternion.Euler(Vector3.zero);
+                }
+                // Toggles Perspective/Orthographic camera
+                if (Input.GetKeyDown(KeyCode.C))
+                {
+                    EditorCameraService.ToggleCameraPerspective();
                 }
             }
             else
@@ -70,7 +77,7 @@ namespace Scripts.MapEditor
                 {
                     move += Vector3.up * (keyboardSpeed * Time.deltaTime);
                 }
-                
+
                 EditorCameraService.Instance.TranslateCamera(move);
             }
         }

@@ -13,6 +13,7 @@ namespace Scripts.EventsManagement
         public static event Action<ELevel> OnWorkingLevelChanged;
         public static event Action<int?> OnFloorChanged;
         public static event Action OnMapEdited;
+        public static event Action<bool> OnCameraPerspectiveChanged;
 
         // ***********    Triggers    ***********
 
@@ -28,5 +29,7 @@ namespace Scripts.EventsManagement
         public static void TriggerOnFloorChanged(int? floor) => OnFloorChanged?.Invoke(floor);
 
         public static void TriggerOnMapEdited() => OnMapEdited?.Invoke();
+
+        public static void TriggerOnCameraPerspectiveChanged(bool isOrthographic) => OnCameraPerspectiveChanged?.Invoke(isOrthographic);
     }
 }

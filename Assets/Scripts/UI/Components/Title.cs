@@ -1,14 +1,12 @@
+using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine;
 
 namespace Scripts.UI.Components
 {
-    public class Title : MonoBehaviour
+    public class Title : UIElementBase
     {
         [SerializeField] private TMP_Text text;
-        [SerializeField] private GameObject body;
-
-        public void SetActive(bool isActive) => body.SetActive(isActive);
 
         public void Show(string title)
         {

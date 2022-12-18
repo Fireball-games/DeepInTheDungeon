@@ -5,6 +5,7 @@ using Scripts.Building;
 using Scripts.Helpers;
 using Scripts.Localization;
 using Scripts.MapEditor;
+using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
@@ -13,15 +14,15 @@ using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI
 {
-    public class FileOperations : MonoBehaviour
+    public class FileOperations : UIElementBase
     {
         [SerializeField] private Button exitButton;
         [SerializeField] private Button loadButton;
         [SerializeField] private Button saveButton;
         [SerializeField] private Button newMapButton;
-        [SerializeField] private OpenFileDialog openFileDialog;
 
         private static MapEditorManager Manager => MapEditorManager.Instance;
+        private static EditorUIManager UIManager => EditorUIManager.Instance;
         private string[] _existingFiles;
 
         private void OnEnable()
@@ -85,7 +86,7 @@ namespace Scripts.UI.EditorUI
 
         private void LoadMapConfirmed()
         {
-            openFileDialog.Open(T.Get(Keys.SelectMapToLoad), _existingFiles, LoadMap);
+            UIManager.OpenFileDialog.Open(T.Get(Keys.SelectMapToLoad), _existingFiles, LoadMap);
         }
         
         private void OnSaveClicked()
@@ -183,7 +184,7 @@ namespace Scripts.UI.EditorUI
                 return;
             }
             
-            openFileDialog.CloseDialog();
+            UIManager.OpenFileDialog.CloseDialog();
             Manager.OrderMapConstruction(loadedMap, true);
         }
     }

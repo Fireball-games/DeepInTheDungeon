@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
+using Scripts.System.MonoBases;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Scripts.UI.Components
 {
-    public class ImageButton : MonoBehaviour
+    public class ImageButton : UIElementBase
     {
         [Header("Sprites")] [SerializeField] private Sprite frame;
         [SerializeField] protected Sprite icon;
@@ -71,8 +72,6 @@ namespace Scripts.UI.Components
             mouseClickOverlay.OnMouseEnter -= OnMouseEnter;
             mouseClickOverlay.OnMouseLeave -= OnMouseExit;
         }
-
-        public void SetActive(bool isActive) => gameObject.SetActive(isActive);
 
         public void SetInteractable(bool isInteractable) => IsInteractable = isInteractable;
 

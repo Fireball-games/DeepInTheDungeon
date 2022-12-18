@@ -1,5 +1,5 @@
 using System;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
 using Scripts.MapEditor;
@@ -13,40 +13,47 @@ namespace Scripts.UI.EditorUI
 {
     public class EditorUIManager : SingletonNotPersisting<EditorUIManager>
     {
-        [SerializeField] private ImageButton playButton;
-        [SerializeField] private WorkModeSelection workModeSelection;
-        [SerializeField] private FloorManagement floorManagement;
+        [SerializeField] private List<UIElementBase> showOnMapLoad;
+        [SerializeField] private FileOperations fileOperations;
         [SerializeField] private NewMapDialog newMapDialog;
         [SerializeField] private DialogBase confirmationDialog;
+        [SerializeField] private OpenFileDialog openFileDialog;
         [SerializeField] private WallEditorWindow wallEditor;
         [SerializeField] private StatusBar statusBar;
-        [SerializeField] private Title mapTitle;
         [SerializeField] private MapEditorManager manager;
+        [SerializeField] private GameObject body;
 
         [NonSerialized] public WallGizmoController WallGizmo;
         public StatusBar StatusBar => statusBar;
         public NewMapDialog NewMapDialog => newMapDialog;
         public DialogBase ConfirmationDialog => confirmationDialog;
+        public OpenFileDialog OpenFileDialog => openFileDialog;
         public bool IsAnyObjectEdited;
+
+        private ImageButton _playButton;
+        private Title _mapTitle;
 
         protected override void Awake()
         {
             base.Awake();
 
+            _playButton = body.transform.Find("PlayButton").GetComponent<ImageButton>();
+            _mapTitle = body.transform.Find("MapTitle").GetComponent<Title>();
             WallGizmo = FindObjectOfType<WallGizmoController>();
         }
 
         private void OnEnable()
         {
-            playButton.OnClick += manager.PlayMap;
             EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged += OnFloorChanged;
             EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
+            
+            fileOperations.SetActive(true);
         }
 
         private void OnDisable()
         {
-            playButton.OnClick -= manager.PlayMap;
+            _playButton.OnClick -= manager.PlayMap;
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged -= OnFloorChanged;
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
@@ -54,10 +61,12 @@ namespace Scripts.UI.EditorUI
 
         private void OnNewMapStartedCreation()
         {
-            playButton.SetActive(true);
-            workModeSelection.SetActive(true);
-            floorManagement.SetActive(true);
-            mapTitle.Show(GameManager.Instance.CurrentMap.MapName);
+            _mapTitle.Show(GameManager.Instance.CurrentMap.MapName);
+
+            foreach (UIElementBase element in showOnMapLoad)
+            {
+                element.SetActive(true);
+            }
         }
 
         private void OnWorkModeChanged(EWorkMode _) => OnEditingInterruptionImminent();
@@ -82,7 +91,7 @@ namespace Scripts.UI.EditorUI
             wallEditor.Open(wallConfiguration);
         }
 
-        public void CloseWallEditorWindow()
+        private void CloseWallEditorWindow()
         {
             IsAnyObjectEdited = false;
             wallEditor.CloseWithChangeCheck();

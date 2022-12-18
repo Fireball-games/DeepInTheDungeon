@@ -7,6 +7,7 @@ using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using UnityEngine;
+using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
 
 namespace Scripts.UI.EditorUI
@@ -101,10 +102,10 @@ namespace Scripts.UI.EditorUI
             CloseWallEditorWindow();
         } 
 
-        public void OpenWallEditorWindow(EWallType wallType, PositionRotation placeholderTransformData)
+        public void OpenWallEditorWindow(EPrefabType prefabType, PositionRotation placeholderTransformData)
         {
             IsAnyObjectEdited = true;
-            wallEditor.Open(wallType, placeholderTransformData);
+            wallEditor.Open(prefabType, placeholderTransformData);
         }
 
         public void OpenWallEditorWindow(WallConfiguration wallConfiguration)

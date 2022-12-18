@@ -7,6 +7,7 @@ using Scripts.System;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
+using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
 
 namespace Scripts.MapEditor
@@ -23,7 +24,7 @@ namespace Scripts.MapEditor
         private static EditorMouseService Mouse => EditorMouseService.Instance;
         private static MapEditorManager Manager => MapEditorManager.Instance;
 
-        private EWallType _wallType;
+        private EPrefabType _prefabType;
         private Vector3Int _currentMousePosition;
         private Dictionary<ETileDirection, PositionRotation> _wallRotationMap;
         private PositionRotation _wallData;
@@ -86,7 +87,7 @@ namespace Scripts.MapEditor
                 
             wall.SetActive(false);
                 
-            EditorUIManager.Instance.OpenWallEditorWindow(_wallType, _wallData);
+            EditorUIManager.Instance.OpenWallEditorWindow(_prefabType, _wallData);
         }
 
         private void HandleMouseOverGizmos()
@@ -118,7 +119,7 @@ namespace Scripts.MapEditor
             wall.transform.localPosition = positionData.Position;
             wall.transform.localRotation = positionData.Rotation;
 
-            _wallType = EWallType.Between;
+            _prefabType = EPrefabType.WallBetween;
             
             if (direction == ETileDirection.North && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridNorth) == null
                 || direction == ETileDirection.East && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridEast) == null
@@ -126,7 +127,7 @@ namespace Scripts.MapEditor
                 || direction == ETileDirection.West && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridWest) == null
                 )
             {
-                _wallType = EWallType.OnWall;
+                _prefabType = EPrefabType.WallOnWall;
             }
 
             PrefabConfiguration existingConfiguration =

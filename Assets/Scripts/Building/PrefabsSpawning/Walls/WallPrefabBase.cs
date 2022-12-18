@@ -13,7 +13,6 @@ namespace Scripts.Building.PrefabsSpawning.Walls
 {
     public abstract class WallPrefabBase : PrefabBase, IPoolInitializable
     {
-        public abstract EWallType GetWallType();
         public List<Vector3> waypoints;
         public GameObject PresentedInEditor;
 

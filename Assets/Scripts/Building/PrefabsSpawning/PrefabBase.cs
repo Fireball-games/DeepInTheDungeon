@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static Scripts.Enums;
 
 namespace Scripts.Building.Walls
 {
@@ -7,5 +8,6 @@ namespace Scripts.Building.Walls
         public string prefabName;
         public Vector3 positionOnMap;
         public Vector3 rotation;
+        public EPrefabType prefabType;
     }
 }

@@ -1373,7 +1373,7 @@ PrefabInstance:
     - target: {fileID: 8522848420131743932, guid: 2c5214de14325ab41980611b211c2b6b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000002267442
+      value: 0.00050501217
       objectReference: {fileID: 0}
     - target: {fileID: 8604202078129700031, guid: 2c5214de14325ab41980611b211c2b6b,
         type: 3}
@@ -1550,7 +1550,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4729798274706831607}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5584010254876706106
+--- !u!114 &9009528372692083205
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1559,7 +1559,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5260109171331732234}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3f9c9792c214ce49c27e6ddda53b769, type: 3}
+  m_Script: {fileID: 11500000, guid: eb1f03a493444e39b8e27880e3c48a20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 5260109173065959217}
@@ -1568,9 +1568,9 @@ MonoBehaviour:
   confirmButton: {fileID: 2482432668999317356}
   deleteButton: {fileID: 3610514390656775826}
   prefabTitle: {fileID: 7952940266489458220}
-  offsetSlider: {fileID: 6062988022290099816}
-  placeholderWall: {fileID: 7950208534311022312}
+  placeholder: {fileID: 7950208534311022312}
   statusText: {fileID: 1883909369319008694}
+  offsetSlider: {fileID: 6062988022290099816}
 --- !u!1 &5260109173065959217 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 674474606785544134, guid: 518ebcc0590381f4caf91f774518975b,

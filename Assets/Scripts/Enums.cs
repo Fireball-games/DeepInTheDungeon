@@ -4,10 +4,14 @@
     {
         public enum EPrefabType
         {
-            Wall,
-            Enemy,
-            Prop,
-            Item
+            Invalid = 0,
+            Wall = 1,
+            WallOnWall = 2,
+            WallBetween = 3,
+            WallForMovement = 4,
+            Enemy = 5,
+            Prop = 6,
+            Item = 7,
         }
     }
 }

@@ -7,7 +7,6 @@ namespace Scripts.Building.Walls.Configurations
 {
     public class WallConfiguration : PrefabConfiguration
     {
-        public EWallType WallType;
         public float Offset;
         public List<Vector3> WayPoints;
 
@@ -17,7 +16,7 @@ namespace Scripts.Building.Walls.Configurations
         
         public WallConfiguration(WallConfiguration configuration)
         {
-            WallType = configuration.WallType;
+            PrefabType = configuration.PrefabType;
             Offset = configuration.Offset;
             WayPoints = configuration.WayPoints;
 

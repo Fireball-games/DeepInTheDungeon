@@ -4,6 +4,5 @@ namespace Scripts.Building.PrefabsSpawning.Walls
 {
     public class WallOnWall : WallPrefabBase
     {
-        public override EWallType GetWallType() => EWallType.OnWall;
     }
 }

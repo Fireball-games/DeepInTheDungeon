@@ -4,7 +4,6 @@ using Scripts.Helpers;
 using Scripts.System.Pooling;
 using UnityEngine;
 using static Scripts.Enums;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts
 {
@@ -32,16 +31,6 @@ namespace Scripts
 
         public static HashSet<GameObject> GetPrefabsOfType(EPrefabType prefabType)
         {
-            // if (StoreMap[prefabType].Any()) return StoreMap[prefabType];
-            //
-            // if (!FileOperationsHelper.LoadPrefabs(prefabType, out HashSet<GameObject> loadedPrefabs)) return null;
-            //
-            // foreach (GameObject gameObject in loadedPrefabs.Where(gameObject => !_prefabMap.ContainsKey(gameObject.name)))
-            // {
-            //     _prefabMap.Add(gameObject.name, gameObject);
-            // }
-            
-            // StoreMap[prefabType] = loadedPrefabs;
             return StoreMap[prefabType];
         }
 

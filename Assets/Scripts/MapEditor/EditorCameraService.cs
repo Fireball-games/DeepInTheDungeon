@@ -1,4 +1,5 @@
-﻿using Scripts.EventsManagement;
+﻿using System;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.System;
 using Scripts.System.MonoBases;
@@ -13,6 +14,8 @@ namespace Scripts.MapEditor
         [SerializeField] private float maxZoomHeight = 20f;
         [SerializeField] private float cameraRotationSpeed = 100f;
         [SerializeField] private Transform cameraHolder;
+
+        [NonSerialized] public static bool IsOrthographic = true;
 
         private EditorMouseService Mouse => EditorMouseService.Instance;
         private Vector3 _cameraMoveVector = Vector3.zero;
@@ -86,9 +89,9 @@ namespace Scripts.MapEditor
 
         internal static void ToggleCameraPerspective()
         {
-            bool newPerspective = !CameraManager.Instance.mainCamera.orthographic;
-            CameraManager.Instance.mainCamera.orthographic = newPerspective;
-            EditorEvents.TriggerOnCameraPerspectiveChanged(newPerspective);
+            IsOrthographic = !CameraManager.Instance.mainCamera.orthographic;
+            CameraManager.Instance.mainCamera.orthographic = IsOrthographic;
+            EditorEvents.TriggerOnCameraPerspectiveChanged(IsOrthographic);
         }
         
         private void TranslateCamera(float x, float y, float z)

@@ -5,7 +5,9 @@ namespace Scripts.UI.Components
 {
     public class ToggleFramedButton : ImageButton
     {
-        [Header("Toggle options")] public bool toggled = true;
+        [Header("Toggle options")] 
+        public bool toggled = true;
+        public bool dontToggleOnclick;
 
         [SerializeField] private Sprite toggleOffSprite;
 
@@ -19,7 +21,10 @@ namespace Scripts.UI.Components
         {
             base.OnClickInternal();
 
-            SetToggle(!toggled);
+            if (!dontToggleOnclick)
+            {
+                SetToggle(!toggled);
+            }
         }
 
         private void SetToggle(bool isToggled, bool isSilent = false)

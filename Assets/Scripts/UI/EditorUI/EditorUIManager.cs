@@ -32,6 +32,7 @@ namespace Scripts.UI.EditorUI
 
         private ImageButton _playButton;
         private Title _mapTitle;
+        private ToggleFramedButton _perspectiveToggle;
 
         protected override void Awake()
         {
@@ -39,14 +40,20 @@ namespace Scripts.UI.EditorUI
 
             _playButton = body.transform.Find("PlayButton").GetComponent<ImageButton>();
             _mapTitle = body.transform.Find("MapTitle").GetComponent<Title>();
+            _perspectiveToggle = body.transform.Find("PerspectiveToggle").GetComponent<ToggleFramedButton>();
             WallGizmo = FindObjectOfType<WallGizmoController>();
         }
 
         private void OnEnable()
         {
+            _playButton.OnClick += manager.PlayMap;
+            _perspectiveToggle.OnClick += OnPerspectiveToggleClick;
+            _perspectiveToggle.dontToggleOnclick = true;
+            
             EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged += OnFloorChanged;
             EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
+            EditorEvents.OnCameraPerspectiveChanged += OnCameraPerspectiveChanged;
             
             fileOperations.SetActive(true);
         }
@@ -54,9 +61,24 @@ namespace Scripts.UI.EditorUI
         private void OnDisable()
         {
             _playButton.OnClick -= manager.PlayMap;
+            _perspectiveToggle.OnClick -= OnPerspectiveToggleClick;
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged -= OnFloorChanged;
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
+            EditorEvents.OnCameraPerspectiveChanged += OnCameraPerspectiveChanged;
+        }
+
+        private void OnCameraPerspectiveChanged(bool isOrthographic)
+        {
+            if (isOrthographic)
+                _perspectiveToggle.ToggleOff(true);
+            else
+                _perspectiveToggle.ToggleOn(true);
+        }
+
+        private void OnPerspectiveToggleClick()
+        {
+            EditorCameraService.ToggleCameraPerspective();
         }
 
         private void OnNewMapStartedCreation()

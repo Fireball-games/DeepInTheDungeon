@@ -15,6 +15,8 @@ namespace Scripts.Helpers
         public const string EnemiesDirectoryName = "Enemies";
         public const string PropsDirectoryName = "Props";
         public const string ItemsDirectoryName = "Items";
+        public const string PrefabsDirectoryName = "Prefabs";
+        
         public static string MapDirectoryPath => Path.Combine(ApplicationPath, MapDirectoryName);
         
         private const string MapFileExtension = ".map";
@@ -73,6 +75,10 @@ namespace Scripts.Helpers
         private static string GetPrefabPathByType(EPrefabType prefabType) => prefabType switch
         {
             EPrefabType.Wall => WallsDirectoryName,
+            EPrefabType.WallBetween => WallsDirectoryName,
+            EPrefabType.WallOnWall => WallsDirectoryName,
+            EPrefabType.WallForMovement => WallsDirectoryName,
+            EPrefabType.PrefabTile => PrefabsDirectoryName,
             EPrefabType.Enemy => EnemiesDirectoryName,
             EPrefabType.Prop => PropsDirectoryName,
             EPrefabType.Item => ItemsDirectoryName,

@@ -132,7 +132,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             string prefabListTitle = T.Get(Keys.AvailablePrefabs);
 
-            AvailablePrefabs = PrefabStore.GetPrefabsOfType(EPrefabType.Wall)?
+            // IEnumerable<GameObject> storePrefabs = PrefabStore.GetPrefabsOfType(prefabType);
+            AvailablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
                 .Select(prefab => prefab.GetComponent<TPrefab>())
                 .Where(prefab => prefab.prefabType == prefabType)
                 .ToHashSet();
@@ -191,10 +192,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             EditedConfiguration = null;
             PhysicalPrefab = null;
             _prefabTitle.SetActive(false);
-
-            Open(EditedPrefabType,
-                new PositionRotation(oldConfiguration.TransformData.Position,
-                    oldConfiguration.TransformData.Rotation));
 
             Cursor3D.Hide();
 

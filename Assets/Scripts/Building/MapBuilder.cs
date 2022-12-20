@@ -206,6 +206,11 @@ namespace Scripts.Building
 
             _prefabs.Remove(prefabGo);
 
+            if (configuration is TilePrefabConfiguration)
+            {
+                Layout.ByGridV3Int(prefabGo.transform.position.ToGridPosition()).IsForMovement = true;
+            }
+
             Transform offsetTransform = prefabGo.GetComponentInChildren<MeshFilter>().transform;
             if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
 

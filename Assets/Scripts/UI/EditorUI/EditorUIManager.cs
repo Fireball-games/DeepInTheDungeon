@@ -22,6 +22,7 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private DialogBase confirmationDialog;
         [SerializeField] private OpenFileDialog openFileDialog;
         [SerializeField] private WallEditor wallEditor;
+        [SerializeField] private PrefabTileEditor prefabTileEditor;
         [SerializeField] private StatusBar statusBar;
         [SerializeField] private MapEditorManager manager;
         [SerializeField] private GameObject body;
@@ -119,6 +120,18 @@ namespace Scripts.UI.EditorUI
                     wallEditor.Open(prefabType, placeholderTransformData);
                     _openedEditor = wallEditor;
                     break;
+                case EPrefabType.Invalid:
+                    break;
+                case EPrefabType.Enemy:
+                    break;
+                case EPrefabType.Prop:
+                    break;
+                case EPrefabType.Item:
+                    break;
+                case EPrefabType.PrefabTile:
+                    prefabTileEditor.Open(prefabType, placeholderTransformData);
+                    _openedEditor = prefabTileEditor;
+                    break;
                 default:
                     Logger.LogWarning($"Not implemented editor for type {prefabType}.");
                     break;
@@ -145,6 +158,10 @@ namespace Scripts.UI.EditorUI
                 case EPrefabType.Prop:
                     break;
                 case EPrefabType.Item:
+                    break;
+                case EPrefabType.PrefabTile:
+                    prefabTileEditor.Open(configuration as TilePrefabConfiguration);
+                    _openedEditor = prefabTileEditor;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -22,8 +22,8 @@ namespace Scripts.Helpers.Extensions
         
         public static Vector3Int ToGridPosition(this Vector3 source)
         {
-            V3I.x = Mathf.RoundToInt(source.y);
-            V3I.y = Mathf.RoundToInt(-source.x);
+            V3I.x = Mathf.RoundToInt(-source.y);
+            V3I.y = Mathf.RoundToInt(source.x);
             V3I.z = Mathf.RoundToInt(source.z);
 
             return V3I;

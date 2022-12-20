@@ -19,7 +19,7 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private NewMapDialog newMapDialog;
         [SerializeField] private DialogBase confirmationDialog;
         [SerializeField] private OpenFileDialog openFileDialog;
-        [SerializeField] private WallEditorWindow wallEditor;
+        [SerializeField] private WallEditor wallEditor;
         [SerializeField] private StatusBar statusBar;
         [SerializeField] private MapEditorManager manager;
         [SerializeField] private GameObject body;

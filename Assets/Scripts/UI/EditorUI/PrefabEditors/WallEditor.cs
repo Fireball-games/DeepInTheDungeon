@@ -5,12 +5,13 @@ using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.System;
+using Scripts.UI.EditorUI.PrefabEditors;
 using UnityEngine;
 using static Scripts.Enums;
 
 namespace Scripts.UI.EditorUI
 {
-    public class WallEditorWindow : PrefabEditorBase<WallConfiguration, WallPrefabBase>
+    public class WallEditor : PrefabEditorBase<WallConfiguration, WallPrefabBase>
     {
         [SerializeField] private LabeledSlider offsetSlider;
 
@@ -20,7 +21,7 @@ namespace Scripts.UI.EditorUI
             {
                 PrefabType = EditedPrefabType,
                 PrefabName = AvailablePrefabs.FirstOrDefault(prefab => prefab.name == prefabName)?.name,
-                TransformData = new PositionRotation(placeholder.transform.position, placeholder.transform.rotation),
+                TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation),
                 WayPoints = new List<Vector3>(),
                 Offset = 0f
             };
@@ -28,7 +29,7 @@ namespace Scripts.UI.EditorUI
 
         protected override WallConfiguration CopyConfiguration(WallConfiguration sourceConfiguration) => new(EditedConfiguration);
 
-        protected override Vector3 GetCursor3DScale() => new(0.15f, 1f, 1f);
+        protected override Vector3 Cursor3DScale => new(0.15f, 1f, 1f);
 
         public override void Open(WallConfiguration configuration)
         {
@@ -74,7 +75,7 @@ namespace Scripts.UI.EditorUI
 
         private void OnOffsetSliderValueChanged(float value)
         {
-            confirmButton.gameObject.SetActive(true);
+            ConfirmButton.gameObject.SetActive(true);
             EditorEvents.TriggerOnMapEdited();
             Vector3 newPosition = PhysicalPrefab.transform.localPosition;
             newPosition.x = value;

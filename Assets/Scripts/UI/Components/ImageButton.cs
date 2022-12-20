@@ -67,7 +67,8 @@ namespace Scripts.UI.Components
             
             backgroundImage.color = idleColor;
             StopAllCoroutines();
-            
+
+            OnClick = null;
             mouseClickOverlay.OnClick -= OnClickInternal;
             mouseClickOverlay.OnMouseEnter -= OnMouseEnter;
             mouseClickOverlay.OnMouseLeave -= OnMouseExit;

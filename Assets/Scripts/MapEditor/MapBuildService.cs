@@ -276,8 +276,6 @@ namespace Scripts.MapEditor
             Manager.MapIsChanged = true;
             Manager.MapIsSaved = false;
 
-            // ResetShownNullTilesColors();
-
             int floor = position.x;
             int row = position.y;
             int column = position.z;

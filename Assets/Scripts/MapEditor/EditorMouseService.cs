@@ -198,7 +198,7 @@ namespace Scripts.MapEditor
                 case EWorkMode.None:
                     break;
                 case EWorkMode.Build:
-                    if (mouseButtonUpped == 0)
+                    if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
                     {
                         _buildService.ProcessBuildTileClick();
                     }
@@ -321,12 +321,23 @@ namespace Scripts.MapEditor
             if (Manager.WorkLevel == ELevel.Equal)
             {
                 GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
+
+                if (IsPositionOccupied(newGridPosition))
+                {
+                    GridPositionType = EGridPositionType.None;
+                }
             }
             else if (Manager.WorkLevel == ELevel.Upper)
             {
                 if (!isNullTile)
                 {
                     Vector3Int aboveGridPosition = newGridPosition.AddToX(-1);
+                    
+                    if (IsPositionOccupied(aboveGridPosition))
+                    {
+                        GridPositionType = EGridPositionType.None;
+                        return;
+                    }
 
                     bool isNullTileAbove = layout.ByGridV3Int(aboveGridPosition) == null;
                         
@@ -349,6 +360,12 @@ namespace Scripts.MapEditor
                 if (!isNullTile)
                 {
                     Vector3Int bellowGridPosition = newGridPosition.AddToX(1);
+                    
+                    if (IsPositionOccupied(bellowGridPosition))
+                    {
+                        GridPositionType = EGridPositionType.None;
+                        return;
+                    }
 
                     bool isNullTileBellow = layout.ByGridV3Int(bellowGridPosition) == null;
                         
@@ -359,6 +376,11 @@ namespace Scripts.MapEditor
                     GridPositionType = EGridPositionType.None;
                 }
             }
+        }
+
+        private bool IsPositionOccupied(Vector3Int newGridPosition)
+        {
+            return Manager.MapBuilder.GetPrefabByGridPosition(newGridPosition) != null;
         }
 
         private void SetCursorByType(EGridPositionType type)

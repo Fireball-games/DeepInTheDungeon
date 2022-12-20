@@ -16,15 +16,17 @@ namespace Scripts.System
 
         private static EditorUIManager UIManager => EditorUIManager.Instance;
         private static Cursor3D _cursor3D;
-        private static Cursor3D Cursor3D => GetCursor3D();
-        private static Cursor3D GetCursor3D()  
+        private static Cursor3D Cursor3D
         {
-            if(!_cursor3D)
+            get
             {
-                _cursor3D = FindObjectOfType<Cursor3D>();
-            }
+                if(!_cursor3D)
+                {
+                    _cursor3D = FindObjectOfType<Cursor3D>();
+                }
 
-            return _cursor3D;
+                return _cursor3D;
+            }
         }
 
         private static Dictionary<ECursorType, MouseCursorSetup> _cursorMap;

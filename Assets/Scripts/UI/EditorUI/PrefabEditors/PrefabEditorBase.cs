@@ -132,7 +132,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             string prefabListTitle = T.Get(Keys.AvailablePrefabs);
 
-            // IEnumerable<GameObject> storePrefabs = PrefabStore.GetPrefabsOfType(prefabType);
             AvailablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
                 .Select(prefab => prefab.GetComponent<TPrefab>())
                 .Where(prefab => prefab.prefabType == prefabType)

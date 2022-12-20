@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
-using Scripts.Building.Walls.Configurations;
 using Scripts.Helpers;
 using Scripts.MapEditor;
 using Scripts.System;

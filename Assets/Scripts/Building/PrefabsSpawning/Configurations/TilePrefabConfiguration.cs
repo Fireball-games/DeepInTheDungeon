@@ -1,6 +1,4 @@
-﻿using Scripts.Building.Walls.Configurations;
-
-namespace Scripts.Building.PrefabsSpawning.Configurations
+﻿namespace Scripts.Building.PrefabsSpawning.Configurations
 {
     public class TilePrefabConfiguration : PrefabConfiguration
     {

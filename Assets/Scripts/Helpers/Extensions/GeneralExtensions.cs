@@ -4,7 +4,7 @@ using System.Linq;
 using Scripts.System.Pooling;
 using UnityEngine;
 
-namespace Scripts.Helpers
+namespace Scripts.Helpers.Extensions
 {
     public static class GeneralExtensions
     {

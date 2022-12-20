@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
@@ -88,7 +87,7 @@ namespace Scripts.MapEditor
                 
             wall.SetActive(false);
                 
-            EditorUIManager.Instance.OpenWallEditorWindow(_prefabType, _wallData);
+            EditorUIManager.Instance.OpenEditorWindow(_prefabType, _wallData);
         }
 
         private void HandleMouseOverGizmos()

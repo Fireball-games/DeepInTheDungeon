@@ -2,7 +2,7 @@
 using Scripts.Building;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
-using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.System;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;

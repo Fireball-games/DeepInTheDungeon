@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
-using Scripts.Building.Walls.Configurations;
 using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.Pooling;
 using Scripts.UI.EditorUI;
 using UnityEngine;
-using static Scripts.MapEditor.Enums;
 
 namespace Scripts.Building.PrefabsSpawning.Walls
 {
@@ -30,7 +29,7 @@ namespace Scripts.Building.PrefabsSpawning.Walls
 
         public void OnClickInEditor()
         {
-            EditorUIManager.Instance.OpenWallEditorWindow(_ownConfiguration);
+            EditorUIManager.Instance.OpenEditorWindow(_ownConfiguration);
             WallEligibleForEditing = false;
         }
 

@@ -5,7 +5,7 @@ using Scripts.System;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
-    public class TileEditorWindow : PrefabEditorBase<TilePrefabConfiguration, TilePrefab>
+    public class PrefabTileEditor : PrefabEditorBase<TilePrefabConfiguration, TilePrefab>
     {
         protected override TilePrefabConfiguration GetNewConfiguration(string prefabName) => new()
         {

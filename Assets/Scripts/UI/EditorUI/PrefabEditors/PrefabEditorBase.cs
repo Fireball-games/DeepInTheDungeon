@@ -3,7 +3,6 @@ using System.Linq;
 using Scripts.Building;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
-using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.MapEditor;
@@ -18,8 +17,8 @@ using static Scripts.MapEditor.Enums;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
-    public abstract class PrefabEditorBase<TC, TPrefab> : EditorWindowBase 
-        where TC : PrefabConfiguration, new() 
+    public abstract class PrefabEditorBase<TC, TPrefab> : EditorWindowBase, IPrefabEditor
+        where TC : PrefabConfiguration
         where TPrefab : PrefabBase
     {
         protected GameObject Placeholder;
@@ -30,19 +29,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private Button _deleteButton;
         private Title _prefabTitle;
         private TMP_Text _statusText;
-
-        private void AssignComponents()
-        {
-            Placeholder = body.transform.Find("Placeholder").gameObject;
-            _prefabList = body.transform.Find("PrefabList").GetComponent<PrefabList>();
-            Transform frame = body.transform.GetChild(0).GetChild(0);
-            _prefabTitle = frame.Find("PrefabTitle").GetComponent<Title>();
-            _statusText = frame.Find("StatusText").GetComponent<TMP_Text>();
-            Transform buttons = frame.Find("Buttons");
-            _cancelButton = buttons.Find("CancelButton").GetComponent<Button>();
-            ConfirmButton = buttons.Find("ConfirmButton").GetComponent<Button>();
-            _deleteButton = buttons.Find("DeleteButton").GetComponent<Button>();
-        }
 
         protected MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
         protected TC EditedConfiguration;
@@ -184,6 +170,19 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _deleteButton.gameObject.SetActive(true);
             ConfirmButton.gameObject.SetActive(true);
             Placeholder.SetActive(false);
+        }
+        
+        private void AssignComponents()
+        {
+            Placeholder = body.transform.Find("Placeholder").gameObject;
+            _prefabList = body.transform.Find("PrefabList").GetComponent<PrefabList>();
+            Transform frame = body.transform.GetChild(0).GetChild(0);
+            _prefabTitle = frame.Find("PrefabTitle").GetComponent<Title>();
+            _statusText = frame.Find("StatusText").GetComponent<TMP_Text>();
+            Transform buttons = frame.Find("Buttons");
+            _cancelButton = buttons.Find("CancelButton").GetComponent<Button>();
+            ConfirmButton = buttons.Find("ConfirmButton").GetComponent<Button>();
+            _deleteButton = buttons.Find("DeleteButton").GetComponent<Button>();
         }
 
         private void Delete()

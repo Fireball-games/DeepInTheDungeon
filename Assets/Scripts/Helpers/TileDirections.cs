@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
-using static Scripts.Helpers.GeneralExtensions;
+using static Scripts.Helpers.Extensions.GeneralExtensions;
 
 namespace Scripts.Helpers
 {

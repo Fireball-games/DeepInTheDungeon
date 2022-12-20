@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Scripts.Building;
 using Scripts.EventsManagement;
-using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Scripts.Building.Walls.Configurations;
+using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
 using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
+using Scripts.UI.EditorUI.PrefabEditors;
 using UnityEngine;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
@@ -35,6 +36,8 @@ namespace Scripts.UI.EditorUI
         private Title _mapTitle;
         private ToggleFramedButton _perspectiveToggle;
 
+        private IPrefabEditor _openedEditor;
+
         protected override void Awake()
         {
             base.Awake();
@@ -50,12 +53,12 @@ namespace Scripts.UI.EditorUI
             _playButton.OnClick += manager.PlayMap;
             _perspectiveToggle.OnClick += OnPerspectiveToggleClick;
             _perspectiveToggle.dontToggleOnclick = true;
-            
+
             EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged += OnFloorChanged;
             EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
             EditorEvents.OnCameraPerspectiveChanged += OnCameraPerspectiveChanged;
-            
+
             fileOperations.SetActive(true);
         }
 
@@ -99,25 +102,48 @@ namespace Scripts.UI.EditorUI
         private void OnEditingInterruptionImminent()
         {
             IsAnyObjectEdited = false;
-            CloseWallEditorWindow();
-        } 
-
-        public void OpenWallEditorWindow(EPrefabType prefabType, PositionRotation placeholderTransformData)
-        {
-            IsAnyObjectEdited = true;
-            wallEditor.Open(prefabType, placeholderTransformData);
+            CloseEditorWindow();
         }
 
-        public void OpenWallEditorWindow(WallConfiguration wallConfiguration)
+        public void OpenEditorWindow(EPrefabType prefabType, PositionRotation placeholderTransformData)
         {
             IsAnyObjectEdited = true;
-            wallEditor.Open(wallConfiguration);
+
+            switch (prefabType)
+            {
+                case EPrefabType.Wall:
+                case EPrefabType.WallBetween:
+                case EPrefabType.WallOnWall:
+                case EPrefabType.WallForMovement:
+                    wallEditor.Open(prefabType, placeholderTransformData);
+                    _openedEditor = wallEditor;
+                    break;
+            }
         }
 
-        private void CloseWallEditorWindow()
+        public void OpenEditorWindow(WallConfiguration wallConfiguration)
+        {
+            IsAnyObjectEdited = true;
+
+            switch (wallConfiguration.PrefabType)
+            {
+                case EPrefabType.Wall:
+                case EPrefabType.WallBetween:
+                case EPrefabType.WallOnWall:
+                case EPrefabType.WallForMovement:
+                    wallEditor.Open(wallConfiguration);
+                    _openedEditor = wallEditor;
+                    break;
+            }
+        }
+
+        private void CloseEditorWindow()
         {
             IsAnyObjectEdited = false;
-            wallEditor.CloseWithChangeCheck();
+
+            _openedEditor?.CloseWithChangeCheck();
+
+            _openedEditor = null;
         }
     }
 }

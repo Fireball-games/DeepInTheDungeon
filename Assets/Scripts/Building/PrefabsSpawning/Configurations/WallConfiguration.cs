@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.System;
 using UnityEngine;
-using static Scripts.MapEditor.Enums;
 
-namespace Scripts.Building.Walls.Configurations
+namespace Scripts.Building.PrefabsSpawning.Configurations
 {
     public class WallConfiguration : PrefabConfiguration
     {

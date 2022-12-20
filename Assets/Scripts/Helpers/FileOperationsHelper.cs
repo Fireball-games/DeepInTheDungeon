@@ -47,9 +47,20 @@ namespace Scripts.Helpers
 
             if (string.IsNullOrEmpty(mapName)) return null;
 
-            return !File.Exists(GetFullMapPath(mapName)) 
-                ? null 
-                : ES3.Load<MapDescription>(mapName, GetFullRelativeMapPath(mapName));
+            if (!File.Exists(GetFullMapPath(mapName)))
+            {
+                return null;
+            }
+
+            try
+            {
+                return ES3.Load<MapDescription>(mapName, GetFullRelativeMapPath(mapName));
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to load level from file: {mapName}: {e}", Logger.ELogSeverity.Release);
+                return null;
+            }
         }
 
         public static bool LoadPrefabs(EPrefabType prefabType, out HashSet<GameObject> loadedPrefabs)

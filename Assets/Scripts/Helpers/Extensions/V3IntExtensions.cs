@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using static Scripts.Helpers.GeneralExtensions;
+using static Scripts.Helpers.Extensions.GeneralExtensions;
 
 namespace Scripts.Helpers.Extensions
 {

@@ -8,6 +8,10 @@
             Build = 1,
             Select = 2,
             Walls = 3,
+            PrefabTiles = 4,
+            Prefabs = 5,
+            Items = 6,
+            Enemies = 7,
         }
 
         public enum ELevel

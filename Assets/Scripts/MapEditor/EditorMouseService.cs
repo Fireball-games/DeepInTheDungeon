@@ -1,4 +1,5 @@
 using System;
+using Scripts.Building;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
@@ -9,15 +10,14 @@ using Scripts.System.MonoBases;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
 using static Scripts.MapEditor.Enums;
+using static Scripts.System.MouseCursorManager;
 
 namespace Scripts.MapEditor
 {
     public class EditorMouseService : SingletonNotPersisting<EditorMouseService>
     {
-        [SerializeField] private Texture2D digCursor;
-        [SerializeField] private Texture2D demolishCursor;
-        [SerializeField] private Texture2D moveCameraCursor;
         [SerializeField] private float maxValidClickTime = 0.1f;
         [SerializeField] private Cursor3D cursor3D;
         [SerializeField] private GameObject upperFloorTrigger;
@@ -37,14 +37,14 @@ namespace Scripts.MapEditor
         private Vector3Int _lastGridPosition;
         private readonly Vector3Int _invalidGridPosition = new(-10000, -10000, -10000);
         private readonly Vector2 _defaultMouseHotspot = Vector2.zero;
-        private Vector2 _demolishMouseHotspot;
-        private Vector2 _moveCameraMouseHotspot;
+        
+        private WallPrefabBase _lastEnteredWall;
+        private GameObject _lastPrefabOnPosition;
 
         private float _lastLeftClickTime;
         private float _lastRightClickTime;
 
         private bool _isManipulatingCameraPosition;
-        private bool _isDefaultCursorSet;
         private bool _uiIsBlocking;
 
         public bool IsManipulatingCameraPosition
@@ -72,9 +72,6 @@ namespace Scripts.MapEditor
             _buildService = new MapBuildService();
             
             _lastGridPosition = new Vector3Int(-1000, -1000, -1000);
-
-            _demolishMouseHotspot = new Vector2(demolishCursor.width / 2, demolishCursor.height / 2);
-            _moveCameraMouseHotspot = new Vector2(moveCameraCursor.width / 2, moveCameraCursor.height / 2);
         }
 
         private void OnEnable()
@@ -129,8 +126,7 @@ namespace Scripts.MapEditor
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged -= OnFloorChanged;
         }
-
-        private WallPrefabBase _lastEnteredWall;
+        
         private void CheckMouseOverWall()
         {
             if (Manager.WorkMode != EWorkMode.Walls || EditorUIManager.Instance.IsAnyObjectEdited) return;
@@ -204,7 +200,7 @@ namespace Scripts.MapEditor
                 case EWorkMode.Build:
                     if (mouseButtonUpped == 0)
                     {
-                        _buildService.ProcessBuildClick();
+                        _buildService.ProcessBuildTileClick();
                     }
 
                     break;
@@ -216,6 +212,27 @@ namespace Scripts.MapEditor
                         if (_lastEnteredWall is {WallEligibleForEditing: true}) _lastEnteredWall.OnClickInEditor();
                     }
 
+                    break;
+                case EWorkMode.PrefabTiles:
+                    if (mouseButtonUpped == 0)
+                    {
+                        if (_lastPrefabOnPosition)
+                        {
+                            UIManager.OpenEditorWindow(Manager.MapBuilder.GetPrefabConfigurationByTransformData(
+                                new PositionRotation(_lastPrefabOnPosition.transform.position, _lastPrefabOnPosition.transform.rotation)
+                            ));
+                        }
+                        else
+                        {
+                            UIManager.OpenEditorWindow(Scripts.Enums.EPrefabType.PrefabTile,
+                                new PositionRotation(MouseGridPosition.ToWorldPositionV3Int(), Quaternion.identity));
+                        }
+                    }
+                    
+                    break;
+                case EWorkMode.Prefabs:
+                case EWorkMode.Items:
+                case EWorkMode.Enemies:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -275,8 +292,9 @@ namespace Scripts.MapEditor
             
             ResolveBuildModePosition(isNullTile, newGridPosition, layout);
             ResolveWallModePosition(isNullTile);
+            ResolvePrefabTileModePosition(isNullTile);
 
-            SetCursor(GridPositionType);
+            SetCursorByType(GridPositionType);
         }
 
         private void ResolveWallModePosition(bool isNullTile)
@@ -285,8 +303,15 @@ namespace Scripts.MapEditor
             
             GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
         }
+        
+        private void ResolvePrefabTileModePosition(bool isNullTile)
+        {
+            if (Manager.WorkMode != EWorkMode.PrefabTiles) return;
+            
+            GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
+        }
 
-        internal void SetCursorToCameraMovement() => SetCursor(moveCameraCursor, _moveCameraMouseHotspot);
+        internal void SetCursorToCameraMovement() => SetCursor(ECursorType.Move);
 
         private void ResolveBuildModePosition(bool isNullTile, Vector3Int newGridPosition,
             TileDescription[,,] layout)
@@ -336,27 +361,36 @@ namespace Scripts.MapEditor
             }
         }
 
-        private void SetDefaultCursor()
-        {
-            if (_isDefaultCursorSet) return;
-
-            Hide3DCursor();
-            
-            SetCursor(null, Vector3.zero);
-            _isDefaultCursorSet = true;
-        }
-
-        private void SetCursor(Texture2D image, Vector3 hotspot)
-        {
-            Cursor.SetCursor(image, hotspot, CursorMode.Auto);
-            _isDefaultCursorSet = false;
-        }
-
-        private void SetCursor(EGridPositionType type)
+        private void SetCursorByType(EGridPositionType type)
         {
             if (Manager.WorkMode == EWorkMode.Walls)
             {
                 SetDefaultCursor();
+            }
+
+            if (Manager.WorkMode == EWorkMode.PrefabTiles)
+            {
+                if (type == EGridPositionType.NullTile)
+                {
+                    _lastPrefabOnPosition = null;
+                    cursor3D.Hide();
+                    SetCursor(ECursorType.Default);
+                    return;
+                }
+
+                GameObject prefabOnPosition = Manager.MapBuilder.GetPrefabByGridPosition(MouseGridPosition); 
+                if (prefabOnPosition)
+                {
+                    _lastPrefabOnPosition = prefabOnPosition;
+                    SetCursor(ECursorType.Edit);
+                }
+                else
+                {
+                    _lastPrefabOnPosition = null;
+                    SetCursor(ECursorType.Add);
+                }
+                
+                cursor3D.ShowAt(MouseGridPosition);
             }
             
             if (Manager.WorkMode == EWorkMode.Build)
@@ -369,31 +403,30 @@ namespace Scripts.MapEditor
                         break;
                     case EGridPositionType.NullTile:
                         cursor3D.ShowAt(MouseGridPosition);
-                        SetCursor(digCursor, _defaultMouseHotspot);
+                        SetCursor(ECursorType.Build);
                         break;
                     case EGridPositionType.EditableTile:
                         cursor3D.ShowAt(MouseGridPosition);
-                        SetCursor(demolishCursor, _demolishMouseHotspot);
+                        SetCursor(ECursorType.Demolish);
                         break;
                     case EGridPositionType.NullTileAbove:
                         cursor3D.ShowAt(MouseGridPosition, true);
-                        SetCursor(digCursor, _defaultMouseHotspot);
+                        SetCursor(ECursorType.Build);
                         break;
                     case EGridPositionType.EditableTileAbove:
                         cursor3D.ShowAt(MouseGridPosition, true);
-                        SetCursor(demolishCursor, _demolishMouseHotspot);
+                        SetCursor(ECursorType.Demolish);
                         break;
                     case EGridPositionType.NullTileBellow:
                         cursor3D.ShowAt(MouseGridPosition, withCopyBellow: true);
-                        SetCursor(digCursor, _defaultMouseHotspot);
+                        SetCursor(ECursorType.Build);
                         break;
                     case EGridPositionType.EditableTileBellow:
                         cursor3D.ShowAt(MouseGridPosition, withCopyBellow: true);
-                        SetCursor(demolishCursor, _demolishMouseHotspot);
+                        SetCursor(ECursorType.Demolish);
                         break;
                     default:
-                        Hide3DCursor();
-                        SetDefaultCursor();
+                        ResetCursor();
                         break;
                 }
             }
@@ -408,18 +441,8 @@ namespace Scripts.MapEditor
 
         public void ResetCursor()
         {
-            Hide3DCursor();
-            
-            SetDefaultCursor();
+            MouseCursorManager.ResetCursor();
             RefreshMousePosition(true);
-        }
-
-        private void Hide3DCursor()
-        {
-            if (!UIManager.IsAnyObjectEdited)
-            {
-                cursor3D.Hide();
-            }
         }
     }
 }

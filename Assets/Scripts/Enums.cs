@@ -12,6 +12,7 @@
             Enemy = 5,
             Prop = 6,
             Item = 7,
+            PrefabTile = 8,
         }
     }
 }

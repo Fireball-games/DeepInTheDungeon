@@ -43,7 +43,7 @@ namespace Scripts.UI.EditorUI
             
             base.Open(configuration);
 
-            PhysicalPrefab = MapBuilder.GetWallByConfiguration(configuration).GetComponentInChildren<MeshFilter>()?.gameObject;
+            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration).GetComponentInChildren<MeshFilter>()?.gameObject;
 
             if (!PhysicalPrefab) return;
             

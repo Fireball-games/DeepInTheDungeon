@@ -14,6 +14,7 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private BuildModeExpandedOptions buildModeOptions;
         [SerializeField] private ImageButton selectModeButton;
         [SerializeField] private ImageButton wallModeButton;
+        [SerializeField] private ImageButton prefabTileModeButton;
 
         private static MapEditorManager Manager => MapEditorManager.Instance;
         private Dictionary<ImageButton, EWorkMode> _workModesMap;
@@ -25,6 +26,7 @@ namespace Scripts.UI.EditorUI
                 {buildModeButton, EWorkMode.Build},
                 {selectModeButton, EWorkMode.Select},
                 {wallModeButton, EWorkMode.Walls},
+                {prefabTileModeButton, EWorkMode.PrefabTiles},
             };
         }
 
@@ -36,6 +38,7 @@ namespace Scripts.UI.EditorUI
             buildModeButton.OnDeselected += DeactivateBuildModeOptions;
             selectModeButton.OnClickWithSender += WorkModeButtonClicked;
             wallModeButton.OnClickWithSender += WorkModeButtonClicked;
+            prefabTileModeButton.OnClickWithSender += WorkModeButtonClicked;
         }
 
         private void OnDisable()
@@ -45,6 +48,7 @@ namespace Scripts.UI.EditorUI
             buildModeButton.OnSelected -= ActivateBuildModeOptions;
             buildModeButton.OnDeselected -= DeactivateBuildModeOptions;
             wallModeButton.OnClickWithSender -= WorkModeButtonClicked;
+            prefabTileModeButton.OnClickWithSender -= WorkModeButtonClicked;
         }
 
         private void ActivateBuildModeOptions()

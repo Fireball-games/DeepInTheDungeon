@@ -5,6 +5,7 @@ using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.Pooling;
@@ -211,10 +212,17 @@ namespace Scripts.Building
             ObjectPool.Instance.ReturnToPool(prefabGo);
         }
 
-        public GameObject GetWallByConfiguration(PrefabConfiguration configuration)
+        public GameObject GetPrefabByConfiguration(PrefabConfiguration configuration)
         {
             GameObject result = _prefabs.FirstOrDefault(p => p.transform.position == configuration.TransformData.Position
                                                              && p.name == configuration.PrefabName);
+
+            return !result ? null : result;
+        }
+        
+        public GameObject GetPrefabByGridPosition(Vector3Int position)
+        {
+            GameObject result = _prefabs.FirstOrDefault(p => p.transform.position == position.ToWorldPositionV3Int());
 
             return !result ? null : result;
         }

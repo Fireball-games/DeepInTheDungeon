@@ -259,7 +259,7 @@ namespace Scripts.MapEditor
             }
         }
 
-        internal void ProcessBuildClick()
+        internal void ProcessBuildTileClick()
         {
             Vector3Int position = Mouse.MouseGridPosition;
 

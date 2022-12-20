@@ -10,6 +10,7 @@ using Scripts.UI.EditorUI.PrefabEditors;
 using UnityEngine;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI
 {
@@ -118,22 +119,35 @@ namespace Scripts.UI.EditorUI
                     wallEditor.Open(prefabType, placeholderTransformData);
                     _openedEditor = wallEditor;
                     break;
+                default:
+                    Logger.LogWarning($"Not implemented editor for type {prefabType}.");
+                    break;
             }
         }
 
-        public void OpenEditorWindow(WallConfiguration wallConfiguration)
+        public void OpenEditorWindow(PrefabConfiguration configuration)
         {
             IsAnyObjectEdited = true;
 
-            switch (wallConfiguration.PrefabType)
+            switch (configuration.PrefabType)
             {
                 case EPrefabType.Wall:
                 case EPrefabType.WallBetween:
                 case EPrefabType.WallOnWall:
                 case EPrefabType.WallForMovement:
-                    wallEditor.Open(wallConfiguration);
+                    wallEditor.Open(configuration as WallConfiguration);
                     _openedEditor = wallEditor;
                     break;
+                case EPrefabType.Invalid:
+                    break;
+                case EPrefabType.Enemy:
+                    break;
+                case EPrefabType.Prop:
+                    break;
+                case EPrefabType.Item:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

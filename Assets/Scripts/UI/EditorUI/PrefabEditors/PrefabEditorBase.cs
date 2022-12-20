@@ -163,7 +163,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetActive(true);
             _prefabTitle.SetTitle(EditedConfiguration.PrefabName);
 
-            PhysicalPrefab = MapBuilder.GetWallByConfiguration(EditedConfiguration)?
+            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(EditedConfiguration)?
                 .GetComponentInChildren<MeshFilter>()?.gameObject;
 
             EditorEvents.TriggerOnMapEdited();

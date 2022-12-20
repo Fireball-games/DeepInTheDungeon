@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building;
+using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
 using Scripts.Building.Walls.Configurations;
 using Scripts.EventsManagement;

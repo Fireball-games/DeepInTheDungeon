@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
 using Scripts.Building.Walls.Configurations;
 using Scripts.ScenesManagement;

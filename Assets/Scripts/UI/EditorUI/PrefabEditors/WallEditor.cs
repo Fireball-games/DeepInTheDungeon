@@ -139,9 +139,7 @@ namespace Scripts.UI.EditorUI
                     EditedConfiguration.WayPoints = translatedWaypoints;
                 }
                 
-                WayPointService.AddPath(EditedConfiguration.WayPoints[0].position.ToVector3Int(),
-                    EditedConfiguration.WayPoints,
-                    true);
+                WayPointService.AddPath(EditedConfiguration.WayPoints,true);
             }
         }
     }

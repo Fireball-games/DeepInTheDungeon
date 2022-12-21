@@ -50,7 +50,7 @@ namespace Scripts.MapEditor.Services
             Logger.LogNotImplemented();
         }
 
-        public static void AddPath(Vector3Int origin, IEnumerable<Waypoint> waypoints, bool highlightAfterBuild = false)
+        public static void AddPath(IEnumerable<Waypoint> waypoints, bool highlightAfterBuild = false)
         {
             Vector3 startPoint = waypoints.ElementAt(0).position;
             
@@ -73,7 +73,7 @@ namespace Scripts.MapEditor.Services
                 controller.waypoints.Add(drawnWaypoint);
             }
             
-            _paths.Add(origin, controller);
+            _paths.Add(startPoint.ToVector3Int(), controller);
 
             if (highlightAfterBuild)
             {

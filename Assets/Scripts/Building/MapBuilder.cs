@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
+using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.System.Pooling;
 using UnityEngine;
@@ -148,6 +150,8 @@ namespace Scripts.Building
         /// <returns></returns>
         public bool BuildPrefab(PrefabConfiguration configuration)
         {
+            bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
+            
             GameObject newPrefab = PrefabStore.Instantiate(configuration.PrefabName, _prefabsParent);
 
             if (!newPrefab)
@@ -176,6 +180,21 @@ namespace Scripts.Building
                     position.x += wallConfiguration.Offset;
                     physicalPart.localPosition = position;
                 }
+
+                if (isEditorMode)
+                {
+                    WallPrefabBase script = newPrefab.GetComponent<WallPrefabBase>();
+
+                    if (script && script.presentedInEditor)
+                    {
+                        script.presentedInEditor.SetActive(true);
+                    }
+
+                    if (wallConfiguration.WayPoints != null && wallConfiguration.WayPoints.Any())
+                    {
+                        WayPointService.AddPath(wallConfiguration.WayPoints);
+                    }
+                }
             }
 
             MapDescription.PrefabConfigurations ??= new List<PrefabConfiguration>();
@@ -186,6 +205,11 @@ namespace Scripts.Building
             }
 
             _prefabs.Add(newPrefab);
+
+            if (isEditorMode && -newPrefab.transform.position.y < MapEditorManager.Instance.CurrentFloor)
+            {
+                newPrefab.SetActive(false);
+            }
 
             return true;
         }

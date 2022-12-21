@@ -43,6 +43,7 @@ namespace Scripts.Player
             playerTransform.rotation = rotation;
             _targetRotation = rotation.eulerAngles;
             _isStartPositionSet = true;
+            _waypoints = null;
 
             StartCoroutine(GroundCheckCoroutine(true));
         }
@@ -74,6 +75,7 @@ namespace Scripts.Player
             else if (_waypoints != null && _waypoints.Any())
             {
                 StartCoroutine(PerformWaypointMovementCoroutine());
+                return;
             }
 
             if (!_isBashingIntoWall && (_targetPosition != _prevTargetPosition))
@@ -108,8 +110,9 @@ namespace Scripts.Player
 
                 yield return PerformMovementCoroutine();
             }
-            
-            SetPositionAndRotation(_waypoints[^1].position.ToGridPosition(), Quaternion.Euler(new Vector3()));
+
+            Vector3 rotation = transform.rotation.eulerAngles;
+            SetPositionAndRotation(_waypoints[^1].position.ToGridPosition(), Quaternion.Euler(new Vector3(0, rotation.y, 0)));
             _waypoints = null;
         }
 

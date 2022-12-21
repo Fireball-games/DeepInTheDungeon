@@ -239,6 +239,13 @@ namespace Scripts.Building
 
             return !result ? null : result;
         }
+        
+        public GameObject GetPrefabByWorldPosition(Vector3Int position)
+        {
+            GameObject result = _prefabs.FirstOrDefault(p => p.transform.position == position);
+
+            return !result ? null : result;
+        }
 
         public void ReplacePrefabConfiguration(PrefabConfiguration newConfiguration)
         {

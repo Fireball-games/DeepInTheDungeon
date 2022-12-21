@@ -6,7 +6,6 @@ namespace Scripts.Building.PrefabsSpawning.Walls
 {
     public class WallMovementBetween : WallBetween, IMovementWall
     {
-        public List<Waypoint> waypoints;
         public WaypointsPreset waypointsPreset;
     }
 }

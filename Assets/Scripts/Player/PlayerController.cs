@@ -1,10 +1,14 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.PrefabsSpawning.Walls.Indentificators;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
+using Scripts.ScriptableObjects;
 using Scripts.System;
 using UnityEngine;
 
@@ -25,6 +29,8 @@ namespace Scripts.Player
         private Vector3 _targetPosition;
         private Vector3 _prevTargetPosition;
         private Vector3 _targetRotation;
+
+        private List<Waypoint> _waypoints;
 
         private bool _isStartPositionSet;
         private bool _isBashingIntoWall;
@@ -57,9 +63,17 @@ namespace Scripts.Player
             if (IsTargetPositionValid())
             {
                 _atRest = false;
-                _prevTargetPosition = _targetPosition;
-                StartCoroutine(PerformMovementCoroutine());
-                return;
+
+                if (_waypoints == null || !_waypoints.Any())
+                {
+                    _prevTargetPosition = _targetPosition;
+                    StartCoroutine(PerformMovementCoroutine());
+                    return;
+                }
+            }
+            else if (_waypoints != null && _waypoints.Any())
+            {
+                StartCoroutine(PerformWaypointMovementCoroutine());
             }
 
             if (!_isBashingIntoWall && (_targetPosition != _prevTargetPosition))
@@ -72,12 +86,39 @@ namespace Scripts.Player
             _targetPosition = _prevTargetPosition;
         }
 
+        private IEnumerator PerformWaypointMovementCoroutine()
+        {
+            for (int index = 1; index < _waypoints.Count; index++)
+            {
+                Waypoint waypoint = _waypoints[index];
+
+                _targetPosition = waypoint.position;
+                if (index == 1)
+                {
+                    _targetRotation = Quaternion.LookRotation(waypoint.position - _waypoints[0].position, Vector3.up).eulerAngles;
+                }
+                else if (index != _waypoints.Count - 1)
+                {
+                    _targetRotation = Quaternion.LookRotation(_waypoints[index + 1].position - transform.position, Vector3.up).eulerAngles;
+                }
+                else if (index == _waypoints.Count - 1)
+                {
+                    _targetRotation = Quaternion.LookRotation(_waypoints[^1].position - _waypoints[^2].position, Vector3.up).eulerAngles;
+                }
+
+                yield return PerformMovementCoroutine();
+            }
+            
+            SetPositionAndRotation(_waypoints[^1].position.ToGridPosition(), Quaternion.Euler(new Vector3()));
+            _waypoints = null;
+        }
+
         private IEnumerator PerformMovementCoroutine()
         {
             Transform myTransform = transform;
             float currentRotY = myTransform.eulerAngles.y;
             Vector3 currentPosition = myTransform.position;
-            
+
             while (NotAtTargetPosition(_targetPosition) || NotAtTargetRotation())
             {
                 Vector3 targetPosition = _targetPosition;
@@ -104,7 +145,7 @@ namespace Scripts.Player
 
             _atRest = true;
             _prevTargetPosition = _targetPosition;
-            
+
             if (Math.Abs(currentRotY - transform.rotation.eulerAngles.y) > float.Epsilon)
             {
                 TransitionRotationSpeed = transitionRotationSpeed;
@@ -122,9 +163,9 @@ namespace Scripts.Player
             while (!GroundCheck())
             {
                 _atRest = false;
-                
+
                 Vector3 targetPosition = transform.position + Vector3.down;
-                
+
                 while (NotAtTargetPosition(targetPosition))
                 {
                     transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * transitionSpeed);
@@ -161,7 +202,7 @@ namespace Scripts.Player
 
             Vector3Int newPosition = Vector3Int.RoundToInt(transform.position).SwapXY();
             newPosition.x = 0 - newPosition.x;
-            
+
             SetPositionAndRotation(newPosition, Quaternion.Euler(_targetRotation));
             _isBashingIntoWall = false;
             _atRest = true;
@@ -171,16 +212,16 @@ namespace Scripts.Player
         {
             Vector3Int intTargetPosition = Vector3Int.RoundToInt(_targetPosition);
             intTargetPosition.y = -intTargetPosition.y;
-            
-            return GameManager.Instance.CurrentMap.Layout[intTargetPosition.y,intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true} 
-                   && !IsMidWallInTargetDirection();
+
+            return !IsMidWallInTargetDirection()
+                   && GameManager.Instance.CurrentMap.Layout[intTargetPosition.y, intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
         }
 
         private bool IsMidWallInTargetDirection()
         {
             if (_targetPosition == _prevTargetPosition) return false;
-            
-            Vector3 currentPosition = transform.position; 
+
+            Vector3 currentPosition = transform.position;
             Ray ray = new(currentPosition, _targetPosition - currentPosition);
             RaycastHit[] hits = new RaycastHit[5];
             int size = Physics.RaycastNonAlloc(ray, hits, 0.7f, LayerMask.GetMask(LayersManager.WallMaskName));
@@ -190,14 +231,21 @@ namespace Scripts.Player
             foreach (RaycastHit hit in hits)
             {
                 if (!hit.collider) continue;
-                
+
                 WallPrefabBase wallScript = hit.collider.gameObject.GetComponent<WallPrefabBase>();
-                
+
                 if (!wallScript) continue;
 
                 if (wallScript is IObstacle) return true;
 
-                // TODO add special hits int to some list or something for processing further down the road
+                if (wallScript is IMovementWall)
+                {
+                    Transform hitTransform = hit.transform;
+                    _waypoints = (GameManager.Instance.MapBuilder
+                        .GetPrefabConfigurationByTransformData(
+                            new PositionRotation(hitTransform.position, hitTransform.rotation)) as WallConfiguration)?.WayPoints;
+                    return false;
+                }
             }
 
             return false;
@@ -209,7 +257,7 @@ namespace Scripts.Player
         /// <returns>False means player will fall</returns>
         private bool GroundCheck()
         {
-            Vector3 currentPosition = transform.position; 
+            Vector3 currentPosition = transform.position;
             Ray ray = new(currentPosition, Vector3.down);
             return Physics.Raycast(ray, 0.7f, LayerMask.GetMask(LayersManager.WallMaskName));
         }

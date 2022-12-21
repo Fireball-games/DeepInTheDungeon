@@ -1,5 +1,4 @@
 using System;
-using Scripts.Building;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
@@ -10,11 +9,10 @@ using Scripts.System.MonoBases;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Tilemaps;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MouseCursorManager;
 
-namespace Scripts.MapEditor
+namespace Scripts.MapEditor.Services
 {
     public class EditorMouseService : SingletonNotPersisting<EditorMouseService>
     {

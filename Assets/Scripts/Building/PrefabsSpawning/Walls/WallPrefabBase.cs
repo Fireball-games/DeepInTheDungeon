@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
 using Scripts.MapEditor;
-using Scripts.ScriptableObjects;
 using Scripts.System;
 using Scripts.System.Pooling;
 using Scripts.UI.EditorUI;

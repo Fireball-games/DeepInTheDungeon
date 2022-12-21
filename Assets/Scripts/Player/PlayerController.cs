@@ -130,8 +130,9 @@ namespace Scripts.Player
                     transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * transitionSpeed);
                     yield return null;
                 }
-                
-                transform.position = _targetPosition = _prevTargetPosition = transform.position.ToVector3Int();
+
+                Transform ownTransform = transform;
+                ownTransform.position = _targetPosition = _prevTargetPosition = transform.position.ToVector3Int();
 
                 yield return null;
             }

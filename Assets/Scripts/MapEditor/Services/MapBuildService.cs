@@ -7,9 +7,8 @@ using Scripts.System;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
-using FloorType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
 
-namespace Scripts.MapEditor
+namespace Scripts.MapEditor.Services
 {
     public class MapBuildService
     {

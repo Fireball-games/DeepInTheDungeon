@@ -3,6 +3,7 @@ using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Localization;
+using Scripts.ScriptableObjects;
 using Scripts.System;
 using Scripts.UI.EditorUI.PrefabEditors;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace Scripts.UI.EditorUI
                 PrefabType = EditedPrefabType,
                 PrefabName = AvailablePrefabs.FirstOrDefault(prefab => prefab.name == prefabName)?.name,
                 TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation),
-                WayPoints = new List<Vector3>(),
+                WayPoints = new List<Waypoint>(),
                 Offset = 0f
             };
         }
@@ -48,6 +49,8 @@ namespace Scripts.UI.EditorUI
             offsetSlider.Value = configuration.Offset;
             offsetSlider.slider.onValueChanged.RemoveAllListeners();
             offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
+
+            VisualizeOtherComponents();
         }
 
         protected override string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
@@ -77,6 +80,24 @@ namespace Scripts.UI.EditorUI
             newPosition.x = value;
             EditedConfiguration.Offset = value;
             PhysicalPrefab.transform.localPosition = newPosition;
+        }
+
+        private void VisualizeOtherComponents()
+        {
+            WallPrefabBase script = PhysicalPrefab.GetComponentInParent<WallPrefabBase>();
+            
+            if (script.presentedInEditor)
+            {
+                script.transform.Find("EditorPresentation").gameObject.SetActive(true);
+            }
+
+            if (script is WallMovementBetween movementScript)
+            {
+                if (EditedConfiguration.WayPoints.Count < 2 && movementScript.waypointsPreset)
+                {
+                    EditedConfiguration.WayPoints = movementScript.waypointsPreset.waypoints;
+                }
+            }
         }
     }
 }

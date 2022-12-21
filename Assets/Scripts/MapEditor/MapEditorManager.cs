@@ -5,6 +5,7 @@ using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
+using Scripts.MapEditor.Services;
 using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.System.MonoBases;

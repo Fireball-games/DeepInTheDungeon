@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Scripts.MapEditor
+namespace Scripts.MapEditor.Services
 {
     public class EditorInputService : MonoBehaviour
     {

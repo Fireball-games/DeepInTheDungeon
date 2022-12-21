@@ -1,7 +1,7 @@
 ﻿using System;
 using Scripts.EventsManagement;
 using Scripts.Localization;
-using Scripts.MapEditor;
+using Scripts.MapEditor.Services;
 using Scripts.UI;
 using Scripts.UI.Components;
 using TMPro;

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
+using Scripts.ScriptableObjects;
 using Scripts.System;
-using UnityEngine;
 
 namespace Scripts.Building.PrefabsSpawning.Configurations
 {
     public class WallConfiguration : PrefabConfiguration
     {
         public float Offset;
-        public List<Vector3> WayPoints;
+        public List<Waypoint> WayPoints;
 
         public WallConfiguration()
         {

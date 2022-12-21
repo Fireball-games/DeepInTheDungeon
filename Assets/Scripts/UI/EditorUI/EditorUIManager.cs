@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
 using Scripts.MapEditor;
+using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;

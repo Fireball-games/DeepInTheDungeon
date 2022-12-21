@@ -5,7 +5,7 @@ using Scripts.System;
 using Scripts.System.MonoBases;
 using UnityEngine;
 
-namespace Scripts.MapEditor
+namespace Scripts.MapEditor.Services
 {
     public class EditorCameraService : SingletonNotPersisting<EditorCameraService>
     {

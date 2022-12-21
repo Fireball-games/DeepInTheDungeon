@@ -157,10 +157,16 @@ namespace Scripts.Building
             }
 
             newPrefab.transform.position = configuration.TransformData.Position;
-            newPrefab.transform.localRotation = configuration.TransformData.Rotation;
+
+            if (configuration is TilePrefabConfiguration)
+            {
+                newPrefab.GetComponentInChildren<MeshFilter>().transform.rotation = configuration.TransformData.Rotation;
+            }
 
             if (configuration is WallConfiguration wallConfiguration)
             {
+                newPrefab.transform.localRotation = configuration.TransformData.Rotation;
+                
                 Transform physicalPart = newPrefab.GetComponentInChildren<MeshFilter>().transform;
 
                 if (physicalPart)
@@ -211,6 +217,7 @@ namespace Scripts.Building
                 Layout.ByGridV3Int(prefabGo.transform.position.ToGridPosition()).IsForMovement = true;
             }
 
+            prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
             Transform offsetTransform = prefabGo.GetComponentInChildren<MeshFilter>().transform;
             if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
 

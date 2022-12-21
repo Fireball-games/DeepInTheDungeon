@@ -71,7 +71,7 @@ namespace Scripts.UI.EditorUI
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged -= OnFloorChanged;
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
-            EditorEvents.OnCameraPerspectiveChanged += OnCameraPerspectiveChanged;
+            EditorEvents.OnCameraPerspectiveChanged -= OnCameraPerspectiveChanged;
         }
 
         private void OnCameraPerspectiveChanged(bool isOrthographic)

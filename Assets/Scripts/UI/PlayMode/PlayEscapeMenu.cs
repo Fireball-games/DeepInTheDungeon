@@ -35,7 +35,7 @@ public class PlayEscapeMenu : DialogBase
         if (GameManager.Instance.IsPlayingFromEditor)
         {
             toEditorButton.gameObject.SetActive(true);
-            toEditorButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.ReturnToEditor);
+            toEditorButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.ReturnToEditor);
             toEditorButton.onClick.AddListener(LeaveToEditor); 
         }
         else
@@ -43,7 +43,7 @@ public class PlayEscapeMenu : DialogBase
             toEditorButton.gameObject.SetActive(false);
         }
         
-        toMainSceneButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.ReturnToMainScene);
+        toMainSceneButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.ReturnToMainScene);
         toMainSceneButton.onClick.AddListener(LeaveToMainScene);
     }
 

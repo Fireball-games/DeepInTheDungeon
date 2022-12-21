@@ -10,9 +10,6 @@ public class RotationWidget : UIElementBase
     private ImageButton _leftRotateButton;
     private ImageButton _rightRotateButton;
 
-    public event Action OnRotateLeft;
-    public event Action OnRotateRight;
-
     private void Awake()
     {
         Transform bodyTransform = body.transform;
@@ -21,16 +18,13 @@ public class RotationWidget : UIElementBase
         _rightRotateButton = bodyTransform.Find("RotateRight").GetComponent<ImageButton>();
     }
 
-    private void OnDisable()
-    {
-        OnRotateLeft = null;
-        OnRotateRight  = null;
-    }
-
     public void SetUp(string label, Action onRotateLeft, Action onRotateRight)
     {
+        SetActive(true);
+        
         if (_label) _label.text = label ?? "";
         _leftRotateButton.OnClick += onRotateLeft;
         _rightRotateButton.OnClick += onRotateRight;
+        
     }
 }

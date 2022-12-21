@@ -2,7 +2,7 @@
 
 namespace Scripts.Localization
 {
-    public static class T
+    public static class t
     {
         public static string Get(string key) => LeanLocalization.GetTranslationText(key);
     }

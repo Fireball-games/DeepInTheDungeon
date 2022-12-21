@@ -88,6 +88,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetTitle(configuration.PrefabName);
 
             _prefabList.Open(prefabListTitle, AvailablePrefabs!.Select(prefab => prefab.gameObject.name), SetPrefab);
+            
+            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration).GetComponentInChildren<MeshFilter>()?.gameObject;
         }
 
         public void Open(EPrefabType prefabType, PositionRotation placeholderTransformData)
@@ -104,13 +106,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             if (AvailablePrefabs == null || !AvailablePrefabs.Any())
             {
                 EditedPrefabType = EPrefabType.Invalid;
-                SetStatusText(T.Get(Keys.NoPrefabsAvailable));
+                SetStatusText(t.Get(Keys.NoPrefabsAvailable));
                 return;
             }
 
             EditedPrefabType = prefabType;
 
-            SetStatusText(T.Get(Keys.SelectPrefab));
+            SetStatusText(t.Get(Keys.SelectPrefab));
 
             _prefabList.Open(prefabListTitle, AvailablePrefabs.Select(prefab => prefab.gameObject.name), SetPrefab);
         }
@@ -122,15 +124,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetStatusText();
             _isEditingExistingPrefab = false;
 
-            _cancelButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Cancel);
+            _cancelButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Cancel);
 
-            ConfirmButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Confirm);
+            ConfirmButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Confirm);
             ConfirmButton.gameObject.SetActive(false);
 
-            _deleteButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Delete);
+            _deleteButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Delete);
             _deleteButton.gameObject.SetActive(deleteButtonActive);
 
-            string prefabListTitle = T.Get(Keys.AvailablePrefabs);
+            string prefabListTitle = t.Get(Keys.AvailablePrefabs);
 
             AvailablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
                 .Select(prefab => prefab.GetComponent<TPrefab>())
@@ -156,7 +158,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (!MapBuilder.BuildPrefab(EditedConfiguration))
             {
-                SetStatusText(T.Get(Keys.ErrorBuildingPrefab));
+                SetStatusText(t.Get(Keys.ErrorBuildingPrefab));
                 return;
             }
 
@@ -166,10 +168,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(EditedConfiguration)?
                 .GetComponentInChildren<MeshFilter>()?.gameObject;
 
-            EditorEvents.TriggerOnMapEdited();
+            SetEdited();
             _deleteButton.gameObject.SetActive(true);
-            ConfirmButton.gameObject.SetActive(true);
             Placeholder.SetActive(false);
+        }
+
+        protected void SetEdited()
+        {
+            ConfirmButton.gameObject.SetActive(true);
+            EditorEvents.TriggerOnMapEdited();
         }
         
         private void AssignComponents()
@@ -215,7 +222,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (!_isEditingExistingPrefab && EditedConfiguration != null)
             {
-                EditorUIManager.Instance.ConfirmationDialog.Open(T.Get(Keys.SaveEditedMapPrompt),
+                EditorUIManager.Instance.ConfirmationDialog.Open(t.Get(Keys.SaveEditedMapPrompt),
                     SaveMapAndClose,
                     RemoveAndClose);
                 return;

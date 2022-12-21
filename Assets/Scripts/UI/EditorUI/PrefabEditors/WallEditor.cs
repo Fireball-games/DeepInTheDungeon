@@ -2,7 +2,6 @@
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
-using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.System;
 using Scripts.UI.EditorUI.PrefabEditors;
@@ -43,8 +42,6 @@ namespace Scripts.UI.EditorUI
             
             base.Open(configuration);
 
-            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration).GetComponentInChildren<MeshFilter>()?.gameObject;
-
             if (!PhysicalPrefab) return;
             
             offsetSlider.SetActive(true);
@@ -55,7 +52,7 @@ namespace Scripts.UI.EditorUI
 
         protected override string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
         {
-            offsetSlider.SetLabel(T.Get(Keys.Offset));
+            offsetSlider.SetLabel(t.Get(Keys.Offset));
             offsetSlider.SetActive(false);
             
             return base.SetupWindow(prefabType, deleteButtonActive);
@@ -75,8 +72,7 @@ namespace Scripts.UI.EditorUI
 
         private void OnOffsetSliderValueChanged(float value)
         {
-            ConfirmButton.gameObject.SetActive(true);
-            EditorEvents.TriggerOnMapEdited();
+            SetEdited();
             Vector3 newPosition = PhysicalPrefab.transform.localPosition;
             newPosition.x = value;
             EditedConfiguration.Offset = value;

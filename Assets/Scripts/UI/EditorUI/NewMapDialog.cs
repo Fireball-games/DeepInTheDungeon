@@ -18,13 +18,13 @@ namespace Scripts.UI.EditorUI
         private void OnEnable()
         {
             rowsInput.SetInputText(rowsCount.ToString());
-            rowsInput.SetTitleText(T.Get(Keys.Rows));
+            rowsInput.SetTitleText(t.Get(Keys.Rows));
             columnsInput.SetInputText(columnsCount.ToString());
-            columnsInput.SetTitleText(T.Get(Keys.Columns));
+            columnsInput.SetTitleText(t.Get(Keys.Columns));
             floorsInput.SetInputText(floorsCount.ToString());
-            floorsInput.SetTitleText(T.Get(Keys.Floors));
-            mapNameInput.SetPlaceholderText(T.Get(Keys.NewMapNamePrompt));
-            mapNameInput.SetTitleText(T.Get(Keys.NewMapName));
+            floorsInput.SetTitleText(t.Get(Keys.Floors));
+            mapNameInput.SetPlaceholderText(t.Get(Keys.NewMapNamePrompt));
+            mapNameInput.SetTitleText(t.Get(Keys.NewMapName));
         }
 
         public void Open(
@@ -33,7 +33,7 @@ namespace Scripts.UI.EditorUI
             Action onOk = null,
             Action onCancel = null)
         {
-            base.Open(dialogTitle, onOk, onCancel, T.Get(Keys.CreateMap));
+            base.Open(dialogTitle, onOk, onCancel, t.Get(Keys.CreateMap));
             
             mapNameInput.SetPlaceholderText(placeholderMapName);
         }

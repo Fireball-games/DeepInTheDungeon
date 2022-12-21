@@ -28,18 +28,18 @@ namespace Scripts.UI.EditorUI
         private void OnEnable()
         {
             loadButton.onClick.AddListener(OnLoadClicked);
-            loadButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Load);
+            loadButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Load);
             exitButton.onClick.AddListener(OnExitClicked);
-            exitButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Exit);
+            exitButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Exit);
             saveButton.onClick.AddListener(OnSaveClicked);
-            saveButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.Save);
+            saveButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Save);
             newMapButton.onClick.AddListener(OnNewMapClicked);
-            newMapButton.GetComponentInChildren<TMP_Text>().text = T.Get(Keys.NewMap);
+            newMapButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.NewMap);
         }
         
         private static string GetDefaultMapName()
         {
-            string newMapName = T.Get(Keys.NewMap);
+            string newMapName = t.Get(Keys.NewMap);
             
             string[] fileNames = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectoryName);
 
@@ -49,7 +49,7 @@ namespace Scripts.UI.EditorUI
 
             int number = 1;
 
-            while (fileNames.Contains($"{T.Get(Keys.NewMap)}{number}.map"))
+            while (fileNames.Contains($"{t.Get(Keys.NewMap)}{number}.map"))
             {
                 number++;
             }
@@ -64,7 +64,7 @@ namespace Scripts.UI.EditorUI
             if (_existingFiles == null || !_existingFiles.Any())
             {
                 EditorUIManager.Instance.StatusBar.RegisterMessage(
-                    T.Get(Keys.NoFilesToShow),
+                    t.Get(Keys.NoFilesToShow),
                     StatusBar.EMessageType.Warning);
                 return;
             }
@@ -86,7 +86,7 @@ namespace Scripts.UI.EditorUI
 
         private void LoadMapConfirmed()
         {
-            UIManager.OpenFileDialog.Open(T.Get(Keys.SelectMapToLoad), _existingFiles, LoadMap);
+            UIManager.OpenFileDialog.Open(t.Get(Keys.SelectMapToLoad), _existingFiles, LoadMap);
         }
         
         private void OnSaveClicked()
@@ -98,7 +98,7 @@ namespace Scripts.UI.EditorUI
             }
 
             EditorUIManager.Instance.StatusBar.RegisterMessage(
-                    T.Get(Keys.NoChangesToSave),
+                    t.Get(Keys.NoChangesToSave),
                     StatusBar.EMessageType.Warning);
         }
         
@@ -118,11 +118,11 @@ namespace Scripts.UI.EditorUI
         private void OpenConfirmationDialog(Action onOk, Action onCancel)
         {
             EditorUIManager.Instance.ConfirmationDialog.Open(
-                T.Get(Keys.SaveEditedMapPrompt),
+                t.Get(Keys.SaveEditedMapPrompt),
                 onOk,
                 onCancel,
-                T.Get(Keys.SaveMap),
-                T.Get(Keys.DontSave)
+                t.Get(Keys.SaveMap),
+                t.Get(Keys.DontSave)
             );
         }
 
@@ -134,7 +134,7 @@ namespace Scripts.UI.EditorUI
 
         private void OpenNewMapDialog()
         {
-            EditorUIManager.Instance.NewMapDialog.Open(T.Get(Keys.NewMapDialogTitle),
+            EditorUIManager.Instance.NewMapDialog.Open(t.Get(Keys.NewMapDialogTitle),
                 GetDefaultMapName(),
                 OnNewMapDialogOK
             );
@@ -180,7 +180,7 @@ namespace Scripts.UI.EditorUI
 
             if (loadedMap == null)
             {
-                EditorUIManager.Instance.StatusBar.RegisterMessage(T.Get(Keys.LoadingFileFailed), StatusBar.EMessageType.Negative);
+                EditorUIManager.Instance.StatusBar.RegisterMessage(t.Get(Keys.LoadingFileFailed), StatusBar.EMessageType.Negative);
                 return;
             }
             

@@ -9,15 +9,5 @@ namespace Scripts.MapEditor
         public WallGizmoController controller;
 
         public void SetActive(bool isActive) => gameObject.SetActive(isActive);
-        
-        // private void OnMouseEnter()
-        // {
-        //     controller.OnGizmoEntered(direction);
-        // }
-        //
-        // private void OnMouseExit()
-        // {
-        //     controller.OnGizmoExited();
-        // }
     }
 }

@@ -853,7 +853,7 @@ PrefabInstance:
     - target: {fileID: 2970302052771475687, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0009254014
+      value: 0.00026744464
       objectReference: {fileID: 0}
     - target: {fileID: 2970302053341147602, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
@@ -1274,6 +1274,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 5873671400601005784}
+  rotationWidget: {fileID: 2247822485367285311}
+  isWalkableCheckBox: {fileID: 2043582925564451547}
 --- !u!1 &5873671400601005784 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3799294447354124338, guid: 864804fe332ca104d9a1967e76773334,
@@ -1445,6 +1447,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0cec5ff467fc03348ad2b3b92ec3ddb8, type: 3}
+--- !u!114 &2043582925564451547 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7258304351922608586, guid: 0cec5ff467fc03348ad2b3b92ec3ddb8,
+    type: 3}
+  m_PrefabInstance: {fileID: 8711912822635119377}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccd488c50caf13d4480c2d2824e91e03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8409671926649047366 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 888271814951406167, guid: 0cec5ff467fc03348ad2b3b92ec3ddb8,

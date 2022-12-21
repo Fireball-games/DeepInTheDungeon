@@ -219,7 +219,7 @@ namespace Scripts.MapEditor
                         if (_lastPrefabOnPosition)
                         {
                             UIManager.OpenEditorWindow(Manager.MapBuilder.GetPrefabConfigurationByTransformData(
-                                new PositionRotation(_lastPrefabOnPosition.transform.position, _lastPrefabOnPosition.transform.rotation)
+                                new PositionRotation(_lastPrefabOnPosition.transform.position, _lastPrefabOnPosition.GetBody().rotation)
                             ));
                         }
                         else

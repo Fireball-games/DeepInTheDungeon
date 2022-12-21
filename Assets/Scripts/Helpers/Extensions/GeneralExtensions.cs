@@ -93,6 +93,8 @@ namespace Scripts.Helpers.Extensions
             }
         }
 
+        public static Transform GetBody(this GameObject source) => source.transform.Find("Body");
+
         public static TKey GetFirstKeyByValue<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TValue value)
         {
             return dictionary.FirstOrDefault(entry =>

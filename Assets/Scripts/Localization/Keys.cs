@@ -13,6 +13,7 @@
         public const string ErrorBuildingPrefab = "ErrorBuildingPref";
         public const string Exit = "Exit";
         public const string Floors = "Floors";
+        public const string IsWalkable = "IsWalkable";
         public const string Load = "Load";
         public const string LoadingFileFailed = "LoadingFileFailed";
         public const string MapSaved = "MapSaved";
@@ -27,6 +28,7 @@
         public const string Offset = "Offset";
         public const string ReturnToEditor = "ReturnToEditor";
         public const string ReturnToMainScene = "ReturnToMainScene";
+        public const string Rotate = "Rotate";
         public const string Rows = "Rows";
         public const string Save = "Save";
         public const string SaveFailed = "SaveFailed";

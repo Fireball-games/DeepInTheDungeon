@@ -152,17 +152,17 @@ namespace Scripts.UI.Components
 #if UNITY_EDITOR
         protected virtual void OnValidate()
         {
-            if (frame)
+            if (frame != null)
             {
                 frameImage.sprite = frame;
             }
 
-            if (background)
+            if (background != null)
             {
                 backgroundImage.sprite = background;
             }
 
-            if (iconImage)
+            if (iconImage != null)
             {
                 iconImage.sprite = icon;
             }

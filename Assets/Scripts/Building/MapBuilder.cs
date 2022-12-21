@@ -153,6 +153,7 @@ namespace Scripts.Building
             if (!newPrefab)
             {
                 Logger.LogError($"Prefab \"{configuration.PrefabName}\" was not found.");
+                MapDescription.PrefabConfigurations.Remove(configuration);
                 return false;
             }
 
@@ -309,7 +310,7 @@ namespace Scripts.Building
 
         private IEnumerator BuildPrefabsCoroutine(List<PrefabConfiguration> configurations)
         {
-            foreach (PrefabConfiguration configuration in configurations)
+            foreach (PrefabConfiguration configuration in new List<PrefabConfiguration>(configurations))
             {
                 BuildPrefab(configuration);
 

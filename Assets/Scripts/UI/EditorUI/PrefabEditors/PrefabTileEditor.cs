@@ -37,9 +37,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             base.Open(configuration);
             
-            TilePrefab script = PhysicalPrefab.GetComponentInParent<TilePrefab>();
+            TilePrefab script = PhysicalPrefabBody.GetComponentInParent<TilePrefab>();
 
-            if (!PhysicalPrefab || !script)
+            if (!PhysicalPrefabBody || !script)
             {
                 Logger.Log($"loaded prefab {configuration.PrefabName} was either not loaded or missing {nameof(TilePrefab)} script.");
                 return;
@@ -47,14 +47,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             
             SetWidgets();
             
-            MapBuilder.Layout.ByGridV3Int(PhysicalPrefab.transform.position.ToGridPosition()).IsForMovement = script.isWalkable;
+            MapBuilder.Layout.ByGridV3Int(PhysicalPrefabBody.transform.position.ToGridPosition()).IsForMovement = script.isWalkable;
         }
 
         protected override void SetPrefab(string prefabName)
         {
             base.SetPrefab(prefabName);
 
-            MapBuilder.Layout.ByGridV3Int(PhysicalPrefab.transform.position.ToGridPosition()).IsForMovement = EditedConfiguration.IsWalkable;
+            MapBuilder.Layout.ByGridV3Int(PhysicalPrefabBody.transform.position.ToGridPosition()).IsForMovement = EditedConfiguration.IsWalkable;
             
             SetWidgets();
         }
@@ -71,15 +71,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void Rotate(float angles)
         {
             SetEdited();
-            PhysicalPrefab.transform.Rotate(Vector3.up, angles);
-            EditedConfiguration.TransformData.Rotation = PhysicalPrefab.transform.rotation;
+            PhysicalPrefabBody.transform.Rotate(Vector3.up, angles);
+            EditedConfiguration.TransformData.Rotation = PhysicalPrefabBody.transform.rotation;
         }
         
         private void SetIsWalkableInLayout(bool isWalkable)
         {
             SetEdited();
             EditedConfiguration.IsWalkable = isWalkable;
-            MapBuilder.Layout.ByGridV3Int(PhysicalPrefab.transform.position.ToGridPosition()).IsForMovement = isWalkable;
+            MapBuilder.Layout.ByGridV3Int(PhysicalPrefabBody.transform.position.ToGridPosition()).IsForMovement = isWalkable;
         }
     }
 }

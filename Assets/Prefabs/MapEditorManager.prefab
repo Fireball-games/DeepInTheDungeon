@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6547159520619869986}
   - component: {fileID: 8119083429710413764}
   - component: {fileID: 7220015128739686232}
+  - component: {fileID: 8656452529245927566}
   m_Layer: 0
   m_Name: MapEditorManager
   m_TagString: Untagged
@@ -63,9 +64,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2f1bf5175f729d4786a0248398b5ea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  digCursor: {fileID: 2800000, guid: b4a2fc7f84ae79d4281e2de28aebac6f, type: 3}
-  demolishCursor: {fileID: 2800000, guid: e111f1408c7d37542a33cf4d9749a1db, type: 3}
-  moveCameraCursor: {fileID: 2800000, guid: 6a46ef255a74f544e9ffc49af1106cc5, type: 3}
   maxValidClickTime: 0.1
   cursor3D: {fileID: 0}
   upperFloorTrigger: {fileID: 6631607821861774544}
@@ -101,6 +99,22 @@ MonoBehaviour:
   maxZoomHeight: 20
   cameraRotationSpeed: 400
   cameraHolder: {fileID: 0}
+--- !u!114 &8656452529245927566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6547159520619869991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77d76e4d8b7d483992a1c56b91760dca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalMaterial: {fileID: 2100000, guid: 3bc8e42481e475a46a0ed83e3117fdce, type: 2}
+  highlightedMaterial: {fileID: 2100000, guid: 1689094d618fb754da9f55a9ca90c152, type: 2}
+  waypointPrefab: {fileID: 8378733029829801835, guid: 1e089226b2240ae4e8dea4c69ca3f09d,
+    type: 3}
 --- !u!1001 &5508528768938712455
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6da8dfa0fbe818442b0b3731d9ade26d, type: 3}
-  m_Name: Stairs2F_1Up
+  m_Name: Stairs2F_1Up_north
   m_EditorClassIdentifier: 
   waypoints:
-  - position: {x: 0, y: 0, z: 0}
+  - position: {x: 0.5, y: 0, z: 0}
     moveSpeedModifier: 1
   - position: {x: 0, y: 0, z: 0}
     moveSpeedModifier: 1
-  - position: {x: 0, y: 0, z: 0}
+  - position: {x: -1, y: 1, z: 0}
     moveSpeedModifier: 1
-  - position: {x: 0, y: 0, z: 0}
+  - position: {x: -1.5, y: 1, z: 0}
     moveSpeedModifier: 1

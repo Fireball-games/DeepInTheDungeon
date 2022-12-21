@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FakeHologramMaterial
+  m_Name: MagicMaterialGreen
   m_Shader: {fileID: -6465566751694194690, guid: 9b8acfcba893c5f4298798a0b71b34b5,
     type: 3}
   m_ValidKeywords: []
@@ -39,16 +39,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaCutoff: 0.53
-    - _BlendStrength: 0.5
-    - _NoiseScale: 500
-    - _NoiseStrength: 1
-    - _Power: 0.55
+    - _AlphaCutoff: 0.28
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Strength: 3.72
+    - _Strength: 2
     m_Colors:
-    - _Color: {r: 0.07058824, g: 0.5294118, b: 0.9647059, a: 0}
+    - _Color: {r: 0.20392157, g: 1.3803922, b: 0.26666668, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &2086353876315224005
 MonoBehaviour:

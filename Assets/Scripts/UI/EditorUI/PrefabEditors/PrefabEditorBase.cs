@@ -36,6 +36,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected TC EditedConfiguration;
         private TC _originalConfiguration;
         protected EPrefabType EditedPrefabType;
+        protected GameObject PhysicalPrefabBody;
         protected GameObject PhysicalPrefab;
         protected HashSet<TPrefab> AvailablePrefabs;
         private Cursor3D Cursor3D;
@@ -91,7 +92,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _prefabList.Open(prefabListTitle, AvailablePrefabs!.Select(prefab => prefab.gameObject.name), SetPrefab);
             
-            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration).GetBody()?.gameObject;
+            PhysicalPrefabBody = MapBuilder.GetPrefabByConfiguration(configuration).GetBody()?.gameObject;
         }
 
         public void Open(EPrefabType prefabType, PositionRotation placeholderTransformData)
@@ -167,7 +168,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetActive(true);
             _prefabTitle.SetTitle(EditedConfiguration.PrefabName);
 
-            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(EditedConfiguration)?.GetBody()?.gameObject;
+            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(EditedConfiguration);
+            
+            if (PhysicalPrefab)
+            {
+                PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
+            }
 
             SetEdited();
             _deleteButton.gameObject.SetActive(true);
@@ -193,11 +199,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _deleteButton = buttons.Find("DeleteButton").GetComponent<Button>();
         }
 
-        private void Delete()
+        protected virtual void Delete()
         {
             TC oldConfiguration = CopyConfiguration(EditedConfiguration);
             EditedConfiguration = null;
-            PhysicalPrefab = null;
+            PhysicalPrefabBody = null;
             _prefabTitle.SetActive(false);
 
             Cursor3D.Hide();
@@ -232,7 +238,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Close();
         }
 
-        private void RemoveAndClose()
+        protected virtual void RemoveAndClose()
         {
             MapBuilder.RemovePrefab(EditedConfiguration);
             Close();
@@ -257,7 +263,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Placeholder.SetActive(false);
 
             _prefabTitle.SetActive(false);
-            PhysicalPrefab = null;
+            PhysicalPrefabBody = null;
 
             Cursor3D.Hide();
 

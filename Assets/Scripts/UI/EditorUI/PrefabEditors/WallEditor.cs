@@ -2,7 +2,10 @@
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
+using Scripts.Building.PrefabsSpawning.Walls.Indentificators;
+using Scripts.Helpers.Extensions;
 using Scripts.Localization;
+using Scripts.MapEditor.Services;
 using Scripts.ScriptableObjects;
 using Scripts.System;
 using Scripts.UI.EditorUI.PrefabEditors;
@@ -43,7 +46,7 @@ namespace Scripts.UI.EditorUI
             
             base.Open(configuration);
 
-            if (!PhysicalPrefab) return;
+            if (!PhysicalPrefabBody) return;
             
             offsetSlider.SetActive(true);
             offsetSlider.Value = configuration.Offset;
@@ -65,26 +68,50 @@ namespace Scripts.UI.EditorUI
         {
             base.SetPrefab(prefabName);
             
-            if (PhysicalPrefab)
+            if (PhysicalPrefabBody)
             {
                 offsetSlider.SetActive(true);
                 offsetSlider.Value = EditedConfiguration.Offset;
                 offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
             }
+            
+            VisualizeOtherComponents();
+        }
+
+        protected override void Delete()
+        {
+            if (EditedConfiguration.WayPoints.Any())
+            {
+                WayPointService.DestroyPath(EditedConfiguration.WayPoints[0].position.ToVector3Int());
+            }
+            
+            base.Delete();
+        }
+
+        protected override void RemoveAndClose()
+        {
+            if (EditedConfiguration.WayPoints.Any())
+            {
+                WayPointService.DestroyPath(EditedConfiguration.WayPoints[0].position.ToVector3Int());
+            }
+            
+            base.RemoveAndClose();
         }
 
         private void OnOffsetSliderValueChanged(float value)
         {
             SetEdited();
-            Vector3 newPosition = PhysicalPrefab.transform.localPosition;
+            Vector3 newPosition = PhysicalPrefabBody.transform.localPosition;
             newPosition.x = value;
             EditedConfiguration.Offset = value;
-            PhysicalPrefab.transform.localPosition = newPosition;
+            PhysicalPrefabBody.transform.localPosition = newPosition;
         }
 
         private void VisualizeOtherComponents()
         {
             WallPrefabBase script = PhysicalPrefab.GetComponentInParent<WallPrefabBase>();
+
+            if (!script) return;
             
             if (script.presentedInEditor)
             {
@@ -93,10 +120,28 @@ namespace Scripts.UI.EditorUI
 
             if (script is WallMovementBetween movementScript)
             {
+                Vector3 startPoint = EditorMouseService.Instance.MouseGridPosition.ToWorldPosition();
+                
                 if (EditedConfiguration.WayPoints.Count < 2 && movementScript.waypointsPreset)
                 {
-                    EditedConfiguration.WayPoints = movementScript.waypointsPreset.waypoints;
+                    List<Waypoint> translatedWaypoints = new();
+                    
+                    foreach (Waypoint waypoint in movementScript.waypointsPreset.waypoints)
+                    {
+                        Waypoint newWaypoint = new()
+                        {
+                            position = EditedConfiguration.TransformData.Position + waypoint.position,
+                            moveSpeedModifier = waypoint.moveSpeedModifier
+                        };
+                        translatedWaypoints.Add(newWaypoint);
+                    }
+                    
+                    EditedConfiguration.WayPoints = translatedWaypoints;
                 }
+                
+                WayPointService.AddPath(EditedConfiguration.WayPoints[0].position.ToVector3Int(),
+                    EditedConfiguration.WayPoints,
+                    true);
             }
         }
     }

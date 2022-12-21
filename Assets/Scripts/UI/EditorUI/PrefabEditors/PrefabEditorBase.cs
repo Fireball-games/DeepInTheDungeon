@@ -4,6 +4,7 @@ using Scripts.Building;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
 using Scripts.EventsManagement;
+using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.System;
@@ -89,7 +90,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _prefabList.Open(prefabListTitle, AvailablePrefabs!.Select(prefab => prefab.gameObject.name), SetPrefab);
             
-            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration).GetComponentInChildren<MeshFilter>()?.gameObject;
+            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration).GetBody()?.gameObject;
         }
 
         public void Open(EPrefabType prefabType, PositionRotation placeholderTransformData)
@@ -165,8 +166,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetActive(true);
             _prefabTitle.SetTitle(EditedConfiguration.PrefabName);
 
-            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(EditedConfiguration)?
-                .GetComponentInChildren<MeshFilter>()?.gameObject;
+            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(EditedConfiguration)?.GetBody()?.gameObject;
 
             SetEdited();
             _deleteButton.gameObject.SetActive(true);

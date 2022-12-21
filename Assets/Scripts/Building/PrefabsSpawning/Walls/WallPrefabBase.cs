@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
 using Scripts.MapEditor;
+using Scripts.ScriptableObjects;
 using Scripts.System;
 using Scripts.System.Pooling;
 using Scripts.UI.EditorUI;
@@ -12,10 +13,9 @@ namespace Scripts.Building.PrefabsSpawning.Walls
 {
     public abstract class WallPrefabBase : PrefabBase, IPoolInitializable
     {
-        public List<Vector3> waypoints;
-        public GameObject PresentedInEditor;
+        public GameObject presentedInEditor;
 
-        private MapEditorManager Manager => MapEditorManager.Instance;
+        private static MapEditorManager Manager => MapEditorManager.Instance;
         
         private Cursor3D _cursor3D;
         [NonSerialized] public bool WallEligibleForEditing;
@@ -40,12 +40,12 @@ namespace Scripts.Building.PrefabsSpawning.Walls
         {
             Transform ownTransform = transform;
             Vector3 position = ownTransform.position;
-            Quaternion rotation = ownTransform.rotation;
+            Quaternion rot = ownTransform.rotation;
 
-            FindObjectOfType<Cursor3D>().ShowAt(position, Cursor3D.EditorWallCursorScale, rotation);
+            FindObjectOfType<Cursor3D>().ShowAt(position, Cursor3D.EditorWallCursorScale, rot);
                 
             _ownConfiguration ??= Manager.MapBuilder
-                .GetPrefabConfigurationByTransformData(new PositionRotation(position, rotation)) as WallConfiguration;
+                .GetPrefabConfigurationByTransformData(new PositionRotation(position, rot)) as WallConfiguration;
             WallEligibleForEditing = true;
         }
     }

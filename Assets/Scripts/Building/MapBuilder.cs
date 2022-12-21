@@ -77,7 +77,7 @@ namespace Scripts.Building
 
             foreach (GameObject prefab in _prefabs)
             {
-                Transform offsetTransform = prefab.GetComponentInChildren<MeshFilter>().transform;
+                Transform offsetTransform = prefab.GetBody();
 
                 if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
 
@@ -160,14 +160,14 @@ namespace Scripts.Building
 
             if (configuration is TilePrefabConfiguration)
             {
-                newPrefab.GetComponentInChildren<MeshFilter>().transform.rotation = configuration.TransformData.Rotation;
+                newPrefab.GetBody().rotation = configuration.TransformData.Rotation;
             }
 
             if (configuration is WallConfiguration wallConfiguration)
             {
                 newPrefab.transform.localRotation = configuration.TransformData.Rotation;
                 
-                Transform physicalPart = newPrefab.GetComponentInChildren<MeshFilter>().transform;
+                Transform physicalPart = newPrefab.GetBody();
 
                 if (physicalPart)
                 {
@@ -218,7 +218,7 @@ namespace Scripts.Building
             }
 
             prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
-            Transform offsetTransform = prefabGo.GetComponentInChildren<MeshFilter>().transform;
+            Transform offsetTransform = prefabGo.GetBody();
             if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
 
             ObjectPool.Instance.ReturnToPool(prefabGo);

@@ -124,7 +124,7 @@ namespace Scripts.MapEditor.Services
         private static void BuildLines(PathController controller)
         {
             List<Vector3> positions = controller.Waypoints.Values.Select(wp => wp.MeshRenderer.transform.position).ToList();
-            for (int i = 1; i < controller.Waypoints.Count - 1; i++)
+            for (int i = 0; i < controller.Waypoints.Count - 1; i++)
             {
                 WaypointParts parts = controller.Waypoints.ElementAt(i).Value;
                 LineRenderer lr = parts.LineRenderer;

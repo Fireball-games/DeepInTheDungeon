@@ -271,6 +271,13 @@ namespace Scripts.Building
             return !result ? null : result;
         }
 
+        public IEnumerable<T> GetPrefabConfigurationsOnWorldPosition<T>(Vector3 worldPosition) where T : PrefabConfiguration
+        {
+            return MapDescription.PrefabConfigurations
+                .Where(p => p.TransformData.Position == worldPosition && p is T)
+                .Select(p => p as T);
+        }
+
         public void ReplacePrefabConfiguration(PrefabConfiguration newConfiguration)
         {
             int replaceIndex = MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData == newConfiguration.TransformData);

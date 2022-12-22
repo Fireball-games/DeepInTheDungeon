@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -10,7 +11,6 @@ using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -75,6 +75,17 @@ namespace Scripts.MapEditor
             HandleMouseclick();
             HandleMouseOverGizmos();
         }
+        
+        private void OnDisable()
+        {
+            EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
+            EditorEvents.OnMouseGridPositionChanged -= OnMouseGridPositionChanged;
+        }
+        
+        public void Reset()
+        {
+            SetGizmosActive(true);
+        }
 
         private void HandleMouseclick()
         {
@@ -106,14 +117,10 @@ namespace Scripts.MapEditor
             OnGizmoExited();
         }
 
-        private void OnDisable()
-        {
-            EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
-            EditorEvents.OnMouseGridPositionChanged -= OnMouseGridPositionChanged;
-        }
-
         private void OnGizmoEntered(ETileDirection direction)
         {
+            wall.SetActive(false);
+
             _isWallPlacementValid = true;
 
             PositionRotation positionData = _wallRotationMap[direction];
@@ -132,19 +139,16 @@ namespace Scripts.MapEditor
                 _prefabType = EPrefabType.WallOnWall;
             }
 
-            PrefabConfiguration existingConfiguration =
-                Manager.MapBuilder.GetPrefabConfigurationByTransformData(new(wall.transform.position, wall.transform.rotation));
-
-            if (existingConfiguration is WallConfiguration)
+            if (Manager.MapBuilder.GetPrefabConfigurationsOnWorldPosition<WallConfiguration>(wall.transform.position).Count() > 0)
             {
                 _isWallAlreadyExisting = true;
                 _isWallPlacementValid = false;
-                
+                wall.SetActive(false);
                 return;
             }
 
             _isWallAlreadyExisting = false;
-            Logger.Log("Activating wall at the end");
+            
             wall.SetActive(true);
         }
 
@@ -157,6 +161,8 @@ namespace Scripts.MapEditor
 
         private void OnMouseGridPositionChanged(Vector3Int currentGridPosition, Vector3Int previousGridPosition)
         {
+            wall.SetActive(false);
+            
             if (!EditorUIManager.Instance.IsAnyObjectEdited
                 && Manager.EditedLayout.HasIndex(currentGridPosition) 
                 && Manager.EditedLayout.ByGridV3Int(currentGridPosition) != null 
@@ -189,11 +195,6 @@ namespace Scripts.MapEditor
             {
                 body.SetActive(false);
             }
-        }
-
-        public void Reset()
-        {
-            SetGizmosActive(true);
         }
     }
 }

@@ -145,7 +145,7 @@ namespace Scripts.UI.EditorUI
             NewMapDialog dialog = EditorUIManager.Instance.NewMapDialog;
             int rows = int.Parse(dialog.rowsInput.Text);
             int columns = int.Parse(dialog.columnsInput.Text);
-            int floors = int.Parse(dialog.floorsInput.Text);
+            int floors = int.Parse(dialog.floorsInput.Text) + 2;
             string mapName = dialog.mapNameInput.Text;
 
             MapDescription newMap = MapBuilder.GenerateDefaultMap(

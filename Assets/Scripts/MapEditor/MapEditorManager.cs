@@ -25,7 +25,7 @@ namespace Scripts.MapEditor
         public const int MinColumns = 5;
         public const int MaxColumns = 30;
         public const int MinFloors = 3;
-        public const int MaxFloors = 10;
+        public const int MaxFloors = 12;
         
         [SerializeField] private float cameraHeight = 10f;
         [SerializeField] private Camera sceneCamera;

@@ -33,6 +33,7 @@ namespace Scripts.UI.EditorUI
             Action onOk = null,
             Action onCancel = null)
         {
+            mapNameInput.SetInputText("");
             base.Open(dialogTitle, onOk, onCancel, t.Get(Keys.CreateMap));
             
             mapNameInput.SetPlaceholderText(placeholderMapName);

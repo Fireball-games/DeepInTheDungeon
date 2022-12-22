@@ -76,6 +76,8 @@ namespace Scripts.MapEditor.Services
         {
             EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged += OnFloorChanged;
+            EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
+            EditorEvents.OnWorkingLevelChanged += OnWorkingLevelChanged;
         }
 
         private void Update()
@@ -123,6 +125,21 @@ namespace Scripts.MapEditor.Services
         {
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged -= OnFloorChanged;
+            EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
+            EditorEvents.OnWorkingLevelChanged -= OnWorkingLevelChanged;
+        }
+        
+        public void RefreshMousePosition(bool invalidateLastPosition = false)
+        {
+            if (!Manager.MapIsPresented) return;
+
+            SetGridPosition(invalidateLastPosition);
+        }
+
+        public void ResetCursor()
+        {
+            MouseCursorManager.ResetCursor();
+            RefreshMousePosition(true);
         }
         
         private void CheckMouseOverWall()
@@ -151,6 +168,10 @@ namespace Scripts.MapEditor.Services
         private void OnNewMapStartedCreation() => RecreateMousePlane();
 
         private void OnFloorChanged(int? _) => RecreateMousePlane();
+        
+        private void OnWorkingLevelChanged(ELevel newLevel) => ResetCursor();
+
+        private void OnWorkModeChanged(EWorkMode _) => ResetCursor();
         
         private void RecreateMousePlane() => _layerPlane = _layerPlane = new Plane(Vector3.up, 
             new Vector3(0f, 0.5f - Manager.CurrentFloor, 0f));
@@ -318,6 +339,9 @@ namespace Scripts.MapEditor.Services
             
             if (Manager.WorkLevel == ELevel.Equal)
             {
+                upperFloorTrigger.SetActive(false);
+                _buildService.HandleUpperFloorVisibility();
+                
                 GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
 
                 if (IsPositionOccupied(newGridPosition))
@@ -355,6 +379,9 @@ namespace Scripts.MapEditor.Services
             }
             else if (Manager.WorkLevel == ELevel.Lower)
             {
+                upperFloorTrigger.SetActive(false);
+                _buildService.HandleUpperFloorVisibility();
+                
                 if (!isNullTile)
                 {
                     Vector3Int bellowGridPosition = newGridPosition.AddToX(1);
@@ -450,19 +477,6 @@ namespace Scripts.MapEditor.Services
                         break;
                 }
             }
-        }
-
-        public void RefreshMousePosition(bool invalidateLastPosition = false)
-        {
-            if (!Manager.MapIsPresented) return;
-
-            SetGridPosition(invalidateLastPosition);
-        }
-
-        public void ResetCursor()
-        {
-            MouseCursorManager.ResetCursor();
-            RefreshMousePosition(true);
         }
     }
 }

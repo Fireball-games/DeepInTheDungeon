@@ -165,11 +165,11 @@ namespace Scripts.MapEditor.Services
             MeshFilter mf = newWaypoint.AddComponent<MeshFilter>();
             mf.mesh = _waypointMesh;
             MeshRenderer mr = newWaypoint.AddComponent<MeshRenderer>();
-            mr.material = _normalMaterial;
+            mr.material = new Material(_normalMaterial);
 
             LineRenderer lr = newWaypoint.AddComponent<LineRenderer>();
             lr.enabled = false;
-            lr.material = _waypointsLineMaterial;
+            lr.material = new Material(_waypointsLineMaterial);
             lr.numCapVertices = 5;
             lr.shadowCastingMode = ShadowCastingMode.Off;
             lr.allowOcclusionWhenDynamic = false;

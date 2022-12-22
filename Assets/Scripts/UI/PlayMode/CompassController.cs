@@ -34,7 +34,9 @@ namespace Scripts.UI
          targetRotation.z = targetRotation.y;
          targetRotation.y = 0;
 
-         while (Vector3.Distance(compassImage.transform.eulerAngles, targetRotation) > 0.05)
+         float startTime = Time.time;
+         
+         while (Time.time - startTime < 1f && Vector3.Distance(compassImage.transform.eulerAngles, targetRotation) > 0.07)
          {
             compassImage.transform.rotation = Quaternion.RotateTowards(compassImage.transform.rotation,
                Quaternion.Euler(targetRotation),
@@ -42,7 +44,7 @@ namespace Scripts.UI
          
             yield return null;
          }
-      
+         
          compassImage.transform.rotation = Quaternion.Euler(targetRotation);
       }
 

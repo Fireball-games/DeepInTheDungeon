@@ -5,12 +5,14 @@ using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.PrefabsSpawning.Walls.Indentificators;
+using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.ScriptableObjects;
 using Scripts.System;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Player
 {
@@ -34,7 +36,17 @@ namespace Scripts.Player
 
         private bool _isStartPositionSet;
         private bool _isBashingIntoWall;
-        private bool _atRest = true;
+        public bool _atRest = true;
+
+        private float _defaultMoveSpeed;
+        private float _defaultRotationSpeed;
+
+        private void Awake()
+        {
+            _defaultMoveSpeed = transitionSpeed;
+            _defaultRotationSpeed = transitionRotationSpeed;
+            _waypoints = new List<Waypoint>();
+        }
 
         public void SetPositionAndRotation(Vector3 gridPosition, Quaternion rotation)
         {
@@ -43,7 +55,7 @@ namespace Scripts.Player
             playerTransform.rotation = rotation;
             _targetRotation = rotation.eulerAngles;
             _isStartPositionSet = true;
-            _waypoints = null;
+            _waypoints.Clear();
 
             StartCoroutine(GroundCheckCoroutine(true));
         }
@@ -61,18 +73,16 @@ namespace Scripts.Player
 
             movementSetter?.Invoke();
 
-            if (IsTargetPositionValid() && (_waypoints == null || !_waypoints.Any()))
+            if (IsTargetPositionValid() && !_waypoints.Any())
             {
                 _atRest = false;
 
-                if (_waypoints == null || !_waypoints.Any())
-                {
-                    _prevTargetPosition = _targetPosition;
-                    StartCoroutine(PerformMovementCoroutine());
-                    return;
-                }
+                _prevTargetPosition = _targetPosition;
+                StartCoroutine(PerformMovementCoroutine());
+                return;
             }
-            else if (_waypoints != null && _waypoints.Any())
+
+            if (_waypoints.Any())
             {
                 StartCoroutine(PerformWaypointMovementCoroutine());
                 return;
@@ -90,6 +100,8 @@ namespace Scripts.Player
 
         private IEnumerator PerformWaypointMovementCoroutine()
         {
+            if (!_waypoints.Any()) yield break;
+
             for (int index = 1; index < _waypoints.Count; index++)
             {
                 Waypoint waypoint = _waypoints[index];
@@ -108,15 +120,28 @@ namespace Scripts.Player
                     _targetRotation = Quaternion.LookRotation(_waypoints[^1].position - _waypoints[^2].position, Vector3.up).eulerAngles;
                 }
 
-                yield return PerformMovementCoroutine();
+                AdjustTransitionSpeeds(_waypoints[index].moveSpeedModifier);
+
+                yield return PerformMovementCoroutine(false, false);
+
+                AdjustTransitionSpeeds();
             }
 
-            Vector3 rotation = transform.rotation.eulerAngles;
-            SetPositionAndRotation(_waypoints[^1].position.ToGridPosition(), Quaternion.Euler(new Vector3(0, rotation.y, 0)));
-            _waypoints = null;
+            Transform playerTransform = transform;
+            Vector3 rotation = playerTransform.rotation.eulerAngles;
+            
+            _targetRotation = new Vector3(0, rotation.y, 0);
+
+            StartCoroutine(PerformMovementCoroutine());
         }
 
-        private IEnumerator PerformMovementCoroutine()
+        private void AdjustTransitionSpeeds(float? modifier = null)
+        {
+            transitionSpeed = modifier == null ? _defaultMoveSpeed : _defaultMoveSpeed * (float) modifier;
+            TransitionRotationSpeed = modifier == null ? _defaultRotationSpeed : _defaultRotationSpeed * (float) modifier;
+        }
+
+        private IEnumerator PerformMovementCoroutine(bool isRestingOnFinish = true, bool doGroundCheck = true)
         {
             Transform myTransform = transform;
             float currentRotY = myTransform.eulerAngles.y;
@@ -128,6 +153,8 @@ namespace Scripts.Player
 
                 if (_targetRotation.y is > 270f and < 361f) _targetRotation.y = 0f;
                 if (_targetRotation.y < 0f) _targetRotation.y = 270f;
+                if (_targetRotation.x is > 330f and < 361f) _targetRotation.x = 0f;
+                if (_targetRotation.x < 0f) _targetRotation.x = 270f;
 
                 if (!smoothTransition)
                 {
@@ -144,9 +171,17 @@ namespace Scripts.Player
                 yield return null;
             }
 
-            yield return GroundCheckCoroutine();
+            if (doGroundCheck)
+            {
+                yield return GroundCheckCoroutine();
+            }
 
-            _atRest = true;
+            _atRest = isRestingOnFinish;
+            if (isRestingOnFinish)
+            {
+                _waypoints.Clear();
+            }
+
             _prevTargetPosition = _targetPosition;
 
             if (Math.Abs(currentRotY - transform.rotation.eulerAngles.y) > float.Epsilon)
@@ -213,11 +248,23 @@ namespace Scripts.Player
 
         private bool IsTargetPositionValid()
         {
-            Vector3Int intTargetPosition = Vector3Int.RoundToInt(_targetPosition);
-            intTargetPosition.y = -intTargetPosition.y;
+            Vector3Int gridPosition = _targetPosition.ToGridPosition();
 
-            return !IsMidWallInTargetDirection()
-                   && GameManager.Instance.CurrentMap.Layout[intTargetPosition.y, intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
+            return !IsMidWallInTargetDirection() && IsTargetTileEligibleToMoveOn(gridPosition);
+        }
+
+        private bool IsTargetTileEligibleToMoveOn(Vector3Int griPosition)
+        {
+            TileDescription[,,] layout = GameManager.Instance.CurrentMap.Layout;
+            bool isTargetTileOnSameLevelEligible = layout.ByGridV3Int(griPosition) is {IsForMovement: true};
+            // bool tileBellowIsEligible = true;
+            //
+            // if (isTargetTileOnSameLevelEligible)
+            // {
+            //     tileBellowIsEligible = layout[intTargetPosition.y - 1, intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
+            // }
+
+            return isTargetTileOnSameLevelEligible /*&& tileBellowIsEligible*/;
         }
 
         private bool IsMidWallInTargetDirection()
@@ -244,9 +291,12 @@ namespace Scripts.Player
                 if (wallScript is IMovementWall)
                 {
                     Transform hitTransform = hit.transform;
-                    _waypoints = (GameManager.Instance.MapBuilder
-                        .GetPrefabConfigurationByTransformData(
-                            new PositionRotation(hitTransform.position, hitTransform.rotation)) as WallConfiguration)?.WayPoints;
+                    _waypoints = new List<Waypoint>(
+                        (GameManager.Instance.MapBuilder
+                            .GetPrefabConfigurationByTransformData(
+                                new PositionRotation(hitTransform.position, hitTransform.rotation)) as WallConfiguration)?
+                        .WayPoints ?? new List<Waypoint>());
+
                     return false;
                 }
             }
@@ -261,6 +311,11 @@ namespace Scripts.Player
         private bool GroundCheck()
         {
             Vector3 currentPosition = transform.position;
+            Vector3Int bellowGridPosition = currentPosition.ToGridPosition();
+            bellowGridPosition.x += 1;
+
+            if (!IsTargetTileEligibleToMoveOn(bellowGridPosition)) return true;
+
             Ray ray = new(currentPosition, Vector3.down);
             return Physics.Raycast(ray, 0.7f, LayerMask.GetMask(LayersManager.WallMaskName));
         }

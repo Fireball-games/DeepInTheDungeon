@@ -2,7 +2,6 @@
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
-using Scripts.Building.PrefabsSpawning.Walls.Indentificators;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor.Services;
@@ -120,8 +119,6 @@ namespace Scripts.UI.EditorUI
 
             if (script is WallMovementBetween movementScript)
             {
-                Vector3 startPoint = EditorMouseService.Instance.MouseGridPosition.ToWorldPosition();
-                
                 if (EditedConfiguration.WayPoints.Count < 2 && movementScript.waypointsPreset)
                 {
                     List<Waypoint> translatedWaypoints = new();

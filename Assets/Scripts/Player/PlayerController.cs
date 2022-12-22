@@ -61,7 +61,7 @@ namespace Scripts.Player
 
             movementSetter?.Invoke();
 
-            if (IsTargetPositionValid())
+            if (IsTargetPositionValid() && (_waypoints == null || !_waypoints.Any()))
             {
                 _atRest = false;
 

@@ -47,17 +47,21 @@ namespace Scripts.MapEditor.Services
             _parent.SetActive(false);
         }
 
-        public static void HighlightPath(Vector3Int startPoint)
+        public static void HighlightPath(Vector3Int startPoint, bool isHighlighted = true)
         {
-            for (int index = 0; index < _paths[startPoint].Waypoints.Count; index++)
+            if (!_paths.TryGetValue(startPoint, out PathController controller) || controller.IsHighlighted == isHighlighted) return;
+
+            controller.IsHighlighted = isHighlighted;
+            
+            for (int index = 0; index < controller.Waypoints.Count; index++)
             {
-                HighlightPoint(startPoint, index);
+                HighlightPoint(startPoint, index, isHighlighted);
             }
         }
         
-        public static void HighlightPoint(Vector3Int startPoint, int pointIndex)
+        public static void HighlightPoint(Vector3Int startPoint, int pointIndex, bool isHighlighted = true)
         {
-            HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value);
+            HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value, isHighlighted);
         }
         
         public static void DestroyPath(Vector3Int startPoint)
@@ -105,24 +109,27 @@ namespace Scripts.MapEditor.Services
             HighlightPath(_paths.GetFirstKeyByValue(pathController));
         }
 
-        private static void HighlightPoint(WaypointParts waypoint)
+        private static void HighlightPoint(WaypointParts waypoint, bool isHighlighted = true)
         {
-            waypoint.MeshRenderer.material = _highlightedMaterial;
+            if (isHighlighted)
+            {
+                waypoint.MeshRenderer.material = _highlightedMaterial;
+                return;
+            }
+
+            waypoint.MeshRenderer.material = _normalMaterial;
             // TODO: add line renderer highlight
         }
 
         private static void BuildLines(PathController controller)
         {
             List<Vector3> positions = controller.Waypoints.Values.Select(wp => wp.MeshRenderer.transform.position).ToList();
-            for (int i = 0; i < controller.Waypoints.Count; i++)
+            for (int i = 1; i < controller.Waypoints.Count - 1; i++)
             {
                 WaypointParts parts = controller.Waypoints.ElementAt(i).Value;
-                
-                if (i < controller.Waypoints.Count - 1)
-                {
-                    LineRenderer lr = parts.LineRenderer;
-                    lr.SetPositions(new []{positions[i], positions[i + 1]});
-                }
+                LineRenderer lr = parts.LineRenderer;
+                lr.enabled = true;
+                lr.SetPositions(new []{positions[i], positions[i + 1]});
             }
         }
 
@@ -143,6 +150,7 @@ namespace Scripts.MapEditor.Services
             mr.material = _normalMaterial;
 
             LineRenderer lr = newWaypoint.AddComponent<LineRenderer>();
+            lr.enabled = false;
             lr.material = _waypointsLineMaterial;
             lr.numCapVertices = 5;
             lr.shadowCastingMode = ShadowCastingMode.Off;

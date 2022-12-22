@@ -12,7 +12,6 @@ using Scripts.Helpers.Extensions;
 using Scripts.ScriptableObjects;
 using Scripts.System;
 using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Player
 {
@@ -84,6 +83,8 @@ namespace Scripts.Player
 
             if (_waypoints.Any())
             {
+                _atRest = false;
+                
                 StartCoroutine(PerformWaypointMovementCoroutine());
                 return;
             }
@@ -131,7 +132,7 @@ namespace Scripts.Player
             Vector3 rotation = playerTransform.rotation.eulerAngles;
             
             _targetRotation = new Vector3(0, rotation.y, 0);
-
+            
             StartCoroutine(PerformMovementCoroutine());
         }
 
@@ -253,16 +254,10 @@ namespace Scripts.Player
             return !IsMidWallInTargetDirection() && IsTargetTileEligibleToMoveOn(gridPosition);
         }
 
-        private bool IsTargetTileEligibleToMoveOn(Vector3Int griPosition)
+        private static bool IsTargetTileEligibleToMoveOn(Vector3Int griPosition)
         {
             TileDescription[,,] layout = GameManager.Instance.CurrentMap.Layout;
             bool isTargetTileOnSameLevelEligible = layout.ByGridV3Int(griPosition) is {IsForMovement: true};
-            // bool tileBellowIsEligible = true;
-            //
-            // if (isTargetTileOnSameLevelEligible)
-            // {
-            //     tileBellowIsEligible = layout[intTargetPosition.y - 1, intTargetPosition.x, intTargetPosition.z] is {IsForMovement: true};
-            // }
 
             return isTargetTileOnSameLevelEligible /*&& tileBellowIsEligible*/;
         }

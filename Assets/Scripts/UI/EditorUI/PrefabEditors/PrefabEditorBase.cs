@@ -76,8 +76,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _isEditingExistingPrefab = true;
 
-            Placeholder.transform.position = configuration.TransformData.Position;
-            Placeholder.transform.rotation = configuration.TransformData.Rotation;
+            // Placeholder.transform.position = configuration.TransformData.Position;
+            // Placeholder.transform.rotation = configuration.TransformData.Rotation;
 
             EditedPrefabType = configuration.PrefabType;
             EditedConfiguration = configuration;
@@ -91,8 +91,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetTitle(configuration.PrefabName);
 
             _prefabList.Open(prefabListTitle, AvailablePrefabs!.Select(prefab => prefab.gameObject.name), SetPrefab);
-            
-            PhysicalPrefabBody = MapBuilder.GetPrefabByConfiguration(configuration).GetBody()?.gameObject;
+
+            PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration);
+            PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
         }
 
         public void Open(EPrefabType prefabType, PositionRotation placeholderTransformData)
@@ -162,6 +163,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             if (!MapBuilder.BuildPrefab(EditedConfiguration))
             {
                 SetStatusText(t.Get(Keys.ErrorBuildingPrefab));
+                Placeholder.SetActive(false);
                 return;
             }
 

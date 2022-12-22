@@ -45,12 +45,13 @@ namespace Scripts.UI.EditorUI
             
             base.Open(configuration);
 
-            if (!PhysicalPrefabBody) return;
-            
-            offsetSlider.SetActive(true);
-            offsetSlider.Value = configuration.Offset;
-            offsetSlider.slider.onValueChanged.RemoveAllListeners();
-            offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
+            if (PhysicalPrefabBody)
+            {
+                offsetSlider.SetActive(true);
+                offsetSlider.Value = configuration.Offset;
+                offsetSlider.slider.onValueChanged.RemoveAllListeners();
+                offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
+            }
 
             VisualizeOtherComponents();
         }

@@ -10,6 +10,7 @@ using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -143,6 +144,7 @@ namespace Scripts.MapEditor
             }
 
             _isWallAlreadyExisting = false;
+            Logger.Log("Activating wall at the end");
             wall.SetActive(true);
         }
 

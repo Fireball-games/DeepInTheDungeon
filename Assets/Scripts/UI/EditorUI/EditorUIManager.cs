@@ -38,6 +38,7 @@ namespace Scripts.UI.EditorUI
         private ImageButton _playButton;
         private Title _mapTitle;
         private ToggleFramedButton _perspectiveToggle;
+        private ToggleFramedButton _waypointsShowToggle;
 
         private IPrefabEditor _openedEditor;
 
@@ -47,7 +48,8 @@ namespace Scripts.UI.EditorUI
 
             _playButton = body.transform.Find("PlayButton").GetComponent<ImageButton>();
             _mapTitle = body.transform.Find("MapTitle").GetComponent<Title>();
-            _perspectiveToggle = body.transform.Find("PerspectiveToggle").GetComponent<ToggleFramedButton>();
+            _perspectiveToggle = body.transform.Find("VisualControlButtons/PerspectiveToggle").GetComponent<ToggleFramedButton>();
+            _waypointsShowToggle = body.transform.Find("VisualControlButtons/WaypointsShowToggle").GetComponent<ToggleFramedButton>();
             WallGizmo = FindObjectOfType<WallGizmoController>();
         }
 
@@ -55,6 +57,7 @@ namespace Scripts.UI.EditorUI
         {
             _playButton.OnClick += manager.PlayMap;
             _perspectiveToggle.OnClick += OnPerspectiveToggleClick;
+            _waypointsShowToggle.OnClick += OnWaypointsShowToggleClick;
             _perspectiveToggle.dontToggleOnclick = true;
 
             EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
@@ -69,6 +72,7 @@ namespace Scripts.UI.EditorUI
         {
             _playButton.OnClick -= manager.PlayMap;
             _perspectiveToggle.OnClick -= OnPerspectiveToggleClick;
+            _waypointsShowToggle.OnClick -= OnWaypointsShowToggleClick;
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
             EditorEvents.OnFloorChanged -= OnFloorChanged;
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
@@ -86,6 +90,14 @@ namespace Scripts.UI.EditorUI
         private void OnPerspectiveToggleClick()
         {
             EditorCameraService.ToggleCameraPerspective();
+        }
+
+        private void OnWaypointsShowToggleClick()
+        {
+            if (_waypointsShowToggle.toggled)
+                WayPointService.ShowWaypoints();
+            else
+                WayPointService.HideWaypoints();
         }
 
         private void OnNewMapStartedCreation()

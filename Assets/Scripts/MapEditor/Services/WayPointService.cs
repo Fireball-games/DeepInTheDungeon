@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Scripts.Helpers.Extensions;
 using Scripts.ScriptableObjects;
@@ -26,7 +27,7 @@ namespace Scripts.MapEditor.Services
         private static Color _pathColorStart;
         private static Color _pathColorEnd;
         private static GameObject _parent;
-        private static bool _areWaypointsShows;
+        private static bool _areWaypointsShows = true;
         private static readonly int StartColor = Shader.PropertyToID("_StartColor");
         private static readonly int EndColor = Shader.PropertyToID("_EndColor");
 
@@ -46,13 +47,20 @@ namespace Scripts.MapEditor.Services
         public static void ShowWaypoints()
         {
             _areWaypointsShows = true;
-            _parent.SetActive(true);
+            foreach (PathController controller in _paths.Values)
+            {
+                controller.gameObject.SetActive(true);
+            }
         }
 
         public static void HideWaypoints()
         {
             _areWaypointsShows = false;
-            _parent.SetActive(false);
+            
+            foreach (PathController controller in _paths.Values.Where(controller => !controller.IsHighlighted))
+            {
+                controller.gameObject.SetActive(false);
+            }
         }
 
         public static void HighlightPath(Vector3Int startPoint, bool isHighlighted = true)
@@ -109,7 +117,11 @@ namespace Scripts.MapEditor.Services
             if (highlightAfterBuild)
             {
                 HighlightPath(controller);
+                return;
             }
+            
+            if (!_areWaypointsShows)
+                HideWaypoints();
         }
 
         private static void HighlightPath(PathController pathController)
@@ -172,5 +184,11 @@ namespace Scripts.MapEditor.Services
 
             return newWaypoint;
         }
+    }
+    
+    public class WaypointParts
+    {
+        public LineRenderer LineRenderer;
+        public MeshRenderer MeshRenderer;
     }
 }

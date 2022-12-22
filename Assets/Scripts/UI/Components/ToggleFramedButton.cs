@@ -19,12 +19,12 @@ namespace Scripts.UI.Components
 
         protected override void OnClickInternal()
         {
-            base.OnClickInternal();
-
             if (!dontToggleOnclick)
             {
                 SetToggle(!toggled);
             }
+            
+            base.OnClickInternal();
         }
 
         private void SetToggle(bool isToggled, bool isSilent = false)

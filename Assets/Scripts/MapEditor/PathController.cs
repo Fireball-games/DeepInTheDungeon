@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Scripts.ScriptableObjects;
 using UnityEngine;
 
 namespace Scripts.MapEditor
 {
     public class PathController : MonoBehaviour
     {
-        public List<GameObject> waypoints;
+        public Dictionary<GameObject, WaypointParts> Waypoints;
 
         private void Awake()
         {
-            waypoints = new List<GameObject>();
+            Waypoints = new Dictionary<GameObject, WaypointParts>();
         }
     }
 }

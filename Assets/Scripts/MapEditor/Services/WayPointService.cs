@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.Helpers.Extensions;
 using Scripts.ScriptableObjects;
 using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
+using UnityEngine.Rendering;
 
 namespace Scripts.MapEditor.Services
 {
@@ -12,6 +11,7 @@ namespace Scripts.MapEditor.Services
     {
         [SerializeField] private Material normalMaterial;
         [SerializeField] private Material highlightedMaterial;
+        [SerializeField] private Material waypointLinesMaterial;
         [SerializeField] private GameObject waypointPrefab;
         [SerializeField] private Vector3 waypointScale = new(0.3f, 0.3f, 0.3f);
 
@@ -20,6 +20,7 @@ namespace Scripts.MapEditor.Services
         private static Vector3 _waypointScale;
         private static Material _normalMaterial;
         private static Material _highlightedMaterial;
+        private static Material _waypointsLineMaterial;
         private static GameObject _parent;
         private static bool _areWaypointsShows;
 
@@ -31,6 +32,7 @@ namespace Scripts.MapEditor.Services
             _waypointScale = waypointScale;
             _normalMaterial = normalMaterial;
             _highlightedMaterial = highlightedMaterial;
+            _waypointsLineMaterial = waypointLinesMaterial;
         }
 
         public static void ShowWaypoints()
@@ -45,11 +47,27 @@ namespace Scripts.MapEditor.Services
             _parent.SetActive(false);
         }
 
-        public static void HighlightPath(PathController pathController)
+        public static void HighlightPath(Vector3Int startPoint)
         {
-            Logger.LogNotImplemented();
+            for (int index = 0; index < _paths[startPoint].Waypoints.Count; index++)
+            {
+                HighlightPoint(startPoint, index);
+            }
         }
-
+        
+        public static void HighlightPoint(Vector3Int startPoint, int pointIndex)
+        {
+            HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value);
+        }
+        
+        public static void DestroyPath(Vector3Int startPoint)
+        {
+            if (!_paths.ContainsKey(startPoint)) return;
+            
+            Destroy(_paths[startPoint].gameObject);
+            _paths.Remove(startPoint);
+        }
+        
         public static void AddPath(IEnumerable<Waypoint> waypoints, bool highlightAfterBuild = false)
         {
             Vector3 startPoint = waypoints.ElementAt(0).position;
@@ -68,28 +86,47 @@ namespace Scripts.MapEditor.Services
 
             foreach (Waypoint waypoint in waypoints)
             {
-                GameObject drawnWaypoint = DrawWaypoint(waypoint.position);
+                GameObject drawnWaypoint = DrawWaypoint(waypoint.position, controller);
                 drawnWaypoint.transform.parent = pathParent.transform;
-                controller.waypoints.Add(drawnWaypoint);
             }
             
             _paths.Add(startPoint.ToVector3Int(), controller);
+
+            BuildLines(controller);
 
             if (highlightAfterBuild)
             {
                 HighlightPath(controller);
             }
         }
-        
-        public static void DestroyPath(Vector3Int startPoint)
+
+        private static void HighlightPath(PathController pathController)
         {
-            if (!_paths.ContainsKey(startPoint)) return;
-            
-            Destroy(_paths[startPoint].gameObject);
-            _paths.Remove(startPoint);
+            HighlightPath(_paths.GetFirstKeyByValue(pathController));
         }
 
-        private static GameObject DrawWaypoint(Vector3 waypointPosition)
+        private static void HighlightPoint(WaypointParts waypoint)
+        {
+            waypoint.MeshRenderer.material = _highlightedMaterial;
+            // TODO: add line renderer highlight
+        }
+
+        private static void BuildLines(PathController controller)
+        {
+            List<Vector3> positions = controller.Waypoints.Values.Select(wp => wp.MeshRenderer.transform.position).ToList();
+            for (int i = 0; i < controller.Waypoints.Count; i++)
+            {
+                WaypointParts parts = controller.Waypoints.ElementAt(i).Value;
+                
+                if (i < controller.Waypoints.Count - 1)
+                {
+                    LineRenderer lr = parts.LineRenderer;
+                    lr.SetPositions(new []{positions[i], positions[i + 1]});
+                }
+            }
+        }
+
+        private static GameObject DrawWaypoint(Vector3 waypointPosition, PathController controller)
         {
             GameObject newWaypoint = new($"Waypoint_{waypointPosition.x}_{waypointPosition.y}_{waypointPosition.z}")
             {
@@ -104,6 +141,20 @@ namespace Scripts.MapEditor.Services
             mf.mesh = _waypointMesh;
             MeshRenderer mr = newWaypoint.AddComponent<MeshRenderer>();
             mr.material = _normalMaterial;
+
+            LineRenderer lr = newWaypoint.AddComponent<LineRenderer>();
+            lr.material = _waypointsLineMaterial;
+            lr.numCapVertices = 5;
+            lr.shadowCastingMode = ShadowCastingMode.Off;
+            lr.allowOcclusionWhenDynamic = false;
+            lr.startWidth = 0.05f;
+            lr.endWidth = 0.001f;
+
+            controller.Waypoints.Add(newWaypoint, new WaypointParts()
+            {
+                MeshRenderer = mr,
+                LineRenderer = lr
+            });
 
             return newWaypoint;
         }

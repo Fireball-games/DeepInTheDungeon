@@ -101,6 +101,14 @@ namespace Scripts.Helpers.Extensions
                 EqualityComparer<TValue>.Default.Equals(entry.Value, value)).Key;
         }
 
+        public static Color SetIntensity(this Color source, float intensity)
+        {
+            source.r *= intensity;           
+            source.g *= intensity;           
+            source.b *= intensity;           
+            return source;
+        }
+
         public static void CreateDirectoryIfNotExists(this string directoryPath)
         {
             if (!Directory.Exists(directoryPath))

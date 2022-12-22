@@ -12,6 +12,8 @@ namespace Scripts.MapEditor.Services
         [SerializeField] private Material normalMaterial;
         [SerializeField] private Material highlightedMaterial;
         [SerializeField] private Material waypointLinesMaterial;
+        [ColorUsage(true, true)][SerializeField] private Color pathColorStart;
+        [ColorUsage(true, true)][SerializeField] private Color pathColorEnd;
         [SerializeField] private GameObject waypointPrefab;
         [SerializeField] private Vector3 waypointScale = new(0.3f, 0.3f, 0.3f);
 
@@ -21,8 +23,12 @@ namespace Scripts.MapEditor.Services
         private static Material _normalMaterial;
         private static Material _highlightedMaterial;
         private static Material _waypointsLineMaterial;
+        private static Color _pathColorStart;
+        private static Color _pathColorEnd;
         private static GameObject _parent;
         private static bool _areWaypointsShows;
+        private static readonly int StartColor = Shader.PropertyToID("_StartColor");
+        private static readonly int EndColor = Shader.PropertyToID("_EndColor");
 
         private void Awake()
         {
@@ -33,6 +39,8 @@ namespace Scripts.MapEditor.Services
             _normalMaterial = normalMaterial;
             _highlightedMaterial = highlightedMaterial;
             _waypointsLineMaterial = waypointLinesMaterial;
+            _pathColorStart = pathColorStart;
+            _pathColorEnd = pathColorEnd;
         }
 
         public static void ShowWaypoints()
@@ -52,30 +60,30 @@ namespace Scripts.MapEditor.Services
             if (!_paths.TryGetValue(startPoint, out PathController controller) || controller.IsHighlighted == isHighlighted) return;
 
             controller.IsHighlighted = isHighlighted;
-            
+
             for (int index = 0; index < controller.Waypoints.Count; index++)
             {
                 HighlightPoint(startPoint, index, isHighlighted);
             }
         }
-        
+
         public static void HighlightPoint(Vector3Int startPoint, int pointIndex, bool isHighlighted = true)
         {
             HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value, isHighlighted);
         }
-        
+
         public static void DestroyPath(Vector3Int startPoint)
         {
             if (!_paths.ContainsKey(startPoint)) return;
-            
+
             Destroy(_paths[startPoint].gameObject);
             _paths.Remove(startPoint);
         }
-        
+
         public static void AddPath(IEnumerable<Waypoint> waypoints, bool highlightAfterBuild = false)
         {
             Vector3 startPoint = waypoints.ElementAt(0).position;
-            
+
             DestroyPath(startPoint.ToVector3Int());
 
             GameObject pathParent = new($"Path_{waypoints.Count()}x_{startPoint.x}_{startPoint.y}_{startPoint.z}")
@@ -93,7 +101,7 @@ namespace Scripts.MapEditor.Services
                 GameObject drawnWaypoint = DrawWaypoint(waypoint.position, controller);
                 drawnWaypoint.transform.parent = pathParent.transform;
             }
-            
+
             _paths.Add(startPoint.ToVector3Int(), controller);
 
             BuildLines(controller);
@@ -111,14 +119,12 @@ namespace Scripts.MapEditor.Services
 
         private static void HighlightPoint(WaypointParts waypoint, bool isHighlighted = true)
         {
-            if (isHighlighted)
-            {
-                waypoint.MeshRenderer.material = _highlightedMaterial;
-                return;
-            }
+            float factor = isHighlighted ? 2f : 1f;
+            Material material = isHighlighted ? _highlightedMaterial : _normalMaterial;
 
-            waypoint.MeshRenderer.material = _normalMaterial;
-            // TODO: add line renderer highlight
+            waypoint.MeshRenderer.material = material;
+            waypoint.LineRenderer.material.SetColor(StartColor, _pathColorStart.SetIntensity(factor));
+            waypoint.LineRenderer.material.SetColor(EndColor, _pathColorEnd.SetIntensity(factor));
         }
 
         private static void BuildLines(PathController controller)
@@ -129,7 +135,7 @@ namespace Scripts.MapEditor.Services
                 WaypointParts parts = controller.Waypoints.ElementAt(i).Value;
                 LineRenderer lr = parts.LineRenderer;
                 lr.enabled = true;
-                lr.SetPositions(new []{positions[i], positions[i + 1]});
+                lr.SetPositions(new[] {positions[i], positions[i + 1]});
             }
         }
 

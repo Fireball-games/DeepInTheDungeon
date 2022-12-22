@@ -11,6 +11,7 @@ using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.System.Pooling;
+using Unity.VisualScripting;
 using UnityEngine;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
 using Logger = Scripts.Helpers.Logger;
@@ -316,6 +317,7 @@ namespace Scripts.Building
             }
         }
 
+        private int _runningFloorBuilds;
         private IEnumerator BuildLayoutCoroutine(TileDescription[,,] layout)
         {
             Layout = layout;
@@ -325,25 +327,47 @@ namespace Scripts.Building
 
             for (int floor = 0; floor < layout.GetLength(0); floor++)
             {
-                for (int row = 0; row < layout.GetLength(1); row++)
-                {
-                    for (int column = 0; column < layout.GetLength(2); column++)
-                    {
-                        if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
-                        {
-                            _playBuilder.BuildTile(floor, row, column);
-                        }
-                        else
-                        {
-                            _editorBuilder.BuildTile(floor, row, column);
-                        }
-
-                        yield return null;
-                    }
-                }
+                _runningFloorBuilds += 1;
+                StartCoroutine(BuildFloor(floor, layout));
             }
 
+            yield return new WaitUntil(() => _runningFloorBuilds == 0);
+
             OnLayoutBuilt?.Invoke();
+        }
+
+        private IEnumerator BuildFloor(int floor, TileDescription[,,] layout)
+        {
+            for (int row = 0; row < layout.GetLength(1); row++)
+            {
+                _runningRowBuilds += 1;
+                StartCoroutine(BuildRow(floor, row, layout));
+            }
+
+            _runningFloorBuilds -= 1;
+
+            yield return new WaitUntil(() => _runningRowBuilds == 0);
+        }
+
+        private int _runningRowBuilds;
+
+        private IEnumerator BuildRow(int floor, int row, TileDescription[,,] layout)
+        {
+            for (int column = 0; column < layout.GetLength(2); column++)
+            {
+                if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
+                {
+                    _playBuilder.BuildTile(floor, row, column);
+                }
+                else
+                {
+                    _editorBuilder.BuildTile(floor, row, column);
+                }
+
+                yield return null;
+            }
+
+            _runningRowBuilds -= 1;
         }
 
         private IEnumerator BuildPrefabsCoroutine(List<PrefabConfiguration> configurations)

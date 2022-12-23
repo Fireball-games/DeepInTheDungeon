@@ -405,7 +405,7 @@ namespace Scripts.MapEditor.Services
 
         private bool IsPositionOccupied(Vector3Int newGridPosition)
         {
-            return Manager.MapBuilder.GetPrefabByGridPosition(newGridPosition) != null;
+            return Manager.MapBuilder.GetPrefabByGridPosition(newGridPosition);
         }
 
         private void SetCursorByType(EGridPositionType type)

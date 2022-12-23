@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
-using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.System.Pooling;
-using Unity.VisualScripting;
 using UnityEngine;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building
 {
@@ -33,23 +28,25 @@ namespace Scripts.Building
         internal Dictionary<Vector3Int, GameObject> PhysicalTiles;
         internal Dictionary<int, List<NullTile>> NullTilesMap;
         internal MapDescription MapDescription;
+        internal GameObject PrefabsParent;
 
-        private MapEditorManager EditorManager => MapEditorManager.Instance;
-        private GameObject _prefabsParent;
-        private HashSet<GameObject> _prefabs;
+        private static MapEditorManager EditorManager => MapEditorManager.Instance;
+        private PrefabBuilder _prefabBuilder;
+        internal HashSet<GameObject> Prefabs;
 
         private void Awake()
         {
             PhysicalTiles = new Dictionary<Vector3Int, GameObject>();
             NullTilesMap = new Dictionary<int, List<NullTile>>();
-            _prefabs = new HashSet<GameObject>();
+            Prefabs = new HashSet<GameObject>();
+            _prefabBuilder = new PrefabBuilder();
 
             if (!LayoutParent)
             {
                 LayoutParent = new GameObject("Layout").transform;
                 LayoutParent.transform.parent = levelPartsParent.transform;
 
-                _prefabsParent = new GameObject("Prefabs")
+                PrefabsParent = new GameObject("Prefabs")
                 {
                     transform =
                     {
@@ -66,7 +63,7 @@ namespace Scripts.Building
             MapDescription = mapDescription;
 
             StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
-            StartCoroutine(BuildPrefabsCoroutine(mapDescription.PrefabConfigurations));
+            _prefabBuilder.BuildPrefabs(mapDescription.PrefabConfigurations);
         }
 
         public void SetLayout(TileDescription[,,] layout) => Layout = layout;
@@ -78,7 +75,7 @@ namespace Scripts.Building
                 ObjectPool.Instance.ReturnToPool(tile);
             }
 
-            foreach (GameObject prefab in _prefabs)
+            foreach (GameObject prefab in Prefabs)
             {
                 Transform offsetTransform = prefab.GetBody();
 
@@ -89,7 +86,7 @@ namespace Scripts.Building
 
             NullTilesMap.Clear();
             PhysicalTiles.Clear();
-            _prefabs.Clear();
+            Prefabs.Clear();
         }
 
         /// <summary>
@@ -145,158 +142,6 @@ namespace Scripts.Building
         }
 
         /// <summary>
-        /// Builds new prefab and both stores configuration in MapDescription and GameObject in Prefabs list.
-        /// </summary>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
-        public bool BuildPrefab(PrefabConfiguration configuration)
-        {
-            bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
-            
-            GameObject newPrefab = PrefabStore.Instantiate(configuration.PrefabName, _prefabsParent);
-
-            if (!newPrefab)
-            {
-                Logger.LogError($"Prefab \"{configuration.PrefabName}\" was not found.");
-                MapDescription.PrefabConfigurations.Remove(configuration);
-                return false;
-            }
-
-            newPrefab.transform.position = configuration.TransformData.Position;
-
-            if (configuration is TilePrefabConfiguration)
-            {
-                newPrefab.GetBody().rotation = configuration.TransformData.Rotation;
-            }
-
-            if (configuration is WallConfiguration wallConfiguration)
-            {
-                newPrefab.transform.localRotation = configuration.TransformData.Rotation;
-                
-                Transform physicalPart = newPrefab.GetBody();
-
-                if (physicalPart)
-                {
-                    Vector3 position = physicalPart.localPosition;
-                    position.x += wallConfiguration.Offset;
-                    physicalPart.localPosition = position;
-                }
-
-                if (isEditorMode)
-                {
-                    WallPrefabBase script = newPrefab.GetComponent<WallPrefabBase>();
-
-                    if (script && script.presentedInEditor)
-                    {
-                        script.presentedInEditor.SetActive(true);
-                    }
-
-                    if (wallConfiguration.WayPoints != null && wallConfiguration.WayPoints.Any())
-                    {
-                        WayPointService.AddPath(wallConfiguration.WayPoints);
-                    }
-                }
-            }
-
-            MapDescription.PrefabConfigurations ??= new List<PrefabConfiguration>();
-
-            if (!MapDescription.PrefabConfigurations.Contains(configuration))
-            {
-                MapDescription.PrefabConfigurations.Add(configuration);
-            }
-
-            _prefabs.Add(newPrefab);
-
-            if (isEditorMode && -newPrefab.transform.position.y < MapEditorManager.Instance.CurrentFloor)
-            {
-                newPrefab.SetActive(false);
-            }
-
-            return true;
-        }
-
-        public void RemovePrefab(PrefabConfiguration configuration)
-        {
-            if (configuration == null) return;
-
-            PrefabConfiguration config = MapDescription.PrefabConfigurations.FirstOrDefault(c =>
-                c.PrefabName == configuration.PrefabName
-                && c.TransformData == configuration.TransformData);
-
-            if (config == null) return;
-
-            MapDescription.PrefabConfigurations.Remove(config);
-
-            GameObject prefabGo = _prefabs.FirstOrDefault(go =>
-                go.name == configuration.PrefabName && go.transform.position == configuration.TransformData.Position);
-
-            if (!prefabGo)
-            {
-                Logger.LogWarning($"No prefab of name \"{configuration.PrefabName}\" found for removal in Prefabs.");
-                return;
-            }
-
-            _prefabs.Remove(prefabGo);
-
-            if (configuration is TilePrefabConfiguration)
-            {
-                Layout.ByGridV3Int(prefabGo.transform.position.ToGridPosition()).IsForMovement = true;
-            }
-
-            prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
-            Transform offsetTransform = prefabGo.GetBody();
-            if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
-
-            ObjectPool.Instance.ReturnToPool(prefabGo);
-        }
-
-        public GameObject GetPrefabByConfiguration(PrefabConfiguration configuration)
-        {
-            GameObject result = _prefabs.FirstOrDefault(p => p.transform.position == configuration.TransformData.Position
-                                                             && p.name == configuration.PrefabName);
-
-            return !result ? null : result;
-        }
-        
-        public GameObject GetPrefabByGridPosition(Vector3Int position)
-        {
-            GameObject result = _prefabs.FirstOrDefault(p => p.transform.position == position.ToWorldPositionV3Int());
-
-            return !result ? null : result;
-        }
-        
-        public GameObject GetPrefabByWorldPosition(Vector3Int position)
-        {
-            GameObject result = _prefabs.FirstOrDefault(p => p.transform.position == position);
-
-            return !result ? null : result;
-        }
-
-        public IEnumerable<T> GetPrefabConfigurationsOnWorldPosition<T>(Vector3 worldPosition) where T : PrefabConfiguration
-        {
-            return MapDescription.PrefabConfigurations
-                .Where(p => p.TransformData.Position == worldPosition && p is T)
-                .Select(p => p as T);
-        }
-
-        public void ReplacePrefabConfiguration(PrefabConfiguration newConfiguration)
-        {
-            int replaceIndex = MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData == newConfiguration.TransformData);
-            MapDescription.PrefabConfigurations[replaceIndex] = newConfiguration;
-        }
-
-        public void ChangePrefabPositionsBy(Vector3 positionChangeDelta)
-        {
-            foreach (PrefabConfiguration configuration in MapDescription.PrefabConfigurations)
-            {
-                configuration.TransformData.Position += positionChangeDelta;
-            }
-        }
-
-        public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation transformData) =>
-            MapDescription.PrefabConfigurations.FirstOrDefault(c => c.TransformData == transformData);
-
-        /// <summary>
         /// Determinate if floor should be visible, usable only from Editor
         /// </summary>
         /// <param name="floor"></param>
@@ -308,16 +153,17 @@ namespace Scripts.Building
         }
 
         public void SetPrefabsVisibility() => SetPrefabsVisibility(EditorManager.FloorVisibilityMap);
-        
+
         public void SetPrefabsVisibility(Dictionary<int, bool> floorVisibilityMap)
         {
-            foreach (GameObject prefab in _prefabs)
+            foreach (GameObject prefab in Prefabs)
             {
                 prefab.SetActive(floorVisibilityMap[Mathf.RoundToInt(-prefab.transform.position.y)]);
             }
         }
 
         private int _runningFloorBuilds;
+
         private IEnumerator BuildLayoutCoroutine(TileDescription[,,] layout)
         {
             Layout = layout;
@@ -370,16 +216,6 @@ namespace Scripts.Building
             _runningRowBuilds -= 1;
         }
 
-        private IEnumerator BuildPrefabsCoroutine(List<PrefabConfiguration> configurations)
-        {
-            foreach (PrefabConfiguration configuration in new List<PrefabConfiguration>(configurations))
-            {
-                BuildPrefab(configuration);
-
-                yield return null;
-            }
-        }
-
         /// <summary>
         /// Works over physical tile, shows or hides walls after assumed changed layout. 
         /// </summary>
@@ -428,5 +264,24 @@ namespace Scripts.Building
 
             return layout;
         }
+
+        public GameObject GetPrefabByGridPosition(Vector3Int newGridPosition) => _prefabBuilder.GetPrefabByGridPosition(newGridPosition);
+
+        public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation positionRotation) =>
+            _prefabBuilder.GetPrefabConfigurationByTransformData(positionRotation);
+
+        public void ChangePrefabPositionsBy(Vector3 positionChangeDelta) => _prefabBuilder.ChangePrefabPositionsBy(positionChangeDelta);
+
+        public IEnumerable<T> GetPrefabConfigurationsOnWorldPosition<T>(Vector3 transformPosition) where T : PrefabConfiguration =>
+            _prefabBuilder.GetPrefabConfigurationsOnWorldPosition<T>(transformPosition);
+
+        public GameObject GetPrefabByConfiguration<TC>(TC configuration) where TC : PrefabConfiguration =>
+            _prefabBuilder.GetPrefabByConfiguration(configuration);
+
+        public void RemovePrefab<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.RemovePrefab(configuration);
+
+        public bool BuildPrefab<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.BuildPrefab(configuration);
+
+        public void ReplacePrefabConfiguration<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.ReplacePrefabConfiguration(configuration);
     }
 }

@@ -1,7 +1,10 @@
-﻿namespace Scripts.Localization
+﻿using Unity.VisualScripting;
+
+namespace Scripts.Localization
 {
     public static class Keys
     {
+        public const string AddWaypoint = "AddWaypoint";
         public const string AvailablePrefabs = "AvailablePrefabs";
         public const string Cancel = "Cancel";
         public const string Columns = "Columns";
@@ -10,6 +13,9 @@
         public const string Default = "Default";
         public const string Delete = "Delete";
         public const string DontSave = "DontSave";
+        public const string Down = "Down";
+        public const string East = "East";
+        public const string EndPoint = "EndPoint";
         public const string ErrorBuildingPrefab = "ErrorBuildingPref";
         public const string Exit = "Exit";
         public const string Floors = "Floors";
@@ -25,7 +31,9 @@
         public const string NoFilesToShow = "NoFilesToShow";
         public const string NoMapToPlayLoaded = "NoMapToPlayLoaded";
         public const string NoPrefabsAvailable = "NoPrefabsAvailable";
+        public const string North = "North";
         public const string Offset = "Offset";
+        public const string Point = "Point";
         public const string ReturnToEditor = "ReturnToEditor";
         public const string ReturnToMainScene = "ReturnToMainScene";
         public const string Rotate = "Rotate";
@@ -36,5 +44,12 @@
         public const string SaveEditedMapPrompt = "SaveEditedMapPrompt";
         public const string SelectMapToLoad = "SelectMapToLoad";
         public const string SelectPrefab = "SelectPrefab";
+        public const string South = "South";
+        public const string SpeedTowardsPoint = "SpeedTowardsPoint";
+        public const string StartPoint = "StartPoint";
+        public const string Step = "Step";
+        public const string Up = "Up";
+        public const string WaypointEditor = "WaypointEditor";
+        public const string West = "West";
     }
 }

@@ -30,6 +30,20 @@ public class Vector3Control : MonoBehaviour
         }
     }
 
+    private float _step;
+
+    public float Step
+    {
+        get => _step;
+        set
+        {
+            _step = value;
+            _xUpDown.step = value;
+            _yUpDown.step = value;
+            _zUpDown.step = value;
+        }
+    }
+
     private void SetNewValue()
     {
         _xUpDown.SetValue(_value.x);

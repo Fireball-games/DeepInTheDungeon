@@ -77,6 +77,8 @@ namespace Scripts.UI.EditorUI
         {
             base.SetPrefab(prefabName);
             
+            _waypointEditor.SetActive(false);
+            
             if (PhysicalPrefabBody)
             {
                 offsetSlider.SetActive(true);

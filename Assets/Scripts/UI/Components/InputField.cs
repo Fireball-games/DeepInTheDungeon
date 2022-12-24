@@ -1,6 +1,7 @@
 using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class InputField : UIElementBase
 {
@@ -9,6 +10,8 @@ public class InputField : UIElementBase
     [SerializeField] private TMP_Text placeholder;
 
     public string Text => input.text;
+
+    public UnityEvent<string> OnValueChanged { get; set; }
 
     public void SetTitleText(string newTitle)
     {

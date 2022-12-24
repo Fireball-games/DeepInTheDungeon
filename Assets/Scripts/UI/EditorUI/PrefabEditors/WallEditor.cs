@@ -16,6 +16,8 @@ namespace Scripts.UI.EditorUI
     public class WallEditor : PrefabEditorBase<WallConfiguration, WallPrefabBase>
     {
         [SerializeField] private LabeledSlider offsetSlider;
+        
+        private WaypointEditor _waypointEditor;
 
         protected override WallConfiguration GetNewConfiguration(string prefabName)
         {
@@ -32,6 +34,13 @@ namespace Scripts.UI.EditorUI
         protected override WallConfiguration CopyConfiguration(WallConfiguration sourceConfiguration) => new(EditedConfiguration);
 
         protected override Vector3 Cursor3DScale => new(0.15f, 1f, 1f);
+
+        public override void SetActive(bool isActive)
+        {
+            base.SetActive(isActive);
+
+            _waypointEditor = body.transform.Find("WaypointsEditor").GetComponent<WaypointEditor>();
+        }
 
         public override void Open(WallConfiguration configuration)
         {
@@ -137,6 +146,7 @@ namespace Scripts.UI.EditorUI
                     EditedConfiguration.WayPoints = translatedWaypoints;
                 }
                 
+                _waypointEditor.SetActive(true, EditedConfiguration.WayPoints);
                 WayPointService.AddPath(EditedConfiguration.WayPoints,true);
             }
         }

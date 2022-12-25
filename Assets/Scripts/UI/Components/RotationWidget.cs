@@ -1,30 +1,32 @@
 using System;
 using Scripts.System.MonoBases;
-using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
 
-public class RotationWidget : UIElementBase
+namespace Scripts.UI.Components
 {
-    private TMP_Text _label;
-    private ImageButton _leftRotateButton;
-    private ImageButton _rightRotateButton;
-
-    private void Awake()
+    public class RotationWidget : UIElementBase
     {
-        Transform bodyTransform = body.transform;
-        _label = bodyTransform.Find("Label").GetComponent<TMP_Text>();
-        _leftRotateButton = bodyTransform.Find("RotateLeft").GetComponent<ImageButton>();
-        _rightRotateButton = bodyTransform.Find("RotateRight").GetComponent<ImageButton>();
-    }
+        private TMP_Text _label;
+        private ImageButton _leftRotateButton;
+        private ImageButton _rightRotateButton;
 
-    public void SetUp(string label, Action onRotateLeft, Action onRotateRight)
-    {
-        SetActive(true);
+        private void Awake()
+        {
+            Transform bodyTransform = body.transform;
+            _label = bodyTransform.Find("Label").GetComponent<TMP_Text>();
+            _leftRotateButton = bodyTransform.Find("RotateLeft").GetComponent<ImageButton>();
+            _rightRotateButton = bodyTransform.Find("RotateRight").GetComponent<ImageButton>();
+        }
+
+        public void SetUp(string label, Action onRotateLeft, Action onRotateRight)
+        {
+            SetActive(true);
         
-        if (_label) _label.text = label ?? "";
-        _leftRotateButton.OnClick += onRotateLeft;
-        _rightRotateButton.OnClick += onRotateRight;
+            if (_label) _label.text = label ?? "";
+            _leftRotateButton.OnClick += onRotateLeft;
+            _rightRotateButton.OnClick += onRotateRight;
         
+        }
     }
 }

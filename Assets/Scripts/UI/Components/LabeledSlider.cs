@@ -3,21 +3,24 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LabeledSlider : UIElementBase
+namespace Scripts.UI.Components
 {
-    public Slider slider;
-    [SerializeField] private TMP_Text label;
-
-    private void OnDisable()
+    public class LabeledSlider : UIElementBase
     {
-        slider.onValueChanged.RemoveAllListeners();
-    }
+        public Slider slider;
+        [SerializeField] private TMP_Text label;
 
-    public float Value
-    {
-        get => slider.value;
-        set => slider.value = value;
-    }
+        private void OnDisable()
+        {
+            slider.onValueChanged.RemoveAllListeners();
+        }
 
-    public void SetLabel(string newText) => label.text = newText;
+        public float Value
+        {
+            get => slider.value;
+            set => slider.value = value;
+        }
+
+        public void SetLabel(string newText) => label.text = newText;
+    }
 }

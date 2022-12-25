@@ -7,6 +7,7 @@ using Scripts.Localization;
 using Scripts.MapEditor.Services;
 using Scripts.ScriptableObjects;
 using Scripts.System;
+using Scripts.UI.Components;
 using Scripts.UI.EditorUI.PrefabEditors;
 using UnityEngine;
 using static Scripts.Enums;
@@ -158,7 +159,7 @@ namespace Scripts.UI.EditorUI
                 }
 
                 _debugWaypoints = EditedConfiguration.WayPoints;
-                _waypointEditor.SetActive(true, Waypoint.Clone(EditedConfiguration.WayPoints), OnPathChanged);
+                _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
                 WayPointService.AddPath(EditedConfiguration.WayPoints,true);
             }
         }
@@ -166,7 +167,7 @@ namespace Scripts.UI.EditorUI
         private void OnPathChanged(IEnumerable<Waypoint> path)
          {
             WayPointService.DestroyPath(EditedConfiguration.WayPoints);
-            EditedConfiguration.WayPoints = Waypoint.Clone(path).ToList();
+            EditedConfiguration.WayPoints = path.ToList();
             WayPointService.AddPath(path, true);
         }
     }

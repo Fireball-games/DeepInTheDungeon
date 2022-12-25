@@ -4,6 +4,7 @@ namespace Scripts.Localization
 {
     public static class Keys
     {
+        public const string AddEndPoint = "AddEndPoint";
         public const string AddWaypoint = "AddWaypoint";
         public const string AvailablePrefabs = "AvailablePrefabs";
         public const string Cancel = "Cancel";

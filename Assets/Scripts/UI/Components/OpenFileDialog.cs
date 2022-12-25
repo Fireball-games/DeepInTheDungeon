@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Scripts.UI.EditorUI
+namespace Scripts.UI.Components
 {
     public class OpenFileDialog : DialogBase
     {

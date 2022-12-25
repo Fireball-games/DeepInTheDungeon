@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
+using Scripts.MapEditor.Services;
 using Scripts.ScriptableObjects;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
-using Unity.VisualScripting;
 using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
@@ -18,6 +16,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         [SerializeField] private GameObject waypointPrefab;
 
         private Dictionary<WaypointControl, int> _map;
+        private List<Waypoint> _currentPath;
+
+        private event Action<IEnumerable<Waypoint>> OnPathChanged; 
 
         private float _step = 0.1f;
 
@@ -26,11 +27,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _map = new Dictionary<WaypointControl, int>();
         }
 
-        public void SetActive(bool isActive, List<Waypoint> waypoints)
+        public void SetActive(bool isActive, IEnumerable<Waypoint> waypoints, Action<IEnumerable<Waypoint>> onPathChanged)
         {
             base.SetActive(isActive);
 
-            BuildWaypointsControls(waypoints);
+            OnPathChanged = null;
+            OnPathChanged += onPathChanged;
+
+            _currentPath = new List<Waypoint>(waypoints);
+            BuildWaypointsControls(_currentPath);
         }
 
         private void BuildWaypointsControls(List<Waypoint> waypoints)
@@ -61,20 +66,26 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 waypoint.moveSpeedModifier,
                 OnPositionChanged,
                 OnSpeedChanged,
-                t.Get(Keys.Floors),
                 t.Get(Keys.Rows),
+                t.Get(Keys.Floors),
                 t.Get(Keys.Columns)
                 );
         }
 
         private void OnPositionChanged(WaypointControl control, Vector3 newPoint)
         {
-            Logger.Log($"Position changed: {newPoint}");
+            _currentPath[_map[control]].position = newPoint;
+            
+            OnPathChanged?.Invoke(_currentPath);
+            // WayPointService.HighlightPoint(_currentPath[0].position.ToVector3Int(), _map[control], isExclusiveHighlight: true);
         }
 
         private void OnSpeedChanged(WaypointControl control, float newSpeed)
         {
-            Logger.Log($"Speed changed: {newSpeed}");
+            _currentPath[_map[control]].moveSpeedModifier = newSpeed;
+            
+            OnPathChanged?.Invoke(_currentPath);
+            // WayPointService.HighlightPoint(_currentPath[0].position.ToVector3Int(), _map[control], isExclusiveHighlight: true);
         }
     }
 }

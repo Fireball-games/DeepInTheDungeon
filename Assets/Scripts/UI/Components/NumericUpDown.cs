@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,8 +18,10 @@ public class NumericUpDown : MonoBehaviour
     private Button _plusButton;
     private Button _minusButton;
 
-    public UnityEvent<float> OnValueChanged { get; set; } = new();
+    private bool _inputUpdateSilent;
 
+    public UnityEvent<float> OnValueChanged { get; set; } = new();
+    
     private void Awake()
     {
         Label = transform.Find("Label").GetComponent<TMP_Text>();
@@ -48,19 +49,18 @@ public class NumericUpDown : MonoBehaviour
 
     private void OnValueChanged_inInput(string newValue)
     {
-        if (float.TryParse(newValue, out float parsedValue))
-        {
-            OnValueChanged_internal(parsedValue);
-            return;
-        }
-
-        _input.text = value.ToString(CultureInfo.InvariantCulture);
+        if (!float.TryParse(newValue, out float parsedValue)) return;
+        
+        OnValueChanged_internal(parsedValue);
     }
 
     private void OnValueChanged_internal(float newValue, bool isSilent = false)
     {
         value = Mathf.Clamp(newValue, minimum, maximum);
-        _input.text = value.ToString("0.0");
+        
+        _input.onValueChanged.RemoveAllListeners();
+        _input.text = newValue.ToString("0.0");
+        _input.onValueChanged.AddListener(OnValueChanged_inInput);
         
         if (!isSilent)
         {

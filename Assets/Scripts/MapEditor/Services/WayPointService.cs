@@ -75,10 +75,19 @@ namespace Scripts.MapEditor.Services
             }
         }
 
-        public static void HighlightPoint(Vector3Int startPoint, int pointIndex, bool isHighlighted = true)
+        public static void HighlightPoint(Vector3Int startPoint, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
         {
-            HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value, isHighlighted);
+            for (int index = 0; index < _paths[startPoint].Waypoints.Count; index++)
+            {
+                bool highlighted = isExclusiveHighlight 
+                    ? index == pointIndex 
+                    : isHighlighted;
+                HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value, highlighted);
+            }
+            
         }
+
+        public static void DestroyPath(IEnumerable<Waypoint> path) => DestroyPath(path.ElementAt(0).position.ToVector3Int());
 
         public static void DestroyPath(Vector3Int startPoint)
         {

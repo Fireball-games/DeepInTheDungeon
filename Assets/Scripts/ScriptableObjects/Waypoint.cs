@@ -19,5 +19,11 @@ namespace Scripts.ScriptableObjects
             this.position = position;
             this.moveSpeedModifier = moveSpeedModifier;
         }
+
+        public Waypoint(Waypoint source)
+        {
+            position = source.position;
+            moveSpeedModifier = source.moveSpeedModifier;
+        }
     }
 }

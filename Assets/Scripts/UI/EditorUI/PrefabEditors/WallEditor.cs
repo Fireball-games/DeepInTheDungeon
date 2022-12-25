@@ -19,6 +19,8 @@ namespace Scripts.UI.EditorUI
         
         private WaypointEditor _waypointEditor;
 
+        public static List<Waypoint> _debugWaypoints;
+
         protected override WallConfiguration GetNewConfiguration(string prefabName)
         {
             return new WallConfiguration
@@ -93,7 +95,7 @@ namespace Scripts.UI.EditorUI
         {
             if (EditedConfiguration.WayPoints.Any())
             {
-                WayPointService.DestroyPath(EditedConfiguration.WayPoints[0].position.ToVector3Int());
+                WayPointService.DestroyPath(EditedConfiguration.WayPoints);
             }
             
             base.Delete();
@@ -103,7 +105,7 @@ namespace Scripts.UI.EditorUI
         {
             if (EditedConfiguration.WayPoints.Any())
             {
-                WayPointService.DestroyPath(EditedConfiguration.WayPoints[0].position.ToVector3Int());
+                WayPointService.DestroyPath(EditedConfiguration.WayPoints);
             }
             
             base.RemoveAndClose();
@@ -147,10 +149,25 @@ namespace Scripts.UI.EditorUI
                     
                     EditedConfiguration.WayPoints = translatedWaypoints;
                 }
-                
-                _waypointEditor.SetActive(true, EditedConfiguration.WayPoints);
+                else if (EditedConfiguration.WayPoints.Count == 0)
+                {
+                    EditedConfiguration.WayPoints.Add(
+                        new Waypoint(
+                            EditorMouseService.Instance.MouseGridPosition.ToWorldPositionV3Int(),
+                            0.3f));
+                }
+
+                _debugWaypoints = EditedConfiguration.WayPoints;
+                _waypointEditor.SetActive(true, new List<Waypoint>(EditedConfiguration.WayPoints), OnPathChanged);
                 WayPointService.AddPath(EditedConfiguration.WayPoints,true);
             }
+        }
+
+        private void OnPathChanged(IEnumerable<Waypoint> path)
+         {
+            // WayPointService.DestroyPath(EditedConfiguration.WayPoints);
+            // EditedConfiguration.WayPoints = path.ToList();
+            // WayPointService.AddPath(path);
         }
     }
 }

@@ -109,7 +109,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             _currentPath[_map[control]].position = newPoint;
 
-            OnPathChanged?.Invoke(_currentPath);
+            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath));
         }
 
         private void OnSpeedChanged(WaypointControl control, float newSpeed)

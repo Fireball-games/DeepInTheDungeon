@@ -38,22 +38,22 @@ namespace Scripts.UI.Components
             UnityAction<WaypointControl, float> onSpeedChanged,
             string xLabel = null, string yLabel = null, string zLabel = null)
         {
+            OnPositionChanged.RemoveAllListeners();
+            _position.OnValueChanged.RemoveAllListeners();
             _position.Label.text = title;
             _position.XLabel.text = string.IsNullOrEmpty(xLabel) ? "x" : xLabel;
             _position.YLabel.text = string.IsNullOrEmpty(yLabel) ? "y" : yLabel;
             _position.ZLabel.text = string.IsNullOrEmpty(zLabel) ? "z" : zLabel;
             _position.Value = position;
             _position.Step = step;
-            _position.OnValueChanged.RemoveAllListeners();
             _position.OnValueChanged.AddListener(OnPositionChanged_internal);
-            OnPositionChanged.RemoveAllListeners();
             OnPositionChanged.AddListener(onPositionChanged);
 
-            _speedInput.SetTitleText(t.Get(Keys.SpeedTowardsPoint));
-            _speedInput.OnValueChanged.RemoveAllListeners();
-            _speedInput.OnValueChanged.AddListener(OnSpeedChanged_internal);
-            _speedInput.SetInputText(speed.ToString(CultureInfo.InvariantCulture));
             OnSpeedChanged.RemoveAllListeners();
+            _speedInput.OnValueChanged.RemoveAllListeners();
+            _speedInput.SetTitleText(t.Get(Keys.SpeedTowardsPoint));
+            _speedInput.SetInputText(speed.ToString(CultureInfo.InvariantCulture));
+            _speedInput.OnValueChanged.AddListener(OnSpeedChanged_internal);
             OnSpeedChanged.AddListener(onSpeedChanged);
 
             _stepValue.text = step.ToString(CultureInfo.InvariantCulture);

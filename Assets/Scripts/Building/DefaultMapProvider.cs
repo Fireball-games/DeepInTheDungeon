@@ -30,7 +30,7 @@ namespace Scripts.Building
             }
         };
 
-        public static TileDescription FullTile { get; } = new()
+        public static TileDescription FullTile => new()
         {
             IsForMovement = true,
             TileWalls = new TileWalls

@@ -7,6 +7,7 @@ using Scripts.Building.Tile;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
+using Scripts.ScriptableObjects;
 using Scripts.System;
 using Scripts.System.Pooling;
 using Unity.VisualScripting;
@@ -134,6 +135,11 @@ namespace Scripts.Building
                 Layout.ByGridV3Int(prefabGo.transform.position.ToGridPosition()).IsForMovement = true;
             }
 
+            if (configuration is WallConfiguration {WayPoints: { }} wall && wall.WayPoints.Any())
+            {
+                WayPointService.DestroyPath(wall.WayPoints);
+            }
+
             prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
             Transform offsetTransform = prefabGo.GetBody();
             if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
@@ -181,6 +187,17 @@ namespace Scripts.Building
             foreach (PrefabConfiguration configuration in MapDescription.PrefabConfigurations)
             {
                 configuration.TransformData.Position += positionChangeDelta;
+
+                if (configuration is not WallConfiguration wall) continue;
+                
+                if (wall.WayPoints == null || !wall.WayPoints.Any()) continue;
+                    
+                WayPointService.DestroyPath(wall.WayPoints);
+                
+                foreach (Waypoint waypoint in wall.WayPoints)
+                {
+                    waypoint.position += positionChangeDelta;
+                }
             }
         }
 

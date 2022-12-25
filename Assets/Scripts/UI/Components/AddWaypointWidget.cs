@@ -60,6 +60,7 @@ namespace Scripts.UI.Components
 
         private void SetButton(Button button, Vector3 direction, string labelText)
         {
+            button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => OnAddButtonClicked_internal(button));
             _map.Add(button, direction);
             button.GetComponentInChildren<TMP_Text>().text = labelText;

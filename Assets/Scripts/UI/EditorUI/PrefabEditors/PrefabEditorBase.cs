@@ -210,7 +210,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             Cursor3D.Hide();
 
-            MapBuilder.RemovePrefab(EditedConfiguration);
             MapBuilder.RemovePrefab(oldConfiguration);
 
             Close();

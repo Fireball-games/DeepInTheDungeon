@@ -165,7 +165,8 @@ namespace Scripts.UI.EditorUI
         }
 
         private void OnPathChanged(IEnumerable<Waypoint> path)
-         {
+         { 
+             SetEdited();
             WayPointService.DestroyPath(EditedConfiguration.WayPoints);
             EditedConfiguration.WayPoints = path.ToList();
             WayPointService.AddPath(path, true);

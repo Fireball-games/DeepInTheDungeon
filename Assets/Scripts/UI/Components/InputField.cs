@@ -1,3 +1,4 @@
+using System;
 using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine;
@@ -11,7 +12,12 @@ public class InputField : UIElementBase
 
     public string Text => input.text;
 
-    public UnityEvent<string> OnValueChanged { get; set; }
+    public UnityEvent<string> OnValueChanged { get; set; } = new();
+
+    private void Awake()
+    {
+        input.onValueChanged.AddListener(OnValueChanged_internal);
+    }
 
     public void SetTitleText(string newTitle)
     {
@@ -27,4 +33,6 @@ public class InputField : UIElementBase
     {
         input.text = newText;
     }
+
+    private void OnValueChanged_internal(string newValue) => OnValueChanged.Invoke(newValue);
 }

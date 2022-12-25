@@ -19,16 +19,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private Dictionary<WaypointControl, int> _map;
 
-        private WaypointControl _startWaypoint;
-        private WaypointControl _endWaypoint;
-        private float _step;
+        private float _step = 0.1f;
 
         private void Awake()
         {
             _map = new Dictionary<WaypointControl, int>();
-
-            _startWaypoint = body.transform.Find("StartWaypoint").GetComponent<WaypointControl>();
-            _endWaypoint = body.transform.Find("EndWaypoint").GetComponent<WaypointControl>();
         }
 
         public void SetActive(bool isActive, List<Waypoint> waypoints)
@@ -41,21 +36,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void BuildWaypointsControls(List<Waypoint> waypoints)
         {
             // clear _map
-            SetWaypointActive(_startWaypoint, false);
-            SetWaypointActive(_endWaypoint, false);
+            scrollViewContent.gameObject.DismissAllChildrenToPool(true);
             
             _map.Clear();
             
-            // New Path with only start point
-            if (waypoints.Count == 1)
-            {
-                SetWaypointActive(_startWaypoint, true);
-                _map.Add(_startWaypoint, 0);
-                // TODO: Add add end point
-                return;
-            }
-            
-            // Typical path (2+ waypoints)
             for (int i = 0; i < waypoints.Count; i++)
             {
                 GameObject controlGo = ObjectPool.Instance.GetFromPool(waypointPrefab, scrollViewContent.gameObject, true);
@@ -71,13 +55,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void SetWaypoint(WaypointControl control, string title, float step, Waypoint waypoint)
         {
-            control.Set(title, step, waypoint.position, waypoint.moveSpeedModifier, OnPositionChanged, OnSpeedChanged);
-        }
-
-        private void SetWaypointActive(WaypointControl waypoint, bool isActive)
-        {
-            waypoint.transform.parent = isActive ? scrollViewContent : body.transform;
-            waypoint.gameObject.SetActive(isActive);
+            control.Set(title,
+                step,
+                waypoint.position,
+                waypoint.moveSpeedModifier,
+                OnPositionChanged,
+                OnSpeedChanged,
+                t.Get(Keys.Floors),
+                t.Get(Keys.Rows),
+                t.Get(Keys.Columns)
+                );
         }
 
         private void OnPositionChanged(WaypointControl control, Vector3 newPoint)

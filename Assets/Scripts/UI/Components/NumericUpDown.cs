@@ -11,8 +11,9 @@ public class NumericUpDown : MonoBehaviour
     public float step = 0.1f;
     public float minimum = float.MinValue;
     public float maximum = float.MaxValue;
-    [NonSerialized] public TMP_Text label;
+    [NonSerialized] public TMP_Text Label;
     public bool interactable = true;
+    public int precision = 2;
     
     private TMP_InputField _input;
     private Button _plusButton;
@@ -22,13 +23,17 @@ public class NumericUpDown : MonoBehaviour
 
     private void Awake()
     {
-        label = transform.Find("Label").GetComponent<TMP_Text>();
+        Label = transform.Find("Label").GetComponent<TMP_Text>();
         _input = transform.Find("Input").GetComponent<TMP_InputField>();
         _input.onValueChanged.AddListener(OnValueChanged_inInput);
         _plusButton = transform.Find("Buttons/PlusButton").GetComponent<Button>();
         _plusButton.onClick.AddListener(OnPlusClick);
         _minusButton = transform.Find("Buttons/MinusButton").GetComponent<Button>();
         _minusButton.onClick.AddListener(OnMinusClick);
+
+        minimum = float.MinValue;
+        maximum = float.MaxValue;
+        step = 0.001f;
     }
 
     public void Interactable(bool isInteractable)
@@ -55,7 +60,7 @@ public class NumericUpDown : MonoBehaviour
     private void OnValueChanged_internal(float newValue, bool isSilent = false)
     {
         value = Mathf.Clamp(newValue, minimum, maximum);
-        _input.text = value.ToString(CultureInfo.InvariantCulture);
+        _input.text = value.ToString("0.0");
         
         if (!isSilent)
         {

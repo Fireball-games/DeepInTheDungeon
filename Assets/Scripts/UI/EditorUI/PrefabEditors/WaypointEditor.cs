@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor.Services;
@@ -34,7 +35,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             OnPathChanged = null;
             OnPathChanged += onPathChanged;
 
-            _currentPath = new List<Waypoint>(waypoints);
+            _currentPath = waypoints.ToList();
             BuildWaypointsControls(_currentPath);
         }
 

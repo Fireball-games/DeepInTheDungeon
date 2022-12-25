@@ -158,16 +158,16 @@ namespace Scripts.UI.EditorUI
                 }
 
                 _debugWaypoints = EditedConfiguration.WayPoints;
-                _waypointEditor.SetActive(true, new List<Waypoint>(EditedConfiguration.WayPoints), OnPathChanged);
+                _waypointEditor.SetActive(true, Waypoint.Clone(EditedConfiguration.WayPoints), OnPathChanged);
                 WayPointService.AddPath(EditedConfiguration.WayPoints,true);
             }
         }
 
         private void OnPathChanged(IEnumerable<Waypoint> path)
          {
-            // WayPointService.DestroyPath(EditedConfiguration.WayPoints);
-            // EditedConfiguration.WayPoints = path.ToList();
-            // WayPointService.AddPath(path);
+            WayPointService.DestroyPath(EditedConfiguration.WayPoints);
+            EditedConfiguration.WayPoints = Waypoint.Clone(path).ToList();
+            WayPointService.AddPath(path, true);
         }
     }
 }

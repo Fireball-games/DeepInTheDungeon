@@ -182,7 +182,7 @@ namespace Scripts.MapEditor.Services
             lr.numCapVertices = 5;
             lr.shadowCastingMode = ShadowCastingMode.Off;
             lr.allowOcclusionWhenDynamic = false;
-            lr.startWidth = 0.05f;
+            lr.startWidth = 0.1f;
             lr.endWidth = 0.001f;
 
             controller.Waypoints.Add(newWaypoint, new WaypointParts()

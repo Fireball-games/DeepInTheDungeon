@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Scripts.ScriptableObjects
@@ -24,6 +27,11 @@ namespace Scripts.ScriptableObjects
         {
             position = source.position;
             moveSpeedModifier = source.moveSpeedModifier;
+        }
+
+        public static IEnumerable<Waypoint> Clone(IEnumerable<Waypoint> source)
+        {
+            return source.Select(wp => new Waypoint(wp));
         }
     }
 }

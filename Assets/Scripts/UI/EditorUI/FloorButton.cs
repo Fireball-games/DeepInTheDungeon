@@ -2,14 +2,12 @@
 using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
 using Scripts.UI.Components;
-using TMPro;
 using UnityEngine;
 
 namespace Scripts.UI.EditorUI
 {
-    public class FloorButton : ImageButton
+    public class FloorButton : TextButton
     {
-        [SerializeField] private TMP_Text textField;
         [SerializeField] private ToggleFramedButton visibilityButton; 
         [NonSerialized] public int Floor; 
 
@@ -43,8 +41,8 @@ namespace Scripts.UI.EditorUI
             base.OnDisable();
             
             OnClick -= ChangeFloor;
-            visibilityButton.OnToggleOn += OnVisibilityButtonToggleOn;
-            visibilityButton.OnToggleOff += OnVisibilityButtonToggleOff;
+            visibilityButton.OnToggleOn -= OnVisibilityButtonToggleOn;
+            visibilityButton.OnToggleOff -= OnVisibilityButtonToggleOff;
         }
 
         private void ChangeFloor()

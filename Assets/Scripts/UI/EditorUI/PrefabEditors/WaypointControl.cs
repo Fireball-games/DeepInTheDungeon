@@ -19,7 +19,19 @@ namespace Scripts.UI.Components
         private UnityEvent<WaypointControl, Vector3> OnPositionChanged { get; } = new();
         private UnityEvent<WaypointControl, float> OnSpeedChanged { get; } = new();
 
-        private UnityEvent<WaypointControl> OnDeleteButtonClicked { get; } = new(); 
+        private UnityEvent<WaypointControl> OnDeleteButtonClicked { get; } = new();
+
+        public float Step
+        {
+            set
+            {
+                if (_position)
+                {
+                    _position.Step = value;
+                    _stepValue.text = value.ToString("0.00");
+                }
+            }
+        }
 
         private void Awake()
         {

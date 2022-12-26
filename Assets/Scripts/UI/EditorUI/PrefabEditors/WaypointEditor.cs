@@ -18,12 +18,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         [SerializeField] private GameObject waypointPrefab;
         [SerializeField] private GameObject addWaypointPrefab;
 
+        private StepSelector _stepSelector;
+        
         private Dictionary<WaypointControl, int> _map;
         private List<Waypoint> _currentPath;
 
         private event Action<IEnumerable<Waypoint>> OnPathChanged;
 
-        private float _step = 0.1f;
+        private float _step = 0.5f;
 
         public enum EAddWaypointType
         {
@@ -33,6 +35,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void Awake()
         {
+            _stepSelector = body.transform.Find("Background/Frame/StepSelector").GetComponent<StepSelector>();
+            _stepSelector.Set(StepSelector.EStep.Step05, OnStepChanged);
+            
             _map = new Dictionary<WaypointControl, int>();
         }
 
@@ -164,6 +169,18 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             BuildWaypointsControls(_currentPath);
             OnPathChanged?.Invoke(Waypoint.Clone(_currentPath));
+        }
+
+        private void OnStepChanged(float newStep)
+        {
+            WaypointControl[] children = scrollViewContent.GetComponentsInChildren<WaypointControl>();
+            for (int index = 0; index < children.Length; index++)
+            {
+                if (index == 0 || index == children.Length - 1) continue;
+                
+                WaypointControl control = children[index];
+                control.Step = newStep;
+            }
         }
     }
 }

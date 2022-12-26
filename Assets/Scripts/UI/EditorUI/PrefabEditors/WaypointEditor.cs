@@ -143,7 +143,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             Vector3 offsetPosition = _currentPath.Count == 1 ? _currentPath[0].position : _currentPath[^2].position;
             float step = _currentPath.Count == 1 ? 1 : _step;
-            Vector3 newPointPosition = direction * step + offsetPosition;
+            Vector3 newPointPosition = (direction * step + offsetPosition).Round(2);
             Waypoint newWaypoint = new(newPointPosition, 0.3f);
 
             if (type is EAddWaypointType.BeforeLast)

@@ -11,6 +11,7 @@ namespace Scripts.Localization
         public const string Columns = "Columns";
         public const string Confirm = "Confirm";
         public const string CreateMap = "CreateMap";
+        public const string CreateOppositePath = "CreateOppositePath";
         public const string Default = "Default";
         public const string Delete = "Delete";
         public const string DontSave = "DontSave";

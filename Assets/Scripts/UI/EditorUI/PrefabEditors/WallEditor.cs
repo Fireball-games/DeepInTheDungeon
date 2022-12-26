@@ -9,18 +9,20 @@ using Scripts.ScriptableObjects;
 using Scripts.System;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.PrefabEditors;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 using static Scripts.Enums;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.UI.EditorUI
 {
     public class WallEditor : PrefabEditorBase<WallConfiguration, WallPrefabBase>
     {
-        [SerializeField] private LabeledSlider offsetSlider;
-        
+        private LabeledSlider _offsetSlider;
         private WaypointEditor _waypointEditor;
-
-        public static List<Waypoint> _debugWaypoints;
+        private Button _createOppositePathButton;
 
         protected override WallConfiguration GetNewConfiguration(string prefabName)
         {
@@ -38,13 +40,6 @@ namespace Scripts.UI.EditorUI
 
         protected override Vector3 Cursor3DScale => new(0.15f, 1f, 1f);
 
-        public override void SetActive(bool isActive)
-        {
-            base.SetActive(isActive);
-
-            _waypointEditor = body.transform.Find("WaypointsEditor").GetComponent<WaypointEditor>();
-        }
-
         public override void Open(WallConfiguration configuration)
         {
             if (!CanOpen) return;
@@ -59,10 +54,10 @@ namespace Scripts.UI.EditorUI
 
             if (PhysicalPrefabBody)
             {
-                offsetSlider.SetActive(true);
-                offsetSlider.Value = configuration.Offset;
-                offsetSlider.slider.onValueChanged.RemoveAllListeners();
-                offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
+                _offsetSlider.SetActive(true);
+                _offsetSlider.Value = configuration.Offset;
+                _offsetSlider.slider.onValueChanged.RemoveAllListeners();
+                _offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
             }
 
             VisualizeOtherComponents();
@@ -70,8 +65,10 @@ namespace Scripts.UI.EditorUI
 
         protected override string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
         {
-            offsetSlider.SetLabel(t.Get(Keys.Offset));
-            offsetSlider.SetActive(false);
+            Initialize();
+            
+            _offsetSlider.SetLabel(t.Get(Keys.Offset));
+            _offsetSlider.SetActive(false);
             
             return base.SetupWindow(prefabType, deleteButtonActive);
         }
@@ -84,9 +81,9 @@ namespace Scripts.UI.EditorUI
             
             if (PhysicalPrefabBody)
             {
-                offsetSlider.SetActive(true);
-                offsetSlider.Value = EditedConfiguration.Offset;
-                offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
+                _offsetSlider.SetActive(true);
+                _offsetSlider.Value = EditedConfiguration.Offset;
+                _offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
             }
             
             VisualizeOtherComponents();
@@ -116,6 +113,27 @@ namespace Scripts.UI.EditorUI
             }
             
             base.RemoveAndClose();
+        }
+
+        private void Initialize()
+        {
+            _offsetSlider = body.transform.Find("Background/Frame/OffsetSlider").GetComponent<LabeledSlider>();
+            _waypointEditor = body.transform.Find("WaypointsEditor").GetComponent<WaypointEditor>();
+            _createOppositePathButton = body.transform.Find("Background/Frame/Buttons/CreateOppositePathButton").GetComponent<Button>();
+            _createOppositePathButton.onClick.RemoveAllListeners();
+            _createOppositePathButton.onClick.AddListener(GenerateOppositePath);
+            _createOppositePathButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.CreateOppositePath);
+        }
+
+        private void GenerateOppositePath()
+        {
+            if (!CalculateOppositePath(EditedConfiguration.WayPoints, out Vector3 wallPosition,
+                    out List<Waypoint> oppositePoints))
+            {
+                return;
+            }
+            
+            
         }
 
         private void OnOffsetSliderValueChanged(float value)
@@ -164,10 +182,10 @@ namespace Scripts.UI.EditorUI
                             0.3f));
                 }
 
-                _debugWaypoints = EditedConfiguration.WayPoints;
                 _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
                 WayPointService.AddPath(EditedConfiguration.WayPoints,true);
                 EditorCameraService.Instance.ResetCamera();
+                HandleCreateOppositePathButton();
             }
         }
 
@@ -177,6 +195,58 @@ namespace Scripts.UI.EditorUI
             WayPointService.DestroyPath(EditedConfiguration.WayPoints);
             EditedConfiguration.WayPoints = path.ToList();
             WayPointService.AddPath(path, true);
+            HandleCreateOppositePathButton();
+        }
+
+        private void HandleCreateOppositePathButton()
+        {
+            _createOppositePathButton.gameObject.SetActive(EditedConfiguration.WayPoints.Count >= 2 && !IsPathInOppositeDirection());
+        }
+
+        private bool IsPathInOppositeDirection()
+        {
+            List<WallConfiguration> walls = MapBuilder.MapDescription.PrefabConfigurations
+                .Where(c => c is WallConfiguration)
+                .Select(c => c as WallConfiguration)?
+                .ToList();
+
+            if (!walls.Any()) return false;
+
+            if (!CalculateOppositePath(EditedConfiguration.WayPoints, out Vector3 wallPosition,
+                    out List<Waypoint> oppositePoints))
+            {
+                return false;
+            }
+
+            return walls.FirstOrDefault(w => w.TransformData.Position == wallPosition) != null;
+        }
+
+        private bool CalculateOppositePath(IEnumerable<Waypoint> waypoints, out Vector3 wallPosition, out List<Waypoint> oppositePoints)
+        {
+            if (waypoints.Count() < 2)
+            {
+                wallPosition = Vector3.zero;
+                oppositePoints = null;
+                return false;
+            }
+
+            oppositePoints = new List<Waypoint>();
+
+            for (int i = waypoints.Count() - 1; i >= 0; i--)
+            {
+                oppositePoints.Add(new Waypoint(waypoints.ElementAt(i).position.Round(2), waypoints.ElementAt(i).moveSpeedModifier));
+            }
+            
+            wallPosition = CalculateWallForPath(oppositePoints).Position;
+            return true;
+        }
+
+        private PositionRotation CalculateWallForPath(List<Waypoint> path)
+        {
+            if (path.Count < 2) return null;
+            
+            Vector3 startDirection = (path[1].position.Round(1) - path[0].position.Round(1)).normalized;
+            return  new PositionRotation(path[0].position.Round(1) + (startDirection * 0.5f), V3Extensions.DirectionRotationMap[startDirection]);
         }
     }
 }

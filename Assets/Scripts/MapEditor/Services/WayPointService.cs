@@ -13,8 +13,6 @@ namespace Scripts.MapEditor.Services
         [SerializeField] private Material normalMaterial;
         [SerializeField] private Material highlightedMaterial;
         [SerializeField] private Material waypointLinesMaterial;
-        [ColorUsage(true, true)][SerializeField] private Color pathColorStart;
-        [ColorUsage(true, true)][SerializeField] private Color pathColorEnd;
         [SerializeField] private GameObject waypointPrefab;
         [SerializeField] private Vector3 waypointScale = new(0.3f, 0.3f, 0.3f);
 
@@ -40,8 +38,8 @@ namespace Scripts.MapEditor.Services
             _normalMaterial = normalMaterial;
             _highlightedMaterial = highlightedMaterial;
             _waypointsLineMaterial = waypointLinesMaterial;
-            _pathColorStart = pathColorStart;
-            _pathColorEnd = pathColorEnd;
+            _pathColorStart = _waypointsLineMaterial.GetColor(StartColor).Clone();
+            _pathColorEnd = _waypointsLineMaterial.GetColor(EndColor).Clone();
         }
 
         public static void ShowWaypoints()
@@ -63,6 +61,9 @@ namespace Scripts.MapEditor.Services
             }
         }
 
+        public static void HighlightPath(IEnumerable<Waypoint> path, bool isHighlighted = true) =>
+            HighlightPath(path.ElementAt(0).position.ToVector3Int(), isHighlighted);
+        
         public static void HighlightPath(Vector3Int startPoint, bool isHighlighted = true)
         {
             if (!_paths.TryGetValue(startPoint, out PathController controller) || controller.IsHighlighted == isHighlighted) return;
@@ -77,14 +78,15 @@ namespace Scripts.MapEditor.Services
 
         public static void HighlightPoint(Vector3Int startPoint, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
         {
-            for (int index = 0; index < _paths[startPoint].Waypoints.Count; index++)
+            if (isExclusiveHighlight)
             {
-                bool highlighted = isExclusiveHighlight 
-                    ? index == pointIndex 
-                    : isHighlighted;
-                HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value, highlighted);
+                for (int index = 0; index < _paths[startPoint].Waypoints.Count; index++)
+                {
+                    HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value, index == pointIndex);
+                }
             }
             
+            HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value, isHighlighted);
         }
 
         public static void DestroyPath(IEnumerable<Waypoint> path) => DestroyPath(path.ElementAt(0).position.ToVector3Int());
@@ -143,7 +145,7 @@ namespace Scripts.MapEditor.Services
             float factor = isHighlighted ? 2f : 1f;
             Material material = isHighlighted ? _highlightedMaterial : _normalMaterial;
 
-            waypoint.MeshRenderer.material = material;
+            waypoint.MeshRenderer.material = new (material);
             waypoint.LineRenderer.material.SetColor(StartColor, _pathColorStart.SetIntensity(factor));
             waypoint.LineRenderer.material.SetColor(EndColor, _pathColorEnd.SetIntensity(factor));
         }

@@ -245,7 +245,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Close();
         }
 
-        private void SaveMapAndClose()
+        protected virtual void SaveMapAndClose()
         {
             MapBuilder.ReplacePrefabConfiguration(EditedConfiguration);
             MapEditorManager.Instance.SaveMap();

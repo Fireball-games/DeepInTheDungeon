@@ -102,6 +102,12 @@ namespace Scripts.UI.EditorUI
             base.Delete();
         }
 
+        protected override void SaveMapAndClose()
+        {
+            WayPointService.HighlightPath(EditedConfiguration.WayPoints, false);
+            base.SaveMapAndClose();
+        }
+
         protected override void RemoveAndClose()
         {
             if (EditedConfiguration.WayPoints.Any())

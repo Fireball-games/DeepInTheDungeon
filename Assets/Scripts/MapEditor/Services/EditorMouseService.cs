@@ -226,14 +226,14 @@ namespace Scripts.MapEditor.Services
                 case EWorkMode.Select:
                     break;
                 case EWorkMode.Walls:
-                    if (mouseButtonUpped == 0)
+                    if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
                     {
                         if (_lastEnteredWall is {WallEligibleForEditing: true}) _lastEnteredWall.OnClickInEditor();
                     }
 
                     break;
                 case EWorkMode.PrefabTiles:
-                    if (mouseButtonUpped == 0)
+                    if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
                     {
                         if (_lastPrefabOnPosition)
                         {

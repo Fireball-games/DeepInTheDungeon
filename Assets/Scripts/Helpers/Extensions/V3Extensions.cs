@@ -46,11 +46,11 @@ namespace Scripts.Helpers.Extensions
 
         public static Vector3 Round(this Vector3 source, int decimalNumbers)
         {
-            source.x = (float)Math.Round(source.x, decimalNumbers);
-            source.y = (float)Math.Round(source.y, decimalNumbers);
-            source.z = (float)Math.Round(source.z, decimalNumbers);
+            V3.x = (float)Math.Round(source.x, decimalNumbers);
+            V3.y = (float)Math.Round(source.y, decimalNumbers);
+            V3.z = (float)Math.Round(source.z, decimalNumbers);
 
-            return source;
+            return new Vector3(V3.x, V3.y, V3.z);
         }
     }
 }

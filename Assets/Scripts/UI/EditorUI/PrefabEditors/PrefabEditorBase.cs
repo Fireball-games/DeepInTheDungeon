@@ -232,7 +232,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 EditorUIManager.Instance.ConfirmationDialog.Open(t.Get(Keys.SaveEditedMapPrompt),
                     SaveMapAndClose,
-                    RemoveAndClose);
+                    RemoveAndClose,
+                    t.Get(Keys.Save),
+                    t.Get(Keys.DontSave));
                 return;
             }
 

@@ -221,6 +221,8 @@ namespace Scripts.MapEditor
             playerIcon.SetPositionByGrid(map.StartGridPosition);
             playerIcon.SetArrowRotation(map.PlayerRotation);
             playerIcon.SetActive(true);
+
+            EditorCameraService.Instance.ResetCamera();
         }
         
         private void OnMapEdited()

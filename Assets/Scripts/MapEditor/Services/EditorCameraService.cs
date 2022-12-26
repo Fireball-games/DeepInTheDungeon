@@ -19,6 +19,11 @@ namespace Scripts.MapEditor.Services
 
         private EditorMouseService Mouse => EditorMouseService.Instance;
         private Vector3 _cameraMoveVector = Vector3.zero;
+
+        internal void ResetCamera()
+        {
+            cameraHolder.localRotation = Quaternion.Euler(Vector3.zero);
+        }
         
         internal void HandleMouseMovement()
         {

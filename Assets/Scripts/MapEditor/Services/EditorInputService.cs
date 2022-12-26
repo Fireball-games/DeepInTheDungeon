@@ -28,7 +28,7 @@ namespace Scripts.MapEditor.Services
                 // Reset camera rotation
                 if (Input.GetKeyDown(KeyCode.W))
                 {
-                    cameraHolder.localRotation = Quaternion.Euler(Vector3.zero);
+                    EditorCameraService.Instance.ResetCamera();
                 }
                 // Toggles Perspective/Orthographic camera
                 if (Input.GetKeyDown(KeyCode.C))

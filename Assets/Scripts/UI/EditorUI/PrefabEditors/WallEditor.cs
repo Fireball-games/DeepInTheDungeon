@@ -167,6 +167,7 @@ namespace Scripts.UI.EditorUI
                 _debugWaypoints = EditedConfiguration.WayPoints;
                 _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
                 WayPointService.AddPath(EditedConfiguration.WayPoints,true);
+                EditorCameraService.Instance.ResetCamera();
             }
         }
 

@@ -27,6 +27,7 @@ namespace Scripts.Helpers.Extensions
         {
             V3 = Vector3.zero;
             V3I = Vector3Int.zero;
+            // TODO: WorldUp nad WorldDown are weird, should be other way around, but I'm afraid to change it to break something, check when possible
             WorldUp = Vector3Int.down;
             WorldDown = Vector3Int.up;
             WorldNorth = Vector3Int.left;

@@ -40,10 +40,10 @@ namespace Scripts.UI.Components
             _label = transform.Find("Label").GetComponent<TMP_Text>();
             
             _upButton = transform.Find("Buttons/UpButton").GetComponent<Button>();
-            SetButton(_upButton, GeneralExtensions.WorldUp, t.Get(Keys.Up));
+            SetButton(_upButton, Vector3.up, t.Get(Keys.Up));
             
             _downButton = transform.Find("Buttons/DownButton").GetComponent<Button>();
-            SetButton(_downButton, GeneralExtensions.WorldDown, t.Get(Keys.Down));
+            SetButton(_downButton, Vector3.down, t.Get(Keys.Down));
             
             _northButton = transform.Find("Buttons/NorthButton").GetComponent<Button>();
             SetButton(_northButton, GeneralExtensions.WorldNorth, t.Get(Keys.North));

@@ -62,13 +62,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 SetWaypoint(control, title, step, waypoints[i]);
 
                 _map.Add(control, i);
-                
-                if (i == waypoints.Count - 2)
+
+                if (waypoints.Count == 1 || i == waypoints.Count - 2)
                 {
                     AddAddWaypointWidget(t.Get(Keys.AddWaypoint), EAddWaypointType.BeforeLast);
                 }
             }
-            
+
             if (!IsEndPointValid())
             {
                 AddAddWaypointWidget(t.Get(Keys.AddEndPoint), EAddWaypointType.EndPoint);
@@ -80,11 +80,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             AddWaypointWidget widget = ObjectPool.Instance
                 .GetFromPool(addWaypointPrefab, scrollViewContent.gameObject, true)
                 .GetComponent<AddWaypointWidget>();
+            
             widget.Set(labelText, type, OnAddWaypointClicked);
         }
 
         private bool IsEndPointValid()
         {
+            if (_currentPath.Count == 1) return false;
+
             Vector3 endPoint = _currentPath[^1].position;
             return Mathf.Abs(endPoint.x % 1) < float.Epsilon
                    && Mathf.Abs(endPoint.y % 1) < float.Epsilon
@@ -119,20 +122,32 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             OnPathChanged?.Invoke(Waypoint.Clone(_currentPath));
         }
 
-        private void OnAddWaypointClicked(Vector3 position, EAddWaypointType type)
+        private void OnAddWaypointClicked(Vector3 direction, EAddWaypointType type)
         {
-            Waypoint newWaypoint = new(position + _currentPath[^2].position, 0.3f);
-            
+            Vector3 offsetPosition = _currentPath.Count == 1 ? _currentPath[0].position : _currentPath[^2].position;
+            Vector3 newPointPosition = direction * _step + offsetPosition;
+            Waypoint newWaypoint = new(newPointPosition, 0.3f);
+
             if (type is EAddWaypointType.BeforeLast)
             {
-                _currentPath[^1].position += (_currentPath[^1].position - _currentPath[^2].position).normalized;
-                _currentPath.Insert(_currentPath.Count - 1, newWaypoint);
+                if (_currentPath.Count == 1)
+                {
+                    _currentPath.Add(newWaypoint);
+                }
+                else
+                {
+                    if (IsEndPointValid() && newPointPosition == _currentPath[^1].position)
+                    {
+                        _currentPath[^1].position += (_currentPath[^1].position - _currentPath[^2].position).normalized;
+                    }
+                    _currentPath.Insert(_currentPath.Count - 1, newWaypoint);
+                }
             }
             else
             {
                 _currentPath.Add(newWaypoint);
             }
-            
+
             BuildWaypointsControls(_currentPath);
             OnPathChanged?.Invoke(Waypoint.Clone(_currentPath));
         }

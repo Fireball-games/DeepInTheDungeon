@@ -4,7 +4,7 @@ using Scripts.System.Pooling;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using NotImplementedException = System.NotImplementedException;
+using UnityEngine.UI;
 
 namespace Scripts.UI.Components
 {
@@ -14,19 +14,24 @@ namespace Scripts.UI.Components
         private InputField _speedInput;
         private TMP_Text _stepLabel;
         private TMP_Text _stepValue;
+        private Button _deleteButton;
 
-        private UnityEvent<WaypointControl, Vector3> OnPositionChanged { get; set; } = new();
-        private UnityEvent<WaypointControl, float> OnSpeedChanged { get; set; } = new();
+        private UnityEvent<WaypointControl, Vector3> OnPositionChanged { get; } = new();
+        private UnityEvent<WaypointControl, float> OnSpeedChanged { get; } = new();
+
+        private UnityEvent<WaypointControl> OnDeleteButtonClicked { get; } = new(); 
 
         private void Awake()
         {
-            _position = transform.Find("Vector3Control").GetComponent<Vector3Control>();
+            _position = transform.Find("Vector3ControlGridNavigation").GetComponent<Vector3Control>();
             _speedInput = transform.Find("AdditionalSettings/SpeedInput").GetComponent<InputField>();
 
             _stepLabel = transform.Find("AdditionalSettings/StepLabel").GetComponent<TMP_Text>();
             _stepLabel.text = t.Get(Keys.Step);
         
             _stepValue = transform.Find("AdditionalSettings/StepValue").GetComponent<TMP_Text>();
+
+            _deleteButton = transform.Find("AdditionalSettings/DeleteButtonWrapper/DeleteButton").GetComponent<Button>();
         }
 
         public void Set(
@@ -36,7 +41,9 @@ namespace Scripts.UI.Components
             float speed,
             UnityAction<WaypointControl, Vector3> onPositionChanged,
             UnityAction<WaypointControl, float> onSpeedChanged,
-            string xLabel = null, string yLabel = null, string zLabel = null)
+            string xLabel = null, string yLabel = null, string zLabel = null,
+            bool isDeleteButtonActive = true,
+            UnityAction<WaypointControl> onDeleteButtonClicked = null)
         {
             OnPositionChanged.RemoveAllListeners();
             _position.OnValueChanged.RemoveAllListeners();
@@ -57,6 +64,16 @@ namespace Scripts.UI.Components
             OnSpeedChanged.AddListener(onSpeedChanged);
 
             _stepValue.text = step.ToString(CultureInfo.InvariantCulture);
+            
+            OnDeleteButtonClicked.RemoveAllListeners();
+            _deleteButton.onClick.RemoveAllListeners();
+            _deleteButton.gameObject.SetActive(isDeleteButtonActive);
+
+            if (isDeleteButtonActive && onDeleteButtonClicked != null)
+            {
+                OnDeleteButtonClicked.AddListener(onDeleteButtonClicked);
+                _deleteButton.onClick.AddListener(OnDeleteButtonClicked_internal);
+            }
         }
 
         private void OnPositionChanged_internal(Vector3 newPosition)
@@ -70,6 +87,11 @@ namespace Scripts.UI.Components
             {
                 OnSpeedChanged.Invoke(this, parsedValue);
             }
+        }
+
+        private void OnDeleteButtonClicked_internal()
+        {
+            OnDeleteButtonClicked.Invoke(this);
         }
 
         public void Initialize()

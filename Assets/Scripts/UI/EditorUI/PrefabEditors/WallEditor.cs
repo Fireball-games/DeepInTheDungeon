@@ -160,7 +160,7 @@ namespace Scripts.UI.EditorUI
                 {
                     EditedConfiguration.WayPoints.Add(
                         new Waypoint(
-                            EditorMouseService.Instance.MouseGridPosition.ToWorldPositionV3Int(),
+                            EditorMouseService.Instance.LastLeftButtonUpWorldPosition,
                             0.3f));
                 }
 

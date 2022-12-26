@@ -122,5 +122,19 @@ namespace Scripts.Helpers.Extensions
                 Directory.CreateDirectory(directoryPath);
             }
         }
+
+        public static GameObject FindActive(this Transform transform, string name)
+        {
+            foreach (Transform child in transform)
+            {
+                GameObject foundChild = child.gameObject;
+                if (foundChild.name == name && foundChild.activeSelf)
+                {
+                    return foundChild;
+                }
+            }
+
+            return null;
+        }
     }
 }

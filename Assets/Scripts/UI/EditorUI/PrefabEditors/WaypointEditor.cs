@@ -8,6 +8,7 @@ using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.UI.Components;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
@@ -59,19 +60,26 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
                 string title = i == 0 ? t.Get(Keys.StartPoint) : i == waypoints.Count - 1 ? t.Get(Keys.EndPoint) : $"{Keys.Point} {i + 1}";
                 float step = i == 0 || i == waypoints.Count - 1 ? 1f : _step;
-                SetWaypoint(control, title, step, waypoints[i]);
+                bool isDeleteButtonActive = i != 0 && i != _currentPath.Count - 1;
+                UnityAction<WaypointControl> onDeleteButtonClicked = isDeleteButtonActive ? OnDeleteButtonClicked : null;
+
+                if (i == 0 || i == _currentPath.Count - 1)
+                {
+                    waypoints[i].position = waypoints[i].position.ToVector3Int();
+                }
+
+                SetWaypoint(control, title, step, waypoints[i], isDeleteButtonActive, onDeleteButtonClicked);
 
                 _map.Add(control, i);
 
-                if (waypoints.Count == 1 || i == waypoints.Count - 2)
+                if (waypoints.Count == 1)
+                {
+                    AddAddWaypointWidget(t.Get(Keys.AddEndPoint), EAddWaypointType.EndPoint);
+                }
+                else if (i == waypoints.Count - 2)
                 {
                     AddAddWaypointWidget(t.Get(Keys.AddWaypoint), EAddWaypointType.BeforeLast);
                 }
-            }
-
-            if (!IsEndPointValid())
-            {
-                AddAddWaypointWidget(t.Get(Keys.AddEndPoint), EAddWaypointType.EndPoint);
             }
         }
 
@@ -80,21 +88,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             AddWaypointWidget widget = ObjectPool.Instance
                 .GetFromPool(addWaypointPrefab, scrollViewContent.gameObject, true)
                 .GetComponent<AddWaypointWidget>();
-            
+
             widget.Set(labelText, type, OnAddWaypointClicked);
         }
 
-        private bool IsEndPointValid()
-        {
-            if (_currentPath.Count == 1) return false;
-
-            Vector3 endPoint = _currentPath[^1].position;
-            return Mathf.Abs(endPoint.x % 1) < float.Epsilon
-                   && Mathf.Abs(endPoint.y % 1) < float.Epsilon
-                   && Mathf.Abs(endPoint.z % 1) < float.Epsilon;
-        }
-
-        private void SetWaypoint(WaypointControl control, string title, float step, Waypoint waypoint)
+        private void SetWaypoint(WaypointControl control,
+            string title,
+            float step,
+            Waypoint waypoint,
+            bool isDeleteButtonActive,
+            UnityAction<WaypointControl> onDeleteButtonClicked)
         {
             control.Set(title,
                 step,
@@ -104,7 +107,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 OnSpeedChanged,
                 t.Get(Keys.Rows),
                 t.Get(Keys.Floors),
-                t.Get(Keys.Columns)
+                t.Get(Keys.Columns),
+                isDeleteButtonActive,
+                onDeleteButtonClicked
             );
         }
 
@@ -122,10 +127,18 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             OnPathChanged?.Invoke(Waypoint.Clone(_currentPath));
         }
 
+        private void OnDeleteButtonClicked(WaypointControl control)
+        {
+            _currentPath.RemoveAt(_map[control]);
+            BuildWaypointsControls(_currentPath);
+            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath));
+        }
+
         private void OnAddWaypointClicked(Vector3 direction, EAddWaypointType type)
         {
             Vector3 offsetPosition = _currentPath.Count == 1 ? _currentPath[0].position : _currentPath[^2].position;
-            Vector3 newPointPosition = direction * _step + offsetPosition;
+            float step = _currentPath.Count == 1 ? 1 : _step;
+            Vector3 newPointPosition = direction * step + offsetPosition;
             Waypoint newWaypoint = new(newPointPosition, 0.3f);
 
             if (type is EAddWaypointType.BeforeLast)
@@ -136,10 +149,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 }
                 else
                 {
-                    if (IsEndPointValid() && newPointPosition == _currentPath[^1].position)
+                    if (newPointPosition == _currentPath[^1].position)
                     {
                         _currentPath[^1].position += (_currentPath[^1].position - _currentPath[^2].position).normalized;
                     }
+
                     _currentPath.Insert(_currentPath.Count - 1, newWaypoint);
                 }
             }

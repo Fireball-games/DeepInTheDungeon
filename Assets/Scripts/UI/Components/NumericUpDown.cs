@@ -1,4 +1,5 @@
 using System;
+using Scripts.Helpers.Extensions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -29,9 +30,9 @@ namespace Scripts.UI.Components
             Label = transform.Find("Label").GetComponent<TMP_Text>();
             _input = transform.Find("Input").GetComponent<TMP_InputField>();
             _input.onValueChanged.AddListener(OnValueChanged_inInput);
-            _plusButton = transform.Find("Buttons/PlusButton").GetComponent<Button>();
+            _plusButton = transform.Find("Buttons").FindActive("PlusButton").GetComponent<Button>();
             _plusButton.onClick.AddListener(OnPlusClick);
-            _minusButton = transform.Find("Buttons/MinusButton").GetComponent<Button>();
+            _minusButton = transform.Find("Buttons").FindActive("MinusButton").GetComponent<Button>();
             _minusButton.onClick.AddListener(OnMinusClick);
 
             minimum = float.MinValue;

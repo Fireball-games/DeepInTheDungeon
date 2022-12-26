@@ -25,6 +25,7 @@ namespace Scripts.MapEditor.Services
         private static EditorUIManager UIManager => EditorUIManager.Instance;
 
         public Vector3Int MouseGridPosition => _lastGridPosition;
+        public Vector3Int LastLeftButtonUpWorldPosition { get; private set; }
         public EGridPositionType GridPositionType { get; private set; } = EGridPositionType.None;
         public bool LeftClickExpired { get; private set; }
         public bool RightClickExpired { get; private set; }
@@ -212,6 +213,8 @@ namespace Scripts.MapEditor.Services
 
         private void ProcessMouseButtonUp(int mouseButtonUpped)
         {
+            LastLeftButtonUpWorldPosition = MouseGridPosition.ToWorldPositionV3Int();
+            
             switch (Manager.WorkMode)
             {
                 case EWorkMode.None:

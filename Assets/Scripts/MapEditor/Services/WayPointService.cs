@@ -16,7 +16,7 @@ namespace Scripts.MapEditor.Services
         [SerializeField] private GameObject waypointPrefab;
         [SerializeField] private Vector3 waypointScale = new(0.3f, 0.3f, 0.3f);
 
-        private static Dictionary<Vector3Int, PathController> _paths;
+        private static Dictionary<(Vector3, Vector3), PathController> _paths;
         private static Mesh _waypointMesh;
         private static Vector3 _waypointScale;
         private static Material _normalMaterial;
@@ -31,7 +31,7 @@ namespace Scripts.MapEditor.Services
 
         private void Awake()
         {
-            _paths = new Dictionary<Vector3Int, PathController>();
+            _paths = new Dictionary<(Vector3, Vector3), PathController>();
             _parent = new GameObject("Waypoints");
             _waypointMesh = waypointPrefab.GetComponent<MeshFilter>().sharedMesh;
             _waypointScale = waypointScale;
@@ -61,51 +61,50 @@ namespace Scripts.MapEditor.Services
             }
         }
 
-        public static void HighlightPath(IEnumerable<Waypoint> path, bool isHighlighted = true) =>
-            HighlightPath(path.ElementAt(0).position.ToVector3Int(), isHighlighted);
-        
-        public static void HighlightPath(Vector3Int startPoint, bool isHighlighted = true)
+        private static void HighlightPath((Vector3, Vector3) key, bool isHighlighted = true)
         {
-            if (!_paths.TryGetValue(startPoint, out PathController controller) || controller.IsHighlighted == isHighlighted) return;
+            if (!_paths.TryGetValue(key, out PathController controller) || controller.IsHighlighted == isHighlighted) return;
 
             controller.IsHighlighted = isHighlighted;
 
             for (int index = 0; index < controller.Waypoints.Count; index++)
             {
-                HighlightPoint(startPoint, index, isHighlighted);
+                HighlightPoint(key, index, isHighlighted);
             }
         }
 
-        public static void HighlightPoint(Vector3Int startPoint, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
+        public static void HighlightPath(List<Waypoint> path, bool isHighlighted = true) =>
+            HighlightPath(GetKey(path), isHighlighted);
+
+        public static void HighlightPoint((Vector3, Vector3) key, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
         {
             if (isExclusiveHighlight)
             {
-                for (int index = 0; index < _paths[startPoint].Waypoints.Count; index++)
+                for (int index = 0; index < _paths[key].Waypoints.Count; index++)
                 {
-                    HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value, index == pointIndex);
+                    HighlightPoint(_paths[key].Waypoints.ElementAt(pointIndex).Value, index == pointIndex);
                 }
             }
             
-            HighlightPoint(_paths[startPoint].Waypoints.ElementAt(pointIndex).Value, isHighlighted);
+            HighlightPoint(_paths[key].Waypoints.ElementAt(pointIndex).Value, isHighlighted);
         }
 
-        public static void DestroyPath(IEnumerable<Waypoint> path) => DestroyPath(path.ElementAt(0).position.ToVector3Int());
+        public static void DestroyPath(List<Waypoint> path) => DestroyPath(GetKey(path));
 
-        public static void DestroyPath(Vector3Int startPoint)
+        public static void DestroyPath((Vector3, Vector3) key)
         {
-            if (!_paths.ContainsKey(startPoint)) return;
+            if (!_paths.ContainsKey(key)) return;
 
-            Destroy(_paths[startPoint].gameObject);
-            _paths.Remove(startPoint);
+            Destroy(_paths[key].gameObject);
+            _paths.Remove(key);
         }
 
-        public static void AddPath(IEnumerable<Waypoint> waypoints, bool highlightAfterBuild = false)
+        public static void AddPath(List<Waypoint> waypoints, bool highlightAfterBuild = false)
         {
-            Vector3 startPoint = waypoints.ElementAt(0).position;
+            (Vector3, Vector3) key = GetKey(waypoints);
+            DestroyPath(key);
 
-            DestroyPath(startPoint.ToVector3Int());
-
-            GameObject pathParent = new($"Path_{waypoints.Count()}x_{startPoint.x}_{startPoint.y}_{startPoint.z}")
+            GameObject pathParent = new($"Path_{key.Item1}_{key.Item2}")
             {
                 transform =
                 {
@@ -121,7 +120,7 @@ namespace Scripts.MapEditor.Services
                 drawnWaypoint.transform.parent = pathParent.transform;
             }
 
-            _paths.Add(startPoint.ToVector3Int(), controller);
+            _paths.Add(GetKey(waypoints), controller);
 
             BuildLines(controller);
 
@@ -133,6 +132,13 @@ namespace Scripts.MapEditor.Services
             
             if (!_areWaypointsShows)
                 HideWaypoints();
+        }
+
+        private static (Vector3, Vector3) GetKey(List<Waypoint> waypoints)
+        {
+            return waypoints.Count == 1 
+                ? (waypoints[0].position.ToVector3Int(), Vector3.negativeInfinity) 
+                : new ValueTuple<Vector3Int, Vector3>(waypoints[0].position.ToVector3Int(), waypoints[1].position.ToVector3Int());
         }
 
         private static void HighlightPath(PathController pathController)

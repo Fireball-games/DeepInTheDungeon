@@ -49,13 +49,13 @@ namespace Scripts.UI.EditorUI
         public override void Open(WallConfiguration configuration)
         {
             if (!CanOpen) return;
-            
+
             if (configuration == null)
             {
                 Close();
                 return;
             }
-            
+
             base.Open(configuration);
 
             if (PhysicalPrefabBody)
@@ -72,26 +72,26 @@ namespace Scripts.UI.EditorUI
         protected override string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
         {
             Initialize();
-            
+
             _offsetSlider.SetLabel(t.Get(Keys.Offset));
             _offsetSlider.SetActive(false);
-            
+
             return base.SetupWindow(prefabType, deleteButtonActive);
         }
 
         protected override void SetPrefab(string prefabName)
         {
             base.SetPrefab(prefabName);
-            
+
             _waypointEditor.SetActive(false);
-            
+
             if (PhysicalPrefabBody)
             {
                 _offsetSlider.SetActive(true);
                 _offsetSlider.Value = EditedConfiguration.Offset;
                 _offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
             }
-            
+
             VisualizeOtherComponents();
         }
 
@@ -101,9 +101,9 @@ namespace Scripts.UI.EditorUI
             {
                 WayPointService.DestroyPath(EditedConfiguration.WayPoints);
             }
-            
+
             RemoveExtraParts();
-            
+
             base.Delete();
         }
 
@@ -116,9 +116,9 @@ namespace Scripts.UI.EditorUI
 
             if (_createdOppositeWall != null)
             {
-                MapBuilder.ReplacePrefabConfiguration(_createdOppositeWall);
+                MapBuilder.MapDescription.PrefabConfigurations.Add(_createdOppositeWall);
             }
-            
+
             base.SaveMapAndClose();
         }
 
@@ -128,29 +128,31 @@ namespace Scripts.UI.EditorUI
             {
                 WayPointService.DestroyPath(EditedConfiguration.WayPoints);
             }
-            
+
             RemoveExtraParts();
-            
+
             base.RemoveAndClose();
         }
 
         public override void CloseWithChangeCheck()
         {
             RemoveExtraParts();
-            
+
             base.CloseWithChangeCheck();
         }
-        
-        public static PositionRotation CalculateWallForPath(List<Waypoint> path)
+
+        private static PositionRotation CalculateWallForPath(List<Waypoint> path)
         {
             if (path.Count < 1) return null;
-            
+
             Vector3 startDirection = (path[1].position.Round(1) - path[0].position.Round(1)).normalized;
-            
-            if (!V3Extensions.WallDirectionRotationMap.ContainsKey(startDirection)) 
-                return null;
-            
-            return new PositionRotation(path[0].position.Round(1) + (startDirection * 0.5f), V3Extensions.WallDirectionRotationMap[startDirection]);
+
+            return !V3Extensions.WallDirectionRotationMap.ContainsKey(startDirection) 
+                ? null : 
+                new PositionRotation(
+                    path[0].position.Round(1) + (startDirection * 0.5f),
+                    V3Extensions.WallDirectionRotationMap[startDirection]
+                    );
         }
 
         private void RemoveExtraParts()
@@ -158,7 +160,7 @@ namespace Scripts.UI.EditorUI
             if (_createdOppositeWall != null)
             {
                 MapBuilder.RemovePrefab(_createdOppositeWall);
-                
+
                 if (_createdOppositeWall.WayPoints.Any())
                 {
                     WayPointService.DestroyPath(_createdOppositeWall.WayPoints);
@@ -214,7 +216,7 @@ namespace Scripts.UI.EditorUI
             WallPrefabBase script = PhysicalPrefab.GetComponentInParent<WallPrefabBase>();
 
             if (!script) return;
-            
+
             if (script.presentedInEditor)
             {
                 script.transform.Find("EditorPresentation").gameObject.SetActive(true);
@@ -225,7 +227,7 @@ namespace Scripts.UI.EditorUI
                 if (EditedConfiguration.WayPoints.Count < 2 && movementScript.GetWaypointPreset())
                 {
                     List<Waypoint> translatedWaypoints = new();
-                    
+
                     foreach (Waypoint waypoint in movementScript.GetWaypointPreset().waypoints)
                     {
                         Waypoint newWaypoint = new()
@@ -235,7 +237,7 @@ namespace Scripts.UI.EditorUI
                         };
                         translatedWaypoints.Add(newWaypoint);
                     }
-                    
+
                     EditedConfiguration.WayPoints = translatedWaypoints;
                 }
                 else if (EditedConfiguration.WayPoints.Count == 0)
@@ -247,18 +249,19 @@ namespace Scripts.UI.EditorUI
                 }
 
                 _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
-                WayPointService.AddPath(EditedConfiguration.WayPoints,true);
+                WayPointService.AddPath(EditedConfiguration.WayPoints, true);
                 EditorCameraService.Instance.ResetCamera();
                 HandleCreateOppositePathButton();
             }
         }
 
         private void OnPathChanged(IEnumerable<Waypoint> path)
-         { 
-             SetEdited();
+        {
+            SetEdited();
             WayPointService.DestroyPath(EditedConfiguration.WayPoints);
-            EditedConfiguration.WayPoints = path.ToList();
-            WayPointService.AddPath(path, true);
+            List<Waypoint> waypoints = path.ToList();
+            EditedConfiguration.WayPoints = waypoints;
+            WayPointService.AddPath(waypoints, true);
             HandleCreateOppositePathButton();
         }
 
@@ -307,7 +310,7 @@ namespace Scripts.UI.EditorUI
             {
                 oppositePoints.Add(new Waypoint(waypoints.ElementAt(i).position.Round(2), waypoints.ElementAt(i).moveSpeedModifier));
             }
-            
+
             wallTransformData = CalculateWallForPath(oppositePoints);
             return wallTransformData != null;
         }

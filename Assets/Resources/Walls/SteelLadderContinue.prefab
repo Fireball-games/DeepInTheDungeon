@@ -93,6 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 917241329104296928}
   - component: {fileID: 4381946457213281041}
+  - component: {fileID: 6848313584060392465}
   m_Layer: 9
   m_Name: SteelLadderContinue
   m_TagString: Untagged
@@ -131,6 +132,19 @@ MonoBehaviour:
   prefabType: 2
   presentedInEditor: {fileID: 0}
   waypoints: []
+--- !u!65 &6848313584060392465
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4085886640704172079}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7972898164022896631
 GameObject:
   m_ObjectHideFlags: 0

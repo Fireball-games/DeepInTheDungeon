@@ -7,16 +7,25 @@ namespace Scripts.Helpers.Extensions
 {
     public static class V3Extensions
     {
-        public static Dictionary<Vector3, Quaternion> DirectionRotationMap;
+        public static readonly Dictionary<Vector3, Quaternion> WallDirectionRotationMap;
+        public static readonly Dictionary<Vector3, Vector3> DirectionRotationMap;
 
         static V3Extensions()
         {
-            DirectionRotationMap = new Dictionary<Vector3, Quaternion>
+            WallDirectionRotationMap = new Dictionary<Vector3, Quaternion>
             {
                 { WorldNorth, Quaternion.Euler(Vector3.zero) },
                 { WorldEast, Quaternion.Euler(new Vector3(0, 90, 0)) },
                 { WorldSouth, Quaternion.Euler(Vector3.zero) },
                 { WorldWest, Quaternion.Euler(new Vector3(0, 90, 0)) },
+            };
+
+            DirectionRotationMap = new Dictionary<Vector3, Vector3>
+            {
+                {WorldNorth, new Vector3(0, 270, 90)},
+                {WorldEast, Vector3.zero},
+                {WorldSouth, new Vector3(0, 90, 0)},
+                {WorldWest, new Vector3(0, 180, 0)},
             };
         }
 

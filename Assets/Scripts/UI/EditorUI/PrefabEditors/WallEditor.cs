@@ -11,7 +11,6 @@ using Scripts.System;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.PrefabEditors;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static Scripts.Enums;
@@ -140,6 +139,18 @@ namespace Scripts.UI.EditorUI
             RemoveExtraParts();
             
             base.CloseWithChangeCheck();
+        }
+        
+        public static PositionRotation CalculateWallForPath(List<Waypoint> path)
+        {
+            if (path.Count < 1) return null;
+            
+            Vector3 startDirection = (path[1].position.Round(1) - path[0].position.Round(1)).normalized;
+            
+            if (!V3Extensions.WallDirectionRotationMap.ContainsKey(startDirection)) 
+                return null;
+            
+            return new PositionRotation(path[0].position.Round(1) + (startDirection * 0.5f), V3Extensions.WallDirectionRotationMap[startDirection]);
         }
 
         private void RemoveExtraParts()
@@ -299,18 +310,6 @@ namespace Scripts.UI.EditorUI
             
             wallTransformData = CalculateWallForPath(oppositePoints);
             return wallTransformData != null;
-        }
-
-        private PositionRotation CalculateWallForPath(List<Waypoint> path)
-        {
-            if (path.Count < 1) return null;
-            
-            Vector3 startDirection = (path[1].position.Round(1) - path[0].position.Round(1)).normalized;
-            
-            if (!V3Extensions.DirectionRotationMap.ContainsKey(startDirection)) 
-                return null;
-            
-            return new PositionRotation(path[0].position.Round(1) + (startDirection * 0.5f), V3Extensions.DirectionRotationMap[startDirection]);
         }
     }
 }

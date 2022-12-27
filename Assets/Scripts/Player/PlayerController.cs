@@ -30,12 +30,13 @@ namespace Scripts.Player
         private Vector3 _targetPosition;
         private Vector3 _prevTargetPosition;
         private Vector3 _targetRotation;
+        private Vector3 _lastBashDirection;
 
         private List<Waypoint> _waypoints;
 
         private bool _isStartPositionSet;
         private bool _isBashingIntoWall;
-        public bool _atRest = true;
+        private bool _atRest = true;
 
         private float _defaultMoveSpeed;
         private float _defaultRotationSpeed;
@@ -70,6 +71,10 @@ namespace Scripts.Player
         {
             if (!_isStartPositionSet || !GameManager.Instance.MovementEnabled || !_atRest) return;
 
+            _targetPosition = _targetPosition.ToVector3Int();
+            _prevTargetPosition = _prevTargetPosition.ToVector3Int();
+            transform.position = transform.position.ToVector3Int();
+            
             movementSetter?.Invoke();
 
             if (IsTargetPositionValid() && !_waypoints.Any())
@@ -102,25 +107,43 @@ namespace Scripts.Player
         private IEnumerator PerformWaypointMovementCoroutine()
         {
             if (!_waypoints.Any()) yield break;
-
+            bool isLadderDown = false;
+            
             for (int index = 1; index < _waypoints.Count; index++)
             {
                 Waypoint waypoint = _waypoints[index];
 
                 _targetPosition = waypoint.position;
-                if (index == 1)
+                if (IsWaypointStraightUp(index, out Vector3 rot))
+                {
+                    _targetRotation = rot;
+                }
+                else if (index == 1 && IsLadderDownStart(out rot))
+                {
+                    isLadderDown = true;
+                    _targetRotation = rot;
+                }
+                else if (index == 1)
                 {
                     _targetRotation = Quaternion.LookRotation(waypoint.position - _waypoints[0].position, Vector3.up).eulerAngles;
                 }
                 else if (index != _waypoints.Count - 1)
                 {
-                    _targetRotation = Quaternion.LookRotation(_waypoints[index + 1].position - transform.position, Vector3.up).eulerAngles;
+                    _targetRotation = isLadderDown 
+                        ? transform.rotation.eulerAngles
+                        :Quaternion.LookRotation(_waypoints[index + 1].position - transform.position, Vector3.up).eulerAngles;
+
+                    isLadderDown = false;
                 }
                 else if (index == _waypoints.Count - 1)
                 {
-                    _targetRotation = Quaternion.LookRotation(_waypoints[^1].position - _waypoints[^2].position, Vector3.up).eulerAngles;
-                }
+                    _targetRotation = isLadderDown 
+                        ? transform.rotation.eulerAngles
+                        :Quaternion.LookRotation(_waypoints[^1].position - _waypoints[^2].position, Vector3.up).eulerAngles;
 
+                    isLadderDown = false;
+                }
+                
                 AdjustTransitionSpeeds(_waypoints[index].moveSpeedModifier);
 
                 yield return PerformMovementCoroutine(false, false);
@@ -134,6 +157,56 @@ namespace Scripts.Player
             _targetRotation = new Vector3(0, rotation.y, 0);
             
             StartCoroutine(PerformMovementCoroutine());
+        }
+
+        private bool IsWaypointStraightUp(int index, out Vector3 rotation)
+        {
+            if (index == _waypoints.Count - 1)
+            {
+                Vector3 currentRotation = transform.rotation.eulerAngles;
+                currentRotation.x = 0;
+                rotation = currentRotation;
+                return false;
+            }
+            Vector3 vector =  (_waypoints[index].position.Round(1) - _waypoints[index - 1].position.Round(1)).normalized ;
+            bool isUp = vector == Vector3.up;
+            
+            if (isUp)
+            {
+                Vector3 bashDirection = _lastBashDirection.normalized;
+                if (!V3Extensions.DirectionRotationMap.ContainsKey(bashDirection))
+                {
+                    rotation = Vector3.zero;
+                    return false;
+                }
+                rotation = V3Extensions.DirectionRotationMap[bashDirection];
+                return true;
+            }
+
+            rotation = transform.rotation.eulerAngles;
+            return false;
+        }
+
+        private bool IsLadderDownStart(out Vector3 rotation)
+        {
+            bool straightDownFromSecondWaypoint = (_waypoints[2].position.Round(1) - _waypoints[1].position.Round(1)).normalized == Vector3.down;
+
+            if (!straightDownFromSecondWaypoint)
+            {
+                rotation = Vector3.zero;
+                return false;
+            }
+            
+            rotation = (_waypoints[0].position.Round(1) - _waypoints[1].position.Round(1)).normalized;
+
+            if (!V3Extensions.DirectionRotationMap.ContainsKey(rotation))
+            {
+                rotation = Vector3.zero;
+                return false;
+            }
+
+            rotation = V3Extensions.DirectionRotationMap[rotation];
+            return true;
         }
 
         private void AdjustTransitionSpeeds(float? modifier = null)
@@ -267,7 +340,8 @@ namespace Scripts.Player
             if (_targetPosition == _prevTargetPosition) return false;
 
             Vector3 currentPosition = transform.position;
-            Ray ray = new(currentPosition, _targetPosition - currentPosition);
+            _lastBashDirection = (_targetPosition.ToVector3Int() - currentPosition.ToVector3Int());
+            Ray ray = new(currentPosition, _lastBashDirection);
             RaycastHit[] hits = new RaycastHit[5];
             int size = Physics.RaycastNonAlloc(ray, hits, 0.7f, LayerMask.GetMask(LayersManager.WallMaskName));
 

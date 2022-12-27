@@ -44,12 +44,12 @@ namespace Scripts.MapEditor
                 { ETileDirection.North, new PositionRotation
                 {
                     Position = new Vector3(-0.5f, 0, 0f), 
-                    Rotation = Quaternion.Euler(Vector3.zero)
+                    Rotation = Quaternion.Euler(new Vector3(0, 180, 0))
                 }}, 
                 { ETileDirection.East, new PositionRotation
                 {
                     Position = new Vector3(0f, 0f, 0.5f), 
-                    Rotation = Quaternion.Euler(new Vector3(0, 90, 0))
+                    Rotation = Quaternion.Euler(new Vector3(0, 270, 0))
                 }}, 
                 { ETileDirection.South, new PositionRotation
                 {

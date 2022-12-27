@@ -12,7 +12,8 @@ namespace Scripts.MapEditor.Services
     {
         [SerializeField] private Material normalMaterial;
         [SerializeField] private Material highlightedMaterial;
-        [SerializeField] private Material waypointLinesMaterial;
+        [SerializeField] private Material waypointLinesNormalMaterial;
+        [SerializeField] private Material waypointLinesHighlightedMaterial;
         [SerializeField] private GameObject waypointPrefab;
         [SerializeField] private Vector3 waypointScale = new(0.3f, 0.3f, 0.3f);
 
@@ -21,13 +22,12 @@ namespace Scripts.MapEditor.Services
         private static Vector3 _waypointScale;
         private static Material _normalMaterial;
         private static Material _highlightedMaterial;
-        private static Material _waypointsLineMaterial;
+        private static Material _waypointsLineNormalMaterial;
+        private static Material _waypointLinesHighlightedMaterial;
         private static Color _pathColorStart;
         private static Color _pathColorEnd;
         private static GameObject _parent;
         private static bool _areWaypointsShows = true;
-        private static readonly int StartColor = Shader.PropertyToID("_StartColor");
-        private static readonly int EndColor = Shader.PropertyToID("_EndColor");
 
         private void Awake()
         {
@@ -37,9 +37,8 @@ namespace Scripts.MapEditor.Services
             _waypointScale = waypointScale;
             _normalMaterial = normalMaterial;
             _highlightedMaterial = highlightedMaterial;
-            _waypointsLineMaterial = waypointLinesMaterial;
-            _pathColorStart = _waypointsLineMaterial.GetColor(StartColor).Clone();
-            _pathColorEnd = _waypointsLineMaterial.GetColor(EndColor).Clone();
+            _waypointsLineNormalMaterial = waypointLinesNormalMaterial;
+            _waypointLinesHighlightedMaterial = waypointLinesHighlightedMaterial;
         }
 
         public static void ShowWaypoints()
@@ -141,19 +140,18 @@ namespace Scripts.MapEditor.Services
                 : new ValueTuple<Vector3Int, Vector3>(waypoints[0].position.ToVector3Int(), waypoints[1].position.ToVector3Int());
         }
 
-        private static void HighlightPath(PathController pathController)
+        private static void HighlightPath(PathController pathController, bool isHighlighted = true)
         {
-            HighlightPath(_paths.GetFirstKeyByValue(pathController));
+            HighlightPath(_paths.GetFirstKeyByValue(pathController), isHighlighted);
         }
 
         private static void HighlightPoint(WaypointParts waypoint, bool isHighlighted = true)
         {
-            float factor = isHighlighted ? 2f : 1f;
-            Material material = isHighlighted ? _highlightedMaterial : _normalMaterial;
+            Material pointMaterial = isHighlighted ? _highlightedMaterial : _normalMaterial;
+            Material lineMaterial = isHighlighted ? _waypointLinesHighlightedMaterial : _waypointsLineNormalMaterial;
 
-            waypoint.MeshRenderer.material = new (material);
-            waypoint.LineRenderer.material.SetColor(StartColor, _pathColorStart.SetIntensity(factor));
-            waypoint.LineRenderer.material.SetColor(EndColor, _pathColorEnd.SetIntensity(factor));
+            waypoint.MeshRenderer.material = new Material(pointMaterial);
+            waypoint.LineRenderer.material = new Material(lineMaterial);
         }
 
         private static void BuildLines(PathController controller)
@@ -186,7 +184,7 @@ namespace Scripts.MapEditor.Services
 
             LineRenderer lr = newWaypoint.AddComponent<LineRenderer>();
             lr.enabled = false;
-            lr.material = new Material(_waypointsLineMaterial);
+            lr.material = new Material(_waypointsLineNormalMaterial);
             lr.numCapVertices = 5;
             lr.shadowCastingMode = ShadowCastingMode.Off;
             lr.allowOcclusionWhenDynamic = false;

@@ -23,6 +23,7 @@ namespace Scripts.Building.PrefabsSpawning.Walls
         {
             WallEligibleForEditing = false;
             _ownConfiguration = null;
+            
             if (presentedInEditor) presentedInEditor.SetActive(false);
         }
 

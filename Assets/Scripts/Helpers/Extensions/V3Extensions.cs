@@ -16,8 +16,8 @@ namespace Scripts.Helpers.Extensions
             {
                 { WorldNorth, Quaternion.Euler(Vector3.zero) },
                 { WorldEast, Quaternion.Euler(new Vector3(0, 90, 0)) },
-                { WorldSouth, Quaternion.Euler(Vector3.zero) },
-                { WorldWest, Quaternion.Euler(new Vector3(0, 90, 0)) },
+                { WorldSouth, Quaternion.Euler(new Vector3(0, 180, 0)) },
+                { WorldWest, Quaternion.Euler(new Vector3(0, 270, 0)) },
             };
 
             DirectionRotationMap = new Dictionary<Vector3, Vector3>

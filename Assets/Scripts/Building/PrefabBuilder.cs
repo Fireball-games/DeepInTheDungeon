@@ -83,7 +83,7 @@ namespace Scripts.Building
                         script.presentedInEditor.SetActive(true);
                     }
 
-                    if (wallConfiguration.WayPoints != null && wallConfiguration.WayPoints.Any())
+                    if (wallConfiguration.HasPath())
                     {
                         WayPointService.AddPath(wallConfiguration.WayPoints);
                     }

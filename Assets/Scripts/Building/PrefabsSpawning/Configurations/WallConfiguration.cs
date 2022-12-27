@@ -24,5 +24,6 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             TransformData = new PositionRotation(configuration.TransformData.Position, configuration.TransformData.Rotation);
         }
 
+        public bool HasPath() => WayPoints != null && WayPoints.Any();
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
+using Scripts.Building.PrefabsSpawning.Walls.Indentificators;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor.Services;
@@ -10,6 +11,7 @@ using Scripts.System;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.PrefabEditors;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static Scripts.Enums;
@@ -108,7 +110,16 @@ namespace Scripts.UI.EditorUI
 
         protected override void SaveMapAndClose()
         {
-            WayPointService.HighlightPath(EditedConfiguration.WayPoints, false);
+            if (EditedConfiguration.HasPath())
+            {
+                WayPointService.HighlightPath(EditedConfiguration.WayPoints, false);
+            }
+
+            if (_createdOppositeWall != null)
+            {
+                MapBuilder.ReplacePrefabConfiguration(_createdOppositeWall);
+            }
+            
             base.SaveMapAndClose();
         }
 
@@ -198,13 +209,13 @@ namespace Scripts.UI.EditorUI
                 script.transform.Find("EditorPresentation").gameObject.SetActive(true);
             }
 
-            if (script is WallMovementBetween movementScript)
+            if (script is IMovementWall movementScript)
             {
-                if (EditedConfiguration.WayPoints.Count < 2 && movementScript.waypointsPreset)
+                if (EditedConfiguration.WayPoints.Count < 2 && movementScript.GetWaypointPreset())
                 {
                     List<Waypoint> translatedWaypoints = new();
                     
-                    foreach (Waypoint waypoint in movementScript.waypointsPreset.waypoints)
+                    foreach (Waypoint waypoint in movementScript.GetWaypointPreset().waypoints)
                     {
                         Waypoint newWaypoint = new()
                         {
@@ -263,6 +274,13 @@ namespace Scripts.UI.EditorUI
             return walls.FirstOrDefault(w => w.TransformData.Position == wallTransformData.Position) != null;
         }
 
+        /// <summary>
+        /// calculates data for path in opposite direction.
+        /// </summary>
+        /// <param name="waypoints">Waypoints to calculate opposite path from.</param>
+        /// <param name="wallTransformData">Returned PositionRotation data for the wall in opposite direction.</param>
+        /// <param name="oppositePoints">Returned waypoints for path in opposite direction.</param>
+        /// <returns>True if path and wall data could be calculated.</returns>
         private bool CalculateOppositePath(IEnumerable<Waypoint> waypoints, out PositionRotation wallTransformData, out List<Waypoint> oppositePoints)
         {
             if (waypoints.Count() < 2)
@@ -280,15 +298,19 @@ namespace Scripts.UI.EditorUI
             }
             
             wallTransformData = CalculateWallForPath(oppositePoints);
-            return true;
+            return wallTransformData != null;
         }
 
         private PositionRotation CalculateWallForPath(List<Waypoint> path)
         {
-            if (path.Count < 2) return null;
+            if (path.Count < 1) return null;
             
             Vector3 startDirection = (path[1].position.Round(1) - path[0].position.Round(1)).normalized;
-            return  new PositionRotation(path[0].position.Round(1) + (startDirection * 0.5f), V3Extensions.DirectionRotationMap[startDirection]);
+            
+            if (!V3Extensions.DirectionRotationMap.ContainsKey(startDirection)) 
+                return null;
+            
+            return new PositionRotation(path[0].position.Round(1) + (startDirection * 0.5f), V3Extensions.DirectionRotationMap[startDirection]);
         }
     }
 }

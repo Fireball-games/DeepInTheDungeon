@@ -5,11 +5,6 @@ namespace Scripts.System
 {
     public class PositionRotation
     {
-        protected bool Equals(PositionRotation other)
-        {
-            return Position.Equals(other.Position) && Rotation.Equals(other.Rotation);
-        }
-
         public Vector3 Position;
         public Quaternion Rotation;
         
@@ -25,12 +20,17 @@ namespace Scripts.System
 
         public static bool operator == (PositionRotation a, PositionRotation b)
         {
-            return a.Position == b.Position && a.Rotation == b.Rotation;
+            return Equals(a, b);
         }
         
         public static bool operator != (PositionRotation a, PositionRotation b)
         {
-            return !(a == b);
+            return !Equals(a, b);
+        }
+
+        private bool Equals(PositionRotation other)
+        {
+            return Position.Equals(other.Position) && Rotation.Equals(other.Rotation);
         }
         
         public override bool Equals(object obj)

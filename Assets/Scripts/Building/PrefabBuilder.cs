@@ -23,8 +23,14 @@ namespace Scripts.Building
         private static HashSet<GameObject> Prefabs => MapBuilder.Prefabs;
         private static TileDescription[,,] Layout => MapBuilder.Layout;
 
-        internal void BuildPrefabs(IEnumerable<PrefabConfiguration> configurations) =>
+        internal void BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
+        {
+            if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
+            {
+                WayPointService.DestroyAllPaths();
+            }
             MapBuilder.StartCoroutine(BuildPrefabsCoroutine(configurations));
+        }
 
         private IEnumerator BuildPrefabsCoroutine(IEnumerable configurations)
         {

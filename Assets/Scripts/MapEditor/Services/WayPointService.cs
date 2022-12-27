@@ -132,6 +132,14 @@ namespace Scripts.MapEditor.Services
             if (!_areWaypointsShows)
                 HideWaypoints();
         }
+        
+        public static void DestroyAllPaths()
+        {
+            foreach ((Vector3, Vector3) key in new Dictionary<(Vector3,Vector3), PathController>(_paths).Keys)
+            {
+                DestroyPath(key);
+            }
+        }
 
         private static (Vector3, Vector3) GetKey(List<Waypoint> waypoints)
         {

@@ -134,13 +134,6 @@ namespace Scripts.UI.EditorUI
             base.RemoveAndClose();
         }
 
-        public override void CloseWithChangeCheck()
-        {
-            RemoveExtraParts();
-
-            base.CloseWithChangeCheck();
-        }
-
         private static PositionRotation CalculateWallForPath(List<Waypoint> path)
         {
             if (path.Count < 1) return null;

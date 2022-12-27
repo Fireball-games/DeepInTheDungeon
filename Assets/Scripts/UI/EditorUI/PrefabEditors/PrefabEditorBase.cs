@@ -220,7 +220,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             if (!CanOpen) CloseWithChangeCheck();
         }
 
-        public void CloseWithChangeCheck()
+        public virtual void CloseWithChangeCheck()
         {
             if (_isEditingExistingPrefab)
             {

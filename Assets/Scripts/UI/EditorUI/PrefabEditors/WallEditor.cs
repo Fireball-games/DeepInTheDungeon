@@ -11,18 +11,23 @@ using Scripts.UI.Components;
 using Scripts.UI.EditorUI.PrefabEditors;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using static Scripts.Enums;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.UI.EditorUI
 {
+    /// <summary>
+    /// PrefabEditorBase overload for building walls
+    /// Limitations:
+    /// - Cant create opposite path for upper ladder part, respectively, you can, but it wont generate correctly
+    /// </summary>
     public class WallEditor : PrefabEditorBase<WallConfiguration, WallPrefabBase>
     {
         private LabeledSlider _offsetSlider;
         private WaypointEditor _waypointEditor;
         private Button _createOppositePathButton;
+
+        private WallConfiguration _createdOppositeWall;
 
         protected override WallConfiguration GetNewConfiguration(string prefabName)
         {
@@ -96,6 +101,8 @@ namespace Scripts.UI.EditorUI
                 WayPointService.DestroyPath(EditedConfiguration.WayPoints);
             }
             
+            RemoveExtraParts();
+            
             base.Delete();
         }
 
@@ -112,7 +119,31 @@ namespace Scripts.UI.EditorUI
                 WayPointService.DestroyPath(EditedConfiguration.WayPoints);
             }
             
+            RemoveExtraParts();
+            
             base.RemoveAndClose();
+        }
+
+        public override void CloseWithChangeCheck()
+        {
+            RemoveExtraParts();
+            
+            base.CloseWithChangeCheck();
+        }
+
+        private void RemoveExtraParts()
+        {
+            if (_createdOppositeWall != null)
+            {
+                MapBuilder.RemovePrefab(_createdOppositeWall);
+                
+                if (_createdOppositeWall.WayPoints.Any())
+                {
+                    WayPointService.DestroyPath(_createdOppositeWall.WayPoints);
+                }
+            }
+
+            _createdOppositeWall = null;
         }
 
         private void Initialize()
@@ -127,13 +158,24 @@ namespace Scripts.UI.EditorUI
 
         private void GenerateOppositePath()
         {
-            if (!CalculateOppositePath(EditedConfiguration.WayPoints, out Vector3 wallPosition,
+            if (!CalculateOppositePath(EditedConfiguration.WayPoints, out PositionRotation wallTransformData,
                     out List<Waypoint> oppositePoints))
             {
                 return;
             }
-            
-            
+
+            // Cant create opposite path for upper ladder part
+            _createdOppositeWall = new()
+            {
+                WayPoints = oppositePoints,
+                TransformData = wallTransformData,
+                PrefabType = EPrefabType.WallBetween,
+                PrefabName = "MoveWall",
+            };
+
+            MapBuilder.BuildPrefab(_createdOppositeWall);
+            WayPointService.AddPath(oppositePoints);
+            SetEdited();
         }
 
         private void OnOffsetSliderValueChanged(float value)
@@ -207,25 +249,25 @@ namespace Scripts.UI.EditorUI
         {
             List<WallConfiguration> walls = MapBuilder.MapDescription.PrefabConfigurations
                 .Where(c => c is WallConfiguration)
-                .Select(c => c as WallConfiguration)?
+                .Select(c => c as WallConfiguration)
                 .ToList();
 
             if (!walls.Any()) return false;
 
-            if (!CalculateOppositePath(EditedConfiguration.WayPoints, out Vector3 wallPosition,
-                    out List<Waypoint> oppositePoints))
+            if (!CalculateOppositePath(EditedConfiguration.WayPoints, out PositionRotation wallTransformData,
+                    out List<Waypoint> _))
             {
                 return false;
             }
 
-            return walls.FirstOrDefault(w => w.TransformData.Position == wallPosition) != null;
+            return walls.FirstOrDefault(w => w.TransformData.Position == wallTransformData.Position) != null;
         }
 
-        private bool CalculateOppositePath(IEnumerable<Waypoint> waypoints, out Vector3 wallPosition, out List<Waypoint> oppositePoints)
+        private bool CalculateOppositePath(IEnumerable<Waypoint> waypoints, out PositionRotation wallTransformData, out List<Waypoint> oppositePoints)
         {
             if (waypoints.Count() < 2)
             {
-                wallPosition = Vector3.zero;
+                wallTransformData = null;
                 oppositePoints = null;
                 return false;
             }
@@ -237,7 +279,7 @@ namespace Scripts.UI.EditorUI
                 oppositePoints.Add(new Waypoint(waypoints.ElementAt(i).position.Round(2), waypoints.ElementAt(i).moveSpeedModifier));
             }
             
-            wallPosition = CalculateWallForPath(oppositePoints).Position;
+            wallTransformData = CalculateWallForPath(oppositePoints);
             return true;
         }
 

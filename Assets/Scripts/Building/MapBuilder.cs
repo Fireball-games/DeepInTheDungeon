@@ -282,6 +282,6 @@ namespace Scripts.Building
 
         public bool BuildPrefab<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.BuildPrefab(configuration);
 
-        public void ReplacePrefabConfiguration<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.ReplacePrefabConfiguration(configuration);
+        public void AddReplacePrefabConfiguration<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.AddReplacePrefabConfiguration(configuration);
     }
 }

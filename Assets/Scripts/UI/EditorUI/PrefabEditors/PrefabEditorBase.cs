@@ -76,9 +76,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _isEditingExistingPrefab = true;
 
-            // Placeholder.transform.position = configuration.TransformData.Position;
-            // Placeholder.transform.rotation = configuration.TransformData.Rotation;
-
             EditedPrefabType = configuration.PrefabType;
             EditedConfiguration = configuration;
             _originalConfiguration = CopyConfiguration(configuration);
@@ -113,6 +110,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 SetStatusText(t.Get(Keys.NoPrefabsAvailable));
                 return;
             }
+            
+            Cursor3D.ShowAt(EditorMouseService.Instance.LastLeftButtonUpWorldPosition.ToWorldPositionV3Int(),
+                Cursor3DScale,
+                Quaternion.identity);
 
             EditedPrefabType = prefabType;
 
@@ -249,7 +250,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected virtual void SaveMapAndClose()
         {
-            MapBuilder.ReplacePrefabConfiguration(EditedConfiguration);
+            MapBuilder.AddReplacePrefabConfiguration(EditedConfiguration);
             MapEditorManager.Instance.SaveMap();
             Close();
         }

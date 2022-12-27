@@ -116,7 +116,7 @@ namespace Scripts.UI.EditorUI
 
             if (_createdOppositeWall != null)
             {
-                MapBuilder.MapDescription.PrefabConfigurations.Add(_createdOppositeWall);
+                MapBuilder.AddReplacePrefabConfiguration(_createdOppositeWall);
             }
 
             base.SaveMapAndClose();

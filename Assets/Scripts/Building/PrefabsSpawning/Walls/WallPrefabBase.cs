@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
 using Scripts.MapEditor;
-using Scripts.ScriptableObjects;
 using Scripts.System;
 using Scripts.System.Pooling;
 using Scripts.UI.EditorUI;
@@ -14,7 +12,6 @@ namespace Scripts.Building.PrefabsSpawning.Walls
     public abstract class WallPrefabBase : PrefabBase, IPoolInitializable
     {
         public GameObject presentedInEditor;
-        public List<Waypoint> waypoints;
 
         private static MapEditorManager Manager => MapEditorManager.Instance;
         

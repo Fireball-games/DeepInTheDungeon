@@ -24,8 +24,8 @@ namespace Scripts.Building
         private static TileDescription[,,] Layout => MapBuilder.Layout;
 
         internal void BuildPrefabs(IEnumerable<PrefabConfiguration> configurations) =>
-            MapBuilder.StartCoroutine(BuildPrefabsCoroutine(configurations)); 
-        
+            MapBuilder.StartCoroutine(BuildPrefabsCoroutine(configurations));
+
         private IEnumerator BuildPrefabsCoroutine(IEnumerable configurations)
         {
             foreach (PrefabConfiguration configuration in configurations.CloneViaSerialization())
@@ -35,7 +35,7 @@ namespace Scripts.Building
                 yield return null;
             }
         }
-        
+
         /// <summary>
         /// Builds new prefab and both stores configuration in MapDescription and GameObject in Prefabs list.
         /// </summary>
@@ -43,9 +43,15 @@ namespace Scripts.Building
         /// <returns></returns>
         public bool BuildPrefab(PrefabConfiguration configuration)
         {
-            bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
+            if (!MapDescription.PrefabConfigurations.Contains(configuration))
+            {
+                AddReplacePrefabConfiguration(configuration);
+            }
             
+            bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
+
             GameObject newPrefab = PrefabStore.Instantiate(configuration.PrefabName, MapBuilder.PrefabsParent);
+            
 
             if (!newPrefab)
             {
@@ -64,7 +70,7 @@ namespace Scripts.Building
             if (configuration is WallConfiguration wallConfiguration)
             {
                 newPrefab.transform.localRotation = configuration.TransformData.Rotation;
-                
+
                 Transform physicalPart = newPrefab.GetBody();
 
                 if (physicalPart)
@@ -92,11 +98,6 @@ namespace Scripts.Building
 
             MapDescription.PrefabConfigurations ??= new List<PrefabConfiguration>();
 
-            if (!MapDescription.PrefabConfigurations.Contains(configuration))
-            {
-                MapDescription.PrefabConfigurations.Add(configuration);
-            }
-
             MapBuilder.Prefabs.Add(newPrefab);
 
             if (isEditorMode && -newPrefab.transform.position.y < MapEditorManager.Instance.CurrentFloor)
@@ -106,7 +107,7 @@ namespace Scripts.Building
 
             return true;
         }
-        
+
         public void RemovePrefab(PrefabConfiguration configuration)
         {
             if (configuration == null) return;
@@ -154,14 +155,14 @@ namespace Scripts.Building
 
             return !result ? null : result;
         }
-        
+
         public GameObject GetPrefabByGridPosition(Vector3Int position)
         {
             GameObject result = Prefabs.FirstOrDefault(p => p.transform.position == position.ToWorldPositionV3Int());
 
             return !result ? null : result;
         }
-        
+
         public GameObject GetPrefabByWorldPosition(Vector3Int position)
         {
             GameObject result = Prefabs.FirstOrDefault(p => p.transform.position == position);
@@ -176,10 +177,19 @@ namespace Scripts.Building
                 .Select(p => p as T);
         }
 
-        public void ReplacePrefabConfiguration(PrefabConfiguration newConfiguration)
+        public void AddReplacePrefabConfiguration(PrefabConfiguration newConfiguration)
         {
-            int replaceIndex = MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData == newConfiguration.TransformData);
-            MapDescription.PrefabConfigurations[replaceIndex] = newConfiguration;
+            int replaceIndex = FindIndexOfConfiguration(newConfiguration);
+            
+            if (replaceIndex != -1)
+            {
+                Logger.Log("replacing configuration");
+                MapDescription.PrefabConfigurations[replaceIndex] = newConfiguration;
+            }
+            else
+            {
+                MapDescription.PrefabConfigurations.Add(newConfiguration);
+            }
         }
 
         public void ChangePrefabPositionsBy(Vector3 positionChangeDelta)
@@ -189,11 +199,11 @@ namespace Scripts.Building
                 configuration.TransformData.Position += positionChangeDelta;
 
                 if (configuration is not WallConfiguration wall) continue;
-                
+
                 if (wall.WayPoints == null || !wall.WayPoints.Any()) continue;
-                    
+
                 WayPointService.DestroyPath(wall.WayPoints);
-                
+
                 foreach (Waypoint waypoint in wall.WayPoints)
                 {
                     waypoint.position += positionChangeDelta;
@@ -203,5 +213,8 @@ namespace Scripts.Building
 
         public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation transformData) =>
             MapDescription.PrefabConfigurations.FirstOrDefault(c => c.TransformData == transformData);
+
+        private int FindIndexOfConfiguration(PrefabConfiguration configuration) =>
+            MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData == configuration.TransformData);
     }
 }

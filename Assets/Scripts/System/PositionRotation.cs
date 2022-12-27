@@ -18,21 +18,11 @@ namespace Scripts.System
             Rotation = rotation;
         }
 
-        public static bool operator == (PositionRotation a, PositionRotation b)
+        protected bool Equals(PositionRotation other)
         {
-            return Equals(a, b);
-        }
-        
-        public static bool operator != (PositionRotation a, PositionRotation b)
-        {
-            return !Equals(a, b);
+            return Position == other.Position && Rotation == other.Rotation;
         }
 
-        private bool Equals(PositionRotation other)
-        {
-            return Position.Equals(other.Position) && Rotation.Equals(other.Rotation);
-        }
-        
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;

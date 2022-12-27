@@ -68,6 +68,8 @@ namespace Scripts.UI.EditorUI
 
             VisualizeOtherComponents();
         }
+        
+        
 
         protected override string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
         {
@@ -75,6 +77,8 @@ namespace Scripts.UI.EditorUI
 
             _offsetSlider.SetLabel(t.Get(Keys.Offset));
             _offsetSlider.SetActive(false);
+            
+            _createOppositePathButton.gameObject.SetActive(false);
 
             return base.SetupWindow(prefabType, deleteButtonActive);
         }
@@ -118,6 +122,8 @@ namespace Scripts.UI.EditorUI
             {
                 MapBuilder.AddReplacePrefabConfiguration(_createdOppositeWall);
             }
+
+            _createdOppositeWall = null;
 
             base.SaveMapAndClose();
         }
@@ -167,6 +173,8 @@ namespace Scripts.UI.EditorUI
         {
             _offsetSlider = body.transform.Find("Background/Frame/OffsetSlider").GetComponent<LabeledSlider>();
             _waypointEditor = body.transform.Find("WaypointsEditor").GetComponent<WaypointEditor>();
+            _waypointEditor.SetActive(false);
+            
             _createOppositePathButton = body.transform.Find("Background/Frame/Buttons/CreateOppositePathButton").GetComponent<Button>();
             _createOppositePathButton.onClick.RemoveAllListeners();
             _createOppositePathButton.onClick.AddListener(GenerateOppositePath);
@@ -277,6 +285,8 @@ namespace Scripts.UI.EditorUI
             {
                 return false;
             }
+
+            if (wallTransformData == null) return false;
 
             return walls.FirstOrDefault(w => w.TransformData.Position == wallTransformData.Position) != null;
         }

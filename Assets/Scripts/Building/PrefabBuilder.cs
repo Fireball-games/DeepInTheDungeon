@@ -29,6 +29,7 @@ namespace Scripts.Building
             {
                 WayPointService.DestroyAllPaths();
             }
+
             MapBuilder.StartCoroutine(BuildPrefabsCoroutine(configurations));
         }
 
@@ -36,7 +37,7 @@ namespace Scripts.Building
         {
             foreach (PrefabConfiguration configuration in configurations.CloneViaSerialization())
             {
-                BuildPrefab(configuration);
+                BuildPrefab(configuration, true);
 
                 yield return null;
             }
@@ -46,18 +47,23 @@ namespace Scripts.Building
         /// Builds new prefab and both stores configuration in MapDescription and GameObject in Prefabs list.
         /// </summary>
         /// <param name="configuration"></param>
+        /// <param name="deleteDuplicates">duplicate configurations will be deleted, serves as sanitization on build map</param>
         /// <returns></returns>
-        public bool BuildPrefab(PrefabConfiguration configuration)
+        public bool BuildPrefab(PrefabConfiguration configuration, bool deleteDuplicates = false)
         {
             if (!MapDescription.PrefabConfigurations.Contains(configuration))
             {
                 AddReplacePrefabConfiguration(configuration);
             }
-            
+            // else if (deleteDuplicates)
+            // {
+            //     MapDescription.PrefabConfigurations.Remove(configuration);
+            // }
+
             bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
 
             GameObject newPrefab = PrefabStore.Instantiate(configuration.PrefabName, MapBuilder.PrefabsParent);
-            
+
 
             if (!newPrefab)
             {
@@ -120,7 +126,7 @@ namespace Scripts.Building
 
             PrefabConfiguration config = MapDescription.PrefabConfigurations.FirstOrDefault(c =>
                 c.PrefabName == configuration.PrefabName
-                && c.TransformData == configuration.TransformData);
+                && c.TransformData.Equals(configuration.TransformData));
 
             if (config == null) return;
 
@@ -186,7 +192,7 @@ namespace Scripts.Building
         public void AddReplacePrefabConfiguration(PrefabConfiguration newConfiguration)
         {
             int replaceIndex = FindIndexOfConfiguration(newConfiguration);
-            
+
             if (replaceIndex != -1)
             {
                 Logger.Log("replacing configuration");
@@ -217,10 +223,12 @@ namespace Scripts.Building
             }
         }
 
-        public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation transformData) =>
-            MapDescription.PrefabConfigurations.FirstOrDefault(c => c.TransformData == transformData);
+        public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation transformData)
+        {
+            return MapDescription.PrefabConfigurations.FirstOrDefault(c => c.TransformData.Equals(transformData));
+        }
 
         private int FindIndexOfConfiguration(PrefabConfiguration configuration) =>
-            MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData == configuration.TransformData);
+            MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData.Equals(configuration.TransformData));
     }
 }

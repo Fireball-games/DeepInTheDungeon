@@ -24,11 +24,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         where TPrefab : PrefabBase
     {
         protected GameObject Placeholder;
-        protected Button ConfirmButton;
 
         private PrefabList _prefabList;
-        private Button _cancelButton;
+        private Button _confirmButton;
         private Button _deleteButton;
+        private Button _cancelButton;
         private Title _prefabTitle;
         private TMP_Text _statusText;
 
@@ -48,7 +48,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             AssignComponents();
 
             _cancelButton.onClick.AddListener(CloseWithChangeCheck);
-            ConfirmButton.onClick.AddListener(SaveMapAndClose);
+            _confirmButton.onClick.AddListener(SaveMapAndClose);
             _deleteButton.onClick.AddListener(Delete);
 
             Cursor3D = FindObjectOfType<Cursor3D>();
@@ -131,8 +131,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _cancelButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Cancel);
 
-            ConfirmButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Confirm);
-            ConfirmButton.gameObject.SetActive(false);
+            _confirmButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Confirm);
+            _confirmButton.gameObject.SetActive(false);
 
             _deleteButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Delete);
             _deleteButton.gameObject.SetActive(deleteButtonActive);
@@ -185,7 +185,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected void SetEdited()
         {
-            ConfirmButton.gameObject.SetActive(true);
+            _confirmButton.gameObject.SetActive(true);
             EditorEvents.TriggerOnMapEdited();
         }
         
@@ -198,21 +198,24 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _statusText = frame.Find("StatusText").GetComponent<TMP_Text>();
             Transform buttons = frame.Find("Buttons");
             _cancelButton = buttons.Find("CancelButton").GetComponent<Button>();
-            ConfirmButton = buttons.Find("ConfirmButton").GetComponent<Button>();
+            _confirmButton = buttons.Find("ConfirmButton").GetComponent<Button>();
             _deleteButton = buttons.Find("DeleteButton").GetComponent<Button>();
         }
 
         protected virtual void Delete()
         {
-            TC oldConfiguration = CopyConfiguration(EditedConfiguration);
-            EditedConfiguration = null;
-            PhysicalPrefabBody = null;
-            _prefabTitle.SetActive(false);
+            // TC originalConfiguration = CopyConfiguration(EditedConfiguration);
+            // PhysicalPrefabBody = null;
+            // PhysicalPrefab = null;
+            // _prefabTitle.SetActive(false);
 
-            Cursor3D.Hide();
+            // Cursor3D.Hide();
 
-            MapBuilder.RemovePrefab(oldConfiguration);
-
+            MapBuilder.RemovePrefab(EditedConfiguration);
+            // EditedConfiguration = null;
+            
+            MapEditorManager.Instance.SaveMap();
+            
             Close();
         }
 
@@ -268,6 +271,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _prefabTitle.SetActive(false);
             PhysicalPrefabBody = null;
+            PhysicalPrefab = null;
 
             Cursor3D.Hide();
 

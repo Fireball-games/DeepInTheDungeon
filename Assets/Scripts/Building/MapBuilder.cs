@@ -267,8 +267,10 @@ namespace Scripts.Building
 
         public GameObject GetPrefabByGridPosition(Vector3Int newGridPosition) => _prefabBuilder.GetPrefabByGridPosition(newGridPosition);
 
-        public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation positionRotation) =>
-            _prefabBuilder.GetPrefabConfigurationByTransformData(positionRotation);
+        public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation positionRotation)
+        {
+            return _prefabBuilder.GetPrefabConfigurationByTransformData(positionRotation);
+        }
 
         public void ChangePrefabPositionsBy(Vector3 positionChangeDelta) => _prefabBuilder.ChangePrefabPositionsBy(positionChangeDelta);
 

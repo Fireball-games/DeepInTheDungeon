@@ -132,7 +132,7 @@ namespace Scripts.MapEditor.Services
         
         public void RefreshMousePosition(bool invalidateLastPosition = false)
         {
-            if (!Manager.MapIsPresented) return;
+            if (!Manager.MapIsPresented || UIManager.IsAnyObjectEdited) return;
 
             SetGridPosition(invalidateLastPosition);
         }
@@ -263,7 +263,7 @@ namespace Scripts.MapEditor.Services
 
         private void SetGridPosition(bool invalidateLastPosition = false)
         {
-            if (IsManipulatingCameraPosition) return;
+            if (IsManipulatingCameraPosition || UIManager.IsAnyObjectEdited) return;
 
             if (!GetMousePlanePosition(out Vector3 worldPosition)) return;
 

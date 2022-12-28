@@ -145,7 +145,8 @@ namespace Scripts.UI.EditorUI
                     _openedEditor = prefabTileEditor;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    Logger.LogWarning($"Not implemented editor for type {configuration.PrefabType}.");
+                    break;
             }
         }
 

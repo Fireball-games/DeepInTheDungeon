@@ -111,9 +111,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 return;
             }
             
-            Cursor3D.ShowAt(EditorMouseService.Instance.LastLeftButtonUpWorldPosition.ToWorldPositionV3Int(),
+            Cursor3D.ShowAt(placeholderTransformData.Position,
                 Cursor3DScale,
-                Quaternion.identity);
+                placeholderTransformData.Rotation);
 
             EditedPrefabType = prefabType;
 

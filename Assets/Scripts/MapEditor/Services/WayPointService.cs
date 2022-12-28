@@ -60,45 +60,13 @@ namespace Scripts.MapEditor.Services
             }
         }
 
-        private static void HighlightPath((Vector3, Vector3) key, bool isHighlighted = true)
-        {
-            if (!_paths.TryGetValue(key, out PathController controller) || controller.IsHighlighted == isHighlighted) return;
-
-            controller.IsHighlighted = isHighlighted;
-
-            for (int index = 0; index < controller.Waypoints.Count; index++)
-            {
-                HighlightPoint(key, index, isHighlighted);
-            }
-        }
-
         public static void HighlightPath(List<Waypoint> path, bool isHighlighted = true) =>
             HighlightPath(GetKey(path), isHighlighted);
 
-        public static void HighlightPoint((Vector3, Vector3) key, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
-        {
-            Dictionary<GameObject, WaypointParts> waypointsParts = _paths[key].Waypoints;
-            
-            if (isExclusiveHighlight)
-            {
-                for (int index = 0; index < waypointsParts.Count; index++)
-                {
-                    HighlightPoint(waypointsParts.ElementAt(pointIndex).Value, index == pointIndex);
-                }
-            }
-            
-            HighlightPoint(waypointsParts.ElementAt(pointIndex).Value, isHighlighted);
-        }
+        public static void HighlightPoint(List<Waypoint> path, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false) =>
+            HighlightPoint(GetKey(path), pointIndex, isHighlighted, isExclusiveHighlight);
 
         public static void DestroyPath(List<Waypoint> path) => DestroyPath(GetKey(path));
-
-        public static void DestroyPath((Vector3, Vector3) key)
-        {
-            if (!_paths.ContainsKey(key)) return;
-
-            Destroy(_paths[key].gameObject);
-            _paths.Remove(key);
-        }
 
         public static void AddPath(List<Waypoint> waypoints, bool highlightAfterBuild = false)
         {
@@ -148,6 +116,41 @@ namespace Scripts.MapEditor.Services
             if (path.Count < 3) return false;
             
             return (path[2].position.Round(1) - path[1].position.Round(1)).normalized == Vector3.down;
+        }
+        
+        private static void HighlightPath((Vector3, Vector3) key, bool isHighlighted = true)
+        {
+            if (!_paths.TryGetValue(key, out PathController controller) || controller.IsHighlighted == isHighlighted) return;
+
+            controller.IsHighlighted = isHighlighted;
+
+            for (int index = 0; index < controller.Waypoints.Count; index++)
+            {
+                HighlightPoint(key, index, isHighlighted);
+            }
+        }
+        
+        private static void HighlightPoint((Vector3, Vector3) key, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
+        {
+            Dictionary<GameObject, WaypointParts> waypointsParts = _paths[key].Waypoints;
+            
+            if (isExclusiveHighlight)
+            {
+                for (int index = 0; index < waypointsParts.Count; index++)
+                {
+                    HighlightPoint(waypointsParts.ElementAt(pointIndex).Value, index == pointIndex);
+                }
+            }
+            
+            HighlightPoint(waypointsParts.ElementAt(pointIndex).Value, isHighlighted);
+        }
+        
+        private static void DestroyPath((Vector3, Vector3) key)
+        {
+            if (!_paths.ContainsKey(key)) return;
+
+            Destroy(_paths[key].gameObject);
+            _paths.Remove(key);
         }
 
         private static (Vector3, Vector3) GetKey(List<Waypoint> waypoints)

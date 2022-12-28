@@ -278,9 +278,7 @@ namespace Scripts.UI.EditorUI
             List<Waypoint> waypoints = path.ToList();
             EditedConfiguration.WayPoints = waypoints;
             WayPointService.AddPath(waypoints);
-            WayPointService.HighlightPoint(new (waypoints[0].position, waypoints[1].position),
-                effectedWaypointIndex,
-                isExclusiveHighlight: true);
+            WayPointService.HighlightPoint(waypoints, effectedWaypointIndex, isExclusiveHighlight: true);
             HandleCreateOppositePathButton();
         }
 

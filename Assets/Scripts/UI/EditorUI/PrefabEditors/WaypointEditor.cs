@@ -174,6 +174,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void OnStepChanged(float newStep)
         {
             WaypointControl[] children = scrollViewContent.GetComponentsInChildren<WaypointControl>();
+            _step = newStep;
+            
             for (int index = 0; index < children.Length; index++)
             {
                 if (index == 0 || index == children.Length - 1) continue;

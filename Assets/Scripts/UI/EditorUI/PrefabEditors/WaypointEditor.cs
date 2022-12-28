@@ -23,7 +23,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private Dictionary<WaypointControl, int> _map;
         private List<Waypoint> _currentPath;
 
-        private event Action<IEnumerable<Waypoint>> OnPathChanged;
+        private event Action<IEnumerable<Waypoint>, int> OnPathChanged;
 
         private float _step = 0.5f;
 
@@ -41,7 +41,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _map = new Dictionary<WaypointControl, int>();
         }
 
-        public void SetActive(bool isActive, IEnumerable<Waypoint> waypoints, Action<IEnumerable<Waypoint>> onPathChanged)
+        public void SetActive(bool isActive, IEnumerable<Waypoint> waypoints, Action<IEnumerable<Waypoint>, int> onPathChanged)
         {
             base.SetActive(isActive);
 
@@ -120,23 +120,25 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void OnPositionChanged(WaypointControl control, Vector3 newPoint)
         {
-            _currentPath[_map[control]].position = newPoint;
+            int lastEditedPointIndex = _map[control];
+            _currentPath[lastEditedPointIndex].position = newPoint;
 
-            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath));
+            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath), lastEditedPointIndex);
         }
 
         private void OnSpeedChanged(WaypointControl control, float newSpeed)
         {
-            _currentPath[_map[control]].moveSpeedModifier = newSpeed;
+            int lastEditedPointIndex = _map[control];
+            _currentPath[lastEditedPointIndex].moveSpeedModifier = newSpeed;
 
-            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath));
+            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath), lastEditedPointIndex);
         }
 
         private void OnDeleteButtonClicked(WaypointControl control)
         {
             _currentPath.RemoveAt(_map[control]);
             BuildWaypointsControls(_currentPath);
-            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath));
+            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath), -1);
         }
 
         private void OnAddWaypointClicked(Vector3 direction, EAddWaypointType type)
@@ -168,7 +170,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             }
 
             BuildWaypointsControls(_currentPath);
-            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath));
+            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath), type is EAddWaypointType.EndPoint ? _currentPath.Count - 1 : _currentPath.Count - 2);
         }
 
         private void OnStepChanged(float newStep)

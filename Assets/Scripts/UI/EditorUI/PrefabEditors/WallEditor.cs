@@ -271,13 +271,16 @@ namespace Scripts.UI.EditorUI
             }
         }
 
-        private void OnPathChanged(IEnumerable<Waypoint> path)
+        private void OnPathChanged(IEnumerable<Waypoint> path, int effectedWaypointIndex)
         {
             SetEdited();
             WayPointService.DestroyPath(EditedConfiguration.WayPoints);
             List<Waypoint> waypoints = path.ToList();
             EditedConfiguration.WayPoints = waypoints;
-            WayPointService.AddPath(waypoints, true);
+            WayPointService.AddPath(waypoints);
+            WayPointService.HighlightPoint(new (waypoints[0].position, waypoints[1].position),
+                effectedWaypointIndex,
+                isExclusiveHighlight: true);
             HandleCreateOppositePathButton();
         }
 

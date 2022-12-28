@@ -77,15 +77,17 @@ namespace Scripts.MapEditor.Services
 
         public static void HighlightPoint((Vector3, Vector3) key, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
         {
+            Dictionary<GameObject, WaypointParts> waypointsParts = _paths[key].Waypoints;
+            
             if (isExclusiveHighlight)
             {
-                for (int index = 0; index < _paths[key].Waypoints.Count; index++)
+                for (int index = 0; index < waypointsParts.Count; index++)
                 {
-                    HighlightPoint(_paths[key].Waypoints.ElementAt(pointIndex).Value, index == pointIndex);
+                    HighlightPoint(waypointsParts.ElementAt(pointIndex).Value, index == pointIndex);
                 }
             }
             
-            HighlightPoint(_paths[key].Waypoints.ElementAt(pointIndex).Value, isHighlighted);
+            HighlightPoint(waypointsParts.ElementAt(pointIndex).Value, isHighlighted);
         }
 
         public static void DestroyPath(List<Waypoint> path) => DestroyPath(GetKey(path));
@@ -152,7 +154,7 @@ namespace Scripts.MapEditor.Services
         {
             return waypoints.Count == 1 
                 ? (waypoints[0].position.ToVector3Int(), Vector3.negativeInfinity) 
-                : new ValueTuple<Vector3Int, Vector3>(waypoints[0].position.ToVector3Int(), waypoints[1].position.ToVector3Int());
+                : new ValueTuple<Vector3, Vector3>(waypoints[0].position.Round(2), waypoints[1].position.Round(2));
         }
 
         private static void HighlightPath(PathController pathController, bool isHighlighted = true)

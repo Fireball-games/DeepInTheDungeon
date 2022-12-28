@@ -20,7 +20,9 @@ namespace Scripts.UI.EditorUI
     /// <summary>
     /// PrefabEditorBase overload for building walls
     /// Limitations:
-    /// - Cant create opposite path for upper ladder part, respectively, you can, but it wont generate correctly
+    /// - Cant create opposite path for upper ladder part yet -
+    ///   TODO > implement creation with assumption, that move wall for lower part is at the same position like upper move wall, and on level of last point
+    ///   TODO > then remove blocker for upper ladder paths in IsWallInOppositeDirection
     /// </summary>
     public class WallEditor : PrefabEditorBase<WallConfiguration, WallPrefabBase>
     {
@@ -273,6 +275,9 @@ namespace Scripts.UI.EditorUI
 
         private bool IsPathInOppositeDirection()
         {
+            // means we dont want to allow path creation yet
+            if (WayPointService.IsLadderDownAtPathStart(EditedConfiguration.WayPoints)) return true;
+            
             List<WallConfiguration> walls = MapBuilder.MapDescription.PrefabConfigurations
                 .Where(c => c is WallConfiguration)
                 .Select(c => c as WallConfiguration)

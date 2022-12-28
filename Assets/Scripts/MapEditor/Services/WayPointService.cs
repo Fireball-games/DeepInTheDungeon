@@ -141,6 +141,13 @@ namespace Scripts.MapEditor.Services
             }
         }
 
+        public static bool IsLadderDownAtPathStart(List<Waypoint> path)
+        {
+            if (path.Count < 3) return false;
+            
+            return (path[2].position.Round(1) - path[1].position.Round(1)).normalized == Vector3.down;
+        }
+
         private static (Vector3, Vector3) GetKey(List<Waypoint> waypoints)
         {
             return waypoints.Count == 1 

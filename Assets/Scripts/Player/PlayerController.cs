@@ -9,6 +9,7 @@ using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
+using Scripts.MapEditor.Services;
 using Scripts.ScriptableObjects;
 using Scripts.System;
 using UnityEngine;
@@ -189,7 +190,7 @@ namespace Scripts.Player
 
         private bool IsLadderDownStart(out Vector3 rotation)
         {
-            bool straightDownFromSecondWaypoint = (_waypoints[2].position.Round(1) - _waypoints[1].position.Round(1)).normalized == Vector3.down;
+            bool straightDownFromSecondWaypoint = WayPointService.IsLadderDownAtPathStart(_waypoints);
 
             if (!straightDownFromSecondWaypoint)
             {

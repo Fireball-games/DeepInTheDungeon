@@ -195,7 +195,7 @@ namespace Scripts.Building
 
             if (replaceIndex != -1)
             {
-                Logger.Log("replacing configuration");
+                // Logger.Log("replacing configuration");
                 MapDescription.PrefabConfigurations[replaceIndex] = newConfiguration;
             }
             else

@@ -13,6 +13,8 @@ namespace Scripts.MapEditor.Services
         [SerializeField] private float cameraZoomSpeed = 100f;
         [SerializeField] private float maxZoomHeight = 20f;
         [SerializeField] private float cameraRotationSpeed = 100f;
+        [SerializeField] private float prefabMoveCameraDistance = 8f;
+        [SerializeField] private float prefabMoveCameraXOffset = -2f;
         [SerializeField] private Transform cameraHolder;
 
         [NonSerialized] public static bool IsOrthographic = true;
@@ -80,6 +82,11 @@ namespace Scripts.MapEditor.Services
                 TranslateCamera(0, -wheelDelta * Time.deltaTime * cameraZoomSpeed, 0);
             }
         }
+
+        public void MoveCameraToPrefab(Vector3 worldPosition) => MoveCameraTo(
+            worldPosition.x,
+            worldPosition.y + prefabMoveCameraDistance,
+            worldPosition.z - prefabMoveCameraXOffset);
         
         internal void MoveCameraTo(float x, float y, float z)
         {

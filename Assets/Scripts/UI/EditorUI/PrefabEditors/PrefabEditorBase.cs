@@ -73,6 +73,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         public virtual void Open(TC configuration)
         {
             string prefabListTitle = SetupWindow(configuration.PrefabType, true);
+            
+            EditorCameraService.Instance.MoveCameraToPrefab(configuration.TransformData.Position);
 
             _isEditingExistingPrefab = true;
 
@@ -97,6 +99,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             if (!CanOpen) return;
 
+            EditorCameraService.Instance.MoveCameraToPrefab(placeholderTransformData.Position);
+            
             string prefabListTitle = SetupWindow(prefabType, false);
 
             Placeholder.transform.position = placeholderTransformData.Position;

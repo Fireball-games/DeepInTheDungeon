@@ -19,10 +19,6 @@ namespace Scripts.UI.EditorUI
 {
     /// <summary>
     /// PrefabEditorBase overload for building walls
-    /// Limitations:
-    /// - Cant create opposite path for upper ladder part yet -
-    ///   TODO > implement creation with assumption, that move wall for lower part is at the same position like upper move wall, and on level of last point
-    ///   TODO > then remove blocker for upper ladder paths in IsWallInOppositeDirection
     /// </summary>
     public class WallEditor : PrefabEditorBase<WallConfiguration, WallPrefabBase>
     {
@@ -142,11 +138,13 @@ namespace Scripts.UI.EditorUI
             base.RemoveAndClose();
         }
 
-        private static PositionRotation CalculateWallForPath(List<Waypoint> path)
+        private static PositionRotation CalculateWallForPath(List<Waypoint> path, bool isForLowerLadderPath)
         {
             if (path.Count < 1) return null;
 
-            Vector3 startDirection = (path[1].position.Round(1) - path[0].position.Round(1)).normalized;
+            Vector3 startDirection = isForLowerLadderPath 
+                ? (path[^1].position.Round(1) - path[^2].position.Round(1)).normalized
+                : (path[1].position.Round(1) - path[0].position.Round(1)).normalized;
 
             return !V3Extensions.WallDirectionRotationMap.ContainsKey(startDirection) 
                 ? null : 
@@ -191,13 +189,28 @@ namespace Scripts.UI.EditorUI
                 return;
             }
 
-            // Cant create opposite path for upper ladder part
+            bool isForLadderDown = WayPointService.IsLadderDownAtPathStart(EditedConfiguration.WayPoints);
+            
+            string prefabName = isForLadderDown
+                ? Vector3.Distance(oppositePoints[^1].position, oppositePoints[^2].position) > 1
+                    ? "SteelLadderStart"
+                    : "SteelLadderStartTop"
+                : "MoveWall";
+            
+            PositionRotation transformData = isForLadderDown
+                ? new PositionRotation(
+                    wallTransformData.Position,
+                    Quaternion.Euler(wallTransformData.Rotation.eulerAngles - new Vector3(0, 180, 0)))
+                : wallTransformData;
+
+            EPrefabType prefabType = isForLadderDown ? EPrefabType.WallOnWall : EPrefabType.WallBetween;
+            
             _createdOppositeWall = new()
             {
                 WayPoints = oppositePoints,
-                TransformData = wallTransformData,
-                PrefabType = EPrefabType.WallBetween,
-                PrefabName = "MoveWall",
+                TransformData = transformData,
+                PrefabType = prefabType,
+                PrefabName = prefabName,
             };
 
             MapBuilder.BuildPrefab(_createdOppositeWall);
@@ -275,9 +288,6 @@ namespace Scripts.UI.EditorUI
 
         private bool IsPathInOppositeDirection()
         {
-            // means we dont want to allow path creation yet
-            if (WayPointService.IsLadderDownAtPathStart(EditedConfiguration.WayPoints)) return true;
-            
             List<WallConfiguration> walls = MapBuilder.MapDescription.PrefabConfigurations
                 .Where(c => c is WallConfiguration)
                 .Select(c => c as WallConfiguration)
@@ -319,7 +329,9 @@ namespace Scripts.UI.EditorUI
                 oppositePoints.Add(new Waypoint(waypoints.ElementAt(i).position.Round(2), waypoints.ElementAt(i).moveSpeedModifier));
             }
 
-            wallTransformData = CalculateWallForPath(oppositePoints);
+            bool isUpperLadderPath = WayPointService.IsLadderDownAtPathStart(waypoints.ToList());
+
+            wallTransformData = CalculateWallForPath(oppositePoints, isUpperLadderPath);
             return wallTransformData != null;
         }
     }

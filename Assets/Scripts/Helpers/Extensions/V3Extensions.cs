@@ -22,7 +22,7 @@ namespace Scripts.Helpers.Extensions
 
             DirectionRotationMap = new Dictionary<Vector3, Vector3>
             {
-                {WorldNorth, new Vector3(0, 270, 90)},
+                {WorldNorth, new Vector3(0, 270, 0)},
                 {WorldEast, Vector3.zero},
                 {WorldSouth, new Vector3(0, 90, 0)},
                 {WorldWest, new Vector3(0, 180, 0)},

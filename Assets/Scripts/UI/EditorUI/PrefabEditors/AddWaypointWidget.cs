@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using TMPro;
@@ -63,7 +64,7 @@ namespace Scripts.UI.Components
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => OnAddButtonClicked_internal(button));
             _map.Add(button, direction);
-            button.GetComponentInChildren<TMP_Text>().text = labelText;
+            button.GetComponentInChildren<TMP_Text>().text = $"1 {labelText.ElementAt(0)}";
         }
 
         private void OnAddButtonClicked_internal(Button clickedButton)

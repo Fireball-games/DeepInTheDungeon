@@ -23,6 +23,7 @@ namespace Scripts.UI.EditorUI
     public class WallEditor : PrefabEditorBase<WallConfiguration, WallPrefabBase>
     {
         private LabeledSlider _offsetSlider;
+        private NumericUpDown _offsetNumericUpDown;
         private WaypointEditor _waypointEditor;
         private Button _createOppositePathButton;
 
@@ -56,25 +57,16 @@ namespace Scripts.UI.EditorUI
 
             base.Open(configuration);
 
-            if (PhysicalPrefabBody)
-            {
-                _offsetSlider.SetActive(true);
-                _offsetSlider.Value = configuration.Offset;
-                _offsetSlider.slider.onValueChanged.RemoveAllListeners();
-                _offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
-            }
-
             VisualizeOtherComponents();
         }
         
-        
-
         protected override string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
         {
             Initialize();
 
             _offsetSlider.SetLabel(t.Get(Keys.Offset));
             _offsetSlider.SetActive(false);
+            _offsetNumericUpDown.gameObject.SetActive(false);
             
             _createOppositePathButton.gameObject.SetActive(false);
 
@@ -86,13 +78,6 @@ namespace Scripts.UI.EditorUI
             base.SetPrefab(prefabName);
 
             _waypointEditor.SetActive(false);
-
-            if (PhysicalPrefabBody)
-            {
-                _offsetSlider.SetActive(true);
-                _offsetSlider.Value = EditedConfiguration.Offset;
-                _offsetSlider.slider.onValueChanged.AddListener(OnOffsetSliderValueChanged);
-            }
 
             VisualizeOtherComponents();
         }
@@ -171,7 +156,8 @@ namespace Scripts.UI.EditorUI
 
         private void Initialize()
         {
-            _offsetSlider = body.transform.Find("Background/Frame/OffsetSlider").GetComponent<LabeledSlider>();
+            _offsetSlider = body.transform.Find("Background/Frame/OffsetHandling/OffsetSlider").GetComponent<LabeledSlider>();
+            _offsetNumericUpDown = body.transform.Find("Background/Frame/OffsetHandling/NumericUpDown").GetComponent<NumericUpDown>();
             _waypointEditor = body.transform.Find("WaypointsEditor").GetComponent<WaypointEditor>();
             _waypointEditor.SetActive(false);
             
@@ -218,10 +204,12 @@ namespace Scripts.UI.EditorUI
             SetEdited();
         }
 
-        private void OnOffsetSliderValueChanged(float value)
+        private void OnOffsetValueChanged(float value)
         {
             SetEdited();
             Vector3 newPosition = PhysicalPrefabBody.transform.localPosition;
+            _offsetSlider.Value = value;
+            _offsetNumericUpDown.Value = value;
             newPosition.x = value;
             EditedConfiguration.Offset = value;
             PhysicalPrefabBody.transform.localPosition = newPosition;
@@ -229,6 +217,22 @@ namespace Scripts.UI.EditorUI
 
         private void VisualizeOtherComponents()
         {
+            if (PhysicalPrefabBody)
+            {
+                _offsetSlider.OnValueChanged.RemoveAllListeners();
+                _offsetSlider.SetActive(true);
+                _offsetSlider.Value = EditedConfiguration.Offset;
+                _offsetSlider.OnValueChanged.AddListener(OnOffsetValueChanged);
+                
+                _offsetNumericUpDown.OnValueChanged.RemoveAllListeners();
+                _offsetNumericUpDown.gameObject.SetActive(true);
+                _offsetNumericUpDown.Value = EditedConfiguration.Offset;
+                _offsetNumericUpDown.minimum = -0.5f;
+                _offsetNumericUpDown.maximum = 0.5f;
+                _offsetNumericUpDown.step = 0.05f;
+                _offsetNumericUpDown.OnValueChanged.AddListener(OnOffsetValueChanged);
+            }
+            
             WallPrefabBase script = PhysicalPrefab.GetComponentInParent<WallPrefabBase>();
 
             if (!script) return;

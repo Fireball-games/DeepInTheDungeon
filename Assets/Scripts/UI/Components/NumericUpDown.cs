@@ -9,7 +9,6 @@ namespace Scripts.UI.Components
 {
     public class NumericUpDown : MonoBehaviour
     {
-        public float value;
         public float step = 0.1f;
         public float minimum = float.MinValue;
         public float maximum = float.MaxValue;
@@ -22,6 +21,20 @@ namespace Scripts.UI.Components
         private Button _minusButton;
 
         private bool _inputUpdateSilent;
+
+        private float _value;
+        public float Value
+        {
+            get => _value;
+            set
+            {
+                _value = Mathf.Clamp(value, minimum, maximum);
+
+                _input.onValueChanged.RemoveAllListeners();
+                _input.text = value.ToString(GetPrecisionFormatString());
+                _input.onValueChanged.AddListener(OnValueChanged_inInput);
+            }
+        }
 
         public UnityEvent<float> OnValueChanged { get; set; } = new();
     
@@ -57,22 +70,30 @@ namespace Scripts.UI.Components
             OnValueChanged_internal(parsedValue);
         }
 
+        private string GetPrecisionFormatString()
+        {
+            string result = "0.";
+
+            for (int i = 1; i <= precision; i++)
+            {
+                result += "0";
+            }
+
+            return result;
+        }
+
         private void OnValueChanged_internal(float newValue, bool isSilent = false)
         {
-            value = Mathf.Clamp(newValue, minimum, maximum);
-        
-            _input.onValueChanged.RemoveAllListeners();
-            _input.text = newValue.ToString("0.0");
-            _input.onValueChanged.AddListener(OnValueChanged_inInput);
-        
+            Value = Mathf.Clamp(newValue, minimum, maximum);
+
             if (!isSilent)
             {
                 OnValueChanged.Invoke(newValue);
             }
         }
 
-        private void OnPlusClick() => OnValueChanged_internal(value + step);
+        private void OnPlusClick() => OnValueChanged_internal(Value + step);
 
-        private void OnMinusClick() => OnValueChanged_internal(value - step);
+        private void OnMinusClick() => OnValueChanged_internal(Value - step);
     }
 }

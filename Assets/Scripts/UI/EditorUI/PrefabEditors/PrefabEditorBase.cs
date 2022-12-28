@@ -208,16 +208,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected virtual void Delete()
         {
-            // TC originalConfiguration = CopyConfiguration(EditedConfiguration);
-            // PhysicalPrefabBody = null;
-            // PhysicalPrefab = null;
-            // _prefabTitle.SetActive(false);
-
-            // Cursor3D.Hide();
-
             MapBuilder.RemovePrefab(EditedConfiguration);
-            // EditedConfiguration = null;
-            
+
             MapEditorManager.Instance.SaveMap();
             
             Close();

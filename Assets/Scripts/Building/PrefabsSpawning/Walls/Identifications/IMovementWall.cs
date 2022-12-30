@@ -1,6 +1,6 @@
 ﻿using Scripts.ScriptableObjects;
 
-namespace Scripts.Building.PrefabsSpawning.Walls.Indentificators
+namespace Scripts.Building.PrefabsSpawning.Walls.Identifications
 {
     public interface IMovementWall
     {

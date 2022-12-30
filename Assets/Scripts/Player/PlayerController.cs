@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
-using Scripts.Building.PrefabsSpawning.Walls.Indentificators;
+using Scripts.Building.PrefabsSpawning.Walls.Identifications;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -19,7 +20,10 @@ namespace Scripts.Player
     public class PlayerController : MonoBehaviour
     {
         public bool smoothTransition;
+        public float normalCameraZ = -0.4f;
+        public float moveCameraZ;
         public float transitionSpeed = 10f;
+        public float wallBashMovement = 0.3f;
         public float wallBashSpeed = 1f;
         public float wallBashSpeedReturnMultiplier = 1.5f;
         public float transitionRotationSpeed = 500f;
@@ -108,6 +112,9 @@ namespace Scripts.Player
         private IEnumerator PerformWaypointMovementCoroutine()
         {
             if (!_waypoints.Any()) yield break;
+
+            SetCameraZ(moveCameraZ);
+            
             bool isLadderDown = false;
             
             for (int index = 1; index < _waypoints.Count; index++)
@@ -148,7 +155,7 @@ namespace Scripts.Player
                 AdjustTransitionSpeeds(_waypoints[index].moveSpeedModifier);
 
                 yield return PerformMovementCoroutine(false, false);
-
+                
                 AdjustTransitionSpeeds();
             }
 
@@ -158,6 +165,15 @@ namespace Scripts.Player
             _targetRotation = new Vector3(0, rotation.y, 0);
             
             StartCoroutine(PerformMovementCoroutine());
+        }
+
+        private void SetCameraZ(float zValue)
+        {
+            // TODO: Work it into coroutine
+            Transform cameraTransform = playerCamera.transform;
+            Vector3 newOffset = cameraTransform.localPosition;
+            newOffset.z = zValue;
+            cameraTransform.localPosition = newOffset;
         }
 
         private bool IsWaypointStraightUp(int index, out Vector3 rotation)
@@ -254,10 +270,11 @@ namespace Scripts.Player
             _atRest = isRestingOnFinish;
             if (isRestingOnFinish)
             {
+                SetCameraZ(normalCameraZ);
                 _waypoints.Clear();
             }
 
-            _prevTargetPosition = _targetPosition;
+            transform.position = _prevTargetPosition = _targetPosition.ToVector3Int();
 
             if (Math.Abs(currentRotY - transform.rotation.eulerAngles.y) > float.Epsilon)
             {
@@ -297,7 +314,7 @@ namespace Scripts.Player
         private IEnumerator BashIntoWallCoroutine()
         {
             Vector3 position = transform.position;
-            Vector3 targetPosition = position + ((_targetPosition - position) * 0.2f);
+            Vector3 targetPosition = position + ((_targetPosition - position) * wallBashMovement);
 
             while (NotAtTargetPosition(targetPosition))
             {

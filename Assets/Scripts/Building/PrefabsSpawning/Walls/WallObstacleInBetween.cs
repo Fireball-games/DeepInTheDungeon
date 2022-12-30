@@ -1,4 +1,4 @@
-﻿using Scripts.Building.PrefabsSpawning.Walls.Indentificators;
+﻿using Scripts.Building.PrefabsSpawning.Walls.Identifications;
 
 namespace Scripts.Building.PrefabsSpawning.Walls
 {

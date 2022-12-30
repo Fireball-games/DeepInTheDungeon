@@ -171,7 +171,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 80
   orthographic: 0
@@ -272,8 +272,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   smoothTransition: 1
+  normalCameraZ: -0.4
+  moveCameraZ: 0
   transitionSpeed: 10
-  wallBashSpeed: 1
+  wallBashMovement: 0.4
+  wallBashSpeed: 3
   wallBashSpeedReturnMultiplier: 1.5
   transitionRotationSpeed: 750
   playerCamera: {fileID: 614287167652602324}

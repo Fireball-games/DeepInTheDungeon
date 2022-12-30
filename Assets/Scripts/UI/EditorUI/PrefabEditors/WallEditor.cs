@@ -2,7 +2,7 @@
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
-using Scripts.Building.PrefabsSpawning.Walls.Indentificators;
+using Scripts.Building.PrefabsSpawning.Walls.Identifications;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor.Services;

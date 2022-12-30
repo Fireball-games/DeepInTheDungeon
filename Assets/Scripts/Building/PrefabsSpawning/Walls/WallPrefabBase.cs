@@ -19,8 +19,9 @@ namespace Scripts.Building.PrefabsSpawning.Walls
         [NonSerialized] public bool WallEligibleForEditing;
         private WallConfiguration _ownConfiguration;
 
-        public void Initialize()
+        public override void Initialize()
         {
+            base.Initialize();
             WallEligibleForEditing = false;
             _ownConfiguration = null;
             

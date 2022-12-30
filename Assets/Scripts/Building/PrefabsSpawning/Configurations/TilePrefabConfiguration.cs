@@ -8,13 +8,9 @@
         {
         }
 
-        public TilePrefabConfiguration(TilePrefabConfiguration configuration)
+        public TilePrefabConfiguration(TilePrefabConfiguration configuration) : base(configuration)
         {
             IsWalkable = configuration.IsWalkable;
-
-            PrefabName = configuration.PrefabName;
-            TransformData = configuration.TransformData;
-            PrefabType = configuration.PrefabType;
         }
     }
 }

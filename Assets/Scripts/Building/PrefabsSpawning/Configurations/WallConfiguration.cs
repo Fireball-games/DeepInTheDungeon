@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.ScriptableObjects;
-using Scripts.System;
 
 namespace Scripts.Building.PrefabsSpawning.Configurations
 {
@@ -14,14 +13,10 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         {
         }
         
-        public WallConfiguration(WallConfiguration configuration)
+        public WallConfiguration(WallConfiguration configuration) : base(configuration)
         {
-            PrefabType = configuration.PrefabType;
             Offset = configuration.Offset;
             WayPoints = Waypoint.Clone(configuration.WayPoints).ToList();
-
-            PrefabName = configuration.PrefabName;
-            TransformData = new PositionRotation(configuration.TransformData.Position, configuration.TransformData.Rotation);
         }
 
         public bool HasPath() => WayPoints != null && WayPoints.Any();

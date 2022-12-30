@@ -4,6 +4,7 @@ using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
+using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
@@ -37,7 +38,7 @@ namespace Scripts.Building
         {
             foreach (PrefabConfiguration configuration in configurations.CloneViaSerialization())
             {
-                BuildPrefab(configuration, true);
+                BuildPrefab(configuration);
 
                 yield return null;
             }
@@ -47,24 +48,18 @@ namespace Scripts.Building
         /// Builds new prefab and both stores configuration in MapDescription and GameObject in Prefabs list.
         /// </summary>
         /// <param name="configuration"></param>
-        /// <param name="deleteDuplicates">duplicate configurations will be deleted, serves as sanitization on build map</param>
         /// <returns></returns>
-        public bool BuildPrefab(PrefabConfiguration configuration, bool deleteDuplicates = false)
+        public bool BuildPrefab(PrefabConfiguration configuration)
         {
             if (!MapDescription.PrefabConfigurations.Contains(configuration))
             {
                 AddReplacePrefabConfiguration(configuration);
             }
-            // else if (deleteDuplicates)
-            // {
-            //     MapDescription.PrefabConfigurations.Remove(configuration);
-            // }
 
             bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
 
             GameObject newPrefab = PrefabStore.Instantiate(configuration.PrefabName, MapBuilder.PrefabsParent);
-
-
+            
             if (!newPrefab)
             {
                 Logger.LogError($"Prefab \"{configuration.PrefabName}\" was not found.");
@@ -73,6 +68,8 @@ namespace Scripts.Building
             }
 
             newPrefab.transform.position = configuration.TransformData.Position;
+
+            PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
 
             if (configuration is TilePrefabConfiguration)
             {
@@ -94,16 +91,19 @@ namespace Scripts.Building
 
                 if (isEditorMode)
                 {
-                    WallPrefabBase script = newPrefab.GetComponent<WallPrefabBase>();
+                    // WallPrefabBase script = newPrefab.GetComponent<WallPrefabBase>();
 
-                    if (script && script.presentedInEditor)
+                    if (prefabScript is WallPrefabBase script)
                     {
-                        script.presentedInEditor.SetActive(true);
-                    }
+                        if (script && script.presentedInEditor)
+                        {
+                            script.presentedInEditor.SetActive(true);
+                        }
 
-                    if (wallConfiguration.HasPath())
-                    {
-                        WayPointService.AddPath(wallConfiguration.WayPoints);
+                        if (wallConfiguration.HasPath())
+                        {
+                            WayPointService.AddPath(wallConfiguration.WayPoints);
+                        }
                     }
                 }
             }

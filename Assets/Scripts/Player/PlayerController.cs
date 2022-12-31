@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.PrefabsSpawning.Walls.Identifications;
@@ -113,8 +112,6 @@ namespace Scripts.Player
         {
             if (!_waypoints.Any()) yield break;
 
-            SetCameraZ(moveCameraZ);
-            
             bool isLadderDown = false;
             
             for (int index = 1; index < _waypoints.Count; index++)
@@ -122,6 +119,7 @@ namespace Scripts.Player
                 Waypoint waypoint = _waypoints[index];
 
                 _targetPosition = waypoint.position;
+                
                 if (IsWaypointStraightUp(index, out Vector3 rot))
                 {
                     _targetRotation = rot;
@@ -139,7 +137,7 @@ namespace Scripts.Player
                 {
                     _targetRotation = isLadderDown 
                         ? transform.rotation.eulerAngles
-                        :Quaternion.LookRotation(_waypoints[index + 1].position - transform.position, Vector3.up).eulerAngles;
+                        : Quaternion.LookRotation(_waypoints[index + 1].position - transform.position.Round(1), Vector3.up).eulerAngles;
 
                     isLadderDown = false;
                 }
@@ -147,14 +145,13 @@ namespace Scripts.Player
                 {
                     _targetRotation = isLadderDown 
                         ? transform.rotation.eulerAngles
-                        :Quaternion.LookRotation(_waypoints[^1].position - _waypoints[^2].position, Vector3.up).eulerAngles;
+                        : Quaternion.LookRotation(_waypoints[^1].position - _waypoints[^2].position, Vector3.up).eulerAngles;
 
                     isLadderDown = false;
-                    SetCameraZ(normalCameraZ, 0.1f);
                 }
                 
                 AdjustTransitionSpeeds(_waypoints[index].moveSpeedModifier);
-
+                
                 yield return PerformMovementCoroutine(false, false);
                 
                 AdjustTransitionSpeeds();
@@ -165,12 +162,6 @@ namespace Scripts.Player
             
             _targetRotation = new Vector3(0, rotation.y, 0);
             StartCoroutine(PerformMovementCoroutine());
-        }
-
-        private void SetCameraZ(float zValue, float? speed = null)
-        {
-            float internalSpeed = speed ?? 0.3f;
-            playerCamera.transform.DOLocalMoveZ(zValue, internalSpeed).SetEase(Ease.OutSine);
         }
 
         private bool IsWaypointStraightUp(int index, out Vector3 rotation)
@@ -267,10 +258,11 @@ namespace Scripts.Player
             _atRest = isRestingOnFinish;
             if (isRestingOnFinish)
             {
+                transform.position = transform.position.ToVector3Int();
                 _waypoints.Clear();
             }
 
-            transform.position = _prevTargetPosition = _targetPosition.ToVector3Int();
+            _prevTargetPosition = _targetPosition;
 
             if (Math.Abs(currentRotY - transform.rotation.eulerAngles.y) > float.Epsilon)
             {

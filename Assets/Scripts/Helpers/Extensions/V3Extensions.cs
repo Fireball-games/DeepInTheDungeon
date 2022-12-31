@@ -29,12 +29,6 @@ namespace Scripts.Helpers.Extensions
             };
         }
 
-        public static Vector3 SwapXY(this Vector3 source)
-        {
-            (source.y, source.x) = (source.x, source.y); // Swapping via deconstruction, noice
-            return source;
-        }
-        
         public static Vector3Int ToVector3Int(this Vector3 source)
         {
             V3I.x = Mathf.RoundToInt(source.x);

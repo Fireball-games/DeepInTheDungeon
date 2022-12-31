@@ -169,11 +169,7 @@ namespace Scripts.Player
 
         private void SetCameraZ(float zValue)
         {
-            // TODO: Work it into coroutine
-            Transform cameraTransform = playerCamera.transform;
-            Vector3 newOffset = cameraTransform.localPosition;
-            newOffset.z = zValue;
-            cameraTransform.localPosition = newOffset;
+            playerCamera.transform.DOLocalMoveZ(zValue, 0.3f).SetEase(Ease.OutSine);
         }
 
         private bool IsWaypointStraightUp(int index, out Vector3 rotation)

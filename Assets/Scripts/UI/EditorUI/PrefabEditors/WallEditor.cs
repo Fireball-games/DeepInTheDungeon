@@ -270,7 +270,6 @@ namespace Scripts.UI.EditorUI
 
                 _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
                 WayPointService.AddPath(EditedConfiguration.WayPoints, true);
-                EditorCameraService.Instance.ResetCamera();
                 HandleCreateOppositePathButton();
             }
         }

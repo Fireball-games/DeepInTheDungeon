@@ -95,9 +95,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraPanSpeed: 100
-  cameraZoomSpeed: 1500
+  cameraZoomSpeed: 8000
+  cameraZoomSpeedSmooth: 8000
   maxZoomHeight: 20
   cameraRotationSpeed: 400
+  prefabMoveCameraDistance: 8
+  prefabMoveCameraXOffset: -2
   cameraHolder: {fileID: 0}
 --- !u!114 &8656452529245927566
 MonoBehaviour:

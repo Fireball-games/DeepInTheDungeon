@@ -150,6 +150,7 @@ namespace Scripts.Player
                         :Quaternion.LookRotation(_waypoints[^1].position - _waypoints[^2].position, Vector3.up).eulerAngles;
 
                     isLadderDown = false;
+                    SetCameraZ(normalCameraZ, 0.1f);
                 }
                 
                 AdjustTransitionSpeeds(_waypoints[index].moveSpeedModifier);
@@ -163,13 +164,13 @@ namespace Scripts.Player
             Vector3 rotation = playerTransform.rotation.eulerAngles;
             
             _targetRotation = new Vector3(0, rotation.y, 0);
-            
             StartCoroutine(PerformMovementCoroutine());
         }
 
-        private void SetCameraZ(float zValue)
+        private void SetCameraZ(float zValue, float? speed = null)
         {
-            playerCamera.transform.DOLocalMoveZ(zValue, 0.3f).SetEase(Ease.OutSine);
+            float internalSpeed = speed ?? 0.3f;
+            playerCamera.transform.DOLocalMoveZ(zValue, internalSpeed).SetEase(Ease.OutSine);
         }
 
         private bool IsWaypointStraightUp(int index, out Vector3 rotation)
@@ -266,7 +267,6 @@ namespace Scripts.Player
             _atRest = isRestingOnFinish;
             if (isRestingOnFinish)
             {
-                SetCameraZ(normalCameraZ);
                 _waypoints.Clear();
             }
 

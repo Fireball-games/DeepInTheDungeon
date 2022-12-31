@@ -43,7 +43,7 @@ namespace Scripts.UI.EditorUI
 
         protected override WallConfiguration CopyConfiguration(WallConfiguration sourceConfiguration) => new(EditedConfiguration);
 
-        protected override Vector3 Cursor3DScale => new(0.15f, 1f, 1f);
+        protected override Vector3 Cursor3DScale => new(0.15f, 1.1f, 1.1f);
 
         public override void Open(WallConfiguration configuration)
         {
@@ -86,7 +86,7 @@ namespace Scripts.UI.EditorUI
         {
             if (EditedConfiguration.WayPoints.Any())
             {
-                WayPointService.DestroyPath(EditedConfiguration.WayPoints);
+                PathsService.DestroyPath(EditedConfiguration.WayPoints);
             }
 
             RemoveExtraParts();
@@ -98,7 +98,7 @@ namespace Scripts.UI.EditorUI
         {
             if (EditedConfiguration.HasPath())
             {
-                WayPointService.HighlightPath(EditedConfiguration.WayPoints, false);
+                PathsService.HighlightPath(EditedConfiguration.WayPoints, false);
             }
 
             if (_createdOppositeWall != null)
@@ -115,7 +115,7 @@ namespace Scripts.UI.EditorUI
         {
             if (EditedConfiguration.WayPoints.Any())
             {
-                WayPointService.DestroyPath(EditedConfiguration.WayPoints);
+                PathsService.DestroyPath(EditedConfiguration.WayPoints);
             }
 
             RemoveExtraParts();
@@ -147,7 +147,7 @@ namespace Scripts.UI.EditorUI
 
                 if (_createdOppositeWall.WayPoints.Any())
                 {
-                    WayPointService.DestroyPath(_createdOppositeWall.WayPoints);
+                    PathsService.DestroyPath(_createdOppositeWall.WayPoints);
                 }
             }
 
@@ -175,7 +175,7 @@ namespace Scripts.UI.EditorUI
                 return;
             }
 
-            bool isForLadderDown = WayPointService.IsLadderDownAtPathStart(EditedConfiguration.WayPoints);
+            bool isForLadderDown = PathsService.IsLadderDownAtPathStart(EditedConfiguration.WayPoints);
             
             string prefabName = isForLadderDown
                 ? Vector3.Distance(oppositePoints[^1].position, oppositePoints[^2].position) > 1
@@ -200,7 +200,7 @@ namespace Scripts.UI.EditorUI
             };
 
             MapBuilder.BuildPrefab(_createdOppositeWall);
-            WayPointService.AddPath(oppositePoints);
+            PathsService.AddPath(oppositePoints);
             SetEdited();
         }
 
@@ -269,7 +269,7 @@ namespace Scripts.UI.EditorUI
                 }
 
                 _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
-                WayPointService.AddPath(EditedConfiguration.WayPoints, true);
+                PathsService.AddPath(EditedConfiguration.WayPoints, true);
                 HandleCreateOppositePathButton();
             }
         }
@@ -277,11 +277,11 @@ namespace Scripts.UI.EditorUI
         private void OnPathChanged(IEnumerable<Waypoint> path, int effectedWaypointIndex)
         {
             SetEdited();
-            WayPointService.DestroyPath(EditedConfiguration.WayPoints);
+            PathsService.DestroyPath(EditedConfiguration.WayPoints);
             List<Waypoint> waypoints = path.ToList();
             EditedConfiguration.WayPoints = waypoints;
-            WayPointService.AddPath(waypoints);
-            WayPointService.HighlightPoint(waypoints, effectedWaypointIndex, isExclusiveHighlight: true);
+            PathsService.AddPath(waypoints);
+            PathsService.HighlightPoint(waypoints, effectedWaypointIndex, isExclusiveHighlight: true);
             HandleCreateOppositePathButton();
         }
 
@@ -333,7 +333,7 @@ namespace Scripts.UI.EditorUI
                 oppositePoints.Add(new Waypoint(waypoints.ElementAt(i).position.Round(2), waypoints.ElementAt(i).moveSpeedModifier));
             }
 
-            bool isUpperLadderPath = WayPointService.IsLadderDownAtPathStart(waypoints.ToList());
+            bool isUpperLadderPath = PathsService.IsLadderDownAtPathStart(waypoints.ToList());
 
             wallTransformData = CalculateWallForPath(oppositePoints, isUpperLadderPath);
             return wallTransformData != null;

@@ -45,8 +45,8 @@ public class VisualControlButtons : UIElementBase
     private void OnWaypointsShowToggleClick()
     {
         if (_waypointsShowToggle.toggled)
-            WayPointService.ShowWaypoints();
+            PathsService.ShowWaypoints();
         else
-            WayPointService.HideWaypoints();
+            PathsService.HideWaypoints();
     }
 }

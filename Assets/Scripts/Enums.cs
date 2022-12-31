@@ -14,5 +14,18 @@
             Item = 7,
             PrefabTile = 8,
         }
+        
+        public enum ETriggerType
+        {
+            Repeat = 1,
+            OneOff = 2,
+        }
+
+        public enum EMovementType
+        {
+            None = 0,
+            ThereAndBack = 1,
+            Switch = 2,
+        }
     }
 }

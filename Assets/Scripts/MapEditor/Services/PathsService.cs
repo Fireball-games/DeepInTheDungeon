@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 
 namespace Scripts.MapEditor.Services
 {
-    public class WayPointService : MonoBehaviour
+    public class PathsService : MonoBehaviour
     {
         [SerializeField] private Material normalMaterial;
         [SerializeField] private Material highlightedMaterial;
@@ -24,8 +24,6 @@ namespace Scripts.MapEditor.Services
         private static Material _highlightedMaterial;
         private static Material _waypointsLineNormalMaterial;
         private static Material _waypointLinesHighlightedMaterial;
-        private static Color _pathColorStart;
-        private static Color _pathColorEnd;
         private static GameObject _parent;
         private static bool _areWaypointsShows = true;
 

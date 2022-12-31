@@ -28,7 +28,7 @@ namespace Scripts.Building
         {
             if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
             {
-                WayPointService.DestroyAllPaths();
+                PathsService.DestroyAllPaths();
             }
 
             MapBuilder.StartCoroutine(BuildPrefabsCoroutine(configurations));
@@ -102,7 +102,7 @@ namespace Scripts.Building
 
                         if (wallConfiguration.HasPath())
                         {
-                            WayPointService.AddPath(wallConfiguration.WayPoints);
+                            PathsService.AddPath(wallConfiguration.WayPoints);
                         }
                     }
                 }
@@ -150,7 +150,7 @@ namespace Scripts.Building
 
             if (configuration is WallConfiguration {WayPoints: { }} wall && wall.WayPoints.Any())
             {
-                WayPointService.DestroyPath(wall.WayPoints);
+                PathsService.DestroyPath(wall.WayPoints);
             }
 
             prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
@@ -214,7 +214,7 @@ namespace Scripts.Building
 
                 if (wall.WayPoints == null || !wall.WayPoints.Any()) continue;
 
-                WayPointService.DestroyPath(wall.WayPoints);
+                PathsService.DestroyPath(wall.WayPoints);
 
                 foreach (Waypoint waypoint in wall.WayPoints)
                 {

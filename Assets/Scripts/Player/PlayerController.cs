@@ -194,7 +194,7 @@ namespace Scripts.Player
 
         private bool IsLadderDownStart(out Vector3 rotation)
         {
-            bool straightDownFromSecondWaypoint = WayPointService.IsLadderDownAtPathStart(_waypoints);
+            bool straightDownFromSecondWaypoint = PathsService.IsLadderDownAtPathStart(_waypoints);
 
             if (!straightDownFromSecondWaypoint)
             {

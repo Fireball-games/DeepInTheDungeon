@@ -19,10 +19,9 @@ namespace Scripts.Player
     public class PlayerController : MonoBehaviour
     {
         public bool smoothTransition;
-        public float normalCameraZ = -0.4f;
-        public float moveCameraZ;
         public float transitionSpeed = 10f;
         public float wallBashMovement = 0.3f;
+        public float wallBashMovementBackwards = 0.3f;
         public float wallBashSpeed = 1f;
         public float wallBashSpeedReturnMultiplier = 1.5f;
         public float transitionRotationSpeed = 500f;
@@ -301,20 +300,28 @@ namespace Scripts.Player
 
         private IEnumerator BashIntoWallCoroutine()
         {
-            Vector3 position = transform.position;
-            Vector3 targetPosition = position + ((_targetPosition - position) * wallBashMovement);
+            Transform playerTransform;
+            Vector3 position = (playerTransform = transform).position.ToVector3Int();
+
+            bool isBashingBackwards = (_targetPosition - position).normalized == -playerTransform.forward;
+
+            float movementMultiplier = isBashingBackwards ? wallBashMovementBackwards : wallBashMovement;
+
+            float bashSpeed = isBashingBackwards ? wallBashSpeed / 4 : wallBashSpeed;
+            
+            Vector3 targetPosition = position + ((_targetPosition - position) * movementMultiplier);
 
             while (NotAtTargetPosition(targetPosition))
             {
                 transform.position = Vector3.MoveTowards(transform.position, _targetPosition,
-                    Time.deltaTime * wallBashSpeed);
+                    Time.deltaTime * bashSpeed);
                 yield return null;
             }
 
             while (NotAtTargetPosition(_prevTargetPosition))
             {
                 transform.position = Vector3.MoveTowards(transform.position, _prevTargetPosition,
-                    Time.deltaTime * wallBashSpeed * wallBashSpeedReturnMultiplier);
+                    Time.deltaTime * bashSpeed * wallBashSpeedReturnMultiplier);
                 yield return null;
             }
 

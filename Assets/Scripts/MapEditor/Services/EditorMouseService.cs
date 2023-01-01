@@ -89,7 +89,6 @@ namespace Scripts.MapEditor.Services
 
             ValidateClicks();
             cameraService.HandleMouseMovement();
-            // cameraService.HandleMouseWheel();
             
             if (EventSystem.current.IsPointerOverGameObject())
             {

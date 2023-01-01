@@ -1,6 +1,6 @@
 ﻿namespace Scripts.Building.PrefabsSpawning.Walls
 {
-    public class WallBetween : WallPrefabBase
+    public class WallBasic : WallPrefabBase
     {
         
     }

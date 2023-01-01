@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2674827619656366065}
   - component: {fileID: 230765334100765546}
   - component: {fileID: 5196056560996456692}
-  - component: {fileID: 1054836667926876549}
   m_Layer: 9
   m_Name: Gate
   m_TagString: Untagged
@@ -98,20 +97,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.00025000004, y: 0.009449999, z: 0.013035103}
   m_Center: {x: 0, y: 0, z: -0.0014753288}
---- !u!114 &1054836667926876549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489816647726673668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77409ad5e8a94ed4b94c89a5630354ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabType: 3
-  presentedInEditor: {fileID: 0}
 --- !u!1 &1500736713080305506
 GameObject:
   m_ObjectHideFlags: 0
@@ -121,7 +106,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2276675964794154456}
-  - component: {fileID: 5920374544136273361}
+  - component: {fileID: 1363957586214988839}
   m_Layer: 0
   m_Name: DoorGateWButton
   m_TagString: Untagged
@@ -145,7 +130,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5920374544136273361
+--- !u!114 &1363957586214988839
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -154,7 +139,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1500736713080305506}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c51bb7df5bbb4491814019e972ebc9b7, type: 3}
+  m_Script: {fileID: 11500000, guid: c5629659a8fc453dbfbeef8ea0ed4351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefabType: 3
@@ -535,7 +520,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1063020504088838657}
-  - component: {fileID: 8897336952401531254}
   m_Layer: 0
   m_Name: GateButton2
   m_TagString: Untagged
@@ -560,20 +544,6 @@ Transform:
   m_Father: {fileID: 1734688257216418536}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &8897336952401531254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6769242308784886723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c51bb7df5bbb4491814019e972ebc9b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabType: 3
-  presentedInEditor: {fileID: 0}
 --- !u!1 &7228061428077039888
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,7 +636,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8666426350360354955}
-  - component: {fileID: 8290709605569280574}
   m_Layer: 0
   m_Name: GateButton
   m_TagString: Untagged
@@ -691,17 +660,3 @@ Transform:
   m_Father: {fileID: 1734688257216418536}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8290709605569280574
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8290709605569280561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c51bb7df5bbb4491814019e972ebc9b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabType: 3
-  presentedInEditor: {fileID: 0}

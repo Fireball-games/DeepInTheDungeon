@@ -17,8 +17,9 @@
         
         public enum ETriggerType
         {
-            Repeat = 1,
-            OneOff = 2,
+            OneOff = 1,
+            Repeat = 2,
+            XTimes = 3,
         }
 
         public enum EMovementType

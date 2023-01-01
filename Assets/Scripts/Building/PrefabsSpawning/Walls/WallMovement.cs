@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Scripts.Building.PrefabsSpawning.Walls
 {
     [SelectionBase]
-    public class WallMovementOnWall : WallOnWall, IMovementWall
+    public class WallMovement : WallPrefabBase, IMovementWall
     {
         public WaypointsPreset waypointsPreset;
 

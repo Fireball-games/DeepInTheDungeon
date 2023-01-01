@@ -353,15 +353,13 @@ namespace Scripts.Player
 
             if (size == 0) return false;
 
+            bool wallInThePath = false;
+
             foreach (RaycastHit hit in hits)
             {
                 if (!hit.collider) continue;
 
                 WallPrefabBase wallScript = hit.collider.gameObject.GetComponent<WallPrefabBase>();
-
-                if (!wallScript) continue;
-
-                if (wallScript is IObstacle) return true;
 
                 if (wallScript is IMovementWall)
                 {
@@ -374,9 +372,11 @@ namespace Scripts.Player
 
                     return false;
                 }
+                
+                wallInThePath = true;
             }
-
-            return false;
+            
+            return wallInThePath;
         }
 
         /// <summary>

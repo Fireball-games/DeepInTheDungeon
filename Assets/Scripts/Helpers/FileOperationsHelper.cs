@@ -17,14 +17,14 @@ namespace Scripts.Helpers
         public const string ItemsDirectoryName = "Items";
         public const string PrefabsDirectoryName = "Prefabs";
         
-        public static string MapDirectoryPath => Path.Combine(ApplicationPath, MapDirectoryName);
+        public static string MapDirectoryPath => Path.Combine(PersistentPath, MapDirectoryName);
         
         private const string MapFileExtension = ".map";
-        private static readonly string ApplicationPath = Application.persistentDataPath;
+        private static readonly string PersistentPath = Application.persistentDataPath;
 
         public static string[] GetFilesInDirectory(string relativeDirectoryPath = "", string extensionFilter = "all")
         {
-            string fullPath = Path.Combine(ApplicationPath, relativeDirectoryPath);
+            string fullPath = Path.Combine(PersistentPath, relativeDirectoryPath);
 
             string[] allFiles = !Directory.Exists(fullPath) ? null : Directory.GetFiles(fullPath);
 
@@ -85,8 +85,8 @@ namespace Scripts.Helpers
             _ => throw new ArgumentOutOfRangeException(nameof(prefabType), prefabType, null)
         };
 
-        public static string GetFullRelativeMapPath(string mapName) => Path.Combine(MapDirectoryName, $"{mapName}{MapFileExtension}");
+        private static string GetFullRelativeMapPath(string mapName) => Path.Combine(MapDirectoryName, $"{mapName}{MapFileExtension}");
 
-        public static string GetFullMapPath(string mapName) => Path.Combine(MapDirectoryPath, $"{mapName}{MapFileExtension}");
+        private static string GetFullMapPath(string mapName) => Path.Combine(MapDirectoryPath, $"{mapName}{MapFileExtension}");
     }
 }

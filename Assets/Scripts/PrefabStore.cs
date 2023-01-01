@@ -4,6 +4,7 @@ using Scripts.Helpers;
 using Scripts.System.Pooling;
 using UnityEngine;
 using static Scripts.Enums;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts
 {
@@ -15,7 +16,7 @@ namespace Scripts
         private static readonly HashSet<EPrefabType> PrefabTypes = new()
         {
             EPrefabType.Wall, EPrefabType.Enemy, EPrefabType.Item, EPrefabType.Prop, EPrefabType.PrefabTile,
-            EPrefabType.WallBetween, EPrefabType.WallForMovement, EPrefabType.WallOnWall
+            EPrefabType.WallBetween, EPrefabType.WallForMovement, EPrefabType.WallOnWall, EPrefabType.Trigger
         };
 
         static PrefabStore()
@@ -48,7 +49,7 @@ namespace Scripts
             {
                 if (!FileOperationsHelper.LoadPrefabs(prefabType, out HashSet<GameObject> loadedPrefabs))
                 {
-                    // Logger.LogWarning($"No prefabs found for type \"{prefabType}\".");
+                    Logger.LogWarning($"No prefabs found for type \"{prefabType}\".");
                 }
             
                 foreach (GameObject gameObject in loadedPrefabs.Where(gameObject => !PrefabMap.ContainsKey(gameObject.name)))

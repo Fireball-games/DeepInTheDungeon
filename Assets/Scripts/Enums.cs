@@ -13,6 +13,7 @@
             Prop = 6,
             Item = 7,
             PrefabTile = 8,
+            Trigger = 9,
         }
         
         public enum ETriggerType
@@ -22,11 +23,18 @@
             XTimes = 3,
         }
 
-        public enum EMovementType
+        public enum ETriggerMoveType
         {
             None = 0,
             ThereAndBack = 1,
             Switch = 2,
+        }
+
+        public enum EActiveProperty
+        {
+            None = 0,
+            Position = 1,
+            Rotation = 2,
         }
     }
 }

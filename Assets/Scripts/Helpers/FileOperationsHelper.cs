@@ -16,6 +16,7 @@ namespace Scripts.Helpers
         public const string PropsDirectoryName = "Props";
         public const string ItemsDirectoryName = "Items";
         public const string PrefabsDirectoryName = "Prefabs";
+        public const string TriggersDirectoryName = "Triggers";
         
         public static string MapDirectoryPath => Path.Combine(PersistentPath, MapDirectoryName);
         
@@ -82,6 +83,7 @@ namespace Scripts.Helpers
             EPrefabType.Enemy => EnemiesDirectoryName,
             EPrefabType.Prop => PropsDirectoryName,
             EPrefabType.Item => ItemsDirectoryName,
+            EPrefabType.Trigger => TriggersDirectoryName,
             _ => throw new ArgumentOutOfRangeException(nameof(prefabType), prefabType, null)
         };
 

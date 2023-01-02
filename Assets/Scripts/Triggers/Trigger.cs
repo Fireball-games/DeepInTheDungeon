@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Scripts.Building.Walls;
 using Scripts.EventsManagement;
+using Scripts.Helpers.Extensions;
 using Scripts.Player;
 using Scripts.System;
 using UnityEngine;
@@ -46,7 +47,7 @@ namespace Scripts.Triggers
 
         private void OnMouseUp()
         {
-            if (atRest && (transform.position - Player.transform.position).sqrMagnitude < MaxDistanceFromPlayer)
+            if (atRest && IsPositionValid())
             {
                 OnTriggerActivated();
             }
@@ -62,5 +63,14 @@ namespace Scripts.Triggers
         }
 
         protected void SetResting(bool isAtRest) => atRest = isAtRest;
+
+        private bool IsPositionValid()
+        {
+            Vector3 position = transform.position;
+            
+            bool sameTileValidation = !mustBeOnSameTile || GameManager.Instance.Player.transform.position.ToVector3Int() == position.ToVector3Int();
+            
+            return sameTileValidation && (position - Player.transform.position).sqrMagnitude < MaxDistanceFromPlayer;
+        }
     }
 }

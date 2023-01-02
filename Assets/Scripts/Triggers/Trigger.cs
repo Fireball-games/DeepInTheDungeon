@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Scripts.Building.Walls;
 using Scripts.EventsManagement;
 using Scripts.Player;
 using Scripts.System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static Scripts.Enums;
 
 namespace Scripts.Triggers
@@ -15,23 +17,36 @@ namespace Scripts.Triggers
         public ETriggerType triggerType;
         public bool mustBeOnSameTile = true;
         public float actionDuration = 0.3f;
-        public bool AtRest;
+        public bool atRest = true;
+        public List<PrefabBase> presetSubscribers;
 
-        protected Transform ActivePart;
-        protected List<string> Subscribers;
         protected static PlayerController Player => GameManager.Instance.Player;
+        protected Transform ActivePart;
         protected int StartMovement;
         protected int CurrentMovement;
+        
+        private List<string> subscribers;
 
         protected virtual void Awake()
         {
-            Subscribers = new List<string>();
+            subscribers = new List<string>();
             ActivePart = transform.Find("ActivePart");
         }
-        
+
+        private void Start()
+        {
+            foreach (PrefabBase prefab in presetSubscribers)
+            {
+                if (!subscribers.Contains(prefab.GUID))
+                {
+                    subscribers.Add(prefab.GUID);
+                }
+            }
+        }
+
         private void OnMouseUp()
         {
-            if (AtRest && (transform.position - Player.transform.position).sqrMagnitude < MaxDistanceFromPlayer)
+            if (atRest && (transform.position - Player.transform.position).sqrMagnitude < MaxDistanceFromPlayer)
             {
                 OnTriggerActivated();
             }
@@ -43,9 +58,9 @@ namespace Scripts.Triggers
         
         protected void TriggerNext()
         {
-            EventsManager.TriggerOnTriggerNext(Subscribers);
+            EventsManager.TriggerOnTriggerNext(subscribers);
         }
 
-        protected void SetResting(bool isAtRest) => AtRest = isAtRest;
+        protected void SetResting(bool isAtRest) => atRest = isAtRest;
     }
 }

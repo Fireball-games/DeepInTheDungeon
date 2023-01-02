@@ -144,6 +144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabType: 3
+  guid: 
   presentedInEditor: {fileID: 0}
 --- !u!114 &4529093784462687352
 MonoBehaviour:
@@ -158,6 +159,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activePart: {fileID: 1715027707809379539}
+  startMovement: 0
+  moveType: 2
+  activeProperty: 1
+  steps:
+  - target: {x: 0, y: 0.85, z: 0}
+    duration: 1
+    movementEase: 5
+  - target: {x: 0, y: -0.85, z: 0}
+    duration: 0.5
+    movementEase: 6
 --- !u!1 &1734688257216418539
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,6 +354,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: GateButton2
       objectReference: {fileID: 0}
+    - target: {fileID: 4998416268976540309, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
+        type: 3}
+      propertyPath: presetSubscribers.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4998416268976540309, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
+        type: 3}
+      propertyPath: presetSubscribers.Array.data[0]
+      value: 
+      objectReference: {fileID: 1363957586214988839}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f, type: 3}
 --- !u!4 &3391885339416544216 stripped
@@ -418,6 +439,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: GateButton
       objectReference: {fileID: 0}
+    - target: {fileID: 4998416268976540309, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
+        type: 3}
+      propertyPath: presetSubscribers.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4998416268976540309, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
+        type: 3}
+      propertyPath: presetSubscribers.Array.data[0]
+      value: 
+      objectReference: {fileID: 1363957586214988839}
     - target: {fileID: 9162656868234093496, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
         type: 3}
       propertyPath: m_LocalPosition.x

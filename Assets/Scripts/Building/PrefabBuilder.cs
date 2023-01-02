@@ -11,9 +11,11 @@ using Scripts.MapEditor.Services;
 using Scripts.ScriptableObjects;
 using Scripts.System;
 using Scripts.System.Pooling;
+using Scripts.Triggers;
 using Unity.VisualScripting;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
@@ -59,6 +61,8 @@ namespace Scripts.Building
             }
             
             GameObject newPrefab = BuildPhysicalPrefab(configuration);
+
+            ProcessTriggersOnPrefab(newPrefab);
 
             bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
 
@@ -197,6 +201,8 @@ namespace Scripts.Building
 
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
 
+            prefabScript.GUID = configuration.Guid;
+
             ProcessTileConfiguration(configuration, newPrefab);
             ProcessWallConfiguration(configuration, prefabScript, newPrefab);
 
@@ -243,6 +249,20 @@ namespace Scripts.Building
                         }
                     }
                 }
+            }
+        }
+        
+        private void ProcessTriggersOnPrefab(GameObject newPrefab)
+        {
+            PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
+
+            if (!prefabScript) return;
+
+            TriggerReceiver[] triggers = newPrefab.GetComponents<TriggerReceiver>();
+
+            foreach (TriggerReceiver receiver in triggers)
+            {
+                receiver.Guid = prefabScript.GUID;
             }
         }
     }

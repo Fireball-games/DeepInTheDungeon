@@ -10,25 +10,10 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         public string PrefabName;
         public PositionRotation TransformData;
 
-        public string GUID
-        {
-            get {
-            if (string.IsNullOrEmpty(_guid))
-            {
-                _guid = Guid.NewGuid().ToString();
-            }
-
-            return _guid;
-            }
-
-            internal set => _guid = value;
-        }
-
-        private string _guid;
+        public string Guid;
 
         protected PrefabConfiguration()
         {
-            _guid = Guid.NewGuid().ToString();
         }
 
         protected PrefabConfiguration(PrefabConfiguration other)
@@ -36,13 +21,13 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             PrefabName = other.PrefabName;
             TransformData = new PositionRotation(other.TransformData.Position, other.TransformData.Rotation);
             PrefabType = other.PrefabType;
-            _guid = other._guid;
+            Guid = other.Guid;
         }
-        
+
         protected bool Equals(PrefabConfiguration other)
         {
             // return PrefabType == other.PrefabType && PrefabName == other.PrefabName && Equals(TransformData, other.TransformData);
-            return _guid == other._guid;
+            return Guid == other.Guid;
         }
 
         public override bool Equals(object obj)
@@ -50,12 +35,12 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((PrefabConfiguration) obj);
+            return Equals((PrefabConfiguration)obj);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine((int) PrefabType, PrefabName, TransformData);
+            return HashCode.Combine((int)PrefabType, PrefabName, TransformData);
         }
     }
 }

@@ -9,13 +9,15 @@ namespace Scripts.Triggers
     [RequireComponent(typeof(PrefabBase))]
     public abstract class TriggerReceiver : MonoBehaviour
     {
-        [SerializeField] private Transform activePart;
-
+        [SerializeField] protected Transform activePart;
         [NonSerialized] public string Guid;
-
-        protected bool AtRest;
+        public int startMovement;
         
-        private void OnEnable()
+        protected int CurrentMovement;
+
+        protected bool AtRest = true;
+
+        protected virtual void OnEnable()
         {
             EventsManager.OnTriggerNext += OnTriggerNext;
         }
@@ -34,5 +36,9 @@ namespace Scripts.Triggers
         }
 
         protected abstract void TriggerNext();
+
+        protected void SetResting() => AtRest = true;
+
+        protected void SetBusy() => AtRest = false;
     }
 }

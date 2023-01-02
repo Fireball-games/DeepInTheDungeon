@@ -107,6 +107,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2276675964794154456}
   - component: {fileID: 1363957586214988839}
+  - component: {fileID: 4529093784462687352}
   m_Layer: 0
   m_Name: DoorGateWButton
   m_TagString: Untagged
@@ -144,6 +145,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabType: 3
   presentedInEditor: {fileID: 0}
+--- !u!114 &4529093784462687352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500736713080305506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0038e30e720e4c32b0567a01f218edaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activePart: {fileID: 1715027707809379539}
 --- !u!1 &1734688257216418539
 GameObject:
   m_ObjectHideFlags: 0

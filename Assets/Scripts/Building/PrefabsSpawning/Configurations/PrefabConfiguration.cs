@@ -21,7 +21,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             PrefabName = other.PrefabName;
             TransformData = new PositionRotation(other.TransformData.Position, other.TransformData.Rotation);
             PrefabType = other.PrefabType;
-            Guid = other.Guid;
+            Guid = string.IsNullOrEmpty(other.Guid) ? global::System.Guid.NewGuid().ToString() : other.Guid;
         }
 
         protected bool Equals(PrefabConfiguration other)

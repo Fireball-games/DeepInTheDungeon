@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
@@ -33,8 +34,9 @@ namespace Scripts.UI.EditorUI
         {
             return new WallConfiguration
             {
+                Guid = Guid.NewGuid().ToString(),
                 PrefabType = EditedPrefabType,
-                PrefabName = AvailablePrefabs.FirstOrDefault(prefab => prefab.name == prefabName)?.name,
+                PrefabName = prefabName,
                 TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation),
                 WayPoints = new List<Waypoint>(),
                 Offset = 0f

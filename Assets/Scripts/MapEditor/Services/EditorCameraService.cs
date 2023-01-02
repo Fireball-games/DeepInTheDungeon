@@ -84,9 +84,10 @@ namespace Scripts.MapEditor.Services
         internal void HandleMouseWheel()
         {
             float wheelDelta = Input.GetAxis(Strings.MouseWheel);
+            
             if (wheelDelta != 0)
             {
-                TranslateCamera(0, -wheelDelta * Time.deltaTime * cameraZoomSpeed, 0);
+                TranslateCamera(0, -wheelDelta * Time.deltaTime * cameraZoomSpeed, 0, false);
             }
         }
 

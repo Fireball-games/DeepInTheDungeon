@@ -15,7 +15,6 @@ using Scripts.Triggers;
 using Unity.VisualScripting;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {

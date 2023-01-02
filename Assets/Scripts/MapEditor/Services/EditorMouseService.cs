@@ -87,6 +87,7 @@ namespace Scripts.MapEditor.Services
 
             CheckMouseOverWall();
 
+            cameraService.HandleMouseWheel();
             ValidateClicks();
             cameraService.HandleMouseMovement();
             

@@ -1,5 +1,4 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using UnityEngine;
 using static Scripts.Enums;
 
@@ -11,46 +10,49 @@ namespace Scripts.Triggers
         public EActiveProperty activeProperty;
         public Vector3 movementVector;
 
-        private Sequence _thereAndBackSequenceForPosition;
         private Tween _there;
         private Tween _back;
-        private Tween _thereOneOff;
-        private Tween _backForPosition;
 
         protected override void Awake()
         {
             base.Awake();
 
-            _there = ActivePart.DOLocalMove(movementVector, 0.3f).SetAutoKill(false);
+            _there = activeProperty is EActiveProperty.Position
+                ? ActivePart.DOLocalMove(movementVector, actionDuration).SetAutoKill(false)
+                : ActivePart.DOLocalRotate(movementVector, actionDuration).SetAutoKill(false);
             _there.OnPlay(() => SetResting(false));
 
-            _back = ActivePart.DOLocalMove(Vector3.zero, 0.3f).SetAutoKill(false);
+            _back = activeProperty is EActiveProperty.Position
+                ? ActivePart.DOLocalMove(Vector3.zero, actionDuration).SetAutoKill(false)
+                : ActivePart.DOLocalRotate(Vector3.zero, actionDuration).SetAutoKill(false);
             _back.OnComplete(() => SetResting(true));
         }
 
         protected override void OnTriggerNext()
         {
-            
         }
 
         protected override void OnTriggerActivated()
         {
-            if (moveType == ETriggerMoveType.ThereAndBack)
+            switch (moveType)
             {
-                switch (activeProperty)
-                {
-                    case EActiveProperty.None:
-                        break;
-                    case EActiveProperty.Position:
-                        _there.OnComplete(() => RunBackTween(true)).Restart();
-                        break;
-                    case EActiveProperty.Rotation:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                case ETriggerMoveType.ThereAndBack:
+                    CurrentMovement = 0;
+                    _there.OnComplete(() => RunBackTween(true)).Restart();
+                    break;
+                case ETriggerMoveType.Switch:
+                    if (CurrentMovement == 0)
+                    {
+                        CurrentMovement = 1;
+                        _there.OnComplete(TriggerNext).Restart();
+                    }
+                    else
+                    {
+                        CurrentMovement = 0;
+                        _back.OnComplete(TriggerNext).Restart();
+                    }
+                    break;
             }
-            // TODO: other movement types
         }
 
         private void RunBackTween(bool triggerNextOnStart = false)

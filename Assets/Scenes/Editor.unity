@@ -3268,5 +3268,31 @@ PrefabInstance:
       propertyPath: cameraRotator
       value: 
       objectReference: {fileID: 2033699653}
+    - target: {fileID: 8656452529245927566, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: normalMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 3bc8e42481e475a46a0ed83e3117fdce, type: 2}
+    - target: {fileID: 8656452529245927566, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: waypointPrefab
+      value: 
+      objectReference: {fileID: 8378733029829801835, guid: 1e089226b2240ae4e8dea4c69ca3f09d,
+        type: 3}
+    - target: {fileID: 8656452529245927566, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: highlightedMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 1689094d618fb754da9f55a9ca90c152, type: 2}
+    - target: {fileID: 8656452529245927566, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: waypointLinesNormalMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: a4bc48e38dbeaae4aac16f666a7c166c, type: 2}
+    - target: {fileID: 8656452529245927566, guid: 2089c85b97fa7ee4690ad8c3ced77346,
+        type: 3}
+      propertyPath: waypointLinesHighlightedMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 026c9bc658e32544a9d9d472467996ab, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2089c85b97fa7ee4690ad8c3ced77346, type: 3}

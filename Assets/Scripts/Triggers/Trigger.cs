@@ -10,14 +10,17 @@ namespace Scripts.Triggers
 {
     public abstract class Trigger : PrefabBase
     {
+        private const float MaxDistanceFromPlayer = 0.7f;
+        
         public ETriggerType triggerType;
         public bool mustBeOnSameTile = true;
+        public float actionDuration = 0.3f;
         public bool AtRest;
-        public float maxDistanceFromPlayer = 0.7f;
 
         protected Transform ActivePart;
         protected List<string> Subscribers;
         protected static PlayerController Player => GameManager.Instance.Player;
+        protected int StartMovement;
         protected int CurrentMovement;
 
         protected virtual void Awake()
@@ -28,7 +31,7 @@ namespace Scripts.Triggers
         
         private void OnMouseUp()
         {
-            if (AtRest && (transform.position - Player.transform.position).sqrMagnitude < maxDistanceFromPlayer)
+            if (AtRest && (transform.position - Player.transform.position).sqrMagnitude < MaxDistanceFromPlayer)
             {
                 OnTriggerActivated();
             }

@@ -7,9 +7,13 @@ using UnityEngine;
 namespace Scripts.Triggers
 {
     [RequireComponent(typeof(PrefabBase))]
-    public class TriggerReceiver : MonoBehaviour
+    public abstract class TriggerReceiver : MonoBehaviour
     {
         [SerializeField] private Transform activePart;
+
+        [NonSerialized] public string Guid;
+
+        protected bool AtRest;
         
         private void OnEnable()
         {
@@ -23,7 +27,12 @@ namespace Scripts.Triggers
 
         private void OnTriggerNext(List<string> triggeredGuids)
         {
-            
+            if (AtRest && triggeredGuids.Contains(Guid))
+            {
+                TriggerNext();
+            }
         }
+
+        protected abstract void TriggerNext();
     }
 }

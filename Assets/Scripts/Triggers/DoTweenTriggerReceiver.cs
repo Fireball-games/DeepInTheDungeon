@@ -99,7 +99,7 @@ namespace Scripts.Triggers
                 ? activePart.DOLocalMove(target, duration)
                 : activePart.DOLocalRotate(target, duration);
 
-            result.SetEase(ease).SetAutoKill(false).SetRelative(true);
+            result.SetEase(ease).SetAutoKill(false);
 
             return result;
         }

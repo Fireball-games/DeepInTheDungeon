@@ -3,6 +3,7 @@ using System.Linq;
 using Scripts.Helpers;
 using Scripts.System.Pooling;
 using UnityEngine;
+using UnityEngine.Android;
 using static Scripts.Enums;
 using Logger = Scripts.Helpers.Logger;
 
@@ -49,7 +50,8 @@ namespace Scripts
             {
                 if (!FileOperationsHelper.LoadPrefabs(prefabType, out HashSet<GameObject> loadedPrefabs))
                 {
-                    Logger.LogWarning($"No prefabs found for type \"{prefabType}\".");
+                    // TODO: Uncomment once all prefab types have some prefab
+                    // Logger.LogWarning($"No prefabs found for type \"{prefabType}\".");
                 }
             
                 foreach (GameObject gameObject in loadedPrefabs.Where(gameObject => !PrefabMap.ContainsKey(gameObject.name)))

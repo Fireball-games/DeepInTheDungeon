@@ -53,8 +53,6 @@ namespace Scripts.Triggers
             }
         }
 
-        protected abstract void OnTriggerNext();
-
         protected abstract void OnTriggerActivated();
         
         protected void TriggerNext()

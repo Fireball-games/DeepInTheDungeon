@@ -28,10 +28,6 @@ namespace Scripts.Triggers
             _back.OnComplete(() => SetResting(true));
         }
 
-        protected override void OnTriggerNext()
-        {
-        }
-
         protected override void OnTriggerActivated()
         {
             switch (moveType)

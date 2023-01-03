@@ -42,17 +42,16 @@ namespace Scripts.Triggers
                 _movementStore.Add(newTween);
             }
 
-            if (startMovement != 0)
+            if (activeProperty is Enums.EActiveProperty.Position)
             {
-                if (activeProperty is Enums.EActiveProperty.Position)
-                {
-                    activePart.localPosition = steps[startMovement].target;
-                }
-                else
-                {
-                    activePart.localRotation = Quaternion.Euler(steps[startMovement].target);
-                }
+                activePart.localPosition = steps[startMovement].target;
             }
+            else
+            {
+                activePart.localRotation = Quaternion.Euler(steps[startMovement].target);
+            }
+
+            CurrentMovement = startMovement == steps.Count - 1 ? 0 : startMovement + 1;
         }
 
         protected override void TriggerNext()

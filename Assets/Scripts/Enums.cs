@@ -14,6 +14,7 @@
             Item = 7,
             PrefabTile = 8,
             Trigger = 9,
+            TriggerReceiver = 10,
         }
         
         public enum ETriggerType

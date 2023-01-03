@@ -16,7 +16,7 @@ namespace Scripts.Triggers
         protected override void Awake()
         {
             base.Awake();
-
+            //TODO: change to steps like in triggerReceiver
             _there = activeProperty is EActiveProperty.Position
                 ? ActivePart.DOLocalMove(movementVector, actionDuration).SetAutoKill(false)
                 : ActivePart.DOLocalRotate(movementVector, actionDuration).SetAutoKill(false);
@@ -26,6 +26,11 @@ namespace Scripts.Triggers
                 ? ActivePart.DOLocalMove(Vector3.zero, actionDuration).SetAutoKill(false)
                 : ActivePart.DOLocalRotate(Vector3.zero, actionDuration).SetAutoKill(false);
             _back.OnComplete(() => SetResting(true));
+        }
+        
+        private void OnEnable()
+        {
+            //TODO: add start movement like in TriggerReceiver
         }
 
         protected override void OnTriggerActivated()

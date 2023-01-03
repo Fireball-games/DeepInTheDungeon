@@ -20,14 +20,13 @@ namespace Scripts.Triggers
         public float actionDuration = 0.3f;
         public bool atRest = true;
         public List<PrefabBase> presetSubscribers;
+        public List<string> subscribers;
 
         protected static PlayerController Player => GameManager.Instance.Player;
         protected Transform ActivePart;
         protected int StartMovement;
         protected int CurrentMovement;
         
-        private List<string> subscribers;
-
         protected virtual void Awake()
         {
             subscribers = new List<string>();

@@ -46,5 +46,6 @@ namespace Scripts.Triggers
         protected void SetResting() => AtRest = true;
 
         protected void SetBusy() => AtRest = false;
+        public abstract void SetMovementStep();
     }
 }

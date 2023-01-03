@@ -13,6 +13,10 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         public PositionRotation TransformData;
         public string Guid;
         public bool SpawnPrefabOnBuild = true;
+        /// <summary>
+        /// Guid of the owner for embedded prefabs like Triggers
+        /// </summary>
+        public string OwnerGuid;
 
         protected PrefabConfiguration()
         {
@@ -25,15 +29,17 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             PrefabType = other.PrefabType;
             Guid = string.IsNullOrEmpty(other.Guid) ? global::System.Guid.NewGuid().ToString() : other.Guid;
             SpawnPrefabOnBuild = other.SpawnPrefabOnBuild;
+            OwnerGuid = other.OwnerGuid;
         }
 
-        protected PrefabConfiguration(PrefabBase prefab, bool spawnPrefabOnBuild = true)
+        protected PrefabConfiguration(PrefabBase prefab, string ownerGuid = null, bool spawnPrefabOnBuild = true)
         {
             PrefabName = prefab.name;
             TransformData = new PositionRotation(prefab.transform.position.Round(2), prefab.transform.rotation);
             PrefabType = prefab.prefabType;
             Guid = string.IsNullOrEmpty(prefab.GUID) ? global::System.Guid.NewGuid().ToString() : prefab.GUID;
             SpawnPrefabOnBuild = spawnPrefabOnBuild;
+            OwnerGuid = ownerGuid;
         }
 
         protected bool Equals(PrefabConfiguration other)

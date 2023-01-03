@@ -17,14 +17,26 @@ namespace Scripts.Triggers
         {
             _movementStore = new List<Tween>();
         }
+        
+        public override void SetMovementStep()
+        {
+            if (activeProperty is Enums.EActiveProperty.Position)
+            {
+                activePart.localPosition = steps[startMovement].target;
+            }
+            else
+            {
+                activePart.localRotation = Quaternion.Euler(steps[startMovement].target);
+            }
+
+            CurrentMovement = startMovement == steps.Count - 1 ? 0 : startMovement + 1;
+        }
 
         protected override void OnEnable()
         {
             base.OnEnable();
 
             _movementStore.Clear();
-
-            CurrentMovement = startMovement;
 
             for (int index = 0; index < steps.Count; index++)
             {
@@ -41,17 +53,6 @@ namespace Scripts.Triggers
 
                 _movementStore.Add(newTween);
             }
-
-            if (activeProperty is Enums.EActiveProperty.Position)
-            {
-                activePart.localPosition = steps[startMovement].target;
-            }
-            else
-            {
-                activePart.localRotation = Quaternion.Euler(steps[startMovement].target);
-            }
-
-            CurrentMovement = startMovement == steps.Count - 1 ? 0 : startMovement + 1;
         }
 
         protected override void TriggerNext()

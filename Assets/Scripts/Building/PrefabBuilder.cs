@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
@@ -18,6 +19,10 @@ using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building
 {
+    /// <summary>
+    /// TODO: Current Limitations: only 1 embedded triggerReceiver on top prefab, must figure out a way how to identify prefab
+    /// TODO: script of triggerReceiver and it should be on top level due to possible animation variant  
+    /// </summary>
     public class PrefabBuilder
     {
         private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
@@ -90,13 +95,11 @@ namespace Scripts.Building
         {
             if (configuration == null) return;
 
-            PrefabConfiguration config = MapDescription.PrefabConfigurations.FirstOrDefault(c =>
-                c.PrefabName == configuration.PrefabName
-                && c.TransformData.Equals(configuration.TransformData));
+            PrefabConfiguration config = GetConfigurationByGuid<PrefabConfiguration>(configuration.Guid);
 
             if (config == null) return;
 
-            MapDescription.PrefabConfigurations.Remove(config);
+            RemoveConfiguration(config);
 
             GameObject prefabGo = Prefabs.FirstOrDefault(go =>
                 go.name == configuration.PrefabName && go.transform.position == configuration.TransformData.Position);
@@ -118,6 +121,8 @@ namespace Scripts.Building
             {
                 PathsService.DestroyPath(wall.WayPoints);
             }
+
+            RemoveEmbeddedTriggers(prefabGo);
 
             prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
             Transform offsetTransform = prefabGo.GetBody();
@@ -196,7 +201,7 @@ namespace Scripts.Building
         }
 
         private int FindIndexOfConfiguration(PrefabConfiguration configuration) =>
-            MapDescription.PrefabConfigurations.FindIndex(c => c.TransformData.Equals(configuration.TransformData));
+            MapDescription.PrefabConfigurations.FindIndex(c => c.Guid == configuration.Guid);
 
         private GameObject BuildPhysicalPrefab(PrefabConfiguration configuration)
         {
@@ -205,7 +210,7 @@ namespace Scripts.Building
             if (!newPrefab)
             {
                 Logger.LogError($"Prefab \"{configuration.PrefabName}\" was not found.");
-                MapBuilder.MapDescription.PrefabConfigurations.Remove(configuration);
+                RemoveConfiguration(configuration);
                 return null;
             }
 
@@ -283,26 +288,104 @@ namespace Scripts.Building
             {
                 receiver.PrefabGuid = prefabScript.GUID;
             }
-
-            if (!IsInEditor) return;
             
             foreach (Trigger trigger in newPrefab.GetComponentsInChildren<Trigger>())
             {
-                _triggers.TryAdd(trigger.GUID, trigger);
+                if (IsInEditor)
+                {
+                    _triggers.TryAdd(trigger.GUID, trigger);
 
-                AddTriggerConfigurationToMap(trigger);
+                    AddTriggerConfigurationToMap(trigger, prefabScript.GUID);
+                }
+                else
+                {
+                    if (!GetConfigurationByOwnerGuidAndName(prefabScript.GUID, trigger.gameObject.name, out TriggerConfiguration configuration))
+                    {
+                        Logger.LogWarning("Failed to find configuration for trigger", logObject: trigger);
+                        continue;
+                    }
+                    
+                    trigger.GUID = configuration.Guid;
+                    trigger.subscribers = configuration.Subscribers;
+                }
             }
 
             foreach (TriggerReceiver receiver in triggerReceivers)
             {
-                _triggerReceivers.TryAdd(receiver.Guid, receiver);
+                if (IsInEditor)
+                {
+                    _triggerReceivers.TryAdd(receiver.Guid, receiver);
+
+                    AddTriggerReceiverConfigurationToMap(receiver, prefabScript.GUID);
+                }
+                else
+                {
+                    if (!GetConfigurationByOwnerGuidAndName(prefabScript.GUID, receiver.gameObject.name, out TriggerReceiverConfiguration configuration))
+                    {
+                        Logger.LogWarning("Failed to find configuration for trigger", logObject: receiver);
+                        continue;
+                    }
+                    
+                    receiver.Guid = configuration.Guid;
+                    receiver.startMovement = configuration.StartMovement;
+                    receiver.SetMovementStep();
+                }
             }
         }
 
-        private void AddTriggerConfigurationToMap(Trigger trigger)
+        private void AddTriggerConfigurationToMap(Trigger trigger, string ownerGuid)
         {
-            TriggerConfiguration newConfiguration = new(trigger, false);
+            TriggerConfiguration newConfiguration = new(trigger,ownerGuid, false);
             AddReplacePrefabConfiguration(newConfiguration);
+        }
+        
+        private void AddTriggerReceiverConfigurationToMap(TriggerReceiver triggerReceiver, string ownerGuid)
+        {
+            TriggerReceiverConfiguration newConfiguration = new(triggerReceiver, ownerGuid, false);
+            AddReplacePrefabConfiguration(newConfiguration);
+        }
+
+        private void RemoveConfiguration(string guid)
+        {
+            RemoveConfiguration(GetConfigurationByGuid<PrefabConfiguration>(guid));
+        }
+
+        private void RemoveConfiguration(PrefabConfiguration configuration)
+        {
+            MapDescription.PrefabConfigurations.Remove(configuration);
+        }
+        
+        private void RemoveEmbeddedTriggers(GameObject prefab)
+        {
+            PrefabBase prefabScript = prefab.GetComponent<PrefabBase>();
+
+            if (!prefabScript) return;
+            
+            TriggerReceiver[] triggerReceivers = prefab.GetComponents<TriggerReceiver>();
+
+            foreach (TriggerReceiver receiver in triggerReceivers)
+            {
+                RemoveConfiguration(receiver.Guid);
+            }
+
+            foreach (Trigger trigger in prefab.GetComponentsInChildren<Trigger>())
+            {
+                RemoveConfiguration(trigger.GUID);
+            }
+        }
+
+        private T GetConfigurationByGuid<T>(string guid) where T : PrefabConfiguration
+        {
+            return MapDescription.PrefabConfigurations.Where(c => c.Guid == guid).FirstOrDefault() as T;
+        }
+
+        private bool GetConfigurationByOwnerGuidAndName<T>(string ownerGuid, string prefabName, out T configuration) where T : PrefabConfiguration
+        {
+            configuration = MapDescription.PrefabConfigurations
+                .Where(c => c.OwnerGuid == ownerGuid && c.PrefabName == prefabName)
+                .FirstOrDefault() as T;
+
+            return configuration != null;
         }
     }
 }

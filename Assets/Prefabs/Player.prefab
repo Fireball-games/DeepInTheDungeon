@@ -273,12 +273,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothTransition: 1
   transitionSpeed: 10
-  wallBashMovement: 0.4
+  wallBashMovement: 0.2
   wallBashMovementBackwards: 0.1
-  wallBashSpeed: 3
-  wallBashSpeedReturnMultiplier: 1.5
+  wallBashSpeed: 1.5
+  wallBashSpeedReturnMultiplier: 1
   transitionRotationSpeed: 750
-  playerCamera: {fileID: 614287167652602324}
+  playerCamera: {fileID: 0}
 --- !u!114 &5562948617168804263
 MonoBehaviour:
   m_ObjectHideFlags: 0

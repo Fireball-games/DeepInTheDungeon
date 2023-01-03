@@ -24,6 +24,16 @@ namespace Scripts.Building
         private static MapDescription MapDescription => MapBuilder.MapDescription;
         private static HashSet<GameObject> Prefabs => MapBuilder.Prefabs;
         private static TileDescription[,,] Layout => MapBuilder.Layout;
+        private static bool IsInEditor => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
+
+        private Dictionary<string, Trigger> _triggers;
+        private Dictionary<string, TriggerReceiver> _triggerReceivers;
+
+        public PrefabBuilder()
+        {
+            _triggers = new Dictionary<string, Trigger>();
+            _triggerReceivers = new Dictionary<string, TriggerReceiver>();
+        }
 
         internal void BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
         {
@@ -257,11 +267,23 @@ namespace Scripts.Building
 
             if (!prefabScript) return;
 
-            TriggerReceiver[] triggers = newPrefab.GetComponents<TriggerReceiver>();
+            TriggerReceiver[] triggerReceivers = newPrefab.GetComponents<TriggerReceiver>();
 
-            foreach (TriggerReceiver receiver in triggers)
+            foreach (TriggerReceiver receiver in triggerReceivers)
             {
-                receiver.Guid = prefabScript.GUID;
+                receiver.PrefabGuid = prefabScript.GUID;
+                if (IsInEditor)
+                {
+                    _triggerReceivers.TryAdd(receiver.Guid, receiver);
+                }
+            }
+
+            if (IsInEditor)
+            {
+                foreach (Trigger trigger in newPrefab.GetComponentsInChildren<Trigger>())
+                {
+                    _triggers.TryAdd(trigger.GUID, trigger);
+                }
             }
         }
     }

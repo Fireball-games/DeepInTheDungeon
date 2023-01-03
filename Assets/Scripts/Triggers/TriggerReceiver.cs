@@ -10,12 +10,18 @@ namespace Scripts.Triggers
     public abstract class TriggerReceiver : MonoBehaviour
     {
         [SerializeField] protected Transform activePart;
-        [NonSerialized] public string Guid;
+        [NonSerialized] public string PrefabGuid;
+        public string Guid;  
         public int startMovement;
         
         protected int CurrentMovement;
 
         protected bool AtRest = true;
+
+        private void Awake()
+        {
+            Guid = global::System.Guid.NewGuid().ToString();
+        }
 
         protected virtual void OnEnable()
         {
@@ -29,7 +35,7 @@ namespace Scripts.Triggers
 
         private void OnTriggerNext(List<string> triggeredGuids)
         {
-            if (AtRest && triggeredGuids.Contains(Guid))
+            if (AtRest && triggeredGuids.Contains(PrefabGuid))
             {
                 TriggerNext();
             }

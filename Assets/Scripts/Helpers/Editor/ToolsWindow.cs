@@ -19,19 +19,29 @@ namespace Helpers.Editor
 
         private void OnGUI()
         {
-            if (!Application.isPlaying) return;
+            GUILayout.Label("Map fixes:", EditorStyles.boldLabel);
             
-            if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
+            
+            if (!Application.isPlaying)
             {
-                GUILayout.Label("Map Fixes", EditorStyles.boldLabel);
+                GUILayout.Label("These tools are available in play mode.");
+                return;
+            }
             
+            if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor && MapEditorManager.Instance.MapIsPresented)
+            {
                 GUILayout.BeginVertical();
-            
+                
                 RegenerateGuidsButton();
                 SetAllSpawnPrefabOnBuildToTrueButton();
             
                 GUILayout.EndVertical();
             }
+            else
+            {
+                GUILayout.Label("Load the map in Editor to see available tools.");
+            }
+            
         }
 
         private void RegenerateGuidsButton()

@@ -1,4 +1,6 @@
 ﻿using System;
+using Scripts.Building.Walls;
+using Scripts.Helpers.Extensions;
 using Scripts.System;
 using static Scripts.Enums;
 
@@ -22,6 +24,16 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             TransformData = new PositionRotation(other.TransformData.Position, other.TransformData.Rotation);
             PrefabType = other.PrefabType;
             Guid = string.IsNullOrEmpty(other.Guid) ? global::System.Guid.NewGuid().ToString() : other.Guid;
+            SpawnPrefabOnBuild = other.SpawnPrefabOnBuild;
+        }
+
+        protected PrefabConfiguration(PrefabBase prefab, bool spawnPrefabOnBuild = true)
+        {
+            PrefabName = prefab.name;
+            TransformData = new PositionRotation(prefab.transform.position.Round(2), prefab.transform.rotation);
+            PrefabType = prefab.prefabType;
+            Guid = string.IsNullOrEmpty(prefab.GUID) ? global::System.Guid.NewGuid().ToString() : prefab.GUID;
+            SpawnPrefabOnBuild = spawnPrefabOnBuild;
         }
 
         protected bool Equals(PrefabConfiguration other)

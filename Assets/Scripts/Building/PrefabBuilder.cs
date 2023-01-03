@@ -63,21 +63,24 @@ namespace Scripts.Building
         public bool BuildPrefab(PrefabConfiguration configuration)
         {
             MapDescription.PrefabConfigurations ??= new List<PrefabConfiguration>();
-            
+
             if (!MapDescription.PrefabConfigurations.Contains(configuration))
             {
                 AddReplacePrefabConfiguration(configuration);
             }
-            
-            GameObject newPrefab = BuildPhysicalPrefab(configuration);
 
-            ProcessTriggersOnPrefab(newPrefab);
-
-            bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
-
-            if (isEditorMode && -newPrefab.transform.position.y < MapEditorManager.Instance.CurrentFloor)
+            if (configuration.SpawnPrefabOnBuild)
             {
-                newPrefab.SetActive(false);
+                GameObject newPrefab = BuildPhysicalPrefab(configuration);
+
+                ProcessTriggersOnPrefab(newPrefab);
+
+                bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
+
+                if (isEditorMode && -newPrefab.transform.position.y < MapEditorManager.Instance.CurrentFloor)
+                {
+                    newPrefab.SetActive(false);
+                }
             }
 
             return true;
@@ -111,7 +114,7 @@ namespace Scripts.Building
                 Layout.ByGridV3Int(prefabGo.transform.position.ToGridPosition()).IsForMovement = true;
             }
 
-            if (configuration is WallConfiguration { WayPoints: { } } wall && wall.WayPoints.Any())
+            if (configuration is WallConfiguration {WayPoints: { }} wall && wall.WayPoints.Any())
             {
                 PathsService.DestroyPath(wall.WayPoints);
             }
@@ -260,7 +263,14 @@ namespace Scripts.Building
                 }
             }
         }
-        
+
+        /// <summary>
+        /// This method does:
+        /// - subscribes new prefab to its triggers
+        /// - in editor - registers triggers/triggerReceivers into their lists
+        /// - in editor - creates trigger/triggerReceiver configurations from new prefab and ads those into map prefabConfigurations
+        /// </summary>
+        /// <param name="newPrefab"></param>
         private void ProcessTriggersOnPrefab(GameObject newPrefab)
         {
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
@@ -272,19 +282,27 @@ namespace Scripts.Building
             foreach (TriggerReceiver receiver in triggerReceivers)
             {
                 receiver.PrefabGuid = prefabScript.GUID;
-                if (IsInEditor)
-                {
-                    _triggerReceivers.TryAdd(receiver.Guid, receiver);
-                }
             }
 
-            if (IsInEditor)
+            if (!IsInEditor) return;
+            
+            foreach (Trigger trigger in newPrefab.GetComponentsInChildren<Trigger>())
             {
-                foreach (Trigger trigger in newPrefab.GetComponentsInChildren<Trigger>())
-                {
-                    _triggers.TryAdd(trigger.GUID, trigger);
-                }
+                _triggers.TryAdd(trigger.GUID, trigger);
+
+                AddTriggerConfigurationToMap(trigger);
             }
+
+            foreach (TriggerReceiver receiver in triggerReceivers)
+            {
+                _triggerReceivers.TryAdd(receiver.Guid, receiver);
+            }
+        }
+
+        private void AddTriggerConfigurationToMap(Trigger trigger)
+        {
+            TriggerConfiguration newConfiguration = new(trigger, false);
+            AddReplacePrefabConfiguration(newConfiguration);
         }
     }
 }

@@ -110,9 +110,9 @@ namespace Scripts.MapEditor.Services
             {
                 if (resetCameraAngle)
                 {
-                    cameraHolder.DORotate(Vector3.zero, 0.3f);
+                    cameraHolder.DORotate(Vector3.zero, 0.3f).Play();
                 }
-                cameraHolder.DOMove(_cameraMoveVector, 0.5f).SetEase(Ease.OutFlash);
+                cameraHolder.DOMove(_cameraMoveVector, 0.5f).SetEase(Ease.OutFlash).Play();
             }
             else
             {

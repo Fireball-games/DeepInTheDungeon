@@ -9,8 +9,8 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         public EPrefabType PrefabType;
         public string PrefabName;
         public PositionRotation TransformData;
-
         public string Guid;
+        public bool SpawnPrefabOnBuild = true;
 
         protected PrefabConfiguration()
         {

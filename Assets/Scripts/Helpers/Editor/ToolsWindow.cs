@@ -27,25 +27,45 @@ namespace Helpers.Editor
             
                 GUILayout.BeginVertical();
             
-                if (GUILayout.Button("Regenerate GUIDS"))
-                {
-                    bool changesWereMade = false;
-                    foreach (PrefabConfiguration configuration in GameManager.Instance.CurrentMap.PrefabConfigurations)
-                    {
-                        if (string.IsNullOrEmpty(configuration.Guid))
-                        {
-                            changesWereMade = true;
-                            configuration.Guid = Guid.NewGuid().ToString();
-                        }
-                    }
-
-                    if (changesWereMade)
-                    {
-                        MapEditorManager.Instance.SaveMap();
-                    }
-                }
+                RegenerateGuidsButton();
+                SetAllSpawnPrefabOnBuildToTrueButton();
             
                 GUILayout.EndVertical();
+            }
+        }
+
+        private void RegenerateGuidsButton()
+        {
+            if (GUILayout.Button("Regenerate GUIDS"))
+            {
+                bool changesWereMade = false;
+                
+                foreach (PrefabConfiguration configuration in GameManager.Instance.CurrentMap.PrefabConfigurations)
+                {
+                    if (string.IsNullOrEmpty(configuration.Guid))
+                    {
+                        changesWereMade = true;
+                        configuration.Guid = Guid.NewGuid().ToString();
+                    }
+                }
+
+                if (changesWereMade)
+                {
+                    MapEditorManager.Instance.SaveMap();
+                }
+            }
+        }
+
+        private void SetAllSpawnPrefabOnBuildToTrueButton()
+        {
+            if (GUILayout.Button("Set SpawnPrefabOnBuild to true for all"))
+            {
+                foreach (PrefabConfiguration configuration in GameManager.Instance.CurrentMap.PrefabConfigurations)
+                {
+                    configuration.SpawnPrefabOnBuild = true;
+                }
+
+                MapEditorManager.Instance.SaveMap();
             }
         }
     }

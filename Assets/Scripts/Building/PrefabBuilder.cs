@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
@@ -324,19 +323,32 @@ namespace Scripts.Building
                     
                     receiver.Guid = configuration.Guid;
                     receiver.startMovement = configuration.StartMovement;
-                    receiver.SetMovementStep();
                 }
+                
+                receiver.SetMovementStep();
             }
         }
 
         private void AddTriggerConfigurationToMap(Trigger trigger, string ownerGuid)
         {
-            TriggerConfiguration newConfiguration = new(trigger,ownerGuid, false);
+            if (GetConfigurationByOwnerGuidAndName(ownerGuid, trigger.name, out TriggerConfiguration _))
+            {
+                Logger.Log("Configuration is already present.");
+                return;
+            }
+            
+            TriggerConfiguration newConfiguration = new(trigger, ownerGuid, false);
             AddReplacePrefabConfiguration(newConfiguration);
         }
         
         private void AddTriggerReceiverConfigurationToMap(TriggerReceiver triggerReceiver, string ownerGuid)
         {
+            if (GetConfigurationByOwnerGuidAndName(ownerGuid, triggerReceiver.identification, out TriggerReceiverConfiguration _))
+            {
+                Logger.Log("Configuration is already present.");
+                return;
+            }
+            
             TriggerReceiverConfiguration newConfiguration = new(triggerReceiver, ownerGuid, false);
             AddReplacePrefabConfiguration(newConfiguration);
         }
@@ -361,13 +373,28 @@ namespace Scripts.Building
 
             foreach (TriggerReceiver receiver in triggerReceivers)
             {
+                foreach (TriggerConfiguration triggerConfiguration in GetAllPrefabsByType<TriggerConfiguration>(Enums.EPrefabType.Trigger))
+                {
+                    if (triggerConfiguration.Subscribers.Contains(receiver.PrefabGuid))
+                    {
+                        triggerConfiguration.Subscribers.Remove(receiver.PrefabGuid);
+                    }
+                }
+                
                 RemoveConfiguration(receiver.Guid);
             }
 
             foreach (Trigger trigger in prefab.GetComponentsInChildren<Trigger>())
             {
+                
                 RemoveConfiguration(trigger.GUID);
             }
+        }
+        
+        private IEnumerable<T> GetAllPrefabsByType<T>(Enums.EPrefabType prefabType) where T : PrefabConfiguration
+        {
+            return MapDescription.PrefabConfigurations.Where(c => c.PrefabType == prefabType)
+                .Select(c => c as T);
         }
 
         private T GetConfigurationByGuid<T>(string guid) where T : PrefabConfiguration

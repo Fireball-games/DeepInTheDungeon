@@ -333,7 +333,7 @@ namespace Scripts.Building
         {
             if (GetConfigurationByOwnerGuidAndName(ownerGuid, trigger.name, out TriggerConfiguration _))
             {
-                Logger.Log("Configuration is already present.");
+                // Logger.Log("Configuration is already present.");
                 return;
             }
             
@@ -345,7 +345,7 @@ namespace Scripts.Building
         {
             if (GetConfigurationByOwnerGuidAndName(ownerGuid, triggerReceiver.identification, out TriggerReceiverConfiguration _))
             {
-                Logger.Log("Configuration is already present.");
+                // Logger.Log("Configuration is already present.");
                 return;
             }
             

@@ -48,9 +48,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabType: 9
+  guid: 
   triggerType: 2
   mustBeOnSameTile: 0
-  maxDistanceFromPlayer: 0.7
+  actionDuration: 0.3
+  atRest: 1
+  presetSubscribers: []
+  subscribers: []
   moveType: 1
   activeProperty: 1
   movementVector: {x: -0.02, y: 0, z: 0}
@@ -107,7 +111,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5484048392902470276}
-  m_Mesh: {fileID: -5447036705194824928, guid: 3e078a89b06c003469eec29d7f144758, type: 3}
+  m_Mesh: {fileID: 4300000, guid: e1d691365d1a0ee4c9ca52f113530f32, type: 2}
 --- !u!23 &2534679827316069866
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -190,7 +194,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8281409359444795255}
-  m_Mesh: {fileID: 6686689856544752723, guid: 3e078a89b06c003469eec29d7f144758, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 26677dd98b35f4c428a74891c6beed4c, type: 2}
 --- !u!23 &2780398328977485320
 MeshRenderer:
   m_ObjectHideFlags: 0

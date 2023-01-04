@@ -375,6 +375,7 @@ namespace Scripts.Building
             {
                 foreach (TriggerConfiguration triggerConfiguration in GetAllPrefabsByType<TriggerConfiguration>(Enums.EPrefabType.Trigger))
                 {
+                    // TODO: Not tested, test once more triggerReceivers can be assigned to trigger
                     if (triggerConfiguration.Subscribers.Contains(receiver.PrefabGuid))
                     {
                         triggerConfiguration.Subscribers.Remove(receiver.PrefabGuid);

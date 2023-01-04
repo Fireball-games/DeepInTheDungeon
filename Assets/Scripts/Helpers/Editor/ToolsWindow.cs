@@ -46,7 +46,7 @@ namespace Helpers.Editor
 
         private void RegenerateGuidsButton()
         {
-            if (GUILayout.Button("Regenerate GUIDS"))
+            if (GUILayout.Button("Add missing GUIDs"))
             {
                 bool changesWereMade = false;
                 

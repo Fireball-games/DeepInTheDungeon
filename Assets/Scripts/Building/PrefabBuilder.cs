@@ -286,71 +286,78 @@ namespace Scripts.Building
             
             foreach (Trigger trigger in newPrefab.GetComponentsInChildren<Trigger>())
             {
+                TriggerConfiguration configuration;
+                
                 if (IsInEditor)
                 {
                     _triggers.TryAdd(trigger.GUID, trigger);
 
-                    AddTriggerConfigurationToMap(trigger, prefabScript.GUID);
+                    configuration = AddTriggerConfigurationToMap(trigger, prefabScript.GUID);
                 }
                 else
                 {
-                    if (!GetConfigurationByOwnerGuidAndName(prefabScript.GUID, trigger.gameObject.name, out TriggerConfiguration configuration))
+                    if (!GetConfigurationByOwnerGuidAndName(prefabScript.GUID, trigger.gameObject.name, out configuration))
                     {
                         Logger.LogWarning("Failed to find configuration for trigger", logObject: trigger);
                         continue;
                     }
                     
-                    trigger.GUID = configuration.Guid;
                     trigger.subscribers = configuration.Subscribers;
                 }
+                
+                trigger.GUID = configuration.Guid;
             }
 
             foreach (TriggerReceiver receiver in triggerReceivers)
             {
+                TriggerReceiverConfiguration configuration;
+                    
                 if (IsInEditor)
                 {
                     _triggerReceivers.TryAdd(receiver.Guid, receiver);
 
-                    AddTriggerReceiverConfigurationToMap(receiver, prefabScript.GUID);
+                    configuration = AddTriggerReceiverConfigurationToMap(receiver, prefabScript.GUID);
                 }
                 else
                 {
-                    if (!GetConfigurationByOwnerGuidAndName(prefabScript.GUID, receiver.identification, out TriggerReceiverConfiguration configuration))
+                    if (!GetConfigurationByOwnerGuidAndName(prefabScript.GUID, receiver.identification, out configuration))
                     {
                         Logger.LogWarning("Failed to find configuration for trigger", logObject: receiver);
                         continue;
                     }
                     
-                    receiver.Guid = configuration.Guid;
                     receiver.startMovement = configuration.StartMovement;
                 }
                 
+                receiver.Guid = configuration.Guid;
                 receiver.SetMovementStep();
             }
         }
 
-        private void AddTriggerConfigurationToMap(Trigger trigger, string ownerGuid)
+        private TriggerConfiguration AddTriggerConfigurationToMap(Trigger trigger, string ownerGuid)
         {
-            if (GetConfigurationByOwnerGuidAndName(ownerGuid, trigger.name, out TriggerConfiguration _))
+            if (GetConfigurationByOwnerGuidAndName(ownerGuid, trigger.name, out TriggerConfiguration configuration))
             {
                 // Logger.Log("Configuration is already present.");
-                return;
+                return configuration;
             }
             
             TriggerConfiguration newConfiguration = new(trigger, ownerGuid, false);
             AddReplacePrefabConfiguration(newConfiguration);
+            return newConfiguration;
         }
         
-        private void AddTriggerReceiverConfigurationToMap(TriggerReceiver triggerReceiver, string ownerGuid)
+        private TriggerReceiverConfiguration AddTriggerReceiverConfigurationToMap(TriggerReceiver triggerReceiver, string ownerGuid)
         {
-            if (GetConfigurationByOwnerGuidAndName(ownerGuid, triggerReceiver.identification, out TriggerReceiverConfiguration _))
+            if (GetConfigurationByOwnerGuidAndName(ownerGuid, triggerReceiver.identification, out TriggerReceiverConfiguration configuration))
             {
                 // Logger.Log("Configuration is already present.");
-                return;
+                return configuration;
             }
             
             TriggerReceiverConfiguration newConfiguration = new(triggerReceiver, ownerGuid, false);
             AddReplacePrefabConfiguration(newConfiguration);
+            return newConfiguration;
         }
 
         private void RemoveConfiguration(string guid)

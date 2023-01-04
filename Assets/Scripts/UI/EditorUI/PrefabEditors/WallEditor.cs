@@ -39,7 +39,8 @@ namespace Scripts.UI.EditorUI
                 PrefabName = prefabName,
                 TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation),
                 WayPoints = new List<Waypoint>(),
-                Offset = 0f
+                Offset = 0f,
+                SpawnPrefabOnBuild = true,
             };
         }
 
@@ -199,6 +200,8 @@ namespace Scripts.UI.EditorUI
                 TransformData = transformData,
                 PrefabType = prefabType,
                 PrefabName = prefabName,
+                SpawnPrefabOnBuild = true,
+                Guid = Guid.NewGuid().ToString(),
             };
 
             MapBuilder.BuildPrefab(_createdOppositeWall);

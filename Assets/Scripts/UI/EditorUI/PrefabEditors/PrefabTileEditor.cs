@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
@@ -21,6 +22,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             PrefabType = EditedPrefabType,
             PrefabName = AvailablePrefabs.FirstOrDefault(prefab => prefab.name == prefabName)?.name,
             TransformData = new PositionRotation(Placeholder.transform.position, Quaternion.Euler(Vector3.zero)),
+            Guid = Guid.NewGuid().ToString(),
+            SpawnPrefabOnBuild = true,
         };
 
         protected override TilePrefabConfiguration CopyConfiguration(TilePrefabConfiguration sourceConfiguration) => new(sourceConfiguration);

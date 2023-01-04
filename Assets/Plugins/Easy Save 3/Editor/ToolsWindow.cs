@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.IO;
 using UnityEditor;
-using System.IO;
+using UnityEngine;
 
 namespace ES3Editor
 {
@@ -43,7 +41,7 @@ namespace ES3Editor
         {
             if (EditorUtility.DisplayDialog("Clear Persistent Data Path", "Are you sure you wish to clear the persistent data path?\n This action cannot be reversed.", "Clear", "Cancel"))
             {
-                System.IO.DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
+                DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
 
                 foreach (FileInfo file in di.GetFiles())
                     file.Delete();

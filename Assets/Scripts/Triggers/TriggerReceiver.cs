@@ -10,9 +10,10 @@ namespace Scripts.Triggers
     public abstract class TriggerReceiver : MonoBehaviour
     {
         [SerializeField] protected Transform activePart;
-        [NonSerialized] public string PrefabGuid;
         public string Guid;  
         public int startMovement;
+        public string identification;
+        [NonSerialized] public string PrefabGuid;
         
         protected int CurrentMovement;
 

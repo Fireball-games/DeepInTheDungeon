@@ -19,10 +19,6 @@ using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building
 {
-    /// <summary>
-    /// TODO: Current Limitations: only 1 embedded triggerReceiver on top prefab, must figure out a way how to identify prefab
-    /// TODO: script of triggerReceiver and it should be on top level due to possible animation variant  
-    /// </summary>
     public class PrefabBuilder
     {
         private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
@@ -320,7 +316,7 @@ namespace Scripts.Building
                 }
                 else
                 {
-                    if (!GetConfigurationByOwnerGuidAndName(prefabScript.GUID, receiver.gameObject.name, out TriggerReceiverConfiguration configuration))
+                    if (!GetConfigurationByOwnerGuidAndName(prefabScript.GUID, receiver.identification, out TriggerReceiverConfiguration configuration))
                     {
                         Logger.LogWarning("Failed to find configuration for trigger", logObject: receiver);
                         continue;

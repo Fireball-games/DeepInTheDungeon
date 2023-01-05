@@ -113,6 +113,11 @@ namespace Scripts.MapEditor
             WorkLevel = newLevel;
             EditorEvents.TriggerOnWorkingLevelChanged(WorkLevel);
         }
+        
+        public void SetTriggerEditMode(ETriggerEditMode newTriggerEditMode)
+        {
+            Logger.LogNotImplemented();
+        }
 
         public void GoToMainMenu()
         {

@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
-using UnityEngine;
 using static Scripts.MapEditor.Enums;
 
 namespace Scripts.UI.EditorUI
@@ -12,47 +10,50 @@ namespace Scripts.UI.EditorUI
     public class TriggerModeExpandedOptions : UIElementBase
     {
         private ImageButton _addTriggerButton;
-        private ImageButton _sameLevelButton;
-        private ImageButton _lowerLevelButton;
+        private ImageButton _editTriggerButton;
+        private ImageButton _editTriggerReceiverButton;
 
-        private Dictionary<ELevel, ImageButton> _buttonsMap;
+        private Dictionary<ETriggerEditMode, ImageButton> _buttonsMap;
+
+        private void Awake()
+        {
+            _addTriggerButton = body.transform.Find("AddTriggerButton").GetComponent<ImageButton>();
+            _editTriggerButton = body.transform.Find("EditTriggerButton").GetComponent<ImageButton>();
+            _editTriggerReceiverButton = body.transform.Find("EditTriggerReceiverButton").GetComponent<ImageButton>();
+        }
 
         private void OnEnable()
         {
             _addTriggerButton.OnClickWithSender += OnClick;
-            _sameLevelButton.OnClickWithSender += OnClick;
-            _lowerLevelButton.OnClickWithSender += OnClick;
-
-            EditorEvents.OnWorkingLevelChanged += SetSelected;
+            _editTriggerButton.OnClickWithSender += OnClick;
+            _editTriggerReceiverButton.OnClickWithSender += OnClick;
         }
 
         private void OnDisable()
         {
             _addTriggerButton.OnClickWithSender -= OnClick;
-            _sameLevelButton.OnClickWithSender -= OnClick;
-            _lowerLevelButton.OnClickWithSender -= OnClick;
-
-            EditorEvents.OnWorkingLevelChanged -= SetSelected;
+            _editTriggerButton.OnClickWithSender -= OnClick;
+            _editTriggerReceiverButton.OnClickWithSender -= OnClick;
         }
 
-        private void OnClick(ImageButton sender) => MapEditorManager.Instance.SetWorkingLevel(_buttonsMap.GetFirstKeyByValue(sender));
+        private void OnClick(ImageButton sender) => MapEditorManager.Instance.SetTriggerEditMode(_buttonsMap.GetFirstKeyByValue(sender));
 
-        public void SetSelected(ELevel level)
+        public void SetSelected(ETriggerEditMode triggerEditMode)
         {
             _buttonsMap ??= BuildButtonsMap();
             
-            foreach (ELevel eLevel in _buttonsMap.Keys)
+            foreach (ETriggerEditMode mode in _buttonsMap.Keys)
             {
-                _buttonsMap[eLevel].SetSelected(eLevel == level);
+                _buttonsMap[mode].SetSelected(mode == triggerEditMode);
             }
         }
 
-        private Dictionary<ELevel, ImageButton> BuildButtonsMap() =>
-            _buttonsMap = new Dictionary<ELevel, ImageButton>
+        private Dictionary<ETriggerEditMode, ImageButton> BuildButtonsMap() =>
+            _buttonsMap = new Dictionary<ETriggerEditMode, ImageButton>
             {
-                {ELevel.Equal, _sameLevelButton},
-                {ELevel.Upper, _addTriggerButton},
-                {ELevel.Lower, _lowerLevelButton},
+                {ETriggerEditMode.AddTrigger, _editTriggerButton},
+                {ETriggerEditMode.EditTrigger, _addTriggerButton},
+                {ETriggerEditMode.EditReceiver, _editTriggerReceiverButton},
             };
     }
 }

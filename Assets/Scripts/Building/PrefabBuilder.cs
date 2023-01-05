@@ -7,13 +7,13 @@ using Scripts.Building.Tile;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
-using Scripts.MapEditor.Services;
 using Scripts.ScriptableObjects;
 using Scripts.System;
 using Scripts.System.Pooling;
 using Scripts.Triggers;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Scripts.MapEditor.Services.PathsService;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building
@@ -39,7 +39,7 @@ namespace Scripts.Building
         {
             if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
             {
-                PathsService.DestroyAllPaths();
+                DestroyAllPaths();
             }
 
             MapBuilder.StartCoroutine(BuildPrefabsCoroutine(configurations));
@@ -114,7 +114,7 @@ namespace Scripts.Building
 
             if (configuration is WallConfiguration {WayPoints: { }} wall && wall.WayPoints.Any())
             {
-                PathsService.DestroyPath(wall.WayPoints);
+                DestroyPath(EPathsType.Waypoint, wall.WayPoints);
             }
 
             RemoveEmbeddedTriggers(prefabGo);
@@ -181,7 +181,7 @@ namespace Scripts.Building
 
                 if (wall.WayPoints == null || !wall.WayPoints.Any()) continue;
 
-                PathsService.DestroyPath(wall.WayPoints);
+                DestroyPath(EPathsType.Waypoint, wall.WayPoints);
 
                 foreach (Waypoint waypoint in wall.WayPoints)
                 {
@@ -257,7 +257,7 @@ namespace Scripts.Building
 
                         if (wallConfiguration.HasPath())
                         {
-                            PathsService.AddPath(wallConfiguration.WayPoints);
+                            AddWaypointPath(EPathsType.Waypoint, wallConfiguration.WayPoints);
                         }
                     }
                 }

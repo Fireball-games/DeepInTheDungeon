@@ -5,6 +5,7 @@ using Scripts.Helpers.Extensions;
 using Scripts.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Rendering;
+using PathsType = System.Collections.Generic.Dictionary<Scripts.MapEditor.Services.PathsService.EPathsType, System.Collections.Generic.Dictionary<(UnityEngine.Vector3, UnityEngine.Vector3), Scripts.MapEditor.PathController>>;
 
 namespace Scripts.MapEditor.Services
 {
@@ -17,7 +18,7 @@ namespace Scripts.MapEditor.Services
         [SerializeField] private GameObject waypointPrefab;
         [SerializeField] private Vector3 waypointScale = new(0.3f, 0.3f, 0.3f);
 
-        private static Dictionary<(Vector3, Vector3), PathController> _paths;
+        private static PathsType _paths;
         private static Mesh _waypointMesh;
         private static Vector3 _waypointScale;
         private static Material _normalMaterial;
@@ -27,9 +28,20 @@ namespace Scripts.MapEditor.Services
         private static GameObject _parent;
         private static bool _areWaypointsShows = true;
 
+        public enum EPathsType
+        {
+            Waypoint,
+            Trigger
+        }
+
         private void Awake()
         {
-            _paths = new Dictionary<(Vector3, Vector3), PathController>();
+            _paths = new PathsType
+            {
+                [EPathsType.Waypoint] = new(),
+                [EPathsType.Trigger] = new()
+            };
+            
             _parent = new GameObject("Waypoints");
             _waypointMesh = waypointPrefab.GetComponent<MeshFilter>().sharedMesh;
             _waypointScale = waypointScale;
@@ -39,37 +51,37 @@ namespace Scripts.MapEditor.Services
             _waypointLinesHighlightedMaterial = waypointLinesHighlightedMaterial;
         }
 
-        public static void ShowWaypoints()
+        public static void ShowPaths(EPathsType pathsType)
         {
             _areWaypointsShows = true;
-            foreach (PathController controller in _paths.Values)
+            foreach (PathController controller in _paths[pathsType].Values)
             {
                 controller.gameObject.SetActive(true);
             }
         }
 
-        public static void HideWaypoints()
+        public static void HidePaths(EPathsType pathsType)
         {
             _areWaypointsShows = false;
             
-            foreach (PathController controller in _paths.Values.Where(controller => !controller.IsHighlighted))
+            foreach (PathController controller in _paths[pathsType].Values.Where(controller => !controller.IsHighlighted))
             {
                 controller.gameObject.SetActive(false);
             }
         }
 
-        public static void HighlightPath(List<Waypoint> path, bool isHighlighted = true) =>
-            HighlightPath(GetKey(path), isHighlighted);
+        public static void HighlightPath(EPathsType pathsType, List<Waypoint> path, bool isHighlighted = true) =>
+            HighlightPath(pathsType, GetKey(path), isHighlighted);
 
-        public static void HighlightPoint(List<Waypoint> path, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false) =>
-            HighlightPoint(GetKey(path), pointIndex, isHighlighted, isExclusiveHighlight);
+        public static void HighlightPoint(EPathsType pathType, List<Waypoint> path, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false) =>
+            HighlightPoint(pathType, GetKey(path), pointIndex, isHighlighted, isExclusiveHighlight);
 
-        public static void DestroyPath(List<Waypoint> path) => DestroyPath(GetKey(path));
+        public static void DestroyPath(EPathsType pathType, List<Waypoint> path) => DestroyPath(pathType, GetKey(path));
 
-        public static void AddPath(List<Waypoint> waypoints, bool highlightAfterBuild = false)
+        public static void AddWaypointPath(EPathsType pathType, List<Waypoint> waypoints, bool highlightAfterBuild = false)
         {
             (Vector3, Vector3) key = GetKey(waypoints);
-            DestroyPath(key);
+            DestroyPath(pathType, key);
 
             GameObject pathParent = new($"Path_{key.Item1}_{key.Item2}")
             {
@@ -87,25 +99,28 @@ namespace Scripts.MapEditor.Services
                 drawnWaypoint.transform.parent = pathParent.transform;
             }
 
-            _paths.Add(GetKey(waypoints), controller);
+            _paths[EPathsType.Waypoint].Add(GetKey(waypoints), controller);
 
             BuildLines(controller);
 
             if (highlightAfterBuild)
             {
-                HighlightPath(controller);
+                HighlightPath(EPathsType.Waypoint, controller);
                 return;
             }
             
             if (!_areWaypointsShows)
-                HideWaypoints();
+                HidePaths(EPathsType.Waypoint);
         }
         
         public static void DestroyAllPaths()
         {
-            foreach ((Vector3, Vector3) key in new Dictionary<(Vector3,Vector3), PathController>(_paths).Keys)
+            foreach (EPathsType pathType in new PathsType(_paths).Keys)
             {
-                DestroyPath(key);
+                foreach ((Vector3, Vector3) key in new Dictionary<(Vector3,Vector3), PathController>(_paths[pathType]).Keys)
+                {
+                    DestroyPath(pathType, key);
+                }
             }
         }
 
@@ -116,21 +131,21 @@ namespace Scripts.MapEditor.Services
             return (path[2].position.Round(1) - path[1].position.Round(1)).normalized == Vector3.down;
         }
         
-        private static void HighlightPath((Vector3, Vector3) key, bool isHighlighted = true)
+        private static void HighlightPath(EPathsType pathType, (Vector3, Vector3) key, bool isHighlighted = true)
         {
-            if (!_paths.TryGetValue(key, out PathController controller) || controller.IsHighlighted == isHighlighted) return;
+            if (!_paths[pathType].TryGetValue(key, out PathController controller) || controller.IsHighlighted == isHighlighted) return;
 
             controller.IsHighlighted = isHighlighted;
 
             for (int index = 0; index < controller.Waypoints.Count; index++)
             {
-                HighlightPoint(key, index, isHighlighted);
+                HighlightPoint(pathType, key, index, isHighlighted);
             }
         }
         
-        private static void HighlightPoint((Vector3, Vector3) key, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
+        private static void HighlightPoint(EPathsType pathType, (Vector3, Vector3) key, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
         {
-            Dictionary<GameObject, WaypointParts> waypointsParts = _paths[key].Waypoints;
+            Dictionary<GameObject, WaypointParts> waypointsParts = _paths[pathType][key].Waypoints;
             
             if (isExclusiveHighlight)
             {
@@ -143,12 +158,12 @@ namespace Scripts.MapEditor.Services
             HighlightPoint(waypointsParts.ElementAt(pointIndex).Value, isHighlighted);
         }
         
-        private static void DestroyPath((Vector3, Vector3) key)
+        private static void DestroyPath(EPathsType pathType, (Vector3, Vector3) key)
         {
-            if (!_paths.ContainsKey(key)) return;
+            if (!_paths[pathType].ContainsKey(key)) return;
 
-            Destroy(_paths[key].gameObject);
-            _paths.Remove(key);
+            Destroy(_paths[pathType][key].gameObject);
+            _paths[pathType].Remove(key);
         }
 
         private static (Vector3, Vector3) GetKey(List<Waypoint> waypoints)
@@ -158,9 +173,9 @@ namespace Scripts.MapEditor.Services
                 : new ValueTuple<Vector3, Vector3>(waypoints[0].position.Round(2), waypoints[1].position.Round(2));
         }
 
-        private static void HighlightPath(PathController pathController, bool isHighlighted = true)
+        private static void HighlightPath(EPathsType pathType, PathController pathController, bool isHighlighted = true)
         {
-            HighlightPath(_paths.GetFirstKeyByValue(pathController), isHighlighted);
+            HighlightPath(pathType, _paths[pathType].GetFirstKeyByValue(pathController), isHighlighted);
         }
 
         private static void HighlightPoint(WaypointParts waypoint, bool isHighlighted = true)

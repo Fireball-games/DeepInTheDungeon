@@ -47,9 +47,9 @@ namespace Scripts.UI.EditorUI.Components
         private void OnWaypointsShowToggleClick()
         {
             if (_waypointsShowToggle.toggled)
-                PathsService.ShowWaypoints();
+                PathsService.ShowPaths(PathsService.EPathsType.Waypoint);
             else
-                PathsService.HideWaypoints();
+                PathsService.HidePaths(PathsService.EPathsType.Waypoint);
         }
     }
 }

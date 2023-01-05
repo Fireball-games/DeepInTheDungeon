@@ -15,6 +15,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static Scripts.Enums;
+using static Scripts.MapEditor.Services.PathsService;
 
 namespace Scripts.UI.EditorUI
 {
@@ -89,7 +90,7 @@ namespace Scripts.UI.EditorUI
         {
             if (EditedConfiguration.WayPoints.Any())
             {
-                PathsService.DestroyPath(EditedConfiguration.WayPoints);
+                DestroyPath(EPathsType.Waypoint, EditedConfiguration.WayPoints);
             }
 
             RemoveExtraParts();
@@ -101,7 +102,7 @@ namespace Scripts.UI.EditorUI
         {
             if (EditedConfiguration.HasPath())
             {
-                PathsService.HighlightPath(EditedConfiguration.WayPoints, false);
+                HighlightPath(EPathsType.Waypoint, EditedConfiguration.WayPoints, false);
             }
 
             if (_createdOppositeWall != null)
@@ -118,7 +119,7 @@ namespace Scripts.UI.EditorUI
         {
             if (EditedConfiguration.WayPoints.Any())
             {
-                PathsService.DestroyPath(EditedConfiguration.WayPoints);
+                DestroyPath(EPathsType.Waypoint, EditedConfiguration.WayPoints);
             }
 
             RemoveExtraParts();
@@ -150,7 +151,7 @@ namespace Scripts.UI.EditorUI
 
                 if (_createdOppositeWall.WayPoints.Any())
                 {
-                    PathsService.DestroyPath(_createdOppositeWall.WayPoints);
+                    DestroyPath(EPathsType.Waypoint, _createdOppositeWall.WayPoints);
                 }
             }
 
@@ -178,7 +179,7 @@ namespace Scripts.UI.EditorUI
                 return;
             }
 
-            bool isForLadderDown = PathsService.IsLadderDownAtPathStart(EditedConfiguration.WayPoints);
+            bool isForLadderDown = IsLadderDownAtPathStart(EditedConfiguration.WayPoints);
             
             string prefabName = isForLadderDown
                 ? Vector3.Distance(oppositePoints[0].position, oppositePoints[1].position) > 1
@@ -205,7 +206,7 @@ namespace Scripts.UI.EditorUI
             };
 
             MapBuilder.BuildPrefab(_createdOppositeWall);
-            PathsService.AddPath(oppositePoints);
+            AddWaypointPath(EPathsType.Waypoint, oppositePoints);
             SetEdited();
         }
 
@@ -274,7 +275,7 @@ namespace Scripts.UI.EditorUI
                 }
 
                 _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
-                PathsService.AddPath(EditedConfiguration.WayPoints, true);
+                AddWaypointPath(EPathsType.Waypoint, EditedConfiguration.WayPoints, true);
                 HandleCreateOppositePathButton();
             }
         }
@@ -282,11 +283,11 @@ namespace Scripts.UI.EditorUI
         private void OnPathChanged(IEnumerable<Waypoint> path, int effectedWaypointIndex)
         {
             SetEdited();
-            PathsService.DestroyPath(EditedConfiguration.WayPoints);
+            DestroyPath(EPathsType.Waypoint, EditedConfiguration.WayPoints);
             List<Waypoint> waypoints = path.ToList();
             EditedConfiguration.WayPoints = waypoints;
-            PathsService.AddPath(waypoints);
-            PathsService.HighlightPoint(waypoints, effectedWaypointIndex, isExclusiveHighlight: true);
+            AddWaypointPath(EPathsType.Waypoint, waypoints);
+            HighlightPoint(EPathsType.Waypoint, waypoints, effectedWaypointIndex, isExclusiveHighlight: true);
             HandleCreateOppositePathButton();
         }
 
@@ -338,7 +339,7 @@ namespace Scripts.UI.EditorUI
                 oppositePoints.Add(new Waypoint(waypoints.ElementAt(i).position.Round(2), waypoints.ElementAt(i).moveSpeedModifier));
             }
 
-            bool isUpperLadderPath = PathsService.IsLadderDownAtPathStart(waypoints.ToList());
+            bool isUpperLadderPath = IsLadderDownAtPathStart(waypoints.ToList());
 
             wallTransformData = CalculateWallForPath(oppositePoints, isUpperLadderPath);
             return wallTransformData != null;

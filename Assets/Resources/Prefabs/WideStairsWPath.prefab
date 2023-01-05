@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4146796600491698}
   - component: {fileID: 6883870166087065993}
   m_Layer: 0
-  m_Name: WideStairs
+  m_Name: WideStairsWPath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,8 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32a1bd96d4f44941adf28658af540438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabName: 
+  positionOnMap: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
   prefabType: 8
-  guid: 
   isWalkable: 0
 --- !u!1 &3800713786900050206
 GameObject:

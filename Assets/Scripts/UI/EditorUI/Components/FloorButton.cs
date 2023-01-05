@@ -4,7 +4,7 @@ using Scripts.MapEditor.Services;
 using Scripts.UI.Components;
 using UnityEngine;
 
-namespace Scripts.UI.EditorUI
+namespace Scripts.UI.EditorUI.Components
 {
     public class FloorButton : TextButton
     {

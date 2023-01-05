@@ -6,6 +6,7 @@ using Scripts.MapEditor;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.UI.Components;
+using Scripts.UI.EditorUI.Components;
 using UnityEngine;
 
 namespace Scripts.UI.EditorUI

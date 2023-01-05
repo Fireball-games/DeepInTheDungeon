@@ -15,6 +15,7 @@ public class IconStore : MonoBehaviour
         None = 0,
         Move = 1,
         Exclamation = 2,
+        Trigger = 2,
         TriggerReceiver = 3,
         Wall = 4,
     }

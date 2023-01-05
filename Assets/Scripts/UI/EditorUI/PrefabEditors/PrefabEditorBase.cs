@@ -11,6 +11,7 @@ using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
+using Scripts.UI.EditorUI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -89,7 +90,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetActive(true);
             _prefabTitle.SetTitle(configuration.PrefabName);
 
-            _prefabList.Open(prefabListTitle, AvailablePrefabs!.Select(prefab => prefab.gameObject.name), SetPrefab);
+            _prefabList.Open(prefabListTitle, AvailablePrefabs!, SetPrefab);
 
             PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration);
             PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
@@ -123,7 +124,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetStatusText(t.Get(Keys.SelectPrefab));
 
-            _prefabList.Open(prefabListTitle, AvailablePrefabs.Select(prefab => prefab.gameObject.name), SetPrefab);
+            _prefabList.Open(prefabListTitle, AvailablePrefabs, SetPrefab);
         }
 
         protected virtual string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)

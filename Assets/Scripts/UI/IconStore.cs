@@ -25,7 +25,7 @@ public class IconStore : MonoBehaviour
         _sprites = new Dictionary<EIcon, Sprite>
         {
             {EIcon.None, null},
-            {EIcon.Move, wall},
+            {EIcon.Move, move},
             {EIcon.Exclamation, exclamation},
             {EIcon.TriggerReceiver, triggerReceiver},
             {EIcon.Wall, wall},

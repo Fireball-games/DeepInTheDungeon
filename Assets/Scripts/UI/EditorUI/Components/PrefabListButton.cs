@@ -46,6 +46,8 @@ namespace Scripts.UI.EditorUI.Components
             _text.color = _normalColor;
             _text.text = prefab.gameObject.name;
 
+            if (prefab.gameObject.GetBody()) AddIcon(EIcon.Wall);
+            
             switch (prefab)
             {
                 case IMovementWall:

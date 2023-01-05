@@ -181,7 +181,7 @@ namespace Scripts.UI.EditorUI
             bool isForLadderDown = PathsService.IsLadderDownAtPathStart(EditedConfiguration.WayPoints);
             
             string prefabName = isForLadderDown
-                ? Vector3.Distance(oppositePoints[^1].position, oppositePoints[^2].position) > 1
+                ? Vector3.Distance(oppositePoints[0].position, oppositePoints[1].position) > 1
                     ? "SteelLadderStart"
                     : "SteelLadderStartTop"
                 : "MoveWall";

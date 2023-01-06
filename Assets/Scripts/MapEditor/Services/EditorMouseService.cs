@@ -88,7 +88,6 @@ namespace Scripts.MapEditor.Services
 
             CheckMouseOverWall();
 
-            cameraService.HandleMouseWheel();
             ValidateClicks();
             cameraService.HandleMouseMovement();
 
@@ -99,6 +98,8 @@ namespace Scripts.MapEditor.Services
 
                 return;
             }
+            
+            cameraService.HandleMouseWheel();
 
             if (_uiIsBlocking)
             {

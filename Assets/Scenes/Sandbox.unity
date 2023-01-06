@@ -287,6 +287,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GateButton
       objectReference: {fileID: 0}
+    - target: {fileID: 9162656868234093496, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f, type: 3}
 --- !u!224 &78668513 stripped
@@ -1198,7 +1203,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &2006046405
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3093,6 +3098,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LeverV1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8597373633990148879, guid: a95fad3eab552e74daaa7d25f992033f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a95fad3eab552e74daaa7d25f992033f, type: 3}

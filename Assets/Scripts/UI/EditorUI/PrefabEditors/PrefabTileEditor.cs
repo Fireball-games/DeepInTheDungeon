@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
@@ -15,15 +14,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
     {
         [SerializeField] private RotationWidget rotationWidget;
         [SerializeField] private FramedCheckBox isWalkableCheckBox;
-        
+
         protected override TilePrefabConfiguration GetNewConfiguration(string prefabName) => new()
         {
-            IsWalkable = false,
-            PrefabType = EditedPrefabType,
-            PrefabName = AvailablePrefabs.FirstOrDefault(prefab => prefab.name == prefabName)?.name,
-            TransformData = new PositionRotation(Placeholder.transform.position, Quaternion.Euler(Vector3.zero)),
             Guid = Guid.NewGuid().ToString(),
+            PrefabType = EditedPrefabType,
+            PrefabName = prefabName,
+            TransformData = new PositionRotation(Placeholder.transform.position, Quaternion.Euler(Vector3.zero)),
             SpawnPrefabOnBuild = true,
+            
+            IsWalkable = false,
         };
 
         protected override TilePrefabConfiguration CopyConfiguration(TilePrefabConfiguration sourceConfiguration) => new(sourceConfiguration);
@@ -39,7 +39,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             }
 
             base.Open(configuration);
-            
+
             TilePrefab script = PhysicalPrefabBody.GetComponentInParent<TilePrefab>();
 
             if (!PhysicalPrefabBody || !script)
@@ -47,9 +47,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 Logger.Log($"loaded prefab {configuration.PrefabName} was either not loaded or missing {nameof(TilePrefab)} script.");
                 return;
             }
-            
+
             SetWidgets();
-            
+
             MapBuilder.Layout.ByGridV3Int(PhysicalPrefabBody.transform.position.ToGridPosition()).IsForMovement = script.isWalkable;
         }
 
@@ -58,14 +58,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             base.SetPrefab(prefabName);
 
             MapBuilder.Layout.ByGridV3Int(PhysicalPrefabBody.transform.position.ToGridPosition()).IsForMovement = EditedConfiguration.IsWalkable;
-            
+
             SetWidgets();
         }
 
         private void SetWidgets()
         {
-            rotationWidget.SetUp( t.Get(Keys.Rotate), () => Rotate(-90), () => Rotate(90));
-            
+            rotationWidget.SetUp(t.Get(Keys.Rotate), () => Rotate(-90), () => Rotate(90));
+
             isWalkableCheckBox.SetLabel(t.Get(Keys.IsWalkable));
             isWalkableCheckBox.SetToggle(EditedConfiguration.IsWalkable);
             isWalkableCheckBox.OnValueChanged += SetIsWalkableInLayout;
@@ -77,7 +77,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             PhysicalPrefabBody.transform.Rotate(Vector3.up, angles);
             EditedConfiguration.TransformData.Rotation = PhysicalPrefabBody.transform.rotation;
         }
-        
+
         private void SetIsWalkableInLayout(bool isWalkable)
         {
             SetEdited();

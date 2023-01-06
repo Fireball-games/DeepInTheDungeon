@@ -102,7 +102,7 @@ namespace Scripts.System
         
         public static void Hide3DCursor()
         {
-            if (!UIManager.IsAnyObjectEdited)
+            if (!UIManager.isAnyObjectEdited)
             {
                 Cursor3D.Hide();
             }

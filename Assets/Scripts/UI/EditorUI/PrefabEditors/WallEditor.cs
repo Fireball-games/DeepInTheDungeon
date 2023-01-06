@@ -31,19 +31,17 @@ namespace Scripts.UI.EditorUI
 
         private WallConfiguration _createdOppositeWall;
 
-        protected override WallConfiguration GetNewConfiguration(string prefabName)
+        protected override WallConfiguration GetNewConfiguration(string prefabName) => new()
         {
-            return new WallConfiguration
-            {
-                Guid = Guid.NewGuid().ToString(),
-                PrefabType = EditedPrefabType,
-                PrefabName = prefabName,
-                TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation),
-                WayPoints = new List<Waypoint>(),
-                Offset = 0f,
-                SpawnPrefabOnBuild = true,
-            };
-        }
+            Guid = Guid.NewGuid().ToString(),
+            PrefabType = EditedPrefabType,
+            PrefabName = prefabName,
+            TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation),
+            SpawnPrefabOnBuild = true,
+
+            WayPoints = new List<Waypoint>(),
+            Offset = 0f,
+        };
 
         protected override WallConfiguration CopyConfiguration(WallConfiguration sourceConfiguration) => new(EditedConfiguration);
 
@@ -63,7 +61,7 @@ namespace Scripts.UI.EditorUI
 
             VisualizeOtherComponents();
         }
-        
+
         protected override string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
         {
             Initialize();
@@ -71,7 +69,7 @@ namespace Scripts.UI.EditorUI
             _offsetSlider.SetLabel(t.Get(Keys.Offset));
             _offsetSlider.SetActive(false);
             _offsetNumericUpDown.gameObject.SetActive(false);
-            
+
             _createOppositePathButton.gameObject.SetActive(false);
 
             return base.SetupWindow(prefabType, deleteButtonActive);
@@ -131,16 +129,16 @@ namespace Scripts.UI.EditorUI
         {
             if (path.Count < 1) return null;
 
-            Vector3 startDirection = isForLowerLadderPath 
+            Vector3 startDirection = isForLowerLadderPath
                 ? (path[^1].position.Round(1) - path[^2].position.Round(1)).normalized
                 : (path[1].position.Round(1) - path[0].position.Round(1)).normalized;
 
-            return !V3Extensions.WallDirectionRotationMap.ContainsKey(startDirection) 
-                ? null : 
-                new PositionRotation(
+            return !V3Extensions.WallDirectionRotationMap.ContainsKey(startDirection)
+                ? null
+                : new PositionRotation(
                     path[0].position.Round(1) + (startDirection * 0.5f),
                     V3Extensions.WallDirectionRotationMap[startDirection]
-                    );
+                );
         }
 
         private void RemoveExtraParts()
@@ -164,7 +162,7 @@ namespace Scripts.UI.EditorUI
             _offsetNumericUpDown = body.transform.Find("Background/Frame/OffsetHandling/NumericUpDown").GetComponent<NumericUpDown>();
             _waypointEditor = body.transform.Find("WaypointsEditor").GetComponent<WaypointEditor>();
             _waypointEditor.SetActive(false);
-            
+
             _createOppositePathButton = body.transform.Find("Background/Frame/Buttons/CreateOppositePathButton").GetComponent<Button>();
             _createOppositePathButton.onClick.RemoveAllListeners();
             _createOppositePathButton.onClick.AddListener(GenerateOppositePath);
@@ -180,13 +178,13 @@ namespace Scripts.UI.EditorUI
             }
 
             bool isForLadderDown = IsLadderDownAtPathStart(EditedConfiguration.WayPoints);
-            
+
             string prefabName = isForLadderDown
                 ? Vector3.Distance(oppositePoints[0].position, oppositePoints[1].position) > 1
                     ? "SteelLadderStart"
                     : "SteelLadderStartTop"
                 : "MoveWall";
-            
+
             PositionRotation transformData = isForLadderDown
                 ? new PositionRotation(
                     wallTransformData.Position,
@@ -194,7 +192,7 @@ namespace Scripts.UI.EditorUI
                 : wallTransformData;
 
             EPrefabType prefabType = isForLadderDown ? EPrefabType.WallOnWall : EPrefabType.WallBetween;
-            
+
             _createdOppositeWall = new()
             {
                 WayPoints = oppositePoints,
@@ -229,7 +227,7 @@ namespace Scripts.UI.EditorUI
                 _offsetSlider.SetActive(true);
                 _offsetSlider.Value = EditedConfiguration.Offset;
                 _offsetSlider.OnValueChanged.AddListener(OnOffsetValueChanged);
-                
+
                 _offsetNumericUpDown.OnValueChanged.RemoveAllListeners();
                 _offsetNumericUpDown.gameObject.SetActive(true);
                 _offsetNumericUpDown.Value = EditedConfiguration.Offset;
@@ -238,7 +236,7 @@ namespace Scripts.UI.EditorUI
                 _offsetNumericUpDown.step = 0.05f;
                 _offsetNumericUpDown.OnValueChanged.AddListener(OnOffsetValueChanged);
             }
-            
+
             WallPrefabBase script = PhysicalPrefab.GetComponentInParent<WallPrefabBase>();
 
             if (!script) return;

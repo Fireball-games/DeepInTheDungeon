@@ -133,7 +133,7 @@ namespace Scripts.MapEditor.Services
 
         public void RefreshMousePosition(bool invalidateLastPosition = false)
         {
-            if (!Manager.MapIsPresented || UIManager.IsAnyObjectEdited) return;
+            if (!Manager.MapIsPresented || UIManager.isAnyObjectEdited) return;
 
             SetGridPosition(invalidateLastPosition);
         }
@@ -146,7 +146,7 @@ namespace Scripts.MapEditor.Services
 
         private void CheckMouseOverWall()
         {
-            if (Manager.WorkMode != EWorkMode.Walls || EditorUIManager.Instance.IsAnyObjectEdited) return;
+            if (Manager.WorkMode != EWorkMode.Walls || EditorUIManager.Instance.isAnyObjectEdited) return;
 
             if (LayersManager.CheckRayHit(LayersManager.WallMaskName, out GameObject hitWall))
             {
@@ -263,7 +263,7 @@ namespace Scripts.MapEditor.Services
 
         private void SetGridPosition(bool invalidateLastPosition = false)
         {
-            if (IsManipulatingCameraPosition || UIManager.IsAnyObjectEdited) return;
+            if (IsManipulatingCameraPosition || UIManager.isAnyObjectEdited) return;
 
             if (!GetMousePlanePosition(out Vector3 worldPosition)) return;
 

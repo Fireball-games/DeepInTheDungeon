@@ -272,7 +272,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             Cursor3D.Hide();
 
-            EditorUIManager.Instance.IsAnyObjectEdited = false;
+            EditorUIManager.Instance.isAnyObjectEdited = false;
             EditorUIManager.Instance.WallGizmo.Reset();
             EditorMouseService.Instance.RefreshMousePosition();
 

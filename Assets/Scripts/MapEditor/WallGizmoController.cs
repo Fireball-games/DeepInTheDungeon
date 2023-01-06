@@ -208,7 +208,7 @@ namespace Scripts.MapEditor
         {
             wall.SetActive(false);
 
-            if (!EditorUIManager.Instance.IsAnyObjectEdited
+            if (!EditorUIManager.Instance.isAnyObjectEdited
                 && Manager.EditedLayout.HasIndex(currentGridPosition)
                 && Manager.EditedLayout.ByGridV3Int(currentGridPosition) != null)
             {

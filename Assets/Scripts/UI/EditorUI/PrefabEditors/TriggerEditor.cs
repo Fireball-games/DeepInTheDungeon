@@ -20,7 +20,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Subscribers = new List<string>(),
         };
 
-        protected override TriggerConfiguration CopyConfiguration(TriggerConfiguration sourceConfiguration) => new(sourceConfiguration);
+        protected override TriggerConfiguration CloneConfiguration(TriggerConfiguration sourceConfiguration) => new(sourceConfiguration);
         
         
     }

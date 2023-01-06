@@ -26,7 +26,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             IsWalkable = false,
         };
 
-        protected override TilePrefabConfiguration CopyConfiguration(TilePrefabConfiguration sourceConfiguration) => new(sourceConfiguration);
+        protected override TilePrefabConfiguration CloneConfiguration(TilePrefabConfiguration sourceConfiguration) => new(sourceConfiguration);
 
         public override void Open(TilePrefabConfiguration configuration)
         {

@@ -43,7 +43,7 @@ namespace Scripts.UI.EditorUI
             Offset = 0f,
         };
 
-        protected override WallConfiguration CopyConfiguration(WallConfiguration sourceConfiguration) => new(EditedConfiguration);
+        protected override WallConfiguration CloneConfiguration(WallConfiguration sourceConfiguration) => new(sourceConfiguration);
 
         protected override Vector3 Cursor3DScale => new(0.15f, 1.1f, 1.1f);
 

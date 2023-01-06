@@ -67,7 +67,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         }
 
         protected abstract TC GetNewConfiguration(string prefabName);
-        protected abstract TC CopyConfiguration(TC sourceConfiguration);
+        protected abstract TC CloneConfiguration(TC sourceConfiguration);
 
         protected virtual Vector3 Cursor3DScale => Vector3.one;
 
@@ -81,7 +81,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             EditedPrefabType = configuration.PrefabType;
             EditedConfiguration = configuration;
-            _originalConfiguration = CopyConfiguration(configuration);
+            _originalConfiguration = CloneConfiguration(configuration);
 
             Cursor3D.ShowAt(configuration.TransformData.Position,
                 Cursor3DScale,
@@ -154,17 +154,20 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected virtual void SetPrefab(string prefabName)
         {
+            SetStatusText();
             _isEditingExistingPrefab = false;
 
             if (EditedConfiguration != null)
             {
                 MapBuilder.RemovePrefab(EditedConfiguration);
-                EditedConfiguration = null;
+                EditedConfiguration.PrefabName = prefabName;
+                EditedConfiguration = CloneConfiguration(EditedConfiguration);
             }
-
-            SetStatusText();
-
-            EditedConfiguration = GetNewConfiguration(prefabName);
+            else
+            {
+                EditedConfiguration = GetNewConfiguration(prefabName);
+            }
+            
 
             if (!MapBuilder.BuildPrefab(EditedConfiguration))
             {

@@ -48,7 +48,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             OnPathChanged = null;
             OnPathChanged += onPathChanged;
 
-            _currentPath = Waypoint.Clone(waypoints).ToList();
+            _currentPath = Waypoint.CloneCollection(waypoints).ToList();
             BuildWaypointsControls(_currentPath);
         }
 
@@ -123,7 +123,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             int lastEditedPointIndex = _map[control];
             _currentPath[lastEditedPointIndex].position = newPoint;
 
-            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath), lastEditedPointIndex);
+            OnPathChanged?.Invoke(Waypoint.CloneCollection(_currentPath), lastEditedPointIndex);
         }
 
         private void OnSpeedChanged(WaypointControl control, float newSpeed)
@@ -131,14 +131,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             int lastEditedPointIndex = _map[control];
             _currentPath[lastEditedPointIndex].moveSpeedModifier = newSpeed;
 
-            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath), lastEditedPointIndex);
+            OnPathChanged?.Invoke(Waypoint.CloneCollection(_currentPath), lastEditedPointIndex);
         }
 
         private void OnDeleteButtonClicked(WaypointControl control)
         {
             _currentPath.RemoveAt(_map[control]);
             BuildWaypointsControls(_currentPath);
-            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath), -1);
+            OnPathChanged?.Invoke(Waypoint.CloneCollection(_currentPath), -1);
         }
 
         private void OnAddWaypointClicked(Vector3 direction, EAddWaypointType type)
@@ -170,7 +170,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             }
 
             BuildWaypointsControls(_currentPath);
-            OnPathChanged?.Invoke(Waypoint.Clone(_currentPath), type is EAddWaypointType.EndPoint ? _currentPath.Count - 1 : _currentPath.Count - 2);
+            OnPathChanged?.Invoke(Waypoint.CloneCollection(_currentPath), type is EAddWaypointType.EndPoint ? _currentPath.Count - 1 : _currentPath.Count - 2);
         }
 
         private void OnStepChanged(float newStep)

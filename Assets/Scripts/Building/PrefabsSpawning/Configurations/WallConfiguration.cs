@@ -16,7 +16,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         public WallConfiguration(WallConfiguration configuration) : base(configuration)
         {
             Offset = configuration.Offset;
-            WayPoints = Waypoint.Clone(configuration.WayPoints).ToList();
+            WayPoints = Waypoint.CloneCollection(configuration.WayPoints).ToList();
         }
 
         public bool HasPath() => WayPoints != null && WayPoints.Any();

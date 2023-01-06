@@ -128,7 +128,7 @@ namespace Scripts.MapEditor
 
         private void HandleMouseOverGizmos()
         {
-            if (LayersManager.CheckRayHit(LayersManager.WallGizmoMaskName, out GameObject hitGizmo))
+            if (!EditorUIManager.Instance.isAnyObjectEdited && LayersManager.CheckRayHit(LayersManager.WallGizmoMaskName, out GameObject hitGizmo))
             {
                 ETileDirection direction = hitGizmo.GetComponent<WallGizmo>().direction;
 

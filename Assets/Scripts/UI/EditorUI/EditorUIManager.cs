@@ -65,7 +65,6 @@ namespace Scripts.UI.EditorUI
             _playButton.OnClick += manager.PlayMap;
 
             EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
-            EditorEvents.OnFloorChanged += OnFloorChanged;
             EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
 
             _fileOperations.SetActive(true);
@@ -75,7 +74,6 @@ namespace Scripts.UI.EditorUI
         {
             _playButton.OnClick -= manager.PlayMap;
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
-            EditorEvents.OnFloorChanged -= OnFloorChanged;
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
         }
 
@@ -90,8 +88,6 @@ namespace Scripts.UI.EditorUI
         }
 
         private void OnWorkModeChanged(EWorkMode _) => OnEditingInterruptionImminent();
-
-        private void OnFloorChanged(int? _) => OnEditingInterruptionImminent();
 
         private void OnEditingInterruptionImminent()
         {

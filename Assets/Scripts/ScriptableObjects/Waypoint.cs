@@ -29,7 +29,7 @@ namespace Scripts.ScriptableObjects
             moveSpeedModifier = source.moveSpeedModifier;
         }
 
-        public static IEnumerable<Waypoint> Clone(IEnumerable<Waypoint> source)
+        public static IEnumerable<Waypoint> CloneCollection(IEnumerable<Waypoint> source)
         {
             return source.Select(wp => new Waypoint(wp));
         }

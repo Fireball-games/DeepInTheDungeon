@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
@@ -22,16 +23,26 @@ namespace Scripts.MapEditor
         [SerializeField] private WallGizmo southGizmo;
         [SerializeField] private WallGizmo westGizmo;
         [SerializeField] private GameObject wall;
+        [NonSerialized] public bool IsActive;
 
         private static EditorMouseService Mouse => EditorMouseService.Instance;
         private static MapEditorManager Manager => MapEditorManager.Instance;
 
         private EPrefabType _prefabType;
+        private EEffectedWalls _effectedWalls = EEffectedWalls.Both;
         private Vector3Int _currentMousePosition;
         private Dictionary<ETileDirection, PositionRotation> _wallRotationMap;
         private PositionRotation _wallData;
         private bool _isWallPlacementValid;
         private bool _isWallAlreadyExisting;
+
+        public enum EEffectedWalls
+        {
+            None = 0,
+            OnWall = 1,
+            Between = 2,
+            Both = 3,
+        }
 
         private void Awake()
         {
@@ -41,26 +52,34 @@ namespace Scripts.MapEditor
 
             _wallRotationMap = new Dictionary<ETileDirection, PositionRotation>
             {
-                { ETileDirection.North, new PositionRotation
                 {
-                    Position = new Vector3(-0.5f, 0, 0f), 
-                    Rotation = Quaternion.Euler(new Vector3(0, 180, 0))
-                }}, 
-                { ETileDirection.East, new PositionRotation
+                    ETileDirection.North, new PositionRotation
+                    {
+                        Position = new Vector3(-0.5f, 0, 0f),
+                        Rotation = Quaternion.Euler(new Vector3(0, 180, 0))
+                    }
+                },
                 {
-                    Position = new Vector3(0f, 0f, 0.5f), 
-                    Rotation = Quaternion.Euler(new Vector3(0, 270, 0))
-                }}, 
-                { ETileDirection.South, new PositionRotation
+                    ETileDirection.East, new PositionRotation
+                    {
+                        Position = new Vector3(0f, 0f, 0.5f),
+                        Rotation = Quaternion.Euler(new Vector3(0, 270, 0))
+                    }
+                },
                 {
-                    Position = new Vector3(0.5f, 0f, 0f), 
-                    Rotation = Quaternion.Euler(Vector3.zero)
-                }}, 
-                { ETileDirection.West, new PositionRotation
+                    ETileDirection.South, new PositionRotation
+                    {
+                        Position = new Vector3(0.5f, 0f, 0f),
+                        Rotation = Quaternion.Euler(Vector3.zero)
+                    }
+                },
                 {
-                    Position = new Vector3(0f, 0f, -0.5f), 
-                    Rotation = Quaternion.Euler(new Vector3(0, 90, 0))
-                }},
+                    ETileDirection.West, new PositionRotation
+                    {
+                        Position = new Vector3(0f, 0f, -0.5f),
+                        Rotation = Quaternion.Euler(new Vector3(0, 90, 0))
+                    }
+                },
             };
         }
 
@@ -72,16 +91,18 @@ namespace Scripts.MapEditor
 
         private void Update()
         {
+            if (!IsActive) return;
+
             HandleMouseclick();
             HandleMouseOverGizmos();
         }
-        
+
         private void OnDisable()
         {
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
             EditorEvents.OnMouseGridPositionChanged -= OnMouseGridPositionChanged;
         }
-        
+
         public void Reset()
         {
             SetGizmosActive(true);
@@ -90,16 +111,16 @@ namespace Scripts.MapEditor
         private void HandleMouseclick()
         {
             if (!_isWallPlacementValid || !Input.GetMouseButtonUp(0) || Mouse.LeftClickExpired) return;
-            
+
             SetGizmosActive(false);
 
             if (_isWallAlreadyExisting) return;
-                
+
             _wallData.Position = wall.transform.position;
             _wallData.Rotation = wall.transform.localRotation;
-                
+
             wall.SetActive(false);
-                
+
             EditorUIManager.Instance.OpenEditorWindow(_prefabType, _wallData);
         }
 
@@ -108,12 +129,12 @@ namespace Scripts.MapEditor
             if (LayersManager.CheckRayHit(LayersManager.WallGizmoMaskName, out GameObject hitGizmo))
             {
                 ETileDirection direction = hitGizmo.GetComponent<WallGizmo>().direction;
-                
+
                 OnGizmoEntered(direction);
-                
+
                 return;
             }
-            
+
             OnGizmoExited();
         }
 
@@ -129,12 +150,12 @@ namespace Scripts.MapEditor
             wall.transform.localRotation = positionData.Rotation;
 
             _prefabType = EPrefabType.WallBetween;
-            
+
             if (direction == ETileDirection.North && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridNorth) == null
                 || direction == ETileDirection.East && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridEast) == null
                 || direction == ETileDirection.South && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridSouth) == null
                 || direction == ETileDirection.West && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridWest) == null
-                )
+               )
             {
                 _prefabType = EPrefabType.WallOnWall;
             }
@@ -148,7 +169,7 @@ namespace Scripts.MapEditor
             }
 
             _isWallAlreadyExisting = false;
-            
+
             wall.SetActive(true);
         }
 
@@ -162,11 +183,11 @@ namespace Scripts.MapEditor
         private void OnMouseGridPositionChanged(Vector3Int currentGridPosition, Vector3Int previousGridPosition)
         {
             wall.SetActive(false);
-            
+
             if (!EditorUIManager.Instance.IsAnyObjectEdited
-                && Manager.EditedLayout.HasIndex(currentGridPosition) 
-                && Manager.EditedLayout.ByGridV3Int(currentGridPosition) != null 
-                && Manager.WorkMode is EWorkMode.Walls)
+                && Manager.WorkMode is EWorkMode.Walls
+                && Manager.EditedLayout.HasIndex(currentGridPosition)
+                && Manager.EditedLayout.ByGridV3Int(currentGridPosition) != null)
             {
                 body.transform.position = currentGridPosition.ToWorldPosition();
 
@@ -191,9 +212,23 @@ namespace Scripts.MapEditor
 
         private void OnWorkModeChanged(EWorkMode workMode)
         {
-            if (workMode is not EWorkMode.Walls)
+            if (workMode != EWorkMode.Walls && workMode != EWorkMode.Triggers)
             {
+                IsActive = false;
                 body.SetActive(false);
+            }
+            else
+            {
+                if (workMode == EWorkMode.Walls)
+                {
+                    _effectedWalls = EEffectedWalls.Both;
+                }
+                else if (Manager.TriggerEditMode == ETriggerEditMode.AddTrigger)
+                {
+                    _effectedWalls = EEffectedWalls.OnWall;
+                }
+
+                IsActive = true;
             }
         }
     }

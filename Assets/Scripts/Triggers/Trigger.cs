@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Scripts.Building.Walls;
 using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
 using Scripts.Player;
 using Scripts.System;
 using UnityEngine;
-using UnityEngine.Serialization;
 using static Scripts.Enums;
 
 namespace Scripts.Triggers
@@ -56,7 +54,7 @@ namespace Scripts.Triggers
         
         protected void TriggerNext()
         {
-            EventsManager.TriggerOnTriggerNext(subscribers);
+            EventsManager.TriggerOnTriggerNext(this);
         }
 
         protected void SetResting(bool isAtRest) => atRest = isAtRest;

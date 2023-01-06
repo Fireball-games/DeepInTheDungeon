@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Scripts.Building.Walls;
 using Scripts.EventsManagement;
 using UnityEngine;
@@ -34,9 +33,9 @@ namespace Scripts.Triggers
             EventsManager.OnTriggerNext -= OnTriggerNext;
         }
 
-        private void OnTriggerNext(List<string> triggeredGuids)
+        private void OnTriggerNext(Trigger source)
         {
-            if (AtRest && triggeredGuids.Contains(PrefabGuid))
+            if (AtRest && source.subscribers.Contains(PrefabGuid))
             {
                 TriggerNext();
             }

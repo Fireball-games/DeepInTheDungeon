@@ -8,7 +8,6 @@ namespace Scripts.EventsManagement
     {
         public static event Action OnNewMapStartedCreation;
         public static event Action<EWorkMode> OnWorkModeChanged;
-
         public static event Action<Vector3Int, Vector3Int> OnMouseGridPositionChanged;
         public static event Action<ELevel> OnWorkingLevelChanged;
         public static event Action<int?> OnFloorChanged;

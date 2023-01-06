@@ -12,6 +12,7 @@
             Prefabs = 5,
             Items = 6,
             Enemies = 7,
+            Triggers = 8,
         }
 
         public enum ELevel

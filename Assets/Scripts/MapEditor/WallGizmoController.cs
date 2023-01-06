@@ -236,10 +236,10 @@ namespace Scripts.MapEditor
         private void OnWorkModeChanged(EWorkMode workMode)
         {
             _workMode = workMode;
+            IsActive = false;
 
             if (workMode != EWorkMode.Walls && workMode != EWorkMode.Triggers)
             {
-                IsActive = false;
                 body.SetActive(false);
             }
             else
@@ -247,13 +247,13 @@ namespace Scripts.MapEditor
                 if (workMode == EWorkMode.Walls)
                 {
                     _effectedWalls = EEffectedWalls.Both;
+                    IsActive = true;
                 }
                 else if (Manager.TriggerEditMode == ETriggerEditMode.AddTrigger)
                 {
                     _effectedWalls = EEffectedWalls.OnWall;
+                    IsActive = true;
                 }
-
-                IsActive = true;
             }
         }
     }

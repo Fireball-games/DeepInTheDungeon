@@ -118,6 +118,7 @@ namespace Scripts.MapEditor
         public void SetTriggerEditMode(ETriggerEditMode newTriggerEditMode)
         {
             TriggerEditMode = newTriggerEditMode;
+            // Dont want trigger separate event for TriggerEditMode just yet, wall gizmo reacts on work mode change, might change.
             EditorEvents.TriggerOnWorkModeChanged(EWorkMode.Triggers);
         }
 

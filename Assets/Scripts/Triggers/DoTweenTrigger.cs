@@ -4,7 +4,7 @@ using static Scripts.Enums;
 
 namespace Scripts.Triggers
 {
-    public class DoTweenTrigger : Trigger
+    public class DoTweenTrigger : MouseClickTrigger
     {
         public ETriggerMoveType moveType;
         public EActiveProperty activeProperty;
@@ -38,19 +38,21 @@ namespace Scripts.Triggers
             switch (moveType)
             {
                 case ETriggerMoveType.ThereAndBack:
+                    SetResting(false);
                     CurrentMovement = 0;
                     _there.OnComplete(() => RunBackTween(true)).Restart();
                     break;
                 case ETriggerMoveType.Switch:
+                    SetResting(false);
                     if (CurrentMovement == 0)
                     {
                         CurrentMovement = 1;
-                        _there.OnComplete(TriggerNext).Restart();
+                        _there.OnComplete(() => TriggerNext(true)).Restart();
                     }
                     else
                     {
                         CurrentMovement = 0;
-                        _back.OnComplete(TriggerNext).Restart();
+                        _back.OnComplete(() => TriggerNext(true)).Restart();
                     }
                     break;
             }

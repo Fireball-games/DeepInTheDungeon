@@ -18,6 +18,7 @@ namespace Scripts.System
         private PlayerController player;
 
         public PlayerController Player => player;
+        public Vector3Int PlayerPosition => Player.transform.position.ToVector3Int();
         public MapBuilder MapBuilder => mapBuilder;
         public MapDescription CurrentMap => _currentMap;
         public bool MovementEnabled => _movementEnabled;

@@ -287,11 +287,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GateButton
       objectReference: {fileID: 0}
-    - target: {fileID: 2194976748896874665, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f, type: 3}
 --- !u!224 &78668513 stripped
@@ -658,7 +653,7 @@ PrefabInstance:
     - target: {fileID: 5876910505036672326, guid: 824ff2df5e6e4ca41a03a71ae478f788,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8359681329001170615, guid: 824ff2df5e6e4ca41a03a71ae478f788,
         type: 3}

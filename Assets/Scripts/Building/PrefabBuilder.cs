@@ -217,6 +217,7 @@ namespace Scripts.Building
 
             ProcessTileConfiguration(configuration, newPrefab);
             ProcessWallConfiguration(configuration, prefabScript, newPrefab);
+            ProcessTriggerConfiguration(configuration, newPrefab);
 
             MapBuilder.Prefabs.Add(newPrefab);
 
@@ -228,6 +229,14 @@ namespace Scripts.Building
             if (configuration is TilePrefabConfiguration)
             {
                 newPrefab.GetBody().rotation = configuration.TransformData.Rotation;
+            }
+        }
+        
+        private void ProcessTriggerConfiguration(PrefabConfiguration configuration, GameObject newPrefab)
+        {
+            if (configuration is TriggerConfiguration)
+            {
+                newPrefab.transform.localRotation = configuration.TransformData.Rotation;
             }
         }
 
@@ -277,14 +286,7 @@ namespace Scripts.Building
 
             if (!prefabScript) return;
 
-            TriggerReceiver[] triggerReceivers = newPrefab.GetComponents<TriggerReceiver>();
-
-            foreach (TriggerReceiver receiver in triggerReceivers)
-            {
-                receiver.PrefabGuid = prefabScript.GUID;
-            }
-            
-            foreach (Trigger trigger in newPrefab.GetComponentsInChildren<Trigger>())
+            foreach (Trigger trigger in newPrefab.GetComponentsInChildren<Trigger>().Where(c => c != prefabScript))
             {
                 TriggerConfiguration configuration;
                 
@@ -308,7 +310,7 @@ namespace Scripts.Building
                 trigger.GUID = configuration.Guid;
             }
 
-            foreach (TriggerReceiver receiver in triggerReceivers)
+            foreach (TriggerReceiver receiver in newPrefab.GetComponents<TriggerReceiver>())
             {
                 TriggerReceiverConfiguration configuration;
                     
@@ -329,6 +331,7 @@ namespace Scripts.Building
                     receiver.startMovement = configuration.StartMovement;
                 }
                 
+                receiver.PrefabGuid = prefabScript.GUID;
                 receiver.Guid = configuration.Guid;
                 receiver.SetMovementStep();
             }

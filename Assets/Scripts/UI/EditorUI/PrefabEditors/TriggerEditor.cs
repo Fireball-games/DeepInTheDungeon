@@ -14,7 +14,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Guid = Guid.NewGuid().ToString(),
             PrefabType = EditedPrefabType,
             PrefabName = prefabName,
-            TransformData = new PositionRotation(Placeholder.transform.position, Quaternion.Euler(Vector3.zero)),
+            TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation),
             SpawnPrefabOnBuild = true,
             
             Subscribers = new List<string>(),

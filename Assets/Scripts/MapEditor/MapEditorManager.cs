@@ -41,7 +41,7 @@ namespace Scripts.MapEditor
         public MapBuilder MapBuilder { get; private set; }
         public int CurrentFloor { get; private set; }
         public Dictionary<int, bool> FloorVisibilityMap { get; private set; }
-        public ETriggerEditMode TriggerEditMode { get; private set; }
+        public ETriggerEditMode TriggerEditMode { get; private set; } = ETriggerEditMode.AddTrigger;
 
         private bool _dontChangeCameraAfterLayoutIsBuild;
 

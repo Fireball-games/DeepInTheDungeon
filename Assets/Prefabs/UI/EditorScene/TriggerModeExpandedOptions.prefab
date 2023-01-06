@@ -150,7 +150,7 @@ PrefabInstance:
         type: 3}
       propertyPath: mouseClickOverlay
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3404630510632403512}
     - target: {fileID: 1930913147018077552, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -331,6 +331,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2580166630683833714}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3404630510632403512 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 932590955419825994, guid: 47fbd13509d918648ad43221a89ac17d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2580166630683833714}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c5c172fb963e8442bdac83f2dc1d688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3264376526089381559
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -30,6 +30,7 @@ namespace Scripts.MapEditor
 
         private EPrefabType _prefabType;
         private EEffectedWalls _effectedWalls = EEffectedWalls.Both;
+        private EWorkMode _workMode = EWorkMode.Build;
         private Vector3Int _currentMousePosition;
         private Dictionary<ETileDirection, PositionRotation> _wallRotationMap;
         private PositionRotation _wallData;
@@ -47,6 +48,7 @@ namespace Scripts.MapEditor
         private void Awake()
         {
             body.SetActive(false);
+            IsActive = false;
 
             _wallData = new PositionRotation();
 
@@ -142,35 +144,57 @@ namespace Scripts.MapEditor
         {
             wall.SetActive(false);
 
-            _isWallPlacementValid = true;
-
             PositionRotation positionData = _wallRotationMap[direction];
 
             wall.transform.localPosition = positionData.Position;
             wall.transform.localRotation = positionData.Rotation;
 
+            _isWallPlacementValid = false;
             _prefabType = EPrefabType.WallBetween;
 
-            if (direction == ETileDirection.North && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridNorth) == null
-                || direction == ETileDirection.East && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridEast) == null
-                || direction == ETileDirection.South && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridSouth) == null
-                || direction == ETileDirection.West && Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridWest) == null
-               )
+            if (_effectedWalls == EEffectedWalls.Both || _effectedWalls == EEffectedWalls.OnWall)
             {
-                _prefabType = EPrefabType.WallOnWall;
+                if (direction == ETileDirection.North && 
+                    Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridNorth) == null
+                    || direction == ETileDirection.East &&
+                    Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridEast) == null
+                    || direction == ETileDirection.South &&
+                    Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridSouth) == null
+                    || direction == ETileDirection.West &&
+                    Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridWest) == null
+                   )
+                {
+                    _prefabType = _workMode switch
+                    {
+                        EWorkMode.Walls => EPrefabType.WallOnWall,
+                        EWorkMode.Triggers => EPrefabType.Trigger,
+                        _ => EPrefabType.Invalid
+                    };
+                    
+                    _isWallPlacementValid = true;
+                    wall.SetActive(true);
+                }
             }
 
-            if (Manager.MapBuilder.GetPrefabConfigurationsOnWorldPosition<WallConfiguration>(wall.transform.position).Count() > 0)
+            if (_workMode is EWorkMode.Walls)
             {
-                _isWallAlreadyExisting = true;
-                _isWallPlacementValid = false;
-                wall.SetActive(false);
-                return;
+                if (Manager.MapBuilder.GetPrefabConfigurationsOnWorldPosition<WallConfiguration>(wall.transform.position).Count() > 0)
+                {
+                    _isWallPlacementValid = false;
+                    _isWallAlreadyExisting = true;
+                    wall.SetActive(false);
+                    return;
+                }
+                
+                _isWallPlacementValid = true;
+                _isWallAlreadyExisting = false;
             }
 
-            _isWallAlreadyExisting = false;
-
-            wall.SetActive(true);
+            if (_effectedWalls == EEffectedWalls.Both || _effectedWalls == EEffectedWalls.Between)
+            {
+                _isWallPlacementValid = true;
+                wall.SetActive(true);
+            }
         }
 
         private void OnGizmoExited()
@@ -185,7 +209,6 @@ namespace Scripts.MapEditor
             wall.SetActive(false);
 
             if (!EditorUIManager.Instance.IsAnyObjectEdited
-                && Manager.WorkMode is EWorkMode.Walls
                 && Manager.EditedLayout.HasIndex(currentGridPosition)
                 && Manager.EditedLayout.ByGridV3Int(currentGridPosition) != null)
             {
@@ -212,6 +235,8 @@ namespace Scripts.MapEditor
 
         private void OnWorkModeChanged(EWorkMode workMode)
         {
+            _workMode = workMode;
+
             if (workMode != EWorkMode.Walls && workMode != EWorkMode.Triggers)
             {
                 IsActive = false;

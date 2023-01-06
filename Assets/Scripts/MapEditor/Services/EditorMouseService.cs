@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MouseCursorManager;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor.Services
 {
@@ -20,7 +21,7 @@ namespace Scripts.MapEditor.Services
         [SerializeField] private Cursor3D cursor3D;
         [SerializeField] private GameObject upperFloorTrigger;
         [SerializeField] private EditorCameraService cameraService;
-        
+
         private static MapEditorManager Manager => MapEditorManager.Instance;
         private static EditorUIManager UIManager => EditorUIManager.Instance;
 
@@ -36,7 +37,7 @@ namespace Scripts.MapEditor.Services
         private Vector3Int _lastGridPosition;
         private readonly Vector3Int _invalidGridPosition = new(-10000, -10000, -10000);
         private readonly Vector2 _defaultMouseHotspot = Vector2.zero;
-        
+
         private WallPrefabBase _lastEnteredWall;
         private GameObject _lastPrefabOnPosition;
 
@@ -69,7 +70,7 @@ namespace Scripts.MapEditor.Services
             base.Awake();
 
             _buildService = new MapBuildService();
-            
+
             _lastGridPosition = new Vector3Int(-1000, -1000, -1000);
         }
 
@@ -90,7 +91,7 @@ namespace Scripts.MapEditor.Services
             cameraService.HandleMouseWheel();
             ValidateClicks();
             cameraService.HandleMouseMovement();
-            
+
             if (EventSystem.current.IsPointerOverGameObject())
             {
                 _uiIsBlocking = true;
@@ -109,9 +110,9 @@ namespace Scripts.MapEditor.Services
             {
                 RefreshMousePosition();
             }
-            
+
             if (!LeftClickExpired && Input.GetMouseButtonUp(0))
-            {   
+            {
                 ProcessMouseButtonUp(0);
             }
             else
@@ -129,7 +130,7 @@ namespace Scripts.MapEditor.Services
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
             EditorEvents.OnWorkingLevelChanged -= OnWorkingLevelChanged;
         }
-        
+
         public void RefreshMousePosition(bool invalidateLastPosition = false)
         {
             if (!Manager.MapIsPresented || UIManager.IsAnyObjectEdited) return;
@@ -142,11 +143,11 @@ namespace Scripts.MapEditor.Services
             MouseCursorManager.ResetCursor();
             RefreshMousePosition(true);
         }
-        
+
         private void CheckMouseOverWall()
         {
             if (Manager.WorkMode != EWorkMode.Walls || EditorUIManager.Instance.IsAnyObjectEdited) return;
-            
+
             if (LayersManager.CheckRayHit(LayersManager.WallMaskName, out GameObject hitWall))
             {
                 WallPrefabBase wall = hitWall.GetComponentInParent<WallPrefabBase>();
@@ -159,7 +160,7 @@ namespace Scripts.MapEditor.Services
             }
 
             if (!_lastEnteredWall) return;
-            
+
             _lastEnteredWall.WallEligibleForEditing = false;
             _lastEnteredWall = null;
             cursor3D.Hide();
@@ -169,12 +170,12 @@ namespace Scripts.MapEditor.Services
         private void OnNewMapStartedCreation() => RecreateMousePlane();
 
         private void OnFloorChanged(int? _) => RecreateMousePlane();
-        
+
         private void OnWorkingLevelChanged(ELevel newLevel) => ResetCursor();
 
         private void OnWorkModeChanged(EWorkMode _) => ResetCursor();
-        
-        private void RecreateMousePlane() => _layerPlane = _layerPlane = new Plane(Vector3.up, 
+
+        private void RecreateMousePlane() => _layerPlane = _layerPlane = new Plane(Vector3.up,
             new Vector3(0f, 0.5f - Manager.CurrentFloor, 0f));
 
         private void ValidateClicks()
@@ -214,7 +215,7 @@ namespace Scripts.MapEditor.Services
         private void ProcessMouseButtonUp(int mouseButtonUpped)
         {
             LastLeftButtonUpWorldPosition = MouseGridPosition.ToWorldPositionV3Int();
-            
+
             switch (Manager.WorkMode)
             {
                 case EWorkMode.None:
@@ -250,14 +251,13 @@ namespace Scripts.MapEditor.Services
                                 new PositionRotation(MouseGridPosition.ToWorldPositionV3Int(), Quaternion.identity));
                         }
                     }
-                    
+
                     break;
                 case EWorkMode.Prefabs:
                 case EWorkMode.Items:
                 case EWorkMode.Enemies:
+                case EWorkMode.Triggers:
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -302,7 +302,7 @@ namespace Scripts.MapEditor.Services
             TileDescription[,,] layout = GameManager.Instance.CurrentMap.Layout;
 
             GridPositionType = EGridPositionType.None;
-            
+
             if (!layout.HasIndex(newGridPosition))
             {
                 Cursor.SetCursor(null, _defaultMouseHotspot, CursorMode.Auto);
@@ -311,7 +311,7 @@ namespace Scripts.MapEditor.Services
             }
 
             bool isNullTile = layout.ByGridV3Int(newGridPosition) == null;
-            
+
             ResolveBuildModePosition(isNullTile, newGridPosition, layout);
             ResolveWallModePosition(isNullTile);
             ResolvePrefabTileModePosition(isNullTile);
@@ -322,14 +322,14 @@ namespace Scripts.MapEditor.Services
         private void ResolveWallModePosition(bool isNullTile)
         {
             if (Manager.WorkMode != EWorkMode.Walls) return;
-            
+
             GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
         }
-        
+
         private void ResolvePrefabTileModePosition(bool isNullTile)
         {
             if (Manager.WorkMode != EWorkMode.PrefabTiles) return;
-            
+
             GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
         }
 
@@ -339,12 +339,12 @@ namespace Scripts.MapEditor.Services
             TileDescription[,,] layout)
         {
             if (Manager.WorkMode != EWorkMode.Build) return;
-            
+
             if (Manager.WorkLevel == ELevel.Equal)
             {
                 upperFloorTrigger.SetActive(false);
                 _buildService.HandleUpperFloorVisibility();
-                
+
                 GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
 
                 if (IsPositionOccupied(newGridPosition))
@@ -357,7 +357,7 @@ namespace Scripts.MapEditor.Services
                 if (!isNullTile)
                 {
                     Vector3Int aboveGridPosition = newGridPosition.AddToX(-1);
-                    
+
                     if (IsPositionOccupied(aboveGridPosition))
                     {
                         GridPositionType = EGridPositionType.None;
@@ -365,16 +365,16 @@ namespace Scripts.MapEditor.Services
                     }
 
                     bool isNullTileAbove = layout.ByGridV3Int(aboveGridPosition) == null;
-                        
+
                     GridPositionType = isNullTileAbove ? EGridPositionType.NullTileAbove : EGridPositionType.EditableTileAbove;
-                    
+
                     upperFloorTrigger.transform.position = MouseGridPosition.ToWorldPosition();
                     upperFloorTrigger.SetActive(true);
                 }
                 else
                 {
                     upperFloorTrigger.SetActive(false);
-                    
+
                     _buildService.HandleUpperFloorVisibility();
 
                     GridPositionType = EGridPositionType.None;
@@ -384,11 +384,11 @@ namespace Scripts.MapEditor.Services
             {
                 upperFloorTrigger.SetActive(false);
                 _buildService.HandleUpperFloorVisibility();
-                
+
                 if (!isNullTile)
                 {
                     Vector3Int bellowGridPosition = newGridPosition.AddToX(1);
-                    
+
                     if (IsPositionOccupied(bellowGridPosition))
                     {
                         GridPositionType = EGridPositionType.None;
@@ -396,7 +396,7 @@ namespace Scripts.MapEditor.Services
                     }
 
                     bool isNullTileBellow = layout.ByGridV3Int(bellowGridPosition) == null;
-                        
+
                     GridPositionType = isNullTileBellow ? EGridPositionType.NullTileBellow : EGridPositionType.EditableTileBellow;
                 }
                 else
@@ -413,7 +413,7 @@ namespace Scripts.MapEditor.Services
 
         private void SetCursorByType(EGridPositionType type)
         {
-            if (Manager.WorkMode == EWorkMode.Walls)
+            if (Manager.WorkMode is EWorkMode.Walls or EWorkMode.Triggers)
             {
                 SetDefaultCursor();
             }
@@ -428,7 +428,7 @@ namespace Scripts.MapEditor.Services
                     return;
                 }
 
-                GameObject prefabOnPosition = Manager.MapBuilder.GetPrefabByGridPosition(MouseGridPosition); 
+                GameObject prefabOnPosition = Manager.MapBuilder.GetPrefabByGridPosition(MouseGridPosition);
                 if (prefabOnPosition)
                 {
                     _lastPrefabOnPosition = prefabOnPosition;
@@ -439,10 +439,10 @@ namespace Scripts.MapEditor.Services
                     _lastPrefabOnPosition = null;
                     SetCursor(ECursorType.Add);
                 }
-                
+
                 cursor3D.ShowAt(MouseGridPosition);
             }
-            
+
             if (Manager.WorkMode == EWorkMode.Build)
             {
                 switch (type)

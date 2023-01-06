@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.System.MonoBases;
@@ -27,6 +28,8 @@ namespace Scripts.UI.EditorUI
             _addTriggerButton.OnClickWithSender += OnClick;
             _editTriggerButton.OnClickWithSender += OnClick;
             _editTriggerReceiverButton.OnClickWithSender += OnClick;
+            
+            EditorEvents.OnTriggerWorkModeChanged += SetSelected;
         }
 
         private void OnDisable()
@@ -34,6 +37,8 @@ namespace Scripts.UI.EditorUI
             _addTriggerButton.OnClickWithSender -= OnClick;
             _editTriggerButton.OnClickWithSender -= OnClick;
             _editTriggerReceiverButton.OnClickWithSender -= OnClick;
+            
+            EditorEvents.OnTriggerWorkModeChanged -= SetSelected;
         }
 
         private void OnClick(ImageButton sender) => MapEditorManager.Instance.SetTriggerEditMode(_buttonsMap.GetFirstKeyByValue(sender));
@@ -51,8 +56,8 @@ namespace Scripts.UI.EditorUI
         private Dictionary<ETriggerEditMode, ImageButton> BuildButtonsMap() =>
             _buttonsMap = new Dictionary<ETriggerEditMode, ImageButton>
             {
-                {ETriggerEditMode.AddTrigger, _editTriggerButton},
-                {ETriggerEditMode.EditTrigger, _addTriggerButton},
+                {ETriggerEditMode.AddTrigger, _addTriggerButton},
+                {ETriggerEditMode.EditTrigger, _editTriggerButton},
                 {ETriggerEditMode.EditReceiver, _editTriggerReceiverButton},
             };
     }

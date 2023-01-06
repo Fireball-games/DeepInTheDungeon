@@ -114,6 +114,7 @@ namespace Scripts.UI.EditorUI
                     _openedEditor = prefabTileEditor;
                     break;
                 default:
+                    IsAnyObjectEdited = false;
                     Logger.LogWarning($"Not implemented editor for type {prefabType}.");
                     break;
             }
@@ -145,6 +146,7 @@ namespace Scripts.UI.EditorUI
                     _openedEditor = prefabTileEditor;
                     break;
                 default:
+                    IsAnyObjectEdited = false;
                     Logger.LogWarning($"Not implemented editor for type {configuration.PrefabType}.");
                     break;
             }

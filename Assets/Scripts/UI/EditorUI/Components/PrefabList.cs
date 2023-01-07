@@ -48,6 +48,8 @@ namespace Scripts.UI.EditorUI.Components
             }
         }
 
+        public void Close() => SetActive(false);
+
         private void OnItemClicked_internal(PrefabBase prefab)
         {
             string prefabName = prefab.gameObject.name;

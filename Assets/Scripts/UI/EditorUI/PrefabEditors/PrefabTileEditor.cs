@@ -60,16 +60,18 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void VisualizeOtherComponents()
         {
+            rotationWidget.SetActive(false);
+            isWalkableCheckBox.SetActive(false);
+            
+            if (EditedConfiguration == null) return;
+            
             rotationWidget.SetUp(t.Get(Keys.Rotate), () => Rotate(-90), () => Rotate(90));
-
-            isWalkableCheckBox.SetLabel(t.Get(Keys.IsWalkable));
-            isWalkableCheckBox.SetToggle(EditedConfiguration.IsWalkable);
-            isWalkableCheckBox.OnValueChanged += SetIsWalkableInLayout;
+            isWalkableCheckBox.SetActive(true, t.Get(Keys.IsWalkable), EditedConfiguration.IsWalkable);
         }
 
         protected override void InitializeOtherComponents()
         {
-            
+            isWalkableCheckBox.OnValueChanged += SetIsWalkableInLayout;
         }
 
         private void Rotate(float angles)

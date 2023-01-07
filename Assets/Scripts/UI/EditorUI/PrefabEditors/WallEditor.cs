@@ -59,7 +59,7 @@ namespace Scripts.UI.EditorUI
             base.Delete();
         }
 
-        protected override void SaveMapAndClose()
+        protected override void SaveMap()
         {
             if (EditedConfiguration.HasPath())
             {
@@ -73,12 +73,12 @@ namespace Scripts.UI.EditorUI
 
             _createdOppositeWall = null;
 
-            base.SaveMapAndClose();
+            base.SaveMap();
         }
 
         protected override void RemoveAndClose()
         {
-            if (EditedConfiguration.WayPoints.Any())
+            if (EditedConfiguration?.WayPoints.Any() == true)
             {
                 DestroyPath(EPathsType.Waypoint, EditedConfiguration.WayPoints);
             }
@@ -192,6 +192,10 @@ namespace Scripts.UI.EditorUI
         protected override void VisualizeOtherComponents()
         {
             _waypointEditor.SetActive(false);
+            _offsetSlider.SetActive(false);
+            _offsetNumericUpDown.gameObject.SetActive(false);
+
+            if (EditedConfiguration == null) return;
             
             if (PhysicalPrefabBody)
             {

@@ -26,7 +26,6 @@ namespace Scripts.UI.Components
             if (_label) _label.text = label ?? "";
             _leftRotateButton.OnClick += onRotateLeft;
             _rightRotateButton.OnClick += onRotateRight;
-        
         }
     }
 }

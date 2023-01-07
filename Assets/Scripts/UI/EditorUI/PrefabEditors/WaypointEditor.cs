@@ -38,6 +38,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _stepSelector = body.transform.Find("Background/Frame/StepSelector").GetComponent<StepSelector>();
             _stepSelector.Set(StepSelector.EStep.Step05, OnStepChanged);
             
+            body.transform.Find("Background/Frame/Title").GetComponent<Title>().SetTitle(t.Get(Keys.WaypointEditor));
+            
             _map = new Dictionary<WaypointControl, int>();
         }
 

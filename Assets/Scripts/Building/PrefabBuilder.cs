@@ -193,6 +193,12 @@ namespace Scripts.Building
         {
             return MapDescription.PrefabConfigurations.FirstOrDefault(c => c.TransformData.Equals(transformData));
         }
+        
+        public static IEnumerable<T> GetAllConfigurationsByType<T>(Enums.EPrefabType prefabType) where T : PrefabConfiguration
+        {
+            return MapDescription.PrefabConfigurations.Where(c => c.PrefabType == prefabType)
+                .Select(c => c as T);
+        }
 
         private int FindIndexOfConfiguration(PrefabConfiguration configuration) =>
             MapDescription.PrefabConfigurations.FindIndex(c => c.Guid == configuration.Guid);
@@ -382,7 +388,7 @@ namespace Scripts.Building
 
             foreach (TriggerReceiver receiver in triggerReceivers)
             {
-                foreach (TriggerConfiguration triggerConfiguration in GetAllPrefabsByType<TriggerConfiguration>(Enums.EPrefabType.Trigger))
+                foreach (TriggerConfiguration triggerConfiguration in GetAllConfigurationsByType<TriggerConfiguration>(Enums.EPrefabType.Trigger))
                 {
                     // TODO: Not tested, test once more triggerReceivers can be assigned to trigger
                     if (triggerConfiguration.Subscribers.Contains(receiver.PrefabGuid))
@@ -399,12 +405,6 @@ namespace Scripts.Building
                 
                 RemoveConfiguration(trigger.GUID);
             }
-        }
-        
-        private IEnumerable<T> GetAllPrefabsByType<T>(Enums.EPrefabType prefabType) where T : PrefabConfiguration
-        {
-            return MapDescription.PrefabConfigurations.Where(c => c.PrefabType == prefabType)
-                .Select(c => c as T);
         }
 
         private T GetConfigurationByGuid<T>(string guid) where T : PrefabConfiguration

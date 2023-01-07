@@ -1,6 +1,4 @@
-﻿using Unity.VisualScripting;
-
-namespace Scripts.Localization
+﻿namespace Scripts.Localization
 {
     public static class Keys
     {
@@ -8,6 +6,7 @@ namespace Scripts.Localization
         public const string AddWaypoint = "AddWaypoint";
         public const string AvailablePrefabs = "AvailablePrefabs";
         public const string Cancel = "Cancel";
+        public const string Close = "Close";
         public const string Columns = "Columns";
         public const string Confirm = "Confirm";
         public const string CreateMap = "CreateMap";
@@ -19,6 +18,7 @@ namespace Scripts.Localization
         public const string East = "East";
         public const string EndPoint = "EndPoint";
         public const string ErrorBuildingPrefab = "ErrorBuildingPref";
+        public const string ExistingPrefabs = "ExistingPrefabs";
         public const string Exit = "Exit";
         public const string Floors = "Floors";
         public const string IsWalkable = "IsWalkable";

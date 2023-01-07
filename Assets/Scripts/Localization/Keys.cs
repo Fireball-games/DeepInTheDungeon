@@ -36,6 +36,7 @@ namespace Scripts.Localization
         public const string North = "North";
         public const string Offset = "Offset";
         public const string Point = "Point";
+        public const string Position = "Position";
         public const string ReturnToEditor = "ReturnToEditor";
         public const string ReturnToMainScene = "ReturnToMainScene";
         public const string Rotate = "Rotate";

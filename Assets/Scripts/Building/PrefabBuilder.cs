@@ -96,8 +96,7 @@ namespace Scripts.Building
 
             RemoveConfiguration(config);
 
-            GameObject prefabGo = Prefabs.FirstOrDefault(go =>
-                go.name == configuration.PrefabName && go.transform.position == configuration.TransformData.Position);
+            GameObject prefabGo = Prefabs.FirstOrDefault(go => go.GetComponent<PrefabBase>().GUID == configuration.Guid);
 
             if (!prefabGo)
             {

@@ -1,17 +1,18 @@
 using System;
+using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Scripts.UI.Components
 {
-    public class Vector3Control : MonoBehaviour
+    public class Vector3Control : UIElementBase
     {
+        public bool interactable = true;
         [NonSerialized] public TMP_Text Label;
         [NonSerialized] public TMP_Text XLabel;
         [NonSerialized] public TMP_Text YLabel;
         [NonSerialized] public TMP_Text ZLabel;
-        public bool interactable = true;
 
         private NumericUpDown _xUpDown;
         private NumericUpDown _yUpDown;
@@ -45,19 +46,54 @@ namespace Scripts.UI.Components
             }
         }
 
+        public Vector2 XMinimumMaximum
+        {
+            set
+            {
+                _xUpDown.minimum = value.x;
+                _xUpDown.maximum = value.y;
+            }
+        }
+
+        public Vector2 YMinimumMaximum
+        {
+            set
+            {
+                _yUpDown.minimum = value.x;
+                _yUpDown.maximum = value.y;
+            }
+        }
+        
+        public Vector2 ZMinimumMaximum
+        {
+            set
+            {
+                _zUpDown.minimum = value.x;
+                _zUpDown.maximum = value.y;
+            }
+        }
+
         private void Awake()
         {
-            Label = transform.Find("Label").GetComponent<TMP_Text>();
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            if (Label) return;
+            
+            Transform bodyTransform = body.transform;
+            Label = bodyTransform.Find("Label").GetComponent<TMP_Text>();
         
-            _xUpDown = transform.Find("XUpDown").GetComponent<NumericUpDown>();
+            _xUpDown = bodyTransform.Find("XUpDown").GetComponent<NumericUpDown>();
             _xUpDown.OnValueChanged.AddListener(OnXChanged);
             XLabel = _xUpDown.transform.Find("Label").GetComponent<TMP_Text>();
         
-            _yUpDown = transform.Find("YUpDown").GetComponent<NumericUpDown>();
+            _yUpDown = bodyTransform.Find("YUpDown").GetComponent<NumericUpDown>();
             _yUpDown.OnValueChanged.AddListener(OnYChanged);
             YLabel = _yUpDown.transform.Find("Label").GetComponent<TMP_Text>();
         
-            _zUpDown = transform.Find("ZUpDown").GetComponent<NumericUpDown>();
+            _zUpDown = bodyTransform.Find("ZUpDown").GetComponent<NumericUpDown>();
             _zUpDown.OnValueChanged.AddListener(OnZChanged);
             ZLabel = _zUpDown.transform.Find("Label").GetComponent<TMP_Text>();
         }

@@ -35,13 +35,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
         protected TC EditedConfiguration;
-        private TC _originalConfiguration;
         protected EPrefabType EditedPrefabType;
         protected GameObject PhysicalPrefabBody;
         protected GameObject PhysicalPrefab;
-        protected HashSet<TPrefab> AvailablePrefabs;
-        private Cursor3D Cursor3D;
-
+        
+        private TC _originalConfiguration;
+        private HashSet<TPrefab> _availablePrefabs;
+        private Cursor3D _cursor3D;
         private bool _isEditingExistingPrefab;
 
         private void Awake()
@@ -52,7 +52,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _confirmButton.onClick.AddListener(SaveMapAndClose);
             _deleteButton.onClick.AddListener(Delete);
 
-            Cursor3D = FindObjectOfType<Cursor3D>();
+            _cursor3D = FindObjectOfType<Cursor3D>();
         }
 
         private void OnEnable()
@@ -74,8 +74,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         public virtual void Open(TC configuration)
         {
             string prefabListTitle = SetupWindow(configuration.PrefabType, true);
-            
-            EditorCameraService.Instance.MoveCameraToPrefab(configuration.TransformData.Position);
+
+            MoveCameraToPrefab(configuration.TransformData.Position);
 
             _isEditingExistingPrefab = true;
 
@@ -83,14 +83,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             EditedConfiguration = configuration;
             _originalConfiguration = CloneConfiguration(configuration);
 
-            Cursor3D.ShowAt(configuration.TransformData.Position,
+            _cursor3D.ShowAt(configuration.TransformData.Position,
                 Cursor3DScale,
                 configuration.TransformData.Rotation);
 
             _prefabTitle.SetActive(true);
             _prefabTitle.SetTitle(configuration.PrefabName);
 
-            _prefabList.Open(prefabListTitle, AvailablePrefabs!, SetPrefab);
+            _prefabList.Open(prefabListTitle, _availablePrefabs!, SetPrefab);
 
             PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration);
             PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
@@ -109,14 +109,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Placeholder.transform.parent = null;
             Placeholder.SetActive(true);
 
-            if (AvailablePrefabs == null || !AvailablePrefabs.Any())
+            if (_availablePrefabs == null || !_availablePrefabs.Any())
             {
                 EditedPrefabType = EPrefabType.Invalid;
                 SetStatusText(t.Get(Keys.NoPrefabsAvailable));
                 return;
             }
             
-            Cursor3D.ShowAt(placeholderTransformData.Position,
+            _cursor3D.ShowAt(placeholderTransformData.Position,
                 Cursor3DScale,
                 placeholderTransformData.Rotation);
 
@@ -124,7 +124,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetStatusText(t.Get(Keys.SelectPrefab));
 
-            _prefabList.Open(prefabListTitle, AvailablePrefabs, SetPrefab);
+            _prefabList.Open(prefabListTitle, _availablePrefabs, SetPrefab);
         }
 
         protected virtual string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
@@ -144,7 +144,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             string prefabListTitle = t.Get(Keys.AvailablePrefabs);
 
-            AvailablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
+            _availablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
                 .Select(prefab => prefab.GetComponent<TPrefab>())
                 .Where(prefab => prefab.prefabType == prefabType)
                 .ToHashSet();
@@ -190,6 +190,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _deleteButton.gameObject.SetActive(true);
             Placeholder.SetActive(false);
         }
+        
+        protected void MoveCameraToPrefab(Vector3 targetPosition) => 
+            EditorCameraService.Instance.MoveCameraToPrefab(targetPosition);
 
         protected void SetEdited()
         {
@@ -273,7 +276,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             PhysicalPrefabBody = null;
             PhysicalPrefab = null;
 
-            Cursor3D.Hide();
+            _cursor3D.Hide();
 
             EditorUIManager.Instance.isAnyObjectEdited = false;
             EditorUIManager.Instance.WallGizmo.Reset();

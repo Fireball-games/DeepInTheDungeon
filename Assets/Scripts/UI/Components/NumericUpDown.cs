@@ -40,6 +40,11 @@ namespace Scripts.UI.Components
     
         private void Awake()
         {
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             Label = transform.Find("Label").GetComponent<TMP_Text>();
             _input = transform.Find("Input").GetComponent<TMP_InputField>();
             _input.onValueChanged.AddListener(OnValueChanged_inInput);

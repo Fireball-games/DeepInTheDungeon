@@ -43,6 +43,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private HashSet<TPrefab> _availablePrefabs;
         private Cursor3D _cursor3D;
         private bool _isEditingExistingPrefab;
+        
+        protected bool CanOpen => !body.activeSelf;
 
         private void Awake()
         {
@@ -68,11 +70,21 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected abstract TC GetNewConfiguration(string prefabName);
         protected abstract TC CloneConfiguration(TC sourceConfiguration);
+        protected abstract void VisualizeOtherComponents();
+        protected abstract void InitializeOtherComponents();
 
         protected virtual Vector3 Cursor3DScale => Vector3.one;
 
         public virtual void Open(TC configuration)
         {
+            if (!CanOpen) return;
+
+            if (configuration == null)
+            {
+                Close();
+                return;
+            }
+            
             string prefabListTitle = SetupWindow(configuration.PrefabType, true);
 
             MoveCameraToPrefab(configuration.TransformData.Position);
@@ -94,6 +106,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration);
             PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
+            
+            VisualizeOtherComponents();
         }
 
         public void Open(EPrefabType prefabType, PositionRotation placeholderTransformData)
@@ -126,30 +140,26 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _prefabList.Open(prefabListTitle, _availablePrefabs, SetPrefab);
         }
-
-        protected virtual string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
+        
+        public virtual void CloseWithChangeCheck()
         {
-            SetActive(true);
-            _prefabList.SetActive(false);
-            SetStatusText();
-            _isEditingExistingPrefab = false;
+            if (_isEditingExistingPrefab)
+            {
+                MapBuilder.RemovePrefab(EditedConfiguration);
+                MapBuilder.BuildPrefab(_originalConfiguration);
+            }
 
-            _cancelButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Cancel);
+            if (!_isEditingExistingPrefab && EditedConfiguration != null)
+            {
+                EditorUIManager.Instance.ConfirmationDialog.Open(t.Get(Keys.SaveEditedMapPrompt),
+                    SaveMapAndClose,
+                    RemoveAndClose,
+                    t.Get(Keys.Save),
+                    t.Get(Keys.DontSave));
+                return;
+            }
 
-            _confirmButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Confirm);
-            _confirmButton.gameObject.SetActive(false);
-
-            _deleteButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Delete);
-            _deleteButton.gameObject.SetActive(deleteButtonActive);
-
-            string prefabListTitle = t.Get(Keys.AvailablePrefabs);
-
-            _availablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
-                .Select(prefab => prefab.GetComponent<TPrefab>())
-                .Where(prefab => prefab.prefabType == prefabType)
-                .ToHashSet();
-
-            return prefabListTitle;
+            Close();
         }
 
         protected virtual void SetPrefab(string prefabName)
@@ -189,6 +199,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetEdited();
             _deleteButton.gameObject.SetActive(true);
             Placeholder.SetActive(false);
+            
+            VisualizeOtherComponents();
         }
         
         protected void MoveCameraToPrefab(Vector3 targetPosition) => 
@@ -199,19 +211,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _confirmButton.gameObject.SetActive(true);
             EditorEvents.TriggerOnMapEdited();
         }
-        
-        private void AssignComponents()
-        {
-            Placeholder = body.transform.Find("Placeholder").gameObject;
-            _prefabList = body.transform.Find("PrefabList").GetComponent<PrefabList>();
-            Transform frame = body.transform.GetChild(0).GetChild(0);
-            _prefabTitle = frame.Find("PrefabTitle").GetComponent<Title>();
-            _statusText = frame.Find("StatusText").GetComponent<TMP_Text>();
-            Transform buttons = frame.Find("Buttons");
-            _cancelButton = buttons.Find("CancelButton").GetComponent<Button>();
-            _confirmButton = buttons.Find("ConfirmButton").GetComponent<Button>();
-            _deleteButton = buttons.Find("DeleteButton").GetComponent<Button>();
-        }
 
         protected virtual void Delete()
         {
@@ -219,32 +218,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             MapEditorManager.Instance.SaveMap();
             
-            Close();
-        }
-
-        private void Close(EWorkMode _)
-        {
-            if (!CanOpen) CloseWithChangeCheck();
-        }
-
-        public virtual void CloseWithChangeCheck()
-        {
-            if (_isEditingExistingPrefab)
-            {
-                MapBuilder.RemovePrefab(EditedConfiguration);
-                MapBuilder.BuildPrefab(_originalConfiguration);
-            }
-
-            if (!_isEditingExistingPrefab && EditedConfiguration != null)
-            {
-                EditorUIManager.Instance.ConfirmationDialog.Open(t.Get(Keys.SaveEditedMapPrompt),
-                    SaveMapAndClose,
-                    RemoveAndClose,
-                    t.Get(Keys.Save),
-                    t.Get(Keys.DontSave));
-                return;
-            }
-
             Close();
         }
 
@@ -285,8 +258,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetActive(false);
         }
 
-        protected bool CanOpen => !body.activeSelf;
-
         private void SetStatusText(string text = null)
         {
             _statusText.text = text ?? "";
@@ -298,6 +269,51 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             }
 
             _statusText.gameObject.SetActive(true);
+        }
+        
+        private string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
+        {
+            InitializeOtherComponents();
+            
+            SetActive(true);
+            _prefabList.SetActive(false);
+            SetStatusText();
+            _isEditingExistingPrefab = false;
+
+            _cancelButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Cancel);
+
+            _confirmButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Confirm);
+            _confirmButton.gameObject.SetActive(false);
+
+            _deleteButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Delete);
+            _deleteButton.gameObject.SetActive(deleteButtonActive);
+
+            string prefabListTitle = t.Get(Keys.AvailablePrefabs);
+
+            _availablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
+                .Select(prefab => prefab.GetComponent<TPrefab>())
+                .Where(prefab => prefab.prefabType == prefabType)
+                .ToHashSet();
+
+            return prefabListTitle;
+        }
+        
+        private void Close(EWorkMode _)
+        {
+            if (!CanOpen) CloseWithChangeCheck();
+        }
+        
+        private void AssignComponents()
+        {
+            Placeholder = body.transform.Find("Placeholder").gameObject;
+            _prefabList = body.transform.Find("PrefabList").GetComponent<PrefabList>();
+            Transform frame = body.transform.GetChild(0).GetChild(0);
+            _prefabTitle = frame.Find("PrefabTitle").GetComponent<Title>();
+            _statusText = frame.Find("StatusText").GetComponent<TMP_Text>();
+            Transform buttons = frame.Find("Buttons");
+            _cancelButton = buttons.Find("CancelButton").GetComponent<Button>();
+            _confirmButton = buttons.Find("ConfirmButton").GetComponent<Button>();
+            _deleteButton = buttons.Find("DeleteButton").GetComponent<Button>();
         }
     }
 }

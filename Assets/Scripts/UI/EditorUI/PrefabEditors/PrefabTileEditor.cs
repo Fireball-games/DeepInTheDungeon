@@ -48,8 +48,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 return;
             }
 
-            SetWidgets();
-
             MapBuilder.Layout.ByGridV3Int(PhysicalPrefabBody.transform.position.ToGridPosition()).IsForMovement = script.isWalkable;
         }
 
@@ -58,17 +56,20 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             base.SetPrefab(prefabName);
 
             MapBuilder.Layout.ByGridV3Int(PhysicalPrefabBody.transform.position.ToGridPosition()).IsForMovement = EditedConfiguration.IsWalkable;
-
-            SetWidgets();
         }
 
-        private void SetWidgets()
+        protected override void VisualizeOtherComponents()
         {
             rotationWidget.SetUp(t.Get(Keys.Rotate), () => Rotate(-90), () => Rotate(90));
 
             isWalkableCheckBox.SetLabel(t.Get(Keys.IsWalkable));
             isWalkableCheckBox.SetToggle(EditedConfiguration.IsWalkable);
             isWalkableCheckBox.OnValueChanged += SetIsWalkableInLayout;
+        }
+
+        protected override void InitializeOtherComponents()
+        {
+            
         }
 
         private void Rotate(float angles)

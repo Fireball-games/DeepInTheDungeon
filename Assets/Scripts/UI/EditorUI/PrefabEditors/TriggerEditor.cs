@@ -29,43 +29,21 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected override TriggerConfiguration CloneConfiguration(TriggerConfiguration sourceConfiguration) => new(sourceConfiguration);
         
         protected override Vector3 Cursor3DScale => new(0.15f, 1.1f, 1.1f);
-
-        public override void Open(TriggerConfiguration configuration)
-        {
-            if (!CanOpen) return;
-
-            if (configuration == null)
-            {
-                Close();
-                return;
-            }
-
-            base.Open(configuration);
-
-            VisualizeOtherComponents();
-        }
-
-        protected override string SetupWindow(Enums.EPrefabType prefabType, bool deleteButtonActive)
-        {
-            Initialize();
-
-            return base.SetupWindow(prefabType, deleteButtonActive);
-        }
-
-        private void Initialize()
-        {
-            Transform frame = transform.Find("Body/Background/Frame");
-            _positionControl = frame.Find("PositionControl").GetComponent<Vector3Control>();
-            _positionControl.SetActive(false);
-        }
-
+        
         private void OnPositionChanged(Vector3 newPosition)
         {
             EditedConfiguration.TransformData.Position = newPosition;
             PhysicalPrefab.transform.localPosition += newPosition;
         }
 
-        private void VisualizeOtherComponents()
+        protected override void InitializeOtherComponents()
+        {
+            Transform frame = transform.Find("Body/Background/Frame");
+            _positionControl = frame.Find("PositionControl").GetComponent<Vector3Control>();
+            _positionControl.SetActive(false);
+        }
+
+        protected override void VisualizeOtherComponents()
         {
             _positionControl.OnValueChanged.RemoveAllListeners();
             _positionControl.Label.text = t.Get(Keys.Position);

@@ -47,43 +47,6 @@ namespace Scripts.UI.EditorUI
 
         protected override Vector3 Cursor3DScale => new(0.15f, 1.1f, 1.1f);
 
-        public override void Open(WallConfiguration configuration)
-        {
-            if (!CanOpen) return;
-
-            if (configuration == null)
-            {
-                Close();
-                return;
-            }
-
-            base.Open(configuration);
-
-            VisualizeOtherComponents();
-        }
-
-        protected override string SetupWindow(EPrefabType prefabType, bool deleteButtonActive)
-        {
-            Initialize();
-
-            _offsetSlider.SetLabel(t.Get(Keys.Offset));
-            _offsetSlider.SetActive(false);
-            _offsetNumericUpDown.gameObject.SetActive(false);
-
-            _createOppositePathButton.gameObject.SetActive(false);
-
-            return base.SetupWindow(prefabType, deleteButtonActive);
-        }
-
-        protected override void SetPrefab(string prefabName)
-        {
-            base.SetPrefab(prefabName);
-
-            _waypointEditor.SetActive(false);
-
-            VisualizeOtherComponents();
-        }
-
         protected override void Delete()
         {
             if (EditedConfiguration.WayPoints.Any())
@@ -156,10 +119,15 @@ namespace Scripts.UI.EditorUI
             _createdOppositeWall = null;
         }
 
-        private void Initialize()
+        protected override void InitializeOtherComponents()
         {
             _offsetSlider = body.transform.Find("Background/Frame/OffsetHandling/OffsetSlider").GetComponent<LabeledSlider>();
+            _offsetSlider.SetActive(false);
+            _offsetSlider.SetLabel(t.Get(Keys.Offset));
+            
             _offsetNumericUpDown = body.transform.Find("Background/Frame/OffsetHandling/NumericUpDown").GetComponent<NumericUpDown>();
+            _offsetNumericUpDown.gameObject.SetActive(false);
+            
             _waypointEditor = body.transform.Find("WaypointsEditor").GetComponent<WaypointEditor>();
             _waypointEditor.SetActive(false);
 
@@ -167,6 +135,8 @@ namespace Scripts.UI.EditorUI
             _createOppositePathButton.onClick.RemoveAllListeners();
             _createOppositePathButton.onClick.AddListener(GenerateOppositePath);
             _createOppositePathButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.CreateOppositePath);
+            
+            _createOppositePathButton.gameObject.SetActive(false);
         }
 
         private void GenerateOppositePath()
@@ -219,8 +189,10 @@ namespace Scripts.UI.EditorUI
             PhysicalPrefabBody.transform.localPosition = newPosition;
         }
 
-        private void VisualizeOtherComponents()
+        protected override void VisualizeOtherComponents()
         {
+            _waypointEditor.SetActive(false);
+            
             if (PhysicalPrefabBody)
             {
                 _offsetSlider.OnValueChanged.RemoveAllListeners();

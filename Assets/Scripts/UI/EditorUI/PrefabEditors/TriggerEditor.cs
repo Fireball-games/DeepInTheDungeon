@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.System;
 using Scripts.Triggers;
 using Scripts.UI.Components;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
@@ -32,8 +34,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         
         private void OnPositionChanged(Vector3 newPosition)
         {
-            EditedConfiguration.TransformData.Position = newPosition;
-            PhysicalPrefab.transform.localPosition += newPosition;
+            Vector3 newPrefabWorldPosition = _prefabWallCenterPosition + newPosition;
+            Logger.Log($"New prefab position: {newPrefabWorldPosition}");
+            EditedConfiguration.TransformData.Position = newPrefabWorldPosition;
+            PhysicalPrefab.transform.localPosition = newPrefabWorldPosition;
         }
 
         protected override void InitializeOtherComponents()
@@ -45,12 +49,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void VisualizeOtherComponents()
         {
+            _prefabWallCenterPosition = PhysicalPrefab.transform.position.ToVector3Int();
+            _prefabWallCenterPosition.x = (float)Math.Round(PhysicalPrefab.transform.position.x, 1);
+            Logger.Log($"WallCenter: {_prefabWallCenterPosition}");
+            
             _positionControl.OnValueChanged.RemoveAllListeners();
             _positionControl.Label.text = t.Get(Keys.Position);
             _positionControl.XMinimumMaximum = new Vector2(-0.5f, 0.5f);
             _positionControl.XMinimumMaximum = new Vector2(-0.5f, 0.5f);
             _positionControl.XMinimumMaximum = new Vector2(0f, 0.2f);
             _positionControl.Step = 0.01f;
+            _positionControl.Value = PhysicalPrefab.transform.position - _prefabWallCenterPosition;
             _positionControl.OnValueChanged.AddListener(OnPositionChanged);
             _positionControl.SetActive(true);
         }

@@ -1,11 +1,11 @@
 ﻿using System;
 using Scripts.System.Pooling;
 using UnityEngine;
-using UnityEngine.Serialization;
 using static Scripts.Enums;
 
 namespace Scripts.Building.Walls
 {
+    [SelectionBase]
     public abstract class PrefabBase : MonoBehaviour, IPoolInitializable
     {
         public EPrefabType prefabType;
@@ -30,6 +30,7 @@ namespace Scripts.Building.Walls
 
         public virtual void Initialize()
         {
+            transform.position = Vector3.zero;
             guid = Guid.NewGuid().ToString();
         }
     }

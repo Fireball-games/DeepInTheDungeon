@@ -30,6 +30,8 @@ namespace Scripts.UI.Components
             {
                 _value = Mathf.Clamp(value, minimum, maximum);
 
+                if (!_input) Initialize();
+                
                 _input.onValueChanged.RemoveAllListeners();
                 _input.text = value.ToString(GetPrecisionFormatString());
                 _input.onValueChanged.AddListener(OnValueChanged_inInput);

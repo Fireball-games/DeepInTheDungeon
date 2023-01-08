@@ -17,14 +17,14 @@ namespace Scripts.UI.Components
         public void ToggleOn(bool isSilent = false) => SetToggle(true, isSilent);
         public void ToggleOff(bool isSilent = false) => SetToggle(false, isSilent);
 
-        protected override void OnClickInternal()
+        protected override void OnClick_Internal()
         {
             if (!dontToggleOnclick)
             {
                 SetToggle(!toggled);
             }
             
-            base.OnClickInternal();
+            base.OnClick_Internal();
         }
 
         private void SetToggle(bool isToggled, bool isSilent = false)

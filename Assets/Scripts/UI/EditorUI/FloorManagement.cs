@@ -27,24 +27,20 @@ namespace Scripts.UI.EditorUI
         private void Awake()
         {
             _floorButtons = new List<FloorButton>();
+            upButton.OnClick.AddListener(ChangeGridFloorUp);
+            downButton.OnClick.AddListener(ChangeGridFloorDown);
         }
 
         private void OnEnable()
         {
             EditorEvents.OnNewMapStartedCreation += ConstructButtons;
             EditorEvents.OnFloorChanged += OnFloorChanged;
-
-            upButton.OnClick += ChangeGridFloorUp;
-            downButton.OnClick += ChangeGridFloorDown;
         }
 
         private void OnDisable()
         {
             EditorEvents.OnNewMapStartedCreation -= ConstructButtons;
             EditorEvents.OnFloorChanged -= OnFloorChanged;
-
-            upButton.OnClick -= ChangeGridFloorUp;
-            downButton.OnClick -= ChangeGridFloorDown;
         }
 
         public override void SetActive(bool isActive)

@@ -5,6 +5,7 @@ using Scripts.Building;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
 using Scripts.EventsManagement;
+using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor;
@@ -41,12 +42,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected EPrefabType EditedPrefabType;
         protected GameObject PhysicalPrefabBody;
         protected GameObject PhysicalPrefab;
+        protected bool IsCurrentConfigurationChanged;
         
         private TC _originalConfiguration;
         private HashSet<TPrefab> _availablePrefabs;
         private Cursor3D _cursor3D;
         private bool _isEditingExistingPrefab;
-        private bool _isCurrentConfigurationChanged;
         
         protected bool CanOpen => !body.activeSelf;
 
@@ -101,15 +102,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             }
             
             _isEditingExistingPrefab = true;
+            IsCurrentConfigurationChanged = false;
+            EditedPrefabType = configuration.PrefabType;
+            EditedConfiguration = configuration;
+            _originalConfiguration = CloneConfiguration(configuration);
             
             string prefabListTitle = SetupWindow(configuration.PrefabType);
 
             MoveCameraToPrefab(configuration.TransformData.Position);
-
-            EditedPrefabType = configuration.PrefabType;
-            EditedConfiguration = configuration;
-            _originalConfiguration = CloneConfiguration(configuration);
-
+            
             _cursor3D.ShowAt(configuration.TransformData.Position,
                 Cursor3DScale,
                 configuration.TransformData.Rotation);
@@ -160,7 +161,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabList.Open(prefabListTitle, _availablePrefabs, SetPrefab);
         }
         
-        public virtual void CloseWithChangeCheck()
+        public virtual void CloseWithRemovingChanges()
         {
             RemoveAndClose();
         }
@@ -211,7 +212,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected void SetEdited()
         {
-            _isCurrentConfigurationChanged = true;
+            IsCurrentConfigurationChanged = true;
             SetButtons();
             EditorEvents.TriggerOnMapEdited();
         }
@@ -227,7 +228,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected virtual void RemoveAndClose()
         {
-            RemoveChanges();
+            if (IsCurrentConfigurationChanged)
+            {
+                RemoveChanges();
+            }
+            
             Close();
         }
         
@@ -244,18 +249,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 MapBuilder.RemovePrefab(EditedConfiguration);
                 EditedConfiguration = null;
-                // EditedConfiguration = GetNewConfiguration(EditedConfiguration.PrefabName);
-                // MapBuilder.BuildPrefab(EditedConfiguration);
             }
             
-            _isCurrentConfigurationChanged = false;
+            IsCurrentConfigurationChanged = false;
             SetButtons();
             VisualizeOtherComponents();
         }
 
         protected virtual void SaveMap()
         {
-            _isCurrentConfigurationChanged = false;
+            IsCurrentConfigurationChanged = false;
+            _isEditingExistingPrefab = true;
             MapBuilder.AddReplacePrefabConfiguration(EditedConfiguration);
             MapEditorManager.Instance.SaveMap();
 
@@ -288,9 +292,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void SetButtons()
         {
-            _cancelButton.gameObject.SetActive(_isCurrentConfigurationChanged);
+            _cancelButton.gameObject.SetActive(IsCurrentConfigurationChanged);
             _deleteButton.gameObject.SetActive(_isEditingExistingPrefab && EditedConfiguration.SpawnPrefabOnBuild);
-            _saveButton.gameObject.SetActive(_isCurrentConfigurationChanged);
+            _saveButton.gameObject.SetActive(IsCurrentConfigurationChanged);
+            _closeButton.SetTextColor(IsCurrentConfigurationChanged ? Colors.Negative : Colors.White);
         }
 
         private void SetStatusText(string text = null)
@@ -313,7 +318,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetActive(true);
             _prefabList.SetActive(false);
             SetStatusText();
-            _isEditingExistingPrefab = false;
 
             _closeButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Close);
             _cancelButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Cancel);
@@ -371,8 +375,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _statusText = frame.Find("StatusText").GetComponent<TMP_Text>();
             Transform buttons = frame.Find("Buttons");
             _cancelButton = buttons.Find("CancelButton").GetComponent<Button>();
+            _cancelButton.SetTextColor(Colors.Warning);
             _saveButton = buttons.Find("SaveButton").GetComponent<Button>();
+            _saveButton.SetTextColor(Colors.Positive);
             _deleteButton = buttons.Find("DeleteButton").GetComponent<Button>();
+            _deleteButton.SetTextColor(Colors.Negative);
             _closeButton = buttons.Find("CloseButton").GetComponent<Button>();
         }
     }

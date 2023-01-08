@@ -13,21 +13,19 @@ namespace Scripts.UI.EditorUI.Components
         private void Awake()
         {
             _perspectiveToggle = body.transform.Find("PerspectiveToggle").GetComponent<ToggleFramedButton>();
+            _perspectiveToggle.OnClick.AddListener(OnPerspectiveToggleClick);
+            _perspectiveToggle.dontToggleOnclick = true;
             _waypointsShowToggle = body.transform.Find("WaypointsShowToggle").GetComponent<ToggleFramedButton>();
+            _waypointsShowToggle.OnClick.AddListener(OnWaypointsShowToggleClick);
         }
 
         private void OnEnable()
         {
-            _perspectiveToggle.OnClick += OnPerspectiveToggleClick;
-            _waypointsShowToggle.OnClick += OnWaypointsShowToggleClick;
-            _perspectiveToggle.dontToggleOnclick = true;
             EditorEvents.OnCameraPerspectiveChanged += OnCameraPerspectiveChanged;
         }
 
         private void OnDisable()
         {
-            _perspectiveToggle.OnClick -= OnPerspectiveToggleClick;
-            _waypointsShowToggle.OnClick -= OnWaypointsShowToggleClick;
             EditorEvents.OnCameraPerspectiveChanged -= OnCameraPerspectiveChanged;
         }
     

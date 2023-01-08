@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Scripts.Helpers;
 using TMPro;
 using UnityEngine;
 
@@ -8,14 +9,15 @@ namespace Scripts.UI.Components
 {
     public class StatusBar : MonoBehaviour
     {
-        [SerializeField] private Color normalColor;
-        [SerializeField] private Color positiveColor;
-        [SerializeField] private Color warningColor;
-        [SerializeField] private Color negativeColor;
         [SerializeField] private TextMeshProUGUI textMesh;
         [SerializeField] private Animator animator;
         [SerializeField] private GameObject body;
 
+        private Color NormalColor => Colors.White;
+        private Color PositiveColor => Colors.Positive;
+        private Color WarningColor => Colors.Warning;
+        private Color NegativeColor => Colors.Negative;
+        
         private bool _isBusy;
         private readonly Queue<KeyValuePair<string, EMessageType>> _messageQueue = new();
         private Dictionary<EMessageType, Color> _colorMap;
@@ -32,10 +34,10 @@ namespace Scripts.UI.Components
         {
             _colorMap = new()
             {
-                {EMessageType.None, normalColor},
-                {EMessageType.Positive, positiveColor},
-                {EMessageType.Warning, warningColor},
-                {EMessageType.Negative, negativeColor},
+                {EMessageType.None, NormalColor},
+                {EMessageType.Positive, PositiveColor},
+                {EMessageType.Warning, WarningColor},
+                {EMessageType.Negative, NegativeColor},
             };
             
             body.SetActive(false);

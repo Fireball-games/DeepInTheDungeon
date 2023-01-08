@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using Scripts.Helpers;
 using Scripts.System.MonoBases;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Scripts.UI.Components
@@ -11,21 +13,22 @@ namespace Scripts.UI.Components
         [Header("Sprites")] [SerializeField] private Sprite frame;
         [SerializeField] protected Sprite icon;
         [SerializeField] private Sprite background;
-        [Header("Colors")] [SerializeField] private Color idleColor;
-        [SerializeField] private Color enteredColor;
-        [SerializeField] private Color clickedColor;
-        [SerializeField] private Color selectedColor;
-        [SerializeField] private Color selectedEnteredColor;
         [Header("Options")] [SerializeField] private float clickedEffectDuration = 0.2f;
-        [SerializeField] private MouseClickOverlay mouseClickOverlay;
 
         [Header("Assignables")] 
         [SerializeField] private Image frameImage;
         [SerializeField] protected Image iconImage;
         [SerializeField] private Image backgroundImage;
 
+        private Color IdleColor => Colors.ButtonIdle;
+        private Color EnteredColor => Colors.ButtonEntered;
+        private Color ClickedColor => Colors.ButtonClicked;
+        private Color SelectedColor => Colors.Selected;
+        private Color SelectedEnteredColor => Colors.SelectedOver;
+        private MouseClickOverlay _mouseClickOverlay;
+        
         public event Action<ImageButton> OnClickWithSender;
-        public virtual event Action OnClick;
+        public UnityEvent OnClick { get; } = new();
         public event Action OnSelected;
         public event Action OnDeselected;
 
@@ -47,16 +50,21 @@ namespace Scripts.UI.Components
                 }
                 else
                 {
-                    backgroundImage.color = enteredColor;
+                    backgroundImage.color = EnteredColor;
                 }
             }
         }
 
+        private void Awake()
+        {
+            _mouseClickOverlay = GetComponentInChildren<MouseClickOverlay>();
+        }
+
         private void OnEnable()
         {
-            mouseClickOverlay.OnClick += OnClickInternal;
-            mouseClickOverlay.OnMouseEnter += OnMouseEnter;
-            mouseClickOverlay.OnMouseLeave += OnMouseExit;
+            _mouseClickOverlay.OnClick += OnClick_Internal;
+            _mouseClickOverlay.OnMouseEnter += OnMouseEnter;
+            _mouseClickOverlay.OnMouseLeave += OnMouseExit;
 
             SetBackgroundColor();
         }
@@ -65,13 +73,13 @@ namespace Scripts.UI.Components
         {
             _isMouseEntered = false;
             
-            backgroundImage.color = idleColor;
+            backgroundImage.color = IdleColor;
             StopAllCoroutines();
 
-            OnClick = null;
-            mouseClickOverlay.OnClick -= OnClickInternal;
-            mouseClickOverlay.OnMouseEnter -= OnMouseEnter;
-            mouseClickOverlay.OnMouseLeave -= OnMouseExit;
+            OnClick.RemoveAllListeners();
+            _mouseClickOverlay.OnClick -= OnClick_Internal;
+            _mouseClickOverlay.OnMouseEnter -= OnMouseEnter;
+            _mouseClickOverlay.OnMouseLeave -= OnMouseExit;
         }
 
         public void SetInteractable(bool isInteractable) => IsInteractable = isInteractable;
@@ -89,7 +97,7 @@ namespace Scripts.UI.Components
                 OnDeselected?.Invoke();
         }
 
-        protected virtual void OnClickInternal()
+        protected virtual void OnClick_Internal()
         {
             if (!IsInteractable) return;
             
@@ -122,7 +130,7 @@ namespace Scripts.UI.Components
 
         private IEnumerator ClickedCoroutine()
         {
-            backgroundImage.color = clickedColor;
+            backgroundImage.color = ClickedColor;
 
             yield return new WaitForSeconds(clickedEffectDuration);
 
@@ -135,15 +143,15 @@ namespace Scripts.UI.Components
 
             if (_isMouseEntered)
             {
-                result = _isSelected ? selectedEnteredColor : enteredColor;
+                result = _isSelected ? SelectedEnteredColor : EnteredColor;
             }
             else if (_isSelected)
             {
-                result = _isMouseEntered ? selectedEnteredColor : selectedColor;
+                result = _isMouseEntered ? SelectedEnteredColor : SelectedColor;
             }
             else
             {
-                result = idleColor;
+                result = IdleColor;
             }
 
             backgroundImage.color = result;
@@ -167,7 +175,7 @@ namespace Scripts.UI.Components
                 iconImage.sprite = icon;
             }
             
-            backgroundImage.color = idleColor;
+            backgroundImage.color = IdleColor;
         }
 #endif
     }

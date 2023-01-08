@@ -15,7 +15,8 @@ namespace Scripts.UI.EditorUI.Components
         {
             Floor = floorNumber;
             textField.text = floorNumber.ToString();
-            OnClick += ChangeFloor;
+            OnClick.RemoveAllListeners();
+            OnClick.AddListener(ChangeFloor);
             visibilityButton.OnToggleOn += OnVisibilityButtonToggleOn;
             visibilityButton.OnToggleOff += OnVisibilityButtonToggleOff;
 
@@ -40,7 +41,6 @@ namespace Scripts.UI.EditorUI.Components
         {
             base.OnDisable();
             
-            OnClick -= ChangeFloor;
             visibilityButton.OnToggleOn -= OnVisibilityButtonToggleOn;
             visibilityButton.OnToggleOff -= OnVisibilityButtonToggleOff;
         }

@@ -78,12 +78,22 @@ namespace Scripts.UI.EditorUI
 
         protected override void RemoveAndClose()
         {
-            if (EditedConfiguration?.WayPoints.Any() == true)
+            if (IsCurrentConfigurationChanged)
             {
-                DestroyPath(EPathsType.Waypoint, EditedConfiguration.WayPoints);
-            }
+                if (EditedConfiguration?.WayPoints.Any() == true)
+                {
+                    DestroyPath(EPathsType.Waypoint, EditedConfiguration.WayPoints);
+                }
 
-            RemoveExtraParts();
+                RemoveExtraParts();
+            }
+            else
+            {
+                if (EditedConfiguration?.WayPoints.Any() == true)
+                {
+                    HighlightPath(EPathsType.Waypoint, EditedConfiguration.WayPoints, false);
+                }
+            }
 
             base.RemoveAndClose();
         }
@@ -124,10 +134,10 @@ namespace Scripts.UI.EditorUI
             _offsetSlider = body.transform.Find("Background/Frame/OffsetHandling/OffsetSlider").GetComponent<LabeledSlider>();
             _offsetSlider.SetActive(false);
             _offsetSlider.SetLabel(t.Get(Keys.Offset));
-            
+
             _offsetNumericUpDown = body.transform.Find("Background/Frame/OffsetHandling/NumericUpDown").GetComponent<NumericUpDown>();
             _offsetNumericUpDown.gameObject.SetActive(false);
-            
+
             _waypointEditor = body.transform.Find("WaypointsEditor").GetComponent<WaypointEditor>();
             _waypointEditor.SetActive(false);
 
@@ -135,7 +145,7 @@ namespace Scripts.UI.EditorUI
             _createOppositePathButton.onClick.RemoveAllListeners();
             _createOppositePathButton.onClick.AddListener(GenerateOppositePath);
             _createOppositePathButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.CreateOppositePath);
-            
+
             _createOppositePathButton.gameObject.SetActive(false);
         }
 
@@ -196,7 +206,7 @@ namespace Scripts.UI.EditorUI
             _offsetNumericUpDown.gameObject.SetActive(false);
 
             if (EditedConfiguration == null) return;
-            
+
             if (PhysicalPrefabBody)
             {
                 _offsetSlider.OnValueChanged.RemoveAllListeners();

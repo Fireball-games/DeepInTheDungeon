@@ -47,6 +47,7 @@ namespace Scripts.UI.EditorUI
             _body = transform.Find("Body");
             
             _playButton = _body.Find("PlayButton").GetComponent<ImageButton>();
+            _playButton.OnClick.AddListener(manager.PlayMap);
             _mapTitle = _body.Find("MapTitle").GetComponent<Title>();
             _fileOperations = _body.Find("FileOperations").GetComponent<FileOperations>();
             _newMapDialog = transform.Find("NewMapDialog").GetComponent<NewMapDialog>();
@@ -62,8 +63,6 @@ namespace Scripts.UI.EditorUI
 
         private void OnEnable()
         {
-            _playButton.OnClick += manager.PlayMap;
-
             EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
             EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
 
@@ -72,7 +71,6 @@ namespace Scripts.UI.EditorUI
 
         private void OnDisable()
         {
-            _playButton.OnClick -= manager.PlayMap;
             EditorEvents.OnNewMapStartedCreation -= OnNewMapStartedCreation;
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
         }
@@ -167,7 +165,7 @@ namespace Scripts.UI.EditorUI
         {
             isAnyObjectEdited = false;
 
-            _openedEditor?.CloseWithChangeCheck();
+            _openedEditor?.CloseWithRemovingChanges();
 
             _openedEditor = null;
         }

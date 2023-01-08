@@ -2,7 +2,9 @@
 using System.IO;
 using System.Linq;
 using Scripts.System.Pooling;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Scripts.Helpers.Extensions
 {
@@ -14,7 +16,7 @@ namespace Scripts.Helpers.Extensions
         public static readonly Vector3Int WorldEast;
         public static readonly Vector3Int WorldSouth;
         public static readonly Vector3Int WorldWest;
-        
+
         public static readonly Vector3Int GridNorth;
         public static readonly Vector3Int GridEast;
         public static readonly Vector3Int GridSouth;
@@ -54,7 +56,7 @@ namespace Scripts.Helpers.Extensions
                               && row >= 0 && row < source[0].Count
                               && column >= 0 && column < source[0][0].Count;
         }
-        
+
         public static T ByGridV3Int<T>(this List<List<List<T>>> source, Vector3Int gridPosition)
         {
             return source[gridPosition.x][gridPosition.y][gridPosition.z];
@@ -65,7 +67,7 @@ namespace Scripts.Helpers.Extensions
             return source[position.x, position.y, position.z];
         }
 
-        public static bool HasIndex<T>(this List<List<List<T>>> source, Vector3Int gridPosition) 
+        public static bool HasIndex<T>(this List<List<List<T>>> source, Vector3Int gridPosition)
             => source.HasIndex(gridPosition.x, gridPosition.y, gridPosition.z);
 
         public static bool HasIndex<T>(this List<List<T>> source, int row, int column)
@@ -136,5 +138,7 @@ namespace Scripts.Helpers.Extensions
 
             return null;
         }
+
+        public static void SetTextColor(this Button button, Color color) => button.GetComponentInChildren<TMP_Text>().color = color;
     }
 }

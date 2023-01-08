@@ -129,7 +129,9 @@ namespace Scripts.MapEditor
                 EditorUIManager.Instance.ConfirmationDialog.Open(
                     t.Get(Keys.SaveEditedMapPrompt),
                     GoToMainScreenWithSave,
-                    LoadMainSceneClear);
+                    LoadMainSceneClear,
+                    t.Get(Keys.Save),
+                    t.Get(Keys.DontSave));
                 
                 return;
             }

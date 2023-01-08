@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5263494167311121954}
   - component: {fileID: 5263494167311121955}
   - component: {fileID: 3409832828714949814}
+  - component: {fileID: 8196452056510863047}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -92,6 +93,28 @@ MonoBehaviour:
   exclamation: {fileID: 21300000, guid: f52b3878bf7288d4c8eb7c778c5132a6, type: 3}
   triggerReceiver: {fileID: 21300000, guid: 9f8cad342c1f1b448be99075f50c497c, type: 3}
   wall: {fileID: 21300000, guid: b266d83337869774aaa6fe59e508653b, type: 3}
+--- !u!114 &8196452056510863047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5263494167311121959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 622f81ec8b7248cca37f175bdaf17a52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  white: {r: 1, g: 1, b: 1, a: 1}
+  positive: {r: 0.10980393, g: 0.8117648, b: 0, a: 1}
+  negative: {r: 1, g: 0, b: 0, a: 1}
+  warning: {r: 1, g: 0.64705884, b: 0, a: 1}
+  selectedOver: {r: 0.56078434, g: 0.6509804, b: 0.007843138, a: 1}
+  selected: {r: 0.7725491, g: 0.54509807, b: 0, a: 1}
+  disabled: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  buttonIdle: {r: 0.6784314, g: 0.6627451, b: 0.6627451, a: 1}
+  buttonEntered: {r: 0.5647059, g: 0.5647059, b: 0.5647059, a: 1}
+  buttonClicked: {r: 0.1764706, g: 1, b: 0.36862746, a: 1}
 --- !u!1 &5263494167762295897
 GameObject:
   m_ObjectHideFlags: 0
@@ -193,6 +216,11 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 18
       objectReference: {fileID: 0}
+    - target: {fileID: 1414592901498090408, guid: 3d682d30831ec1047b5c83b79bdb9e8f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 51
+      objectReference: {fileID: 0}
     - target: {fileID: 1519795694398290696, guid: 3d682d30831ec1047b5c83b79bdb9e8f,
         type: 3}
       propertyPath: m_RootOrder
@@ -206,7 +234,7 @@ PrefabInstance:
     - target: {fileID: 1976723486942893982, guid: 3d682d30831ec1047b5c83b79bdb9e8f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 48
+      value: 49
       objectReference: {fileID: 0}
     - target: {fileID: 2117003810265449180, guid: 3d682d30831ec1047b5c83b79bdb9e8f,
         type: 3}
@@ -367,6 +395,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 8226191352148045813, guid: 3d682d30831ec1047b5c83b79bdb9e8f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8582196416791980679, guid: 3d682d30831ec1047b5c83b79bdb9e8f,
         type: 3}

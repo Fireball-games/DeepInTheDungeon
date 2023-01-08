@@ -2,6 +2,6 @@
 {
     public interface IPrefabEditor
     {
-        public void CloseWithChangeCheck();
+        public void CloseWithRemovingChanges();
     }
 }

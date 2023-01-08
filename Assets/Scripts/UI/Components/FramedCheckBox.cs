@@ -40,7 +40,12 @@ namespace Scripts.UI.Components
         
         public void SetLabel(string text) => _label.text = text ?? "";
 
-        public void SetToggle(bool isOn) => _checkbox.isOn = isOn;
+        public void SetToggle(bool isOn)
+        {
+            _checkbox.onValueChanged.RemoveAllListeners();
+            _checkbox.isOn = isOn;
+            _checkbox.onValueChanged.AddListener(OnValueChanged_internal);
+        }
 
         private void OnValueChanged_internal(bool value)
         {

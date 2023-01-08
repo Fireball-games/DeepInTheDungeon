@@ -48,6 +48,8 @@ namespace Scripts.UI.EditorUI.Components
             }
         }
 
+        public void DeselectButtons() => _buttons.ForEach(b => b.SetSelected(false));
+
         public void Close() => SetActive(false);
 
         private void OnItemClicked_internal(PrefabBase prefab)

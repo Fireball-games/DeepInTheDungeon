@@ -222,6 +222,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             MapBuilder.RemovePrefab(EditedConfiguration);
 
             MapEditorManager.Instance.SaveMap();
+            _prefabList.DeselectButtons();
             
             VisualizeOtherComponents();
         }

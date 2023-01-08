@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Scripts.System.Pooling;
@@ -41,6 +42,16 @@ namespace Scripts.Helpers.Extensions
             GridEast = new Vector3Int(0, 0, 1);
             GridSouth = new Vector3Int(0, 1, 0);
             GridWest = new Vector3Int(0, 0, -1);
+        }
+
+        public static void ForEach<T>(this IEnumerable<T> hashSet, Action<T> action)
+        {
+            if (action == null) return;
+            
+            foreach (T element in hashSet)
+            {
+                action.Invoke(element);
+            }
         }
 
         public static bool HasIndex<T>(this T[,,] source, Vector3Int gridPosition)

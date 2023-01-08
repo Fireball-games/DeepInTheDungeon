@@ -39,6 +39,7 @@ namespace Scripts.UI.EditorUI
         private Title _mapTitle;
 
         private IPrefabEditor _openedEditor;
+        private Dictionary<EWorkMode, IPrefabEditor> _editors;
 
         protected override void Awake()
         {
@@ -59,6 +60,13 @@ namespace Scripts.UI.EditorUI
             _statusBar = transform.Find("StatusBar").GetComponent<StatusBar>();
             
             WallGizmo = FindObjectOfType<WallGizmoController>();
+            
+            _editors = new Dictionary<EWorkMode, IPrefabEditor>
+            {
+                {EWorkMode.Walls, _wallEditor},
+                {EWorkMode.PrefabTiles, _prefabTileEditor},
+                {EWorkMode.Triggers, _triggerEditor}
+            };
         }
 
         private void OnEnable()
@@ -85,12 +93,15 @@ namespace Scripts.UI.EditorUI
             }
         }
 
-        private void OnWorkModeChanged(EWorkMode _) => OnEditingInterruptionImminent();
-
-        private void OnEditingInterruptionImminent()
+        private void OnWorkModeChanged(EWorkMode workMode)
         {
             isAnyObjectEdited = false;
             CloseEditorWindow();
+            
+            if (_editors.TryGetValue(workMode, out IPrefabEditor editor))
+            {
+                editor.Open();
+            }
         }
 
         public void OpenEditorWindow(EPrefabType prefabType, PositionRotation placeholderTransformData)

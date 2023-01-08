@@ -34,6 +34,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private Button _cancelButton;
         private Button _deleteButton;
         private Button _closeButton;
+        private ImageButton _prefabsFinderButton;
         private Title _prefabTitle;
         private TMP_Text _statusText;
 
@@ -81,14 +82,18 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected virtual Vector3 Cursor3DScale => Vector3.one;
 
+        /// <summary>
+        /// Opens empty editor, prepared for next steps - clicking in map to add/edit prefabs or open prefabs finder.
+        /// </summary>
         public void Open()
         {
             _prefabList.Close();
+            _existingList.Close();
+            _prefabTitle.SetActive(false);
 
-            // TODO: Filter existing prefabs
-            // var existingConfigurations = 
+            SetButtons();
             
-            SetExistingList(true, t.Get(Keys.ExistingPrefabs), null,OnExistingItemClick);
+            // SetStatusText(t.Get(Keys.EmptyEditorPrompt));
         }
 
         public virtual void Open(TC configuration)
@@ -297,6 +302,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _deleteButton.gameObject.SetActive(_isEditingExistingPrefab && EditedConfiguration.SpawnPrefabOnBuild);
             _saveButton.gameObject.SetActive(IsCurrentConfigurationChanged);
             _closeButton.SetTextColor(IsCurrentConfigurationChanged ? Colors.Negative : Colors.White);
+            _prefabsFinderButton.SetActive(IsCurrentConfigurationChanged);
         }
 
         private void SetStatusText(string text = null)
@@ -372,7 +378,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabList = body.transform.Find("AvailablePrefabs").GetComponent<PrefabList>();
             _existingList = body.transform.Find("ExistingPrefabs").GetComponent<PrefabList>();
             Transform frame = body.transform.GetChild(0).GetChild(0);
-            _prefabTitle = frame.Find("PrefabTitle").GetComponent<Title>();
+            _prefabTitle = frame.Find("Header/PrefabTitle").GetComponent<Title>();
+            _prefabsFinderButton = frame.Find("Header/PrefabFinderButton").GetComponent<ImageButton>();
             _statusText = frame.Find("StatusText").GetComponent<TMP_Text>();
             Transform buttons = frame.Find("Buttons");
             _cancelButton = buttons.Find("CancelButton").GetComponent<Button>();

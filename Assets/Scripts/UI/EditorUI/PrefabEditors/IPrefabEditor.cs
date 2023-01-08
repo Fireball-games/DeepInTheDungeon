@@ -2,6 +2,7 @@
 {
     public interface IPrefabEditor
     {
+        public void Open();
         public void CloseWithRemovingChanges();
     }
 }

@@ -25,6 +25,7 @@ namespace Scripts.UI.Components
         private Color ClickedColor => Colors.ButtonClicked;
         private Color SelectedColor => Colors.Selected;
         private Color SelectedEnteredColor => Colors.SelectedOver;
+        private Color DisabledColor => Colors.Disabled;
         private MouseClickOverlay _mouseClickOverlay;
         
         public event Action<ImageButton> OnClickWithSender;
@@ -50,7 +51,7 @@ namespace Scripts.UI.Components
                 }
                 else
                 {
-                    backgroundImage.color = EnteredColor;
+                    backgroundImage.color = DisabledColor;
                 }
             }
         }

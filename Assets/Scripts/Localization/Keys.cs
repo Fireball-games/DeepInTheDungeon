@@ -16,6 +16,7 @@
         public const string DontSave = "DontSave";
         public const string Down = "Down";
         public const string East = "East";
+        public const string EmptyEditorPrompt = "EmptyEditorPrompt";
         public const string EndPoint = "EndPoint";
         public const string ErrorBuildingPrefab = "ErrorBuildingPref";
         public const string ExistingPrefabs = "ExistingPrefabs";

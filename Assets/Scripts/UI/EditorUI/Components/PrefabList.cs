@@ -34,7 +34,11 @@ namespace Scripts.UI.EditorUI.Components
             OnItemClicked = onItemClicked;
 
             listContent.gameObject.DismissAllChildrenToPool(true);
+
+            _buttons ??= new HashSet<PrefabListButton>();
             _buttons.Clear();
+
+            if (prefabs == null) return;
 
             foreach (PrefabBase prefab in prefabs)  
             {

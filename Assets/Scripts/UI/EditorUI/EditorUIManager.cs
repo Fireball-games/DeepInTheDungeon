@@ -100,6 +100,7 @@ namespace Scripts.UI.EditorUI
             
             if (_editors.TryGetValue(workMode, out IPrefabEditor editor))
             {
+                _openedEditor = editor;
                 editor.Open();
             }
         }

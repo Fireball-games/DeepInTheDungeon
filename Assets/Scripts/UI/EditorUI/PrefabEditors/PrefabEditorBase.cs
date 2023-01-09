@@ -19,6 +19,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
@@ -30,6 +31,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private PrefabList _prefabList;
         private PrefabList _existingList;
+        private GameObject _mainWindow;
         private Button _saveButton;
         private Button _cancelButton;
         private Button _deleteButton;
@@ -50,13 +52,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private Cursor3D _cursor3D;
         private bool _isEditingExistingPrefab;
         
-        protected bool CanOpen => !body.activeSelf;
+        protected bool CanOpen => EditedConfiguration == null;
 
         private void Awake()
         {
             AssignComponents();
 
-            _closeButton.onClick.AddListener(RemoveAndClose);
+            _closeButton.onClick.AddListener(RemoveAndReopen);
             _saveButton.onClick.AddListener(SaveMap);
             _deleteButton.onClick.AddListener(Delete);
             _cancelButton.onClick.AddListener(RemoveChanges);
@@ -83,26 +85,32 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected virtual Vector3 Cursor3DScale => Vector3.one;
 
         /// <summary>
-        /// Opens empty editor, prepared for next steps - clicking in map to add/edit prefabs or open prefabs finder.
+        /// Opens Existing Prefabs list. Next steps are - clicking in map to add/edit prefabs or open prefabs finder.
         /// </summary>
         public void Open()
         {
+            _mainWindow.SetActive(false);
             _prefabList.Close();
             _existingList.Close();
             _prefabTitle.SetActive(false);
 
             SetButtons();
             
-            // SetStatusText(t.Get(Keys.EmptyEditorPrompt));
+            SetExistingList(true,
+                t.Get(Keys.ExistingPrefabs),
+                MapBuilder.GetConfigurationsByPrefabClass<TPrefab>(),
+                OnExistingItemClick);
+            
+            SetActive(true);
         }
 
         public virtual void Open(TC configuration)
         {
             if (!CanOpen) return;
-
+            
             if (configuration == null)
             {
-                Close();
+                // Close();
                 return;
             }
             
@@ -166,6 +174,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabList.Open(prefabListTitle, _availablePrefabs, SetPrefab);
         }
         
+        /// <summary>
+        /// IPrefabEditor method
+        /// </summary>
         public virtual void CloseWithRemovingChanges()
         {
             RemoveAndClose();
@@ -228,8 +239,24 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             MapEditorManager.Instance.SaveMap();
             _prefabList.DeselectButtons();
+            _isEditingExistingPrefab = false;
+            EditedConfiguration = null;
+            _originalConfiguration = null;
+            IsCurrentConfigurationChanged = false;
+            EditorUIManager.Instance.isAnyObjectEdited = false;
             
+            SetButtons();
             VisualizeOtherComponents();
+        }
+
+        private void RemoveAndReopen()
+        {
+            if (IsCurrentConfigurationChanged)
+            {
+                RemoveChanges();
+            }
+            
+            Open();
         }
 
         protected virtual void RemoveAndClose()
@@ -299,10 +326,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void SetButtons()
         {
             _cancelButton.gameObject.SetActive(IsCurrentConfigurationChanged);
-            _deleteButton.gameObject.SetActive(_isEditingExistingPrefab && EditedConfiguration.SpawnPrefabOnBuild);
+            _deleteButton.gameObject.SetActive(_isEditingExistingPrefab || EditedConfiguration is {SpawnPrefabOnBuild: true});
             _saveButton.gameObject.SetActive(IsCurrentConfigurationChanged);
             _closeButton.SetTextColor(IsCurrentConfigurationChanged ? Colors.Negative : Colors.White);
-            _prefabsFinderButton.SetActive(IsCurrentConfigurationChanged);
+            _prefabsFinderButton.SetActive(!IsCurrentConfigurationChanged);
         }
 
         private void SetStatusText(string text = null)
@@ -324,6 +351,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             
             SetActive(true);
             _prefabList.SetActive(false);
+            SetExistingList(false);
+            _mainWindow.SetActive(true);
             SetStatusText();
 
             _closeButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Close);
@@ -369,19 +398,21 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void OnExistingItemClick(string existingPrefabGuid)
         {
-            
+            Logger.LogNotImplemented();
         }
         
         private void AssignComponents()
         {
-            Placeholder = body.transform.Find("Placeholder").gameObject;
-            _prefabList = body.transform.Find("AvailablePrefabs").GetComponent<PrefabList>();
-            _existingList = body.transform.Find("ExistingPrefabs").GetComponent<PrefabList>();
-            Transform frame = body.transform.GetChild(0).GetChild(0);
+            Transform bodyTransform = body.transform; 
+            Placeholder = bodyTransform.Find("Placeholder").gameObject;
+            _prefabList = bodyTransform.Find("AvailablePrefabs").GetComponent<PrefabList>();
+            _existingList = bodyTransform.Find("ExistingPrefabs").GetComponent<PrefabList>();
+            Transform frame = bodyTransform.GetChild(0).GetChild(0);
             _prefabTitle = frame.Find("Header/PrefabTitle").GetComponent<Title>();
             _prefabsFinderButton = frame.Find("Header/PrefabFinderButton").GetComponent<ImageButton>();
             _statusText = frame.Find("StatusText").GetComponent<TMP_Text>();
             Transform buttons = frame.Find("Buttons");
+            _mainWindow = bodyTransform.Find("Background").gameObject;
             _cancelButton = buttons.Find("CancelButton").GetComponent<Button>();
             _cancelButton.SetTextColor(Colors.Warning);
             _saveButton = buttons.Find("SaveButton").GetComponent<Button>();

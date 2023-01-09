@@ -1,5 +1,6 @@
 ﻿using Scripts.Building.PrefabsSpawning.Walls.Identifications;
 using Scripts.Building.Walls;
+using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.System.Pooling;
 using Scripts.Triggers;
@@ -13,23 +14,20 @@ namespace Scripts.UI.EditorUI.Components
 {
     public class PrefabListButton : MonoBehaviour
     {
-        [SerializeField] private Color selectedColor = Color.green;
         [SerializeField] private Image iconPrefab;
         public PrefabBase displayedPrefab;
 
         private Button _button;
         private TMP_Text _text;
+        private Color _selectedColor => Colors.Selected;
         
         private readonly Color _normalColor = Color.white;
 
-        public UnityEvent<PrefabBase> OnClick { get; } = new();
+        private UnityEvent<PrefabBase> OnClick { get; } = new();
 
         private void Awake()
         {
-            _button = transform.Find("Button").GetComponent<Button>();
-            _button.onClick.AddListener(OnClick_internal);
-            
-            _text = transform.Find("Button/Text").GetComponent<TMP_Text>();
+            Initialize();
         }
 
         private void OnEnable()
@@ -43,6 +41,8 @@ namespace Scripts.UI.EditorUI.Components
             OnClick.RemoveAllListeners();
             OnClick.AddListener(onClick);
 
+            if(!_text) Initialize();
+            
             _text.color = _normalColor;
             _text.text = prefab.gameObject.name;
 
@@ -64,7 +64,7 @@ namespace Scripts.UI.EditorUI.Components
             }
         }
 
-        public void SetSelected(bool isSelected) => _text.color = isSelected ? selectedColor : _normalColor;
+        public void SetSelected(bool isSelected) => _text.color = isSelected ? _selectedColor : _normalColor;
 
         private void AddIcon(EIcon icon)
         {
@@ -77,8 +77,16 @@ namespace Scripts.UI.EditorUI.Components
 
         private void OnClick_internal()
         {
-            _text.color = selectedColor;
+            _text.color = _selectedColor;
             OnClick.Invoke(displayedPrefab);
+        }
+
+        private void Initialize()
+        {
+            _button = transform.Find("Button").GetComponent<Button>();
+            _button.onClick.AddListener(OnClick_internal);
+            
+            _text = transform.Find("Button/Text").GetComponent<TMP_Text>();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
+using Scripts.Building.Walls;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
@@ -284,6 +285,9 @@ namespace Scripts.Building
 
         public bool BuildPrefab<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.BuildPrefab(configuration);
 
-        public void AddReplacePrefabConfiguration<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.AddReplacePrefabConfiguration(configuration);
+        public void AddReplacePrefabConfiguration<TC>(TC configuration) where TC : PrefabConfiguration =>
+            _prefabBuilder.AddReplacePrefabConfiguration(configuration);
+
+        public IEnumerable<TP> GetConfigurationsByPrefabClass<TP>() where TP : PrefabBase => _prefabBuilder.GetConfigurationsByPrefabClass<TP>();
     }
 }

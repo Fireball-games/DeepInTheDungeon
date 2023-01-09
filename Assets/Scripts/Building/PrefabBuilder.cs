@@ -15,6 +15,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static Scripts.MapEditor.Services.PathsService;
 using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
@@ -127,8 +128,7 @@ namespace Scripts.Building
 
         public GameObject GetPrefabByConfiguration(PrefabConfiguration configuration)
         {
-            GameObject result = Prefabs.FirstOrDefault(p => p.transform.position == configuration.TransformData.Position
-                                                            && p.name == configuration.PrefabName);
+            GameObject result = Prefabs.FirstOrDefault(p => p.GetComponent<PrefabBase>().GUID == configuration.Guid);
 
             return !result ? null : result;
         }
@@ -198,6 +198,18 @@ namespace Scripts.Building
         {
             return MapDescription.PrefabConfigurations.Where(c => c.PrefabType == prefabType)
                 .Select(c => c as T);
+        }
+        
+        public IEnumerable<TP> GetConfigurationsByPrefabClass<TP>() where TP : PrefabBase
+        {
+            List<TP> result = new();
+            
+            foreach (PrefabBase script in Prefabs.Select(go => go.GetComponent<PrefabBase>()))
+            {
+                if (script is TP @base) result.Add(@base);
+            }
+
+            return result;
         }
 
         private int FindIndexOfConfiguration(PrefabConfiguration configuration) =>

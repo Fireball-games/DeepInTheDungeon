@@ -281,6 +281,9 @@ namespace Scripts.Building
         public GameObject GetPrefabByConfiguration<TC>(TC configuration) where TC : PrefabConfiguration =>
             _prefabBuilder.GetPrefabByConfiguration(configuration);
 
+        public TC GetConfigurationByGuid<TC>(string guid) where TC : PrefabConfiguration =>
+            _prefabBuilder.GetConfigurationByGuid<TC>(guid);
+
         public void RemovePrefab<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.RemovePrefab(configuration);
 
         public bool BuildPrefab<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.BuildPrefab(configuration);

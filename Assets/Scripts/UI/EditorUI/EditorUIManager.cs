@@ -107,7 +107,7 @@ namespace Scripts.UI.EditorUI
 
         public void OpenEditorWindow(EPrefabType prefabType, PositionRotation placeholderTransformData)
         {
-            isAnyObjectEdited = true;
+            // isAnyObjectEdited = true;
 
             switch (prefabType)
             {
@@ -135,7 +135,7 @@ namespace Scripts.UI.EditorUI
                     _openedEditor = _triggerEditor;
                     break;
                 default:
-                    isAnyObjectEdited = false;
+                    // isAnyObjectEdited = false;
                     Logger.LogWarning($"Not implemented editor for type {prefabType}.");
                     break;
             }
@@ -143,7 +143,7 @@ namespace Scripts.UI.EditorUI
 
         public void OpenEditorWindow(PrefabConfiguration configuration)
         {
-            isAnyObjectEdited = true;
+            // isAnyObjectEdited = true;
 
             switch (configuration.PrefabType)
             {
@@ -167,7 +167,7 @@ namespace Scripts.UI.EditorUI
                     _openedEditor = _prefabTileEditor;
                     break;
                 default:
-                    isAnyObjectEdited = false;
+                    // isAnyObjectEdited = false;
                     Logger.LogWarning($"Not implemented editor for type {configuration.PrefabType}.");
                     break;
             }

@@ -5,9 +5,7 @@ using Scripts.Helpers.Extensions;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.UI.Components;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Scripts.UI.EditorUI.Components
 {
@@ -19,14 +17,14 @@ namespace Scripts.UI.EditorUI.Components
 
         private HashSet<PrefabListButton> _buttons;
 
-        private Action<string> OnItemClicked;
+        private Action<PrefabBase> OnItemClicked;
 
         private void Awake()
         {
             _buttons = new HashSet<PrefabListButton>();
         }
 
-        public void Open(string listTitle, IEnumerable<PrefabBase> prefabs, Action<string> onItemClicked, Action onClose = null)
+        public void Open(string listTitle, IEnumerable<PrefabBase> prefabs, Action<PrefabBase> onItemClicked, Action onClose = null)
         {
             SetActive(true);
             title.SetTitle(listTitle);
@@ -60,7 +58,7 @@ namespace Scripts.UI.EditorUI.Components
         {
             string prefabName = prefab.gameObject.name;
             
-            OnItemClicked.Invoke(prefabName);
+            OnItemClicked.Invoke(prefab);
 
             foreach (PrefabListButton button in _buttons)
             {

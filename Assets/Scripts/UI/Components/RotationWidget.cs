@@ -27,7 +27,7 @@ namespace Scripts.UI.Components
             if (_label) _label.text = label ?? "";
             _leftRotateButton.OnClick.RemoveAllListeners();
             _leftRotateButton.OnClick.AddListener(onRotateLeft);
-            _leftRotateButton.OnClick.RemoveAllListeners();
+            _rightRotateButton.OnClick.RemoveAllListeners();
             _rightRotateButton.OnClick.AddListener(onRotateRight);
         }
     }

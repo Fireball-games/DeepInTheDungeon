@@ -17,13 +17,14 @@ namespace Scripts.UI.EditorUI.Components
         [SerializeField] private Image iconPrefab;
         public PrefabBase displayedPrefab;
 
+        protected TMP_Text Text;
+        
         private Button _button;
-        private TMP_Text _text;
-        private Color _selectedColor => Colors.Selected;
+        private Color SelectedColor => Colors.Selected;
         
         private readonly Color _normalColor = Color.white;
 
-        private UnityEvent<PrefabBase> OnClick { get; } = new();
+        protected UnityEvent<PrefabBase> OnClick { get; } = new();
 
         private void Awake()
         {
@@ -32,19 +33,20 @@ namespace Scripts.UI.EditorUI.Components
 
         private void OnEnable()
         {
-            _text.gameObject.DismissAllChildrenToPool(true);
+            Text.gameObject.DismissAllChildrenToPool(true);
         }
 
         public void Set(PrefabBase prefab, UnityAction<PrefabBase> onClick)
         {
+            if(!Text) Initialize();
+            
             displayedPrefab = prefab;
             OnClick.RemoveAllListeners();
             OnClick.AddListener(onClick);
 
-            if(!_text) Initialize();
             
-            _text.color = _normalColor;
-            _text.text = prefab.gameObject.name;
+            Text.color = _normalColor;
+            SetItemName();
 
             if (prefab.gameObject.GetBody()) AddIcon(EIcon.Wall);
             
@@ -64,29 +66,36 @@ namespace Scripts.UI.EditorUI.Components
             }
         }
 
-        public void SetSelected(bool isSelected) => _text.color = isSelected ? _selectedColor : _normalColor;
+        public void SetSelected(bool isSelected) => Text.color = isSelected ? SelectedColor : _normalColor;
+
+        protected virtual void SetItemName()
+        {
+            if(!Text) Initialize();
+            
+            Text.text = displayedPrefab.gameObject.name;
+        }
 
         private void AddIcon(EIcon icon)
         {
             Image newIcon = ObjectPool.Instance
-                .GetFromPool(iconPrefab.gameObject, _text.gameObject, true)
+                .GetFromPool(iconPrefab.gameObject, Text.gameObject, true)
                 .GetComponent<Image>();
 
             newIcon.sprite = Get(icon);
         }
 
-        private void OnClick_internal()
+        protected virtual void OnClick_internal()
         {
-            _text.color = _selectedColor;
+            Text.color = SelectedColor;
             OnClick.Invoke(displayedPrefab);
         }
 
-        private void Initialize()
+        protected void Initialize()
         {
             _button = transform.Find("Button").GetComponent<Button>();
             _button.onClick.AddListener(OnClick_internal);
             
-            _text = transform.Find("Button/Text").GetComponent<TMP_Text>();
+            Text = transform.Find("Button/Text").GetComponent<TMP_Text>();
         }
     }
 }

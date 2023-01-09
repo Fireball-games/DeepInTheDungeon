@@ -15,7 +15,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static Scripts.MapEditor.Services.PathsService;
 using Logger = Scripts.Helpers.Logger;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
@@ -210,6 +209,11 @@ namespace Scripts.Building
             }
 
             return result;
+        }
+        
+        public TC GetConfigurationByGuid<TC>(string guid) where TC : PrefabConfiguration
+        {
+            return MapDescription.PrefabConfigurations.Where(c => c.Guid == guid).FirstOrDefault() as TC;
         }
 
         private int FindIndexOfConfiguration(PrefabConfiguration configuration) =>
@@ -417,11 +421,6 @@ namespace Scripts.Building
                 
                 RemoveConfiguration(trigger.GUID);
             }
-        }
-
-        private T GetConfigurationByGuid<T>(string guid) where T : PrefabConfiguration
-        {
-            return MapDescription.PrefabConfigurations.Where(c => c.Guid == guid).FirstOrDefault() as T;
         }
 
         private bool GetConfigurationByOwnerGuidAndName<T>(string ownerGuid, string prefabName, out T configuration) where T : PrefabConfiguration

@@ -19,7 +19,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
@@ -39,6 +38,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private ImageButton _prefabsFinderButton;
         private Title _prefabTitle;
         private TMP_Text _statusText;
+        private EditorUIManager Manager => EditorUIManager.Instance;
 
         protected MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
         protected TC EditedConfiguration;
@@ -52,7 +52,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private Cursor3D _cursor3D;
         private bool _isEditingExistingPrefab;
         
-        protected bool CanOpen => EditedConfiguration == null;
+        protected bool CanOpen => !IsCurrentConfigurationChanged;
 
         private void Awake()
         {
@@ -93,6 +93,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabList.Close();
             _existingList.Close();
             _prefabTitle.SetActive(false);
+            EditedConfiguration = _originalConfiguration = null;
+            SetEdited(false);
 
             SetButtons();
             
@@ -132,7 +134,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetTitle(configuration.PrefabName);
 
             SetExistingList(false);
-            _prefabList.Open(prefabListTitle, _availablePrefabs!, SetPrefab);
+            _prefabList.Open(prefabListTitle, _availablePrefabs!, prefab => SetPrefab(prefab.gameObject.name));
 
             PhysicalPrefab = MapBuilder.GetPrefabByConfiguration(configuration);
             PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
@@ -144,7 +146,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             if (!CanOpen) return;
 
-            EditorCameraService.Instance.MoveCameraToPrefab(placeholderTransformData.Position);
+            MoveCameraToPrefab(placeholderTransformData.Position);
 
             _isEditingExistingPrefab = false;
             
@@ -171,7 +173,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetStatusText(t.Get(Keys.SelectPrefab));
 
             SetExistingList(false);
-            _prefabList.Open(prefabListTitle, _availablePrefabs, SetPrefab);
+            _prefabList.Open(prefabListTitle, _availablePrefabs, prefab => SetPrefab(prefab.gameObject.name));
         }
         
         /// <summary>
@@ -226,11 +228,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected void MoveCameraToPrefab(Vector3 targetPosition) => 
             EditorCameraService.Instance.MoveCameraToPrefab(targetPosition);
 
-        protected void SetEdited()
+        protected void SetEdited(bool isEdited = true)
         {
-            IsCurrentConfigurationChanged = true;
+            IsCurrentConfigurationChanged = isEdited;
+            Manager.isAnyObjectEdited = isEdited;
             SetButtons();
-            EditorEvents.TriggerOnMapEdited();
+            
+            if (isEdited)
+            {
+                EditorEvents.TriggerOnMapEdited();
+            }
         }
 
         protected virtual void Delete()
@@ -242,8 +249,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _isEditingExistingPrefab = false;
             EditedConfiguration = null;
             _originalConfiguration = null;
-            IsCurrentConfigurationChanged = false;
-            EditorUIManager.Instance.isAnyObjectEdited = false;
+            SetEdited(false);
+            _prefabList.DeselectButtons();
             
             SetButtons();
             VisualizeOtherComponents();
@@ -282,16 +289,18 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 MapBuilder.RemovePrefab(EditedConfiguration);
                 EditedConfiguration = null;
+                _prefabList.DeselectButtons();
             }
             
-            IsCurrentConfigurationChanged = false;
+            SetEdited(false);
             SetButtons();
             VisualizeOtherComponents();
         }
 
         protected virtual void SaveMap()
         {
-            IsCurrentConfigurationChanged = false;
+            SetEdited(false);
+            
             _isEditingExistingPrefab = true;
             MapBuilder.AddReplacePrefabConfiguration(EditedConfiguration);
             MapEditorManager.Instance.SaveMap();
@@ -316,13 +325,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _cursor3D.Hide();
 
-            EditorUIManager.Instance.isAnyObjectEdited = false;
-            EditorUIManager.Instance.WallGizmo.Reset();
+            Manager.isAnyObjectEdited = false;
+            Manager.WallGizmo.Reset();
             EditorMouseService.Instance.RefreshMousePosition();
 
             SetActive(false);
         }
-
+        
+        
         private void SetButtons()
         {
             _cancelButton.gameObject.SetActive(IsCurrentConfigurationChanged);
@@ -381,8 +391,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void SetExistingList(bool isOpen,
             string title = null,
-            IEnumerable<PrefabBase> items = null,
-            Action<string> onClick = null,
+            IEnumerable<TPrefab> items = null,
+            Action<PrefabBase> onClick = null,
             Action onClose = null)
         {
             if (!isOpen)
@@ -396,9 +406,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _existingList.Open(title, items, onClick, onClose);
         }
 
-        private void OnExistingItemClick(string existingPrefabGuid)
+        private void OnExistingItemClick(PrefabBase clickedPrefab)
         {
-            Logger.LogNotImplemented();
+            Open(MapBuilder.GetConfigurationByGuid<TC>(clickedPrefab.GUID));
         }
         
         private void AssignComponents()

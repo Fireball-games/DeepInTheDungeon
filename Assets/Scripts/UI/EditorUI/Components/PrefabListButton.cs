@@ -1,10 +1,8 @@
 ﻿using Scripts.Building.PrefabsSpawning.Walls.Identifications;
 using Scripts.Building.Walls;
-using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.System.Pooling;
 using Scripts.Triggers;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -12,19 +10,9 @@ using static IconStore;
 
 namespace Scripts.UI.EditorUI.Components
 {
-    public class PrefabListButton : MonoBehaviour
+    public class PrefabListButton<T> : ListButtonBase<T> where T : PrefabBase
     {
         [SerializeField] private Image iconPrefab;
-        public PrefabBase displayedPrefab;
-
-        protected TMP_Text Text;
-        
-        private Button _button;
-        private Color SelectedColor => Colors.Selected;
-        
-        private readonly Color _normalColor = Color.white;
-
-        protected UnityEvent<PrefabBase> OnClick { get; } = new();
 
         private void Awake()
         {
@@ -35,18 +23,10 @@ namespace Scripts.UI.EditorUI.Components
         {
             Text.gameObject.DismissAllChildrenToPool(true);
         }
-
-        public void Set(PrefabBase prefab, UnityAction<PrefabBase> onClick)
+        
+        public override void Set(T prefab, UnityAction<T> onClick)
         {
-            if(!Text) Initialize();
-            
-            displayedPrefab = prefab;
-            OnClick.RemoveAllListeners();
-            OnClick.AddListener(onClick);
-
-            
-            Text.color = _normalColor;
-            SetItemName();
+            base.Set(prefab, onClick);
 
             if (prefab.gameObject.GetBody()) AddIcon(EIcon.Wall);
             
@@ -66,9 +46,7 @@ namespace Scripts.UI.EditorUI.Components
             }
         }
 
-        public void SetSelected(bool isSelected) => Text.color = isSelected ? SelectedColor : _normalColor;
-
-        protected virtual void SetItemName()
+        protected override void SetItemName()
         {
             if(!Text) Initialize();
             
@@ -82,20 +60,6 @@ namespace Scripts.UI.EditorUI.Components
                 .GetComponent<Image>();
 
             newIcon.sprite = Get(icon);
-        }
-
-        protected virtual void OnClick_internal()
-        {
-            Text.color = SelectedColor;
-            OnClick.Invoke(displayedPrefab);
-        }
-
-        protected void Initialize()
-        {
-            _button = transform.Find("Button").GetComponent<Button>();
-            _button.onClick.AddListener(OnClick_internal);
-            
-            Text = transform.Find("Button/Text").GetComponent<TMP_Text>();
         }
     }
 }

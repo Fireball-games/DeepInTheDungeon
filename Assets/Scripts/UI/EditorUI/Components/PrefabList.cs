@@ -9,19 +9,19 @@ using UnityEngine;
 
 namespace Scripts.UI.EditorUI.Components
 {
-    public class PrefabList : EditorWindowBase
+    public class PrefabList<T> : EditorWindowBase where T : PrefabBase 
     {
         [SerializeField] private Title title;
         [SerializeField] private GameObject listContent;
         [SerializeField] private GameObject itemPrefab;
 
-        private HashSet<PrefabListButton> _buttons;
+        private HashSet<PrefabListButton<T>> _buttons;
 
         private Action<PrefabBase> OnItemClicked;
 
         private void Awake()
         {
-            _buttons = new HashSet<PrefabListButton>();
+            _buttons = new HashSet<PrefabListButton<T>>();
         }
 
         public void Open(string listTitle, IEnumerable<PrefabBase> prefabs, Action<PrefabBase> onItemClicked, Action onClose = null)
@@ -33,16 +33,16 @@ namespace Scripts.UI.EditorUI.Components
 
             listContent.gameObject.DismissAllChildrenToPool(true);
 
-            _buttons ??= new HashSet<PrefabListButton>();
+            _buttons ??= new HashSet<PrefabListButton<T>>();
             _buttons.Clear();
 
             if (prefabs == null) return;
 
-            foreach (PrefabBase prefab in prefabs)  
+            foreach (T prefab in prefabs)  
             {
-                PrefabListButton newButton = ObjectPool.Instance
+                PrefabListButton<T> newButton = ObjectPool.Instance
                     .GetFromPool(itemPrefab, listContent, true)
-                    .GetComponent<PrefabListButton>();
+                    .GetComponent<PrefabListButton<T>>();
                 
                 newButton.Set(prefab, OnItemClicked_internal);
 
@@ -60,9 +60,10 @@ namespace Scripts.UI.EditorUI.Components
             
             OnItemClicked.Invoke(prefab);
 
-            foreach (PrefabListButton button in _buttons)
+            foreach (PrefabListButton<T> button in _buttons)
             {
-                if (button.displayedPrefab.gameObject.name != prefabName)
+                // TODO: get name from T type
+                if (button.gameObject.name != prefabName)
                 {
                     button.SetSelected(false);
                 }

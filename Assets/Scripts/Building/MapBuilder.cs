@@ -291,6 +291,7 @@ namespace Scripts.Building
         public void AddReplacePrefabConfiguration<TC>(TC configuration) where TC : PrefabConfiguration =>
             _prefabBuilder.AddReplacePrefabConfiguration(configuration);
 
-        public IEnumerable<TP> GetConfigurationsByPrefabClass<TP>() where TP : PrefabBase => _prefabBuilder.GetConfigurationsByPrefabClass<TP>();
+        public IEnumerable<TC> GetConfigurationsByPrefabClass<TC, TP>() where TP : PrefabBase where TC : PrefabConfiguration 
+            => _prefabBuilder.GetConfigurationsByPrefabClass<TC, TP>();
     }
 }

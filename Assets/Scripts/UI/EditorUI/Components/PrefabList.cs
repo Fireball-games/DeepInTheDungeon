@@ -1,69 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using Scripts.Building.Walls;
-using Scripts.Helpers.Extensions;
-using Scripts.System.MonoBases;
-using Scripts.System.Pooling;
-using Scripts.UI.Components;
-using UnityEngine;
+﻿using Scripts.Building.Walls;
 
 namespace Scripts.UI.EditorUI.Components
 {
-    public class PrefabList<T> : EditorWindowBase where T : PrefabBase 
+    public class PrefabList : ListWindowBase<PrefabBase, PrefabListButton>
     {
-        [SerializeField] private Title title;
-        [SerializeField] private GameObject listContent;
-        [SerializeField] private GameObject itemPrefab;
-
-        private HashSet<PrefabListButton<T>> _buttons;
-
-        private Action<PrefabBase> OnItemClicked;
-
-        private void Awake()
+        protected override void OnItemClicked_internal(PrefabBase item)
         {
-            _buttons = new HashSet<PrefabListButton<T>>();
-        }
+            string prefabName = item.gameObject.name;
 
-        public void Open(string listTitle, IEnumerable<PrefabBase> prefabs, Action<PrefabBase> onItemClicked, Action onClose = null)
-        {
-            SetActive(true);
-            title.SetTitle(listTitle);
-            OnItemClicked = null;
-            OnItemClicked = onItemClicked;
+            OnItemClicked.Invoke(item);
 
-            listContent.gameObject.DismissAllChildrenToPool(true);
-
-            _buttons ??= new HashSet<PrefabListButton<T>>();
-            _buttons.Clear();
-
-            if (prefabs == null) return;
-
-            foreach (T prefab in prefabs)  
+            foreach (PrefabListButton button in _buttons)
             {
-                PrefabListButton<T> newButton = ObjectPool.Instance
-                    .GetFromPool(itemPrefab, listContent, true)
-                    .GetComponent<PrefabListButton<T>>();
-                
-                newButton.Set(prefab, OnItemClicked_internal);
-
-                _buttons.Add(newButton);
-            }
-        }
-
-        public void DeselectButtons() => _buttons.ForEach(b => b.SetSelected(false));
-
-        public void Close() => SetActive(false);
-
-        private void OnItemClicked_internal(PrefabBase prefab)
-        {
-            string prefabName = prefab.gameObject.name;
-            
-            OnItemClicked.Invoke(prefab);
-
-            foreach (PrefabListButton<T> button in _buttons)
-            {
-                // TODO: get name from T type
-                if (button.gameObject.name != prefabName)
+                if (button.displayedItem.gameObject.name != prefabName)
                 {
                     button.SetSelected(false);
                 }

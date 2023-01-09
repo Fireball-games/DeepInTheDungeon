@@ -1,11 +1,12 @@
 ﻿using System.Collections;
+using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.MapEditor.Services;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Scripts.UI.EditorUI.Components
 {
-    public class NavigatingPrefabListButton : PrefabListButton, IPointerEnterHandler, IPointerExitHandler
+    public class NavigatingPrefabListButton : ListButtonBase<PrefabConfiguration>, IPointerEnterHandler, IPointerExitHandler
     {
         private readonly WaitForSecondsRealtime _startNavigatingDelay = new(0.5f);
         
@@ -13,10 +14,10 @@ namespace Scripts.UI.EditorUI.Components
         {
             if(!Text) Initialize();
             
-            Text.text = displayedPrefab.DisplayName;
+            Text.text = displayedItem.DisplayName;
         }
 
-        protected override void OnClick_internal() => OnClick.Invoke(displayedPrefab);
+        protected override void OnClick_internal() => OnClick.Invoke(displayedItem);
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -32,7 +33,7 @@ namespace Scripts.UI.EditorUI.Components
         {
             yield return _startNavigatingDelay;
             
-            EditorCameraService.Instance.MoveCameraToPrefab(displayedPrefab.transform.position);
+            EditorCameraService.Instance.MoveCameraToPrefab(displayedItem.TransformData.Position);
         }
     }
 }

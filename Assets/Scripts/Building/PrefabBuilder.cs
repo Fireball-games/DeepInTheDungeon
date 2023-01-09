@@ -199,13 +199,13 @@ namespace Scripts.Building
                 .Select(c => c as T);
         }
         
-        public IEnumerable<TP> GetConfigurationsByPrefabClass<TP>() where TP : PrefabBase
+        public IEnumerable<TC> GetConfigurationsByPrefabClass<TC, TP>() where TP : PrefabBase where TC : PrefabConfiguration
         {
-            List<TP> result = new();
+            List<TC> result = new();
             
             foreach (PrefabBase script in Prefabs.Select(go => go.GetComponent<PrefabBase>()))
             {
-                if (script is TP @base) result.Add(@base);
+                if (script is TP @base) result.Add(GetConfigurationByGuid<TC>(@base.GUID));
             }
 
             return result;

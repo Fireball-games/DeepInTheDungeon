@@ -182,7 +182,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4034854402284280775}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8975461326586960144
+--- !u!114 &2610927751768939789
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -191,7 +191,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4513338719699480634}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 935c07295863437fa9ab40c4083fe617, type: 3}
+  m_Script: {fileID: 11500000, guid: dcf419102ae041a5b1f16b2199ebc5f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 4513338720659334145}
@@ -583,6 +583,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935053091948821875, guid: cc5e3a500027fab44945ff968eece8fc,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 28.88684
       objectReference: {fileID: 0}
     - target: {fileID: 2998354236909532672, guid: cc5e3a500027fab44945ff968eece8fc,
         type: 3}

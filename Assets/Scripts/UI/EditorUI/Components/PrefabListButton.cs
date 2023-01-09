@@ -1,30 +1,15 @@
 ﻿using Scripts.Building.PrefabsSpawning.Walls.Identifications;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
-using Scripts.System.Pooling;
 using Scripts.Triggers;
-using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 using static IconStore;
 
 namespace Scripts.UI.EditorUI.Components
 {
-    public class PrefabListButton<T> : ListButtonBase<T> where T : PrefabBase
+    public class PrefabListButton : ListButtonBase<PrefabBase> 
     {
-        [SerializeField] private Image iconPrefab;
-
-        private void Awake()
-        {
-            Initialize();
-        }
-
-        private void OnEnable()
-        {
-            Text.gameObject.DismissAllChildrenToPool(true);
-        }
-        
-        public override void Set(T prefab, UnityAction<T> onClick)
+        public override void Set(PrefabBase prefab, UnityAction<PrefabBase> onClick)
         {
             base.Set(prefab, onClick);
 
@@ -50,16 +35,7 @@ namespace Scripts.UI.EditorUI.Components
         {
             if(!Text) Initialize();
             
-            Text.text = displayedPrefab.gameObject.name;
-        }
-
-        private void AddIcon(EIcon icon)
-        {
-            Image newIcon = ObjectPool.Instance
-                .GetFromPool(iconPrefab.gameObject, Text.gameObject, true)
-                .GetComponent<Image>();
-
-            newIcon.sprite = Get(icon);
+            Text.text = displayedItem.gameObject.name;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected GameObject Placeholder;
 
         private PrefabList _prefabList;
-        private PrefabList _existingList;
+        private ConfigurationList _existingList;
         private GameObject _mainWindow;
         private Button _saveButton;
         private Button _cancelButton;
@@ -100,7 +100,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             
             SetExistingList(true,
                 t.Get(Keys.ExistingPrefabs),
-                MapBuilder.GetConfigurationsByPrefabClass<TPrefab>(),
+                MapBuilder.GetConfigurationsByPrefabClass<TC, TPrefab>(),
                 OnExistingItemClick);
             
             SetActive(true);
@@ -391,8 +391,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void SetExistingList(bool isOpen,
             string title = null,
-            IEnumerable<TPrefab> items = null,
-            Action<PrefabBase> onClick = null,
+            IEnumerable<TC> items = null,
+            Action<TC> onClick = null,
             Action onClose = null)
         {
             if (!isOpen)
@@ -403,12 +403,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (string.IsNullOrEmpty(title) || items == null || onClick == null) return;
             
-            _existingList.Open(title, items, onClick, onClose);
+            _existingList.Open(title, items, configuration => Open(configuration as TC), onClose);
         }
 
-        private void OnExistingItemClick(PrefabBase clickedPrefab)
+        private void OnExistingItemClick(TC clickedPrefab)
         {
-            Open(MapBuilder.GetConfigurationByGuid<TC>(clickedPrefab.GUID));
+            Open(MapBuilder.GetConfigurationByGuid<TC>(clickedPrefab.Guid));
         }
         
         private void AssignComponents()
@@ -416,7 +416,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Transform bodyTransform = body.transform; 
             Placeholder = bodyTransform.Find("Placeholder").gameObject;
             _prefabList = bodyTransform.Find("AvailablePrefabs").GetComponent<PrefabList>();
-            _existingList = bodyTransform.Find("ExistingPrefabs").GetComponent<PrefabList>();
+            _existingList = bodyTransform.Find("ExistingPrefabs").GetComponent<ConfigurationList>();
             Transform frame = bodyTransform.GetChild(0).GetChild(0);
             _prefabTitle = frame.Find("Header/PrefabTitle").GetComponent<Title>();
             _prefabsFinderButton = frame.Find("Header/PrefabFinderButton").GetComponent<ImageButton>();

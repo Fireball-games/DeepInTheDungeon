@@ -11,8 +11,8 @@ namespace Scripts.UI.EditorUI.Components
 {
     public abstract class ListButtonBase<T> : MonoBehaviour
     {
-         [SerializeField] private Image iconPrefab;
-        protected T displayedPrefab;
+        [SerializeField] private Image iconPrefab;
+        public T displayedItem;
 
         protected TMP_Text Text;
         
@@ -37,7 +37,7 @@ namespace Scripts.UI.EditorUI.Components
         {
             if(!Text) Initialize();
             
-            displayedPrefab = prefab;
+            displayedItem = prefab;
             OnClick.RemoveAllListeners();
             OnClick.AddListener(onClick);
 
@@ -53,7 +53,7 @@ namespace Scripts.UI.EditorUI.Components
             if(!Text) Initialize();
         }
 
-        private void AddIcon(EIcon icon)
+        protected void AddIcon(EIcon icon)
         {
             Image newIcon = ObjectPool.Instance
                 .GetFromPool(iconPrefab.gameObject, Text.gameObject, true)
@@ -65,7 +65,7 @@ namespace Scripts.UI.EditorUI.Components
         protected virtual void OnClick_internal()
         {
             Text.color = SelectedColor;
-            OnClick.Invoke(displayedPrefab);
+            OnClick.Invoke(displayedItem);
         }
 
         protected void Initialize()

@@ -61,8 +61,6 @@ namespace Scripts.MapEditor.Services
             }
         }
 
-        public void MoveCameraTo(float x, float y, float z) => cameraService.MoveCameraTo(x, y, z);
-
         protected override void Awake()
         {
             base.Awake();
@@ -82,7 +80,7 @@ namespace Scripts.MapEditor.Services
 
         private void Update()
         {
-            if (!Manager.MapIsPresented || Manager.MapIsBeingBuilt) return;
+            if (!Manager || !Manager.MapIsPresented || Manager.MapIsBeingBuilt) return;
 
             CheckMouseOverWall();
 

@@ -18,8 +18,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private Vector3 _prefabWallCenterPosition;
         
-        protected override Vector3 Cursor3DScale => new(0.15f, 1.1f, 1.1f);
-        
+        protected override Vector3 GetCursor3DScale()
+        {
+            if (EditedConfiguration == null)
+            {
+                return new Vector3(0.15f, 1.1f, 1.1f);
+            }
+
+            Collider triggerCollider = MapBuilder.GetPrefabByGuid(EditedConfiguration.Guid).GetComponent<Collider>();
+            return triggerCollider.bounds.size;
+        }
+
         protected override TriggerConfiguration GetNewConfiguration(string prefabName) => new()
         {
             Guid = Guid.NewGuid().ToString(),
@@ -57,7 +66,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void VisualizeOtherComponents()
         {
-            if (EditedConfiguration is {SpawnPrefabOnBuild: false}) return;
+            _positionControl.SetActive(false);
+            
+            if (EditedConfiguration is null or {SpawnPrefabOnBuild: false}) return;
             
             _prefabWallCenterPosition = PhysicalPrefab.transform.position.ToVector3Int();
             _prefabWallCenterPosition.x = (float)Math.Round(PhysicalPrefab.transform.position.x, 1);

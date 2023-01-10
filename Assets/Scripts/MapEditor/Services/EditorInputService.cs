@@ -10,6 +10,8 @@ namespace Scripts.MapEditor.Services
         private EditorCameraService CameraService => EditorCameraService.Instance;
         private void Update()
         {
+            if (!Mouse) return;
+            
             if (!Mouse.IsManipulatingCameraPosition)
             {
                 // Rotate camera 90° counter-clockwise

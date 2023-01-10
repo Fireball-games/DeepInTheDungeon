@@ -176,6 +176,8 @@ namespace Scripts.UI.EditorUI
             }
         }
 
+        public void MoveCameraToPrefab(Vector3 worldPosition) => _openedEditor?.MoveCameraToPrefab(worldPosition);
+
         private void CloseEditorWindow()
         {
             isAnyObjectEdited = false;

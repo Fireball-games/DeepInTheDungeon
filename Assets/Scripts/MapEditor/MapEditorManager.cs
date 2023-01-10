@@ -218,7 +218,7 @@ namespace Scripts.MapEditor
             
             if (!MapIsPresented && !_dontChangeCameraAfterLayoutIsBuild)
             {
-                EditorMouseService.Instance.MoveCameraTo(startPosition.y, cameraHeight, startPosition.z);
+                EditorCameraService.Instance.MoveCameraTo(startPosition.y, cameraHeight, startPosition.z);
             }
             
             MapIsBeingBuilt = false;

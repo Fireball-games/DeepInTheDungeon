@@ -23,7 +23,7 @@ namespace Scripts.UI.EditorUI.Components
 
         protected UnityEvent<T> OnClick { get; } = new();
 
-        private void Awake()
+        protected virtual void Awake()
         {
             Initialize();
         }

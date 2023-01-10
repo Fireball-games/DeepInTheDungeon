@@ -35,8 +35,8 @@ namespace Scripts.Triggers
         protected override void OnEnable()
         {
             base.OnEnable();
-
-            _movementStore.Clear();
+            
+            _movementStore?.Clear();
 
             for (int index = 0; index < steps.Count; index++)
             {
@@ -51,7 +51,7 @@ namespace Scripts.Triggers
                     newTween.OnPlay(SetBusy);
                 }
 
-                _movementStore.Add(newTween);
+                _movementStore?.Add(newTween);
             }
         }
 

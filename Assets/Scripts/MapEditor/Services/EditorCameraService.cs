@@ -23,7 +23,9 @@ namespace Scripts.MapEditor.Services
 
         private EditorMouseService Mouse => EditorMouseService.Instance;
         private Vector3 _cameraMoveVector = Vector3.zero;
-        
+
+        public PositionRotation GetCameraTransformData() => new(cameraHolder.transform.position, cameraHolder.transform.rotation);
+
         internal void ResetCamera()
         {
             RotateCameraSmooth(Vector3.zero);
@@ -100,24 +102,37 @@ namespace Scripts.MapEditor.Services
                 smooth, true);
         }
 
-        internal void MoveCameraTo(float x, float y, float z, bool smooth = true, bool resetCameraAngle = false)
+        public void MoveCameraTo(PositionRotation positionRotation)
         {
-            _cameraMoveVector.x = x;
-            _cameraMoveVector.y = y;
-            _cameraMoveVector.z = z;
+            Sequence sequence = DOTween.Sequence().Append(cameraHolder.DORotate(positionRotation.Rotation.eulerAngles, 0.3f));
+            sequence.Insert(0, cameraHolder.DOMove(positionRotation.Position, 0.5f).SetEase(Ease.OutFlash));
+            sequence.Play();
+        }
 
+        private void MoveCameraTo(Vector3 worldPosition, bool smooth = true, bool resetCameraAngle = false)
+        {
             if (smooth)
             {
                 if (resetCameraAngle)
                 {
                     cameraHolder.DORotate(Vector3.zero, 0.3f).Play();
                 }
-                cameraHolder.DOMove(_cameraMoveVector, 0.5f).SetEase(Ease.OutFlash).Play();
+                cameraHolder.DOMove(worldPosition, 0.5f).SetEase(Ease.OutFlash).Play();
             }
             else
             {
-                cameraHolder.position = _cameraMoveVector;
+                cameraHolder.position = worldPosition;
             }
+        }
+            
+
+        internal void MoveCameraTo(float x, float y, float z, bool smooth = true, bool resetCameraAngle = false)
+        {
+            _cameraMoveVector.x = x;
+            _cameraMoveVector.y = y;
+            _cameraMoveVector.z = z;
+
+            MoveCameraTo(_cameraMoveVector, smooth, resetCameraAngle);
         }
 
         internal void TranslateCamera(Vector3 positionDelta, bool smooth = true) 

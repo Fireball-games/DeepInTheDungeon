@@ -125,9 +125,9 @@ namespace Scripts.Building
             ObjectPool.Instance.ReturnToPool(prefabGo);
         }
 
-        public GameObject GetPrefabByConfiguration(PrefabConfiguration configuration)
+        public GameObject GetPrefabByGuid(string guid)
         {
-            GameObject result = Prefabs.FirstOrDefault(p => p.GetComponent<PrefabBase>().GUID == configuration.Guid);
+            GameObject result = Prefabs.FirstOrDefault(p => p.GetComponent<PrefabBase>().GUID == guid);
 
             return !result ? null : result;
         }

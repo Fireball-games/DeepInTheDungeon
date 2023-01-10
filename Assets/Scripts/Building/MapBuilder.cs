@@ -278,8 +278,8 @@ namespace Scripts.Building
         public IEnumerable<T> GetPrefabConfigurationsOnWorldPosition<T>(Vector3 transformPosition) where T : PrefabConfiguration =>
             _prefabBuilder.GetPrefabConfigurationsOnWorldPosition<T>(transformPosition);
 
-        public GameObject GetPrefabByConfiguration<TC>(TC configuration) where TC : PrefabConfiguration =>
-            _prefabBuilder.GetPrefabByConfiguration(configuration);
+        public GameObject GetPrefabByGuid(string guid) =>
+            _prefabBuilder.GetPrefabByGuid(guid);
 
         public TC GetConfigurationByGuid<TC>(string guid) where TC : PrefabConfiguration =>
             _prefabBuilder.GetConfigurationByGuid<TC>(guid);

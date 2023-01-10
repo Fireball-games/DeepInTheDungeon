@@ -1,18 +1,23 @@
 ﻿using System.Collections;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.MapEditor.Services;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Scripts.UI.EditorUI.Components
 {
-    public class NavigatingPrefabListButton : ListButtonBase<PrefabConfiguration>, IPointerEnterHandler, IPointerExitHandler
+    public class ConfigurationListButton : ListButtonBase<PrefabConfiguration>, IPointerEnterHandler, IPointerExitHandler
     {
         private readonly WaitForSecondsRealtime _startNavigatingDelay = new(0.5f);
         
         protected override void SetItemName()
         {
             if(!Text) Initialize();
+            
+            if (displayedItem.PrefabType is Enums.EPrefabType.Trigger) AddIcon(IconStore.EIcon.Trigger);
+            if (displayedItem.PrefabType is Enums.EPrefabType.TriggerReceiver) AddIcon(IconStore.EIcon.TriggerReceiver);
+            if (!displayedItem.SpawnPrefabOnBuild) AddIcon(IconStore.EIcon.Embedded);
             
             Text.text = displayedItem.DisplayName;
         }

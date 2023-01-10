@@ -2,7 +2,7 @@
 
 namespace Scripts.UI.EditorUI.Components
 {
-    public class ConfigurationList : ListWindowBase<PrefabConfiguration, NavigatingPrefabListButton>
+    public class ConfigurationList : ListWindowBase<PrefabConfiguration, ConfigurationListButton>
     {
         protected override void OnItemClicked_internal(PrefabConfiguration item)
         {

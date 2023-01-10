@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
@@ -17,6 +18,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private Vector3 _prefabWallCenterPosition;
         
+        protected override Vector3 Cursor3DScale => new(0.15f, 1.1f, 1.1f);
+        
         protected override TriggerConfiguration GetNewConfiguration(string prefabName) => new()
         {
             Guid = Guid.NewGuid().ToString(),
@@ -29,9 +32,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         };
 
         protected override TriggerConfiguration CloneConfiguration(TriggerConfiguration sourceConfiguration) => new(sourceConfiguration);
-        
-        protected override Vector3 Cursor3DScale => new(0.15f, 1.1f, 1.1f);
-        
+
+        protected override IEnumerable<TriggerConfiguration> GetAvailableConfigurations()
+        {
+            return MapBuilder.MapDescription.PrefabConfigurations
+                .Where(c => c.PrefabType == Enums.EPrefabType.Trigger)
+                .Select(c => c as TriggerConfiguration);
+        }
+
         private void OnPositionChanged(Vector3 newPosition)
         {
             Vector3 newPrefabWorldPosition = _prefabWallCenterPosition + newPosition;
@@ -49,6 +57,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void VisualizeOtherComponents()
         {
+            if (EditedConfiguration is {SpawnPrefabOnBuild: false}) return;
+            
             _prefabWallCenterPosition = PhysicalPrefab.transform.position.ToVector3Int();
             _prefabWallCenterPosition.x = (float)Math.Round(PhysicalPrefab.transform.position.x, 1);
             Logger.Log($"WallCenter: {_prefabWallCenterPosition}");

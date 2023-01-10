@@ -7,6 +7,7 @@ public class IconStore : MonoBehaviour
     [SerializeField] private Sprite exclamation;
     [SerializeField] private Sprite triggerReceiver;
     [SerializeField] private Sprite wall;
+    [SerializeField] private Sprite embedded;
 
     private static Dictionary<EIcon, Sprite> _sprites;
 
@@ -18,6 +19,7 @@ public class IconStore : MonoBehaviour
         Trigger = 2,
         TriggerReceiver = 3,
         Wall = 4,
+        Embedded = 5,
     }
 
     private void Awake()
@@ -29,6 +31,7 @@ public class IconStore : MonoBehaviour
             {EIcon.Exclamation, exclamation},
             {EIcon.TriggerReceiver, triggerReceiver},
             {EIcon.Wall, wall},
+            {EIcon.Embedded, embedded}
         };
     }
 

@@ -26,6 +26,7 @@ namespace Scripts.UI.EditorUI
         private PrefabTileEditor _prefabTileEditor;
         private TriggerEditor _triggerEditor;
         private StatusBar _statusBar;
+        private CageController _selectedCage;
         private Transform _body;
 
         [NonSerialized] public WallGizmoController WallGizmo;
@@ -33,6 +34,7 @@ namespace Scripts.UI.EditorUI
         public NewMapDialog NewMapDialog => _newMapDialog;
         public DialogBase ConfirmationDialog => _confirmationDialog;
         public OpenFileDialog OpenFileDialog => _openFileDialog;
+        public CageController SelectedCage => _selectedCage;
         public bool isAnyObjectEdited;
 
         private ImageButton _playButton;
@@ -58,6 +60,7 @@ namespace Scripts.UI.EditorUI
             _prefabTileEditor = _body.Find("PrefabTileEditor").GetComponent<PrefabTileEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
             _statusBar = transform.Find("StatusBar").GetComponent<StatusBar>();
+            _selectedCage = _body.Find("SelectedCage").GetComponent<CageController>();
             
             WallGizmo = FindObjectOfType<WallGizmoController>();
             

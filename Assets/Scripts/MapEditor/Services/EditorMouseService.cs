@@ -1,4 +1,3 @@
-using System;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
@@ -11,7 +10,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MouseCursorManager;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor.Services
 {
@@ -441,7 +439,7 @@ namespace Scripts.MapEditor.Services
                     SetCursor(ECursorType.Add);
                 }
 
-                cursor3D.ShowAt(MouseGridPosition);
+                Show3DCursor(MouseGridPosition);
             }
 
             if (Manager.WorkMode == EWorkMode.Build)
@@ -453,27 +451,27 @@ namespace Scripts.MapEditor.Services
                         SetDefaultCursor();
                         break;
                     case EGridPositionType.NullTile:
-                        cursor3D.ShowAt(MouseGridPosition);
+                        Show3DCursor(MouseGridPosition);
                         SetCursor(ECursorType.Build);
                         break;
                     case EGridPositionType.EditableTile:
-                        cursor3D.ShowAt(MouseGridPosition);
+                        Show3DCursor(MouseGridPosition);
                         SetCursor(ECursorType.Demolish);
                         break;
                     case EGridPositionType.NullTileAbove:
-                        cursor3D.ShowAt(MouseGridPosition, true);
+                        Show3DCursor(MouseGridPosition, true);
                         SetCursor(ECursorType.Build);
                         break;
                     case EGridPositionType.EditableTileAbove:
-                        cursor3D.ShowAt(MouseGridPosition, true);
+                        Show3DCursor(MouseGridPosition, true);
                         SetCursor(ECursorType.Demolish);
                         break;
                     case EGridPositionType.NullTileBellow:
-                        cursor3D.ShowAt(MouseGridPosition, withCopyBellow: true);
+                        Show3DCursor(MouseGridPosition, withCopyBellow: true);
                         SetCursor(ECursorType.Build);
                         break;
                     case EGridPositionType.EditableTileBellow:
-                        cursor3D.ShowAt(MouseGridPosition, withCopyBellow: true);
+                        Show3DCursor(MouseGridPosition, withCopyBellow: true);
                         SetCursor(ECursorType.Demolish);
                         break;
                     default:
@@ -481,6 +479,17 @@ namespace Scripts.MapEditor.Services
                         break;
                 }
             }
+        }
+
+        private void Show3DCursor(Vector3Int position, bool withCopyBellow = false, bool withCopyAbove = false)
+        {
+            if (UIManager.isAnyObjectEdited)
+            {
+                cursor3D.Hide();
+                return;
+            }
+            
+            cursor3D.ShowAt(position, withCopyAbove, withCopyBellow);
         }
     }
 }

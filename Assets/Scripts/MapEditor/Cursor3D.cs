@@ -3,9 +3,8 @@ using UnityEngine;
 
 namespace Scripts.MapEditor
 {
-    public class Cursor3D : MonoBehaviour
+    public class Cursor3D : CageController
     {
-        [SerializeField] private GameObject cursor;
         [SerializeField] private GameObject copy;
 
         public static Vector3 EditorWallCursorScale;
@@ -13,21 +12,6 @@ namespace Scripts.MapEditor
         static Cursor3D()
         {
             EditorWallCursorScale = new Vector3(0.15f, 1.2f, 1.2f);
-        }
-
-        private void OnEnable()
-        {
-            cursor.gameObject.SetActive(false);
-        }
-
-        public void ShowAt(Vector3 position, Vector3 scale, Quaternion rotation)
-        {
-            Transform ownTransform = transform;
-            ownTransform.position = position;
-            ownTransform.localRotation = rotation;
-            ownTransform.localScale = scale;
-            
-            cursor.SetActive(true);
         }
 
         public void ShowAt(Vector3Int gridPosition, bool withCopyAbove = false, bool withCopyBellow = false)
@@ -52,22 +36,11 @@ namespace Scripts.MapEditor
             copy.SetActive(false);
         }
 
-        private void ShowAt(Vector3 worldPosition)
+        public override void Hide()
         {
-            transform.position = worldPosition;
-            // Logger.Log($"Activating cursor on worldPosition: {worldPosition}");
-            cursor.SetActive(true);
-        }
-
-        public void Hide()
-        {
+            base.Hide();
+            
             copy.SetActive(false);
-
-            Transform ownTransform = transform;
-            ownTransform.localScale = Vector3.one;
-            ownTransform.position = Vector3.zero;
-            transform.localRotation = Quaternion.Euler(Vector3.zero);
-            cursor.SetActive(false);
         }
     }
 }

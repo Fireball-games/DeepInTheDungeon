@@ -39,6 +39,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private Title _prefabTitle;
         private TMP_Text _statusText;
         private EditorUIManager Manager => EditorUIManager.Instance;
+        private CageController SelectedCage => Manager.SelectedCage;
 
         protected MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
         protected TC EditedConfiguration;
@@ -49,7 +50,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         
         private TC _originalConfiguration;
         private HashSet<TPrefab> _availablePrefabs;
-        private Cursor3D _cursor3D;
         private bool _isEditingExistingPrefab;
         
         protected bool CanOpen => !IsCurrentConfigurationChanged;
@@ -62,8 +62,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _saveButton.onClick.AddListener(SaveMap);
             _deleteButton.onClick.AddListener(Delete);
             _cancelButton.onClick.AddListener(RemoveChanges);
-
-            _cursor3D = FindObjectOfType<Cursor3D>();
         }
 
         private void OnEnable()
@@ -95,6 +93,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetActive(false);
             EditedConfiguration = _originalConfiguration = null;
             SetEdited(false);
+            SelectedCage.Hide();
 
             SetButtons();
             
@@ -126,7 +125,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             MoveCameraToPrefab(configuration.TransformData.Position);
             
-            _cursor3D.ShowAt(configuration.TransformData.Position,
+            SelectedCage.ShowAt(configuration.TransformData.Position,
                 Cursor3DScale,
                 configuration.TransformData.Rotation);
 
@@ -164,7 +163,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 return;
             }
             
-            _cursor3D.ShowAt(placeholderTransformData.Position,
+            SelectedCage.ShowAt(placeholderTransformData.Position,
                 Cursor3DScale,
                 placeholderTransformData.Rotation);
 
@@ -323,7 +322,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             PhysicalPrefabBody = null;
             PhysicalPrefab = null;
 
-            _cursor3D.Hide();
+            SelectedCage.Hide();
 
             Manager.isAnyObjectEdited = false;
             Manager.WallGizmo.Reset();

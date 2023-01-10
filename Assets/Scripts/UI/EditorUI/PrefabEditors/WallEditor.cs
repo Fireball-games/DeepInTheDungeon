@@ -47,6 +47,13 @@ namespace Scripts.UI.EditorUI
 
         protected override Vector3 Cursor3DScale => new(0.15f, 1.1f, 1.1f);
 
+        public override void Open()
+        {
+            if(_waypointEditor) _waypointEditor.SetActive(false);
+            
+            base.Open();
+        }
+
         protected override void Delete()
         {
             if (EditedConfiguration.WayPoints.Any())

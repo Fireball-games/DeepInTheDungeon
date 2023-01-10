@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.MapEditor.Services;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace Scripts.UI.EditorUI.Components
@@ -10,14 +10,16 @@ namespace Scripts.UI.EditorUI.Components
     public class ConfigurationListButton : ListButtonBase<PrefabConfiguration>, IPointerEnterHandler, IPointerExitHandler
     {
         private readonly WaitForSecondsRealtime _startNavigatingDelay = new(0.5f);
-        
-        protected override void SetItemName()
+
+        public override void Set(PrefabConfiguration item, UnityAction<PrefabConfiguration> onClick)
         {
-            if(!Text) Initialize();
+            base.Set(item, onClick);
+
+            if (item.PrefabType is Enums.EPrefabType.Trigger) AddIcon(IconStore.EIcon.Trigger);
+            if (item.PrefabType is Enums.EPrefabType.TriggerReceiver) AddIcon(IconStore.EIcon.TriggerReceiver);
+            if (!item.SpawnPrefabOnBuild) AddIcon(IconStore.EIcon.Embedded);
             
-            if (displayedItem.PrefabType is Enums.EPrefabType.Trigger) AddIcon(IconStore.EIcon.Trigger);
-            if (displayedItem.PrefabType is Enums.EPrefabType.TriggerReceiver) AddIcon(IconStore.EIcon.TriggerReceiver);
-            if (!displayedItem.SpawnPrefabOnBuild) AddIcon(IconStore.EIcon.Embedded);
+            if (item is WallConfiguration configuration && configuration.HasPath()) AddIcon(IconStore.EIcon.Move);
             
             Text.text = displayedItem.DisplayName;
         }

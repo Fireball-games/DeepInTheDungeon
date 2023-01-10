@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using Scripts.Helpers.Extensions;
-using Scripts.Localization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -28,7 +26,7 @@ namespace Scripts.UI.Components
         public void Set(string labelText, EAddWaypointType type, UnityAction<Vector3, EAddWaypointType> onAddButtonClick)
         {
             Initialize();
-            _label.text = string.IsNullOrEmpty(labelText) ? t.Get(Keys.Default) : labelText;
+            _label.text = string.IsNullOrEmpty(labelText) ? "" : labelText;
             _type = type;
             OnAddButtonClicked.RemoveAllListeners();
             OnAddButtonClicked.AddListener(onAddButtonClick);
@@ -41,22 +39,22 @@ namespace Scripts.UI.Components
             _label = transform.Find("Label").GetComponent<TMP_Text>();
             
             _upButton = transform.Find("Buttons/UpButton").GetComponent<Button>();
-            SetButton(_upButton, Vector3.up, t.Get(Keys.Up));
+            SetButton(_upButton, Vector3.up, "");
             
             _downButton = transform.Find("Buttons/DownButton").GetComponent<Button>();
-            SetButton(_downButton, Vector3.down, t.Get(Keys.Down));
+            SetButton(_downButton, Vector3.down, "");
             
             _northButton = transform.Find("Buttons/NorthButton").GetComponent<Button>();
-            SetButton(_northButton, GeneralExtensions.WorldNorth, t.Get(Keys.North));
+            SetButton(_northButton, GeneralExtensions.WorldNorth, "");
             
             _eastButton = transform.Find("Buttons/EastButton").GetComponent<Button>();
-            SetButton(_eastButton, GeneralExtensions.WorldEast, t.Get(Keys.East));
+            SetButton(_eastButton, GeneralExtensions.WorldEast, "");
             
             _southButton = transform.Find("Buttons/SouthButton").GetComponent<Button>();
-            SetButton(_southButton, GeneralExtensions.WorldSouth, t.Get(Keys.South));
+            SetButton(_southButton, GeneralExtensions.WorldSouth, "");
             
             _westButton = transform.Find("Buttons/WestButton").GetComponent<Button>();
-            SetButton(_westButton, GeneralExtensions.WorldWest, t.Get(Keys.West));
+            SetButton(_westButton, GeneralExtensions.WorldWest, "");
         }
 
         private void SetButton(Button button, Vector3 direction, string labelText)
@@ -64,7 +62,7 @@ namespace Scripts.UI.Components
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => OnAddButtonClicked_internal(button));
             _map.Add(button, direction);
-            button.GetComponentInChildren<TMP_Text>().text = $"1 {labelText.ElementAt(0)}";
+            button.GetComponentInChildren<TMP_Text>().text = labelText;
         }
 
         private void OnAddButtonClicked_internal(Button clickedButton)

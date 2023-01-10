@@ -85,7 +85,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         /// <summary>
         /// Opens Existing Prefabs list. Next steps are - clicking in map to add/edit prefabs or open prefabs finder.
         /// </summary>
-        public void Open()
+        public virtual void Open()
         {
             _mainWindow.SetActive(false);
             _prefabList.Close();

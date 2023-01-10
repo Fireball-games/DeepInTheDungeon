@@ -28,30 +28,20 @@ namespace Scripts.UI.EditorUI.Components
             Initialize();
         }
 
-        private void OnEnable()
-        {
-            Text.gameObject.DismissAllChildrenToPool(true);
-        }
-
-        public virtual void Set(T prefab, UnityAction<T> onClick)
+        public virtual void Set(T item, UnityAction<T> onClick)
         {
             if(!Text) Initialize();
             
-            displayedItem = prefab;
+            Text.gameObject.DismissAllChildrenToPool(true);
+            
+            displayedItem = item;
             OnClick.RemoveAllListeners();
             OnClick.AddListener(onClick);
-
             
             Text.color = _normalColor;
-            SetItemName();
         }
 
         public void SetSelected(bool isSelected) => Text.color = isSelected ? SelectedColor : _normalColor;
-
-        protected virtual void SetItemName()
-        {
-            if(!Text) Initialize();
-        }
 
         protected void AddIcon(EIcon icon)
         {
@@ -68,9 +58,10 @@ namespace Scripts.UI.EditorUI.Components
             OnClick.Invoke(displayedItem);
         }
 
-        protected void Initialize()
+        private void Initialize()
         {
             _button = transform.Find("Button").GetComponent<Button>();
+            _button.onClick.RemoveAllListeners();
             _button.onClick.AddListener(OnClick_internal);
             
             Text = transform.Find("Button/Text").GetComponent<TMP_Text>();

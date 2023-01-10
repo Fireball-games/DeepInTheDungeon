@@ -9,13 +9,15 @@ namespace Scripts.UI.EditorUI.Components
 {
     public class PrefabListButton : ListButtonBase<PrefabBase> 
     {
-        public override void Set(PrefabBase prefab, UnityAction<PrefabBase> onClick)
+        public override void Set(PrefabBase item, UnityAction<PrefabBase> onClick)
         {
-            base.Set(prefab, onClick);
+            base.Set(item, onClick);
 
-            if (prefab.gameObject.GetBody()) AddIcon(EIcon.Wall);
+            if (item.gameObject.GetBody()) AddIcon(EIcon.Wall);
             
-            switch (prefab)
+            Text.text = displayedItem.gameObject.name;
+            
+            switch (item)
             {
                 case IMovementWall:
                 {
@@ -24,18 +26,11 @@ namespace Scripts.UI.EditorUI.Components
                 }
                 case IWallWithTrigger:
                 {
-                    if (prefab.GetComponent<TriggerReceiver>()) AddIcon(EIcon.TriggerReceiver);
-                    if (prefab.GetComponentInChildren<Trigger>()) AddIcon(EIcon.Trigger);
+                    if (item.GetComponent<TriggerReceiver>()) AddIcon(EIcon.TriggerReceiver);
+                    if (item.GetComponentInChildren<Trigger>()) AddIcon(EIcon.Trigger);
                     break;
                 }
             }
-        }
-
-        protected override void SetItemName()
-        {
-            if(!Text) Initialize();
-            
-            Text.text = displayedItem.gameObject.name;
         }
     }
 }

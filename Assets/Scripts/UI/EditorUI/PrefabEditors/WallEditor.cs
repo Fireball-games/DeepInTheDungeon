@@ -211,6 +211,7 @@ namespace Scripts.UI.EditorUI
             _waypointEditor.SetActive(false);
             _offsetSlider.SetActive(false);
             _offsetNumericUpDown.gameObject.SetActive(false);
+            _createOppositePathButton.gameObject.SetActive(false);
 
             if (EditedConfiguration == null) return;
 

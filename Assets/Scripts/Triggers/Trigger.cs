@@ -13,6 +13,10 @@ namespace Scripts.Triggers
         private const float MaxDistanceFromPlayer = 0.7f;
         
         public ETriggerType triggerType;
+        /// <summary>
+        /// How many times can be trigger triggered.
+        /// </summary>
+        public int count;
         public bool mustBeOnSameTile = true;
         public float actionDuration = 0.3f;
         public bool atRest = true;

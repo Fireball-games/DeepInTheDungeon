@@ -8,19 +8,29 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
     public class TriggerConfiguration : PrefabConfiguration
     {
         public List<string> Subscribers;
+        public Enums.ETriggerType TriggerType;
+        /// <summary>
+        /// How many times can be trigger triggered.
+        /// </summary>
+        public int Count;
 
         public TriggerConfiguration()
         {
         }
 
-        public TriggerConfiguration(TriggerConfiguration receiverConfiguration) : base(receiverConfiguration)
+        public TriggerConfiguration(TriggerConfiguration configuration) : base(configuration)
         {
-            Subscribers = receiverConfiguration.Subscribers;
+            Subscribers = configuration.Subscribers;
+            TriggerType = configuration.TriggerType;
+            Count = configuration.Count;
         }
 
         public TriggerConfiguration(Trigger trigger, string ownerGuid = null, bool spawnPrefabOnBuild = true) : base(trigger, ownerGuid, spawnPrefabOnBuild)
         {
             Subscribers = trigger.presetSubscribers.Select(s => s.GUID).ToList();
+            TriggerType = trigger.triggerType;
+            Count = trigger.count;
+            
             TransformData.Position = trigger.transform.position.Round(2);
         }
     }

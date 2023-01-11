@@ -15,6 +15,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
     public class TriggerEditor : PrefabEditorBase<TriggerConfiguration, Trigger>
     {
         private Vector3Control _positionControl;
+        private EnumDropdown _triggerTypeDropdown;
 
         private Vector3 _prefabWallCenterPosition;
         private readonly Vector3 _wallCursor3DSize = new(0.15f, 1.1f, 1.1f);
@@ -54,16 +55,27 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             PhysicalPrefab.transform.localPosition = newPrefabWorldPosition;
         }
 
+        private void OnTriggerTypeChanged(int index)
+        {
+            SetEdited();
+            EditedConfiguration.TriggerType = index.GetEnumValue<Enums.ETriggerType>();
+        }
+
         protected override void InitializeOtherComponents()
         {
             Transform frame = transform.Find("Body/Background/Frame");
+            
             _positionControl = frame.Find("PositionControl").GetComponent<Vector3Control>();
             _positionControl.SetActive(false);
+            
+            _triggerTypeDropdown = frame.Find("TriggerTypeDropdown").GetComponent<EnumDropdown>();
+            _triggerTypeDropdown.SetActive(false);
         }
 
         protected override void VisualizeOtherComponents()
         {
             _positionControl.SetActive(false);
+            _triggerTypeDropdown.SetActive(false);
 
             if (EditedConfiguration is null or {SpawnPrefabOnBuild: false}) return;
 
@@ -76,6 +88,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _positionControl.Value = PhysicalPrefab.transform.position - _prefabWallCenterPosition;
             _positionControl.ValueChanged.AddListener(OnPositionChanged);
             _positionControl.SetActive(true);
+            
+            _triggerTypeDropdown.Set<Enums.ETriggerType>( $"{t.Get(Keys.TriggerType)} :",
+                (int)EditedConfiguration.TriggerType,
+                OnTriggerTypeChanged);
+            _triggerTypeDropdown.SetActive(true);
         }
     }
 }

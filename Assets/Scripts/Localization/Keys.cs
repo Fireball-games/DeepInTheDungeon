@@ -52,6 +52,7 @@
         public const string SpeedTowardsPoint = "SpeedTowardsPoint";
         public const string StartPoint = "StartPoint";
         public const string Step = "Step";
+        public const string TriggerType = "TriggerType";
         public const string Up = "Up";
         public const string WaypointEditor = "WaypointEditor";
         public const string West = "West";

@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using Scripts.Helpers;
 using Scripts.System.MonoBases;
+using Scripts.System.Pooling;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Scripts.UI.Components
 {
-    public class ImageButton : UIElementBase
+    public class ImageButton : UIElementBase, IPoolInitializable
     {
         [Header("Sprites")] [SerializeField] private Sprite frame;
         [SerializeField] protected Sprite icon;
@@ -76,8 +77,7 @@ namespace Scripts.UI.Components
             
             backgroundImage.color = IdleColor;
             StopAllCoroutines();
-
-            OnClick.RemoveAllListeners();
+            
             _mouseClickOverlay.OnClick -= OnClick_Internal;
             _mouseClickOverlay.OnMouseEnter -= OnMouseEnter;
             _mouseClickOverlay.OnMouseLeave -= OnMouseExit;
@@ -179,5 +179,9 @@ namespace Scripts.UI.Components
             backgroundImage.color = IdleColor;
         }
 #endif
+        public void Initialize()
+        {
+            OnClick.RemoveAllListeners();
+        }
     }
 }

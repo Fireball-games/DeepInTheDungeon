@@ -351,6 +351,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         
         private void SetButtons()
         {
+            // bool prefabFinderButtonVisibility;
+            // if (IsCurrentConfigurationChanged) prefabFinderButtonVisibility = false;
             _cancelButton.gameObject.SetActive(IsCurrentConfigurationChanged);
             _deleteButton.gameObject.SetActive(_isEditingExistingPrefab && EditedConfiguration is {SpawnPrefabOnBuild: true});
             _saveButton.gameObject.SetActive(IsCurrentConfigurationChanged);

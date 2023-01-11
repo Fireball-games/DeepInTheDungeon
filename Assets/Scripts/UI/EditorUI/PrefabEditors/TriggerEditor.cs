@@ -47,7 +47,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void OnPositionChanged(Vector3 newPosition)
         {
-            Vector3 newPrefabWorldPosition = _prefabWallCenterPosition + newPosition;
+            SetEdited();
+            Vector3 newPrefabWorldPosition = _prefabWallCenterPosition + new Vector3(newPosition.z, newPosition.x, newPosition.y);
             Logger.Log($"New prefab position: {newPrefabWorldPosition}");
             EditedConfiguration.TransformData.Position = newPrefabWorldPosition;
             PhysicalPrefab.transform.localPosition = newPrefabWorldPosition;
@@ -70,14 +71,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabWallCenterPosition.x = (float) Math.Round(PhysicalPrefab.transform.position.x, 1);
             Logger.Log($"WallCenter: {_prefabWallCenterPosition}");
 
-            _positionControl.OnValueChanged.RemoveAllListeners();
+            _positionControl.ValueChanged.RemoveAllListeners();
             _positionControl.Label.text = t.Get(Keys.Position);
-            _positionControl.XMinimumMaximum = new Vector2(-0.5f, 0.5f);
-            _positionControl.XMinimumMaximum = new Vector2(-0.5f, 0.5f);
-            _positionControl.XMinimumMaximum = new Vector2(0f, 0.2f);
-            _positionControl.Step = 0.01f;
             _positionControl.Value = PhysicalPrefab.transform.position - _prefabWallCenterPosition;
-            _positionControl.OnValueChanged.AddListener(OnPositionChanged);
+            _positionControl.ValueChanged.AddListener(OnPositionChanged);
             _positionControl.SetActive(true);
         }
     }

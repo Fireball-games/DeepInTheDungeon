@@ -8,6 +8,10 @@ namespace Scripts.UI.Components
 {
     public class Vector3Control : UIElementBase
     {
+        [SerializeField] private float step;
+        [SerializeField] private Vector2 xMinimumMaximum = new(float.MinValue, float.MaxValue);
+        [SerializeField] private Vector2 yMinimumMaximum = new(float.MinValue, float.MaxValue);
+        [SerializeField] private Vector2 zMinimumMaximum = new(float.MinValue, float.MaxValue);
         public bool interactable = true;
         [NonSerialized] public TMP_Text Label;
         [NonSerialized] public TMP_Text XLabel;
@@ -18,7 +22,7 @@ namespace Scripts.UI.Components
         private NumericUpDown _yUpDown;
         private NumericUpDown _zUpDown;
 
-        public UnityEvent<Vector3> OnValueChanged { get; set; } = new();
+        public UnityEvent<Vector3> ValueChanged { get; set; } = new();
 
         private Vector3 _value;
 
@@ -32,44 +36,16 @@ namespace Scripts.UI.Components
             }
         }
 
-        private float _step;
 
         public float Step
         {
-            get => _step;
+            get => step;
             set
             {
-                _step = value;
+                step = value;
                 _xUpDown.step = value;
                 _yUpDown.step = value;
                 _zUpDown.step = value;
-            }
-        }
-
-        public Vector2 XMinimumMaximum
-        {
-            set
-            {
-                _xUpDown.minimum = value.x;
-                _xUpDown.maximum = value.y;
-            }
-        }
-
-        public Vector2 YMinimumMaximum
-        {
-            set
-            {
-                _yUpDown.minimum = value.x;
-                _yUpDown.maximum = value.y;
-            }
-        }
-        
-        public Vector2 ZMinimumMaximum
-        {
-            set
-            {
-                _zUpDown.minimum = value.x;
-                _zUpDown.maximum = value.y;
             }
         }
 
@@ -87,15 +63,45 @@ namespace Scripts.UI.Components
         
             _xUpDown = bodyTransform.Find("XUpDown").GetComponent<NumericUpDown>();
             _xUpDown.OnValueChanged.AddListener(OnXChanged);
+            _xUpDown.minimum = xMinimumMaximum.x;
+            _xUpDown.maximum = xMinimumMaximum.y;
+            _xUpDown.step = step;
             XLabel = _xUpDown.transform.Find("Label").GetComponent<TMP_Text>();
         
             _yUpDown = bodyTransform.Find("YUpDown").GetComponent<NumericUpDown>();
             _yUpDown.OnValueChanged.AddListener(OnYChanged);
+            _yUpDown.minimum = yMinimumMaximum.x;
+            _yUpDown.maximum = yMinimumMaximum.y;
+            _yUpDown.step = step;
             YLabel = _yUpDown.transform.Find("Label").GetComponent<TMP_Text>();
         
             _zUpDown = bodyTransform.Find("ZUpDown").GetComponent<NumericUpDown>();
             _zUpDown.OnValueChanged.AddListener(OnZChanged);
+            _zUpDown.minimum = zMinimumMaximum.x;
+            _zUpDown.maximum = zMinimumMaximum.y;
+            _zUpDown.step = step;
             ZLabel = _zUpDown.transform.Find("Label").GetComponent<TMP_Text>();
+        }
+        
+        public void SetXMinimumMaximum(Vector2 values)
+        {
+            xMinimumMaximum = values;
+            _xUpDown.minimum = values.x;
+            _xUpDown.maximum = values.y;
+        }
+
+        public void SetYMinimumMaximum(Vector2 values)
+        {
+            yMinimumMaximum = values;
+            _yUpDown.minimum = values.x;
+            _yUpDown.maximum = values.y;
+        }
+
+        public void SetZMinimumMaximum(Vector2 values)
+        {
+            zMinimumMaximum = values;
+            _zUpDown.minimum = values.x;
+            _zUpDown.maximum = values.y;
         }
 
         private void OnXChanged(float value) => OnValueChanged_internal(new Vector3(value, Value.y, Value.z));
@@ -112,7 +118,7 @@ namespace Scripts.UI.Components
         private void OnValueChanged_internal(Vector3 value)
         {
             _value = value;
-            OnValueChanged.Invoke(value);
+            ValueChanged.Invoke(value);
         }
     }
 }

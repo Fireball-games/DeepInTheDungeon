@@ -58,14 +58,14 @@ namespace Scripts.UI.Components
             UnityAction<WaypointControl> onDeleteButtonClicked = null)
         {
             OnPositionChanged.RemoveAllListeners();
-            _position.OnValueChanged.RemoveAllListeners();
+            _position.ValueChanged.RemoveAllListeners();
             _position.Label.text = title;
             _position.XLabel.text = string.IsNullOrEmpty(xLabel) ? "x" : xLabel;
             _position.YLabel.text = string.IsNullOrEmpty(yLabel) ? "y" : yLabel;
             _position.ZLabel.text = string.IsNullOrEmpty(zLabel) ? "z" : zLabel;
             _position.Value = position;
             _position.Step = step;
-            _position.OnValueChanged.AddListener(OnPositionChanged_internal);
+            _position.ValueChanged.AddListener(OnPositionChanged_internal);
             OnPositionChanged.AddListener(onPositionChanged);
 
             OnSpeedChanged.RemoveAllListeners();

@@ -28,7 +28,7 @@ namespace Scripts.UI.Components
             get => _value;
             set
             {
-                _value = Mathf.Clamp(value, minimum, maximum);
+                _value = SanitizeValue(value);
 
                 if (!_input) Initialize();
                 
@@ -49,15 +49,14 @@ namespace Scripts.UI.Components
         {
             Label = transform.Find("Label").GetComponent<TMP_Text>();
             _input = transform.Find("Input").GetComponent<TMP_InputField>();
+            _input.onValueChanged.RemoveAllListeners();
             _input.onValueChanged.AddListener(OnValueChanged_inInput);
             _plusButton = transform.Find("Buttons").FindActive("PlusButton").GetComponent<Button>();
+            _plusButton.onClick.RemoveAllListeners();
             _plusButton.onClick.AddListener(OnPlusClick);
             _minusButton = transform.Find("Buttons").FindActive("MinusButton").GetComponent<Button>();
+            _minusButton.onClick.RemoveAllListeners();
             _minusButton.onClick.AddListener(OnMinusClick);
-
-            minimum = float.MinValue;
-            maximum = float.MaxValue;
-            step = 0.001f;
         }
 
         public void Interactable(bool isInteractable)
@@ -91,7 +90,7 @@ namespace Scripts.UI.Components
 
         private void OnValueChanged_internal(float newValue, bool isSilent = false)
         {
-            Value = Mathf.Clamp(newValue, minimum, maximum);
+            Value = SanitizeValue(newValue);
 
             if (!isSilent)
             {
@@ -102,5 +101,7 @@ namespace Scripts.UI.Components
         private void OnPlusClick() => OnValueChanged_internal(Value + step);
 
         private void OnMinusClick() => OnValueChanged_internal(Value - step);
+
+        private float SanitizeValue(float value) => (float) Math.Round(Mathf.Clamp(value, minimum, maximum), precision);
     }
 }

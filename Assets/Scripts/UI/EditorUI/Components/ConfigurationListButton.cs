@@ -2,6 +2,7 @@
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
+using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
 using Scripts.System;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Scripts.UI.EditorUI.Components
     {
         private readonly WaitForSecondsRealtime _startNavigatingDelay = new(0.5f);
         private PositionRotation _originalCameraTransformData;
+        private int _originalFloor; 
 
         private bool _canMoveToPrefab = true;
 
@@ -54,6 +56,7 @@ namespace Scripts.UI.EditorUI.Components
             
             if (_originalCameraTransformData != null)
             {
+                MapEditorManager.Instance.SetFloor(_originalFloor);
                 EditorCameraService.Instance.MoveCameraTo(_originalCameraTransformData);
             }
 
@@ -67,6 +70,7 @@ namespace Scripts.UI.EditorUI.Components
             if (!_canMoveToPrefab) yield break;
 
             _canMoveToPrefab = true;
+            _originalFloor = MapEditorManager.Instance.CurrentFloor;
             _originalCameraTransformData = EditorCameraService.Instance.GetCameraTransformData();
             EditorUIManager.Instance.MoveCameraToPrefab(displayedItem.TransformData.Position);
         }

@@ -11,8 +11,10 @@ namespace Scripts.MapEditor.Services
     public class EditorCameraService : SingletonNotPersisting<EditorCameraService>
     {
         public float cameraPanSpeed = 100f;
-        [Tooltip("If using smooth zoom, then its good about 8000, normal is good around 1500.")]
-        [SerializeField] private float cameraZoomSpeed = 100f;
+
+        [Tooltip("If using smooth zoom, then its good about 8000, normal is good around 1500.")] [SerializeField]
+        private float cameraZoomSpeed = 100f;
+
         [SerializeField] private float maxZoomHeight = 20f;
         [SerializeField] private float cameraRotationSpeed = 100f;
         [SerializeField] private float prefabMoveCameraDistance = 8f;
@@ -35,7 +37,7 @@ namespace Scripts.MapEditor.Services
         {
             cameraHolder.transform.DOLocalRotate(targetAngles, 0.3f, RotateMode.FastBeyond360);
         }
-        
+
         internal void HandleMouseMovement()
         {
             if (Mouse.LeftClickExpired && Input.GetMouseButtonUp(0)
@@ -44,7 +46,7 @@ namespace Scripts.MapEditor.Services
                 Mouse.IsManipulatingCameraPosition = false;
                 Mouse.RefreshMousePosition(true);
             }
-            
+
             if (!Mouse.LeftClickedOnUI && Mouse.LeftClickExpired && Input.GetMouseButton(0))
             {
                 Mouse.IsManipulatingCameraPosition = true;
@@ -54,13 +56,13 @@ namespace Scripts.MapEditor.Services
                 float yDelta = Input.GetAxis(Strings.MouseYAxis);
 
                 if (xDelta == 0f && yDelta == 0f) return;
-                
+
                 Matrix4x4 worldToLocalMatrix = transform.worldToLocalMatrix;
                 Vector3 localForward = worldToLocalMatrix.MultiplyVector(-cameraHolder.forward);
                 Vector3 localRight = worldToLocalMatrix.MultiplyVector(cameraHolder.right);
                 Vector3 moveVector = localRight * (yDelta * Time.deltaTime * cameraPanSpeed);
                 moveVector += localForward * (xDelta * Time.deltaTime * cameraPanSpeed);
-                
+
                 cameraHolder.position += moveVector;
             }
 
@@ -78,15 +80,15 @@ namespace Scripts.MapEditor.Services
                 _cameraMoveVector.x = cameraRotation.x;
                 _cameraMoveVector.y = cameraRotation.y + (xDelta * Time.deltaTime * cameraRotationSpeed);
                 _cameraMoveVector.z = cameraRotation.z - (yDelta * Time.deltaTime * cameraRotationSpeed);
-                
+
                 cameraHolder.localRotation = Quaternion.Euler(_cameraMoveVector);
             }
         }
-        
+
         internal void HandleMouseWheel()
         {
             float wheelDelta = Input.GetAxis(Strings.MouseWheel);
-            
+
             if (wheelDelta != 0)
             {
                 TranslateCamera(0, -wheelDelta * Time.deltaTime * cameraZoomSpeed, 0, false);
@@ -95,6 +97,8 @@ namespace Scripts.MapEditor.Services
 
         public void MoveCameraToPrefab(Vector3 worldPosition, bool smooth = true)
         {
+            MapEditorManager.Instance.SetFloor((int) -worldPosition.y);
+
             MoveCameraTo(
                 worldPosition.x,
                 worldPosition.y + prefabMoveCameraDistance,
@@ -117,6 +121,7 @@ namespace Scripts.MapEditor.Services
                 {
                     cameraHolder.DORotate(Vector3.zero, 0.3f).Play();
                 }
+
                 cameraHolder.DOMove(worldPosition, 0.5f).SetEase(Ease.OutFlash).Play();
             }
             else
@@ -124,7 +129,7 @@ namespace Scripts.MapEditor.Services
                 cameraHolder.position = worldPosition;
             }
         }
-            
+
 
         internal void MoveCameraTo(float x, float y, float z, bool smooth = true, bool resetCameraAngle = false)
         {
@@ -135,7 +140,7 @@ namespace Scripts.MapEditor.Services
             MoveCameraTo(_cameraMoveVector, smooth, resetCameraAngle);
         }
 
-        internal void TranslateCamera(Vector3 positionDelta, bool smooth = true) 
+        internal void TranslateCamera(Vector3 positionDelta, bool smooth = true)
             => TranslateCamera(positionDelta.x, positionDelta.y, positionDelta.z, smooth);
 
         internal static void ToggleCameraPerspective()
@@ -144,7 +149,7 @@ namespace Scripts.MapEditor.Services
             CameraManager.Instance.mainCamera.orthographic = IsOrthographic;
             EditorEvents.TriggerOnCameraPerspectiveChanged(IsOrthographic);
         }
-        
+
         private void TranslateCamera(float x, float y, float z, bool smooth = true)
         {
             _cameraMoveVector.x = z;
@@ -156,7 +161,7 @@ namespace Scripts.MapEditor.Services
             newPosition.y = Mathf.Clamp(
                 newPosition.y,
                 -MapEditorManager.Instance.EditedLayout.Count + 3, maxZoomHeight);
-            
+
             if (smooth)
             {
                 cameraHolder.DOMove(newPosition, 0.5f).SetEase(Ease.OutFlash);

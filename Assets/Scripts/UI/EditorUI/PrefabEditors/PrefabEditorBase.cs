@@ -53,6 +53,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private bool _isEditingExistingPrefab;
         
         protected bool CanOpen => !IsCurrentConfigurationChanged;
+        protected bool IsPrefabFinderActive => _existingList.IsActive;
 
         private void Awake()
         {
@@ -82,7 +83,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected abstract void VisualizeOtherComponents();
         protected abstract void InitializeOtherComponents();
 
-        protected virtual Vector3 GetCursor3DScale() => Vector3.one;
+        public virtual Vector3 GetCursor3DScale() => Vector3.one;
 
         /// <summary>
         /// Opens Existing Prefabs list. Next steps are - clicking in map to add/edit prefabs or open prefabs finder.
@@ -192,7 +193,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         }
         
         public void MoveCameraToPrefab(Vector3 targetPosition) => 
-            EditorCameraService.Instance.MoveCameraToPrefab(targetPosition);
+            EditorCameraService.Instance.MoveCameraToPrefab(Vector3Int.RoundToInt(targetPosition));
 
         protected virtual void SetPrefab(string prefabName)
         {

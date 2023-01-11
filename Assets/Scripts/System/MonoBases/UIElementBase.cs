@@ -13,5 +13,7 @@ namespace Scripts.System.MonoBases
                 body.SetActive(isActive);
             }
         }
+
+        public bool IsActive => body.activeSelf;
     }
 }

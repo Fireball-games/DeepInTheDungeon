@@ -28,19 +28,21 @@ namespace Scripts.UI.EditorUI
         private StatusBar _statusBar;
         private CageController _selectedCage;
         private Transform _body;
+        private Cursor3D _cursor3D;
 
         [NonSerialized] public WallGizmoController WallGizmo;
         public StatusBar StatusBar => _statusBar;
         public NewMapDialog NewMapDialog => _newMapDialog;
         public DialogBase ConfirmationDialog => _confirmationDialog;
         public OpenFileDialog OpenFileDialog => _openFileDialog;
+        public Cursor3D Cursor3D => _cursor3D;
         public CageController SelectedCage => _selectedCage;
         public bool isAnyObjectEdited;
 
         private ImageButton _playButton;
         private Title _mapTitle;
 
-        private IPrefabEditor _openedEditor;
+        public IPrefabEditor OpenedEditor;
         private Dictionary<EWorkMode, IPrefabEditor> _editors;
 
         protected override void Awake()
@@ -63,6 +65,7 @@ namespace Scripts.UI.EditorUI
             _selectedCage = _body.Find("SelectedCage").GetComponent<CageController>();
             
             WallGizmo = FindObjectOfType<WallGizmoController>();
+            _cursor3D = FindObjectOfType<Cursor3D>();
             
             _editors = new Dictionary<EWorkMode, IPrefabEditor>
             {
@@ -103,7 +106,7 @@ namespace Scripts.UI.EditorUI
             
             if (_editors.TryGetValue(workMode, out IPrefabEditor editor))
             {
-                _openedEditor = editor;
+                OpenedEditor = editor;
                 editor.Open();
             }
         }
@@ -119,7 +122,7 @@ namespace Scripts.UI.EditorUI
                 case EPrefabType.WallOnWall:
                 case EPrefabType.WallForMovement:
                     _wallEditor.Open(prefabType, placeholderTransformData);
-                    _openedEditor = _wallEditor;
+                    OpenedEditor = _wallEditor;
                     break;
                 case EPrefabType.Invalid:
                     break;
@@ -131,11 +134,11 @@ namespace Scripts.UI.EditorUI
                     break;
                 case EPrefabType.PrefabTile:
                     _prefabTileEditor.Open(prefabType, placeholderTransformData);
-                    _openedEditor = _prefabTileEditor;
+                    OpenedEditor = _prefabTileEditor;
                     break;
                 case EPrefabType.Trigger:
                     _triggerEditor.Open(prefabType, placeholderTransformData);
-                    _openedEditor = _triggerEditor;
+                    OpenedEditor = _triggerEditor;
                     break;
                 default:
                     // isAnyObjectEdited = false;
@@ -155,7 +158,7 @@ namespace Scripts.UI.EditorUI
                 case EPrefabType.WallOnWall:
                 case EPrefabType.WallForMovement:
                     _wallEditor.Open(configuration as WallConfiguration);
-                    _openedEditor = _wallEditor;
+                    OpenedEditor = _wallEditor;
                     break;
                 case EPrefabType.Invalid:
                     break;
@@ -167,7 +170,7 @@ namespace Scripts.UI.EditorUI
                     break;
                 case EPrefabType.PrefabTile:
                     _prefabTileEditor.Open(configuration as TilePrefabConfiguration);
-                    _openedEditor = _prefabTileEditor;
+                    OpenedEditor = _prefabTileEditor;
                     break;
                 default:
                     // isAnyObjectEdited = false;
@@ -176,15 +179,13 @@ namespace Scripts.UI.EditorUI
             }
         }
 
-        public void MoveCameraToPrefab(Vector3 worldPosition) => _openedEditor?.MoveCameraToPrefab(worldPosition);
-
         private void CloseEditorWindow()
         {
             isAnyObjectEdited = false;
 
-            _openedEditor?.CloseWithRemovingChanges();
+            OpenedEditor?.CloseWithRemovingChanges();
 
-            _openedEditor = null;
+            OpenedEditor = null;
         }
     }
 }

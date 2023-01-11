@@ -7,5 +7,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         public void Open();
         public void CloseWithRemovingChanges();
         public void MoveCameraToPrefab(Vector3 worldPosition);
+        public Vector3 GetCursor3DScale();
     }
 }

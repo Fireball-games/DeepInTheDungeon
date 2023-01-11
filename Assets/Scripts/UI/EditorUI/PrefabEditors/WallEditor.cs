@@ -45,7 +45,7 @@ namespace Scripts.UI.EditorUI
 
         protected override WallConfiguration CloneConfiguration(WallConfiguration sourceConfiguration) => new(sourceConfiguration);
 
-        protected override Vector3 GetCursor3DScale() => new(0.15f, 1.1f, 1.1f);
+        public override Vector3 GetCursor3DScale() => new(0.15f, 1.1f, 1.1f);
 
         public override void Open()
         {

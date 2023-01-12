@@ -53,19 +53,12 @@ namespace Scripts.UI.Components
             float speed,
             UnityAction<WaypointControl, Vector3> onPositionChanged,
             UnityAction<WaypointControl, float> onSpeedChanged,
-            string xLabel = null, string yLabel = null, string zLabel = null,
             bool isDeleteButtonActive = true,
             UnityAction<WaypointControl> onDeleteButtonClicked = null)
         {
             OnPositionChanged.RemoveAllListeners();
             _position.ValueChanged.RemoveAllListeners();
-            
-            if (!_position.XLabel) _position.AssignCompoennts();
-            
             _position.Label.text = title;
-            _position.XLabel.text = string.IsNullOrEmpty(xLabel) ? "x" : xLabel;
-            _position.YLabel.text = string.IsNullOrEmpty(yLabel) ? "y" : yLabel;
-            _position.ZLabel.text = string.IsNullOrEmpty(zLabel) ? "z" : zLabel;
             _position.Value = position;
             _position.Step = step;
             _position.ValueChanged.AddListener(OnPositionChanged_internal);

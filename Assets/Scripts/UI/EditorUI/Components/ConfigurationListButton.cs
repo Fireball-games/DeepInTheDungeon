@@ -44,7 +44,11 @@ namespace Scripts.UI.EditorUI.Components
             Text.text = displayedItem.DisplayName;
         }
 
-        protected override void OnClick_internal() => OnClick.Invoke(displayedItem);
+        protected override void OnClick_internal()
+        {
+            Cursor3D.Hide();
+            OnClick.Invoke(displayedItem);
+        }
 
         public void OnPointerEnter(PointerEventData eventData)
         {

@@ -22,6 +22,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private readonly Vector3 _wallCursor3DSize = new(0.15f, 1.1f, 1.1f);
         private readonly Vector3 _genericCursor3DSize = new(0.33f, 0.33f, 0.33f);
 
+        protected override void RemoveOtherComponents()
+        {
+            
+        }
+
         public override Vector3 GetCursor3DScale() =>
             EditedConfiguration == null
                 ? IsPrefabFinderActive ? _genericCursor3DSize : _wallCursor3DSize

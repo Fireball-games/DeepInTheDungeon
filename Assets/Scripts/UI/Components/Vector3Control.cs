@@ -13,10 +13,46 @@ namespace Scripts.UI.Components
         [SerializeField] private Vector2 yMinimumMaximum = new(float.MinValue, float.MaxValue);
         [SerializeField] private Vector2 zMinimumMaximum = new(float.MinValue, float.MaxValue);
         public bool interactable = true;
-        [NonSerialized] public TMP_Text Label;
-        [NonSerialized] public TMP_Text XLabel;
-        [NonSerialized] public TMP_Text YLabel;
-        [NonSerialized] public TMP_Text ZLabel;
+
+        public TMP_Text Label
+        {
+            get
+            {
+                if (!_label) AssignComponents();
+                return _label;
+            }
+        }
+
+        public TMP_Text XLabel
+        {
+            get
+            {
+                if (!_xLabel) AssignComponents();
+                return _label;
+            }
+        }
+        public TMP_Text YLabel
+        {
+            get
+            {
+                if (!_yLabel) AssignComponents();
+                return _label;
+            }
+        }
+        
+        public TMP_Text ZLabel
+        {
+            get
+            {
+                if (!_zLabel) AssignComponents();
+                return _label;
+            }
+        }
+
+        private TMP_Text _label;
+        private TMP_Text _xLabel;
+        private TMP_Text _yLabel;
+        private TMP_Text _zLabel;
 
         private NumericUpDown _xUpDown;
         private NumericUpDown _yUpDown;
@@ -56,8 +92,7 @@ namespace Scripts.UI.Components
 
         private void Initialize()
         {
-            if (Label) return;
-            AssignCompoennts();
+            AssignComponents();
 
             _xUpDown.OnValueChanged.AddListener(OnXChanged);
             _xUpDown.minimum = xMinimumMaximum.x;
@@ -113,17 +148,17 @@ namespace Scripts.UI.Components
             ValueChanged.Invoke(value);
         }
 
-        public void AssignCompoennts()
+        private void AssignComponents()
         {
             Transform bodyTransform = body.transform;
-            Label = bodyTransform.Find("Label").GetComponent<TMP_Text>();
+            _label = bodyTransform.Find("Label").GetComponent<TMP_Text>();
             _xUpDown = bodyTransform.Find("XUpDown").GetComponent<NumericUpDown>();
             _yUpDown = bodyTransform.Find("YUpDown").GetComponent<NumericUpDown>();
             _zUpDown = bodyTransform.Find("ZUpDown").GetComponent<NumericUpDown>();
             
-            XLabel = _xUpDown.Label;
-            YLabel = _yUpDown.Label;
-            ZLabel = _zUpDown.Label;
+            _xLabel = _xUpDown.Label;
+            _yLabel = _yUpDown.Label;
+            _zLabel = _zUpDown.Label;
         }
     }
 }

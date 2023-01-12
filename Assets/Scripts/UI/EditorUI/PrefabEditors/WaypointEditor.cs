@@ -112,9 +112,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 waypoint.moveSpeedModifier,
                 OnPositionChanged,
                 OnSpeedChanged,
-                t.Get(Keys.Rows),
-                t.Get(Keys.Floors),
-                t.Get(Keys.Columns),
                 isDeleteButtonActive,
                 onDeleteButtonClicked
             );

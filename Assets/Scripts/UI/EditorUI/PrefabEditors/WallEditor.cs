@@ -21,6 +21,7 @@ namespace Scripts.UI.EditorUI
 {
     /// <summary>
     /// PrefabEditorBase overload for building walls
+    /// TODO: Not sure how to go about replacing move walls with other kind of walls, maybe offer to delete waypoints on RemoveOtherComponents
     /// </summary>
     public class WallEditor : PrefabEditorBase<WallConfiguration, WallPrefabBase>
     {
@@ -56,12 +57,7 @@ namespace Scripts.UI.EditorUI
 
         protected override void Delete()
         {
-            if (EditedConfiguration.WayPoints.Any())
-            {
-                DestroyPath(EPathsType.Waypoint, EditedConfiguration.WayPoints);
-            }
-
-            RemoveExtraParts();
+            RemoveOtherComponents();
 
             base.Delete();
         }
@@ -92,7 +88,7 @@ namespace Scripts.UI.EditorUI
                     DestroyPath(EPathsType.Waypoint, EditedConfiguration.WayPoints);
                 }
 
-                RemoveExtraParts();
+                RemoveOtherComponents();
             }
             else
             {
@@ -121,8 +117,13 @@ namespace Scripts.UI.EditorUI
                 );
         }
 
-        private void RemoveExtraParts()
+        protected override void RemoveOtherComponents()
         {
+            if (EditedConfiguration != null && EditedConfiguration.WayPoints.Any())
+            {
+                DestroyPath(EPathsType.Waypoint, EditedConfiguration.WayPoints);
+            }
+            
             if (_createdOppositeWall != null)
             {
                 MapBuilder.RemovePrefab(_createdOppositeWall);

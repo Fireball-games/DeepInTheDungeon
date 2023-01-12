@@ -74,6 +74,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             isWalkableCheckBox.OnValueChanged += SetIsWalkableInLayout;
         }
 
+        protected override void RemoveOtherComponents()
+        {
+        }
+
         private void Rotate(float angles)
         {
             SetEdited();

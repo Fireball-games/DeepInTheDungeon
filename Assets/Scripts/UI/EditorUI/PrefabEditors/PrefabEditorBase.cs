@@ -82,6 +82,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected abstract TC CloneConfiguration(TC sourceConfiguration);
         protected abstract void VisualizeOtherComponents();
         protected abstract void InitializeOtherComponents();
+        /// <summary>
+        /// Method to remove other components inheriting editor needs, should not contain any other manipulation than with other components.  
+        /// </summary>
+        protected abstract void RemoveOtherComponents();
 
         public virtual Vector3 GetCursor3DScale() => Vector3.one;
 
@@ -119,6 +123,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 // Close();
                 return;
             }
+            
+            RemoveOtherComponents();
             
             _isEditingExistingPrefab = true;
             IsCurrentConfigurationChanged = false;
@@ -197,6 +203,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected virtual void SetPrefab(string prefabName)
         {
+            RemoveOtherComponents();
             SetStatusText();
             _isEditingExistingPrefab = false;
 
@@ -268,6 +275,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             
             SetButtons();
             VisualizeOtherComponents();
+            SelectedCage.Hide();
         }
 
         private void RemoveAndReopen()
@@ -441,6 +449,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void OnExistingItemClick(TC clickedPrefab)
         {
+            SelectedCage.Hide();
             Open(MapBuilder.GetConfigurationByGuid<TC>(clickedPrefab.Guid));
         }
         

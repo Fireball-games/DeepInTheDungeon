@@ -106,10 +106,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             IEnumerable<TC> availableConfigurations = GetAvailableConfigurations();
 
-            SetExistingList(true,
-                t.Get(Keys.ExistingPrefabs),
-                availableConfigurations,
-                OnExistingItemClick);
+            SetExistingList(true, availableConfigurations);
             
             SetActive(true);
         }
@@ -132,7 +129,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             EditedConfiguration = configuration;
             _originalConfiguration = CloneConfiguration(configuration);
             
-            string prefabListTitle = SetupWindow(configuration.PrefabType);
+            SetupWindow(configuration.PrefabType);
 
             MoveCameraToPrefab(configuration.TransformData.Position);
             
@@ -144,7 +141,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetTitle(configuration.PrefabName);
 
             SetExistingList(false);
-            SetPrefabList(EditedConfiguration.SpawnPrefabOnBuild, prefabListTitle, _availablePrefabs!, prefab => SetPrefab(prefab.gameObject.name));
+            SetPrefabList(EditedConfiguration.SpawnPrefabOnBuild, _availablePrefabs!);
 
             PhysicalPrefab = MapBuilder.GetPrefabByGuid(configuration.Guid);
             if (PhysicalPrefab)
@@ -162,8 +159,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             MoveCameraToPrefab(placeholderTransformData.Position);
 
             _isEditingExistingPrefab = false;
-            
-            string prefabListTitle = SetupWindow(prefabType);
+            EditedConfiguration = null;
+
+            SetupWindow(prefabType);
 
             Placeholder.transform.position = placeholderTransformData.Position;
             Placeholder.transform.rotation = placeholderTransformData.Rotation;
@@ -187,7 +185,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             VisualizeOtherComponents();
             SetExistingList(false);
-            SetPrefabList(true, prefabListTitle, _availablePrefabs, prefab => SetPrefab(prefab.gameObject.name));
+            SetPrefabList(true, _availablePrefabs);
         }
         
         /// <summary>
@@ -211,6 +209,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 MapBuilder.RemovePrefab(EditedConfiguration);
                 EditedConfiguration.PrefabName = prefabName;
+                EditedConfiguration.TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation);
                 EditedConfiguration = CloneConfiguration(EditedConfiguration);
             }
             else
@@ -218,7 +217,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 EditedConfiguration = GetNewConfiguration(prefabName);
             }
             
-
             if (!MapBuilder.BuildPrefab(EditedConfiguration))
             {
                 SetStatusText(t.Get(Keys.ErrorBuildingPrefab));
@@ -381,7 +379,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _statusText.gameObject.SetActive(true);
         }
         
-        private string SetupWindow(EPrefabType prefabType)
+        private void SetupWindow(EPrefabType prefabType)
         {
             SetActive(true);
             _prefabList.SetActive(false);
@@ -398,14 +396,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             
             SetButtons();
 
-            string prefabListTitle = t.Get(Keys.AvailablePrefabs);
-
             _availablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
                 .Select(prefab => prefab.GetComponent<TPrefab>())
                 .Where(prefab => prefab.prefabType == prefabType)
                 .ToHashSet();
-
-            return prefabListTitle;
         }
         
         private void Close(EWorkMode _)
@@ -414,9 +408,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         }
 
         private void SetPrefabList(bool isOpen,
-            string title = null,
             IEnumerable<TPrefab> items = null,
-            Action<TPrefab> onClick = null,
             Action onClose = null)
         {
             if (!isOpen)
@@ -425,15 +417,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 return;
             }
             
-            if (string.IsNullOrEmpty(title) || items == null || onClick == null) return;
+            if (items == null) return;
             
-            _prefabList.Open(title, items, prefab => SetPrefab(prefab.gameObject.name), onClose);
+            _prefabList.Open(t.Get(Keys.AvailablePrefabs), items, prefab => SetPrefab(prefab.gameObject.name), onClose);
         }
 
         private void SetExistingList(bool isOpen,
-            string title = null,
             IEnumerable<TC> items = null,
-            Action<TC> onClick = null,
             Action onClose = null)
         {
             if (!isOpen)
@@ -442,17 +432,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 return;
             }
 
-            if (string.IsNullOrEmpty(title) || items == null || onClick == null) return;
+            if (items == null) return;
             
-            _existingList.Open(title, items, configuration => Open(configuration as TC), onClose);
+            _existingList.Open(t.Get(Keys.ExistingPrefabs), items, configuration => Open(configuration as TC), onClose);
         }
 
-        private void OnExistingItemClick(TC clickedPrefab)
-        {
-            SelectedCage.Hide();
-            Open(MapBuilder.GetConfigurationByGuid<TC>(clickedPrefab.Guid));
-        }
-        
         private void AssignComponents()
         {
             Transform bodyTransform = body.transform; 

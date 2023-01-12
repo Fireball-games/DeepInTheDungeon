@@ -946,7 +946,7 @@ PrefabInstance:
         type: 3}
       propertyPath: icon
       value: 
-      objectReference: {fileID: 21300000, guid: dc8b7966ca9992140be64843b419ef34,
+      objectReference: {fileID: 21300000, guid: 702d4df23e3ac664b9fdc7a92d351d2a,
         type: 3}
     - target: {fileID: 206885898971731945, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
@@ -959,6 +959,16 @@ PrefabInstance:
       propertyPath: background
       value: 
       objectReference: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 1771501268827923981, guid: 47fbd13509d918648ad43221a89ac17d,
+        type: 3}
+      propertyPath: m_Padding.m_Right
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1771501268827923981, guid: 47fbd13509d918648ad43221a89ac17d,
+        type: 3}
+      propertyPath: m_Padding.m_Bottom
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1930913147018077552, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -972,17 +982,17 @@ PrefabInstance:
     - target: {fileID: 1930913147018077552, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.87625
+      value: 0.82
       objectReference: {fileID: 0}
     - target: {fileID: 1930913147018077552, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.87625
+      value: 0.82
       objectReference: {fileID: 0}
     - target: {fileID: 1930913147018077552, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.87625
+      value: 0.82
       objectReference: {fileID: 0}
     - target: {fileID: 1930913147018077552, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
@@ -993,6 +1003,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1930913147018077552, guid: 47fbd13509d918648ad43221a89ac17d,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3796883209401140914, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
@@ -1124,7 +1139,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: dc8b7966ca9992140be64843b419ef34,
+      objectReference: {fileID: 21300000, guid: 702d4df23e3ac664b9fdc7a92d351d2a,
         type: 3}
     - target: {fileID: 7149549645816038978, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}

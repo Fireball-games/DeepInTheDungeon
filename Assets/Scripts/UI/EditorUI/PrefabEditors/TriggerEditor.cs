@@ -15,7 +15,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
     public class TriggerEditor : PrefabEditorBase<TriggerConfiguration, Trigger>
     {
         private Vector3Control _positionControl;
-        private EnumDropdown _triggerTypeDropdown;
+        private LabeledDropdown _triggerTypeDropdown;
+        private NumericUpDown _triggerCountUpDown;
 
         private Vector3 _prefabWallCenterPosition;
         private readonly Vector3 _wallCursor3DSize = new(0.15f, 1.1f, 1.1f);
@@ -55,44 +56,58 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             PhysicalPrefab.transform.localPosition = newPrefabWorldPosition;
         }
 
-        private void OnTriggerTypeChanged(int index)
+        private void OnTriggerTypeChanged(int enumIntValue)
         {
             SetEdited();
-            EditedConfiguration.TriggerType = index.GetEnumValue<Enums.ETriggerType>();
+            EditedConfiguration.TriggerType = enumIntValue.GetEnumValue<Enums.ETriggerType>();
+            VisualizeOtherComponents();
         }
 
         protected override void InitializeOtherComponents()
         {
-            Transform frame = transform.Find("Body/Background/Frame");
+            Transform content = transform.Find("Body/Background/Frame/ScrollView/Viewport/Content");
             
-            _positionControl = frame.Find("PositionControl").GetComponent<Vector3Control>();
+            _positionControl = content.Find("PositionControl").GetComponent<Vector3Control>();
             _positionControl.SetActive(false);
             
-            _triggerTypeDropdown = frame.Find("TriggerTypeDropdown").GetComponent<EnumDropdown>();
+            _triggerTypeDropdown = content.Find("TriggerTypeDropdown").GetComponent<LabeledDropdown>();
             _triggerTypeDropdown.SetActive(false);
+
+            _triggerCountUpDown = content.Find("TriggerCountUpDown").GetComponent<NumericUpDown>();
+            _triggerCountUpDown.SetActive(false);
         }
 
         protected override void VisualizeOtherComponents()
         {
             _positionControl.SetActive(false);
             _triggerTypeDropdown.SetActive(false);
+            _triggerCountUpDown.SetActive(false);
 
-            if (EditedConfiguration is null or {SpawnPrefabOnBuild: false}) return;
+            if (EditedConfiguration is null) return;
+
+            _triggerTypeDropdown.Set( $"{t.Get(Keys.TriggerType)}:",
+                EditedConfiguration.TriggerType,
+                OnTriggerTypeChanged);
+            _triggerTypeDropdown.SetActive(true);
+            
+            if (EditedConfiguration.TriggerType is Enums.ETriggerType.XTimes)
+            {
+                _triggerCountUpDown.Value = EditedConfiguration.Count;
+                _triggerCountUpDown.Label.text = $"{t.Get(Keys.Count)} :";
+                _triggerCountUpDown.SetActive(true);
+            }
+
+            if (!EditedConfiguration.SpawnPrefabOnBuild) return;
 
             _prefabWallCenterPosition = PhysicalPrefab.transform.position.ToVector3Int();
             _prefabWallCenterPosition.x = (float) Math.Round(PhysicalPrefab.transform.position.x, 1);
             Logger.Log($"WallCenter: {_prefabWallCenterPosition}");
 
             _positionControl.ValueChanged.RemoveAllListeners();
-            _positionControl.Label.text = t.Get(Keys.Position);
+            _positionControl.Label.text = $"{t.Get(Keys.Position)}:";
             _positionControl.Value = PhysicalPrefab.transform.position - _prefabWallCenterPosition;
             _positionControl.ValueChanged.AddListener(OnPositionChanged);
             _positionControl.SetActive(true);
-            
-            _triggerTypeDropdown.Set<Enums.ETriggerType>( $"{t.Get(Keys.TriggerType)} :",
-                (int)EditedConfiguration.TriggerType,
-                OnTriggerTypeChanged);
-            _triggerTypeDropdown.SetActive(true);
         }
     }
 }

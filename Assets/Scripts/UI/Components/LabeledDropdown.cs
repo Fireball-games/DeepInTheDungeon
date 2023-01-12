@@ -8,14 +8,22 @@ using UnityEngine.Events;
 
 namespace Scripts.UI.Components
 {
-    public class EnumDropdown : UIElementBase
+    public class LabeledDropdown : UIElementBase
     {
         private TMP_Text _label;
         private TMP_Dropdown _dropdown;
 
-        private IEnumerable<string> _options;
+        private List<string> _options;
+        private EContentType _contentType;
+        private Type _enumType;
 
         private UnityEvent<int> OnValueChanged { get; } = new();
+
+        private enum EContentType
+        {
+            Strings = 1,
+            Enum = 2,
+        }
 
         private void Awake()
         {
@@ -24,33 +32,38 @@ namespace Scripts.UI.Components
             _dropdown.onValueChanged.AddListener(OnValueChanged_Internal);
         }
 
-        public void Set<T>(string labelText, int selectedIndex, UnityAction<int> onValueChanged)
+        public void Set<T>(string labelText, T selectedValue, UnityAction<int> onValueChanged)
         {
             _label.text = string.IsNullOrEmpty(labelText) ? "<missing>" : labelText;
-            
+
             OnValueChanged.RemoveAllListeners();
 
             if (typeof(T).IsEnum)
             {
-                _options = Enum.GetNames(typeof(T));
+                _options = Enum.GetNames(typeof(T)).ToList();
             }
 
             if (_options == null || !_options.Any()) return;
-            
-            _dropdown.options.Clear();
-            _options.ForEach(o => _dropdown.options.Add(new TMP_Dropdown.OptionData(o)));
-            
-            if (selectedIndex >= 0 && selectedIndex < _options.Count() - 1)
-            {
-                _dropdown.value = selectedIndex;
-            }
-            
+
+            SetOptions(_options);
+
+            _contentType = EContentType.Enum;
+            _enumType = typeof(T);
+
+            _dropdown.value = _options.IndexOf(selectedValue.ToString());
+
             OnValueChanged.AddListener(onValueChanged);
+        }
+
+        private void SetOptions(IEnumerable<string> items)
+        {
+            _dropdown.options.Clear();
+            items.ForEach(o => _dropdown.options.Add(new TMP_Dropdown.OptionData(o)));
         }
 
         private void OnValueChanged_Internal(int value)
         {
-            OnValueChanged.Invoke(value);
+            OnValueChanged.Invoke(_contentType is EContentType.Enum ? (int) Enum.Parse(_enumType, _dropdown.options[value].text) : value);
         }
     }
 }

@@ -59,6 +59,9 @@ namespace Scripts.UI.Components
         {
             OnPositionChanged.RemoveAllListeners();
             _position.ValueChanged.RemoveAllListeners();
+            
+            if (!_position.XLabel) _position.AssignCompoennts();
+            
             _position.Label.text = title;
             _position.XLabel.text = string.IsNullOrEmpty(xLabel) ? "x" : xLabel;
             _position.YLabel.text = string.IsNullOrEmpty(yLabel) ? "y" : yLabel;

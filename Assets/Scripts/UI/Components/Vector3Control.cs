@@ -57,30 +57,22 @@ namespace Scripts.UI.Components
         private void Initialize()
         {
             if (Label) return;
-            
-            Transform bodyTransform = body.transform;
-            Label = bodyTransform.Find("Label").GetComponent<TMP_Text>();
-        
-            _xUpDown = bodyTransform.Find("XUpDown").GetComponent<NumericUpDown>();
+            AssignCompoennts();
+
             _xUpDown.OnValueChanged.AddListener(OnXChanged);
             _xUpDown.minimum = xMinimumMaximum.x;
             _xUpDown.maximum = xMinimumMaximum.y;
             _xUpDown.step = step;
-            XLabel = _xUpDown.transform.Find("Label").GetComponent<TMP_Text>();
         
-            _yUpDown = bodyTransform.Find("YUpDown").GetComponent<NumericUpDown>();
             _yUpDown.OnValueChanged.AddListener(OnYChanged);
             _yUpDown.minimum = yMinimumMaximum.x;
             _yUpDown.maximum = yMinimumMaximum.y;
             _yUpDown.step = step;
-            YLabel = _yUpDown.transform.Find("Label").GetComponent<TMP_Text>();
-        
-            _zUpDown = bodyTransform.Find("ZUpDown").GetComponent<NumericUpDown>();
+            
             _zUpDown.OnValueChanged.AddListener(OnZChanged);
             _zUpDown.minimum = zMinimumMaximum.x;
             _zUpDown.maximum = zMinimumMaximum.y;
             _zUpDown.step = step;
-            ZLabel = _zUpDown.transform.Find("Label").GetComponent<TMP_Text>();
         }
         
         public void SetXMinimumMaximum(Vector2 values)
@@ -119,6 +111,19 @@ namespace Scripts.UI.Components
         {
             _value = value;
             ValueChanged.Invoke(value);
+        }
+
+        public void AssignCompoennts()
+        {
+            Transform bodyTransform = body.transform;
+            Label = bodyTransform.Find("Label").GetComponent<TMP_Text>();
+            _xUpDown = bodyTransform.Find("XUpDown").GetComponent<NumericUpDown>();
+            _yUpDown = bodyTransform.Find("YUpDown").GetComponent<NumericUpDown>();
+            _zUpDown = bodyTransform.Find("ZUpDown").GetComponent<NumericUpDown>();
+            
+            XLabel = _xUpDown.Label;
+            YLabel = _yUpDown.Label;
+            ZLabel = _zUpDown.Label;
         }
     }
 }

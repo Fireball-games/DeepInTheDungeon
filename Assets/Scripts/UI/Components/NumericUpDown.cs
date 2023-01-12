@@ -1,5 +1,6 @@
 using System;
 using Scripts.Helpers.Extensions;
+using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Scripts.UI.Components
 {
-    public class NumericUpDown : MonoBehaviour
+    public class NumericUpDown : UIElementBase
     {
         public float step = 0.1f;
         public float minimum = float.MinValue;
@@ -47,14 +48,15 @@ namespace Scripts.UI.Components
 
         private void Initialize()
         {
-            Label = transform.Find("Label").GetComponent<TMP_Text>();
-            _input = transform.Find("Input").GetComponent<TMP_InputField>();
+            Transform bodyTransform = body.transform;
+            Label = bodyTransform.Find("Label").GetComponent<TMP_Text>();
+            _input = bodyTransform.Find("Input").GetComponent<TMP_InputField>();
             _input.onValueChanged.RemoveAllListeners();
             _input.onValueChanged.AddListener(OnValueChanged_inInput);
-            _plusButton = transform.Find("Buttons").FindActive("PlusButton").GetComponent<Button>();
+            _plusButton = bodyTransform.Find("Input/Buttons").FindActive("PlusButton").GetComponent<Button>();
             _plusButton.onClick.RemoveAllListeners();
             _plusButton.onClick.AddListener(OnPlusClick);
-            _minusButton = transform.Find("Buttons").FindActive("MinusButton").GetComponent<Button>();
+            _minusButton = bodyTransform.Find("Input/Buttons").FindActive("MinusButton").GetComponent<Button>();
             _minusButton.onClick.RemoveAllListeners();
             _minusButton.onClick.AddListener(OnMinusClick);
         }

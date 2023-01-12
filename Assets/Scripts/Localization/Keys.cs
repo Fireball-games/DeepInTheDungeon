@@ -9,6 +9,7 @@
         public const string Close = "Close";
         public const string Columns = "Columns";
         public const string Confirm = "Confirm";
+        public const string Count = "Count";
         public const string CreateMap = "CreateMap";
         public const string CreateOppositePath = "CreateOppositePath";
         public const string Default = "Default";

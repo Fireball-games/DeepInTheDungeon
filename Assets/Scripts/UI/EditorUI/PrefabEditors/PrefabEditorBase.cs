@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building;
 using Scripts.Building.PrefabsSpawning.Configurations;
@@ -16,6 +15,7 @@ using Scripts.UI.Components;
 using Scripts.UI.EditorUI.Components;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
@@ -408,7 +408,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void SetPrefabList(bool isOpen,
             IEnumerable<TPrefab> items = null,
-            Action onClose = null)
+            UnityAction onClose = null)
         {
             if (!isOpen)
             {
@@ -423,7 +423,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void SetExistingList(bool isOpen,
             IEnumerable<TC> items = null,
-            Action onClose = null)
+            UnityAction onClose = null)
         {
             if (!isOpen)
             {

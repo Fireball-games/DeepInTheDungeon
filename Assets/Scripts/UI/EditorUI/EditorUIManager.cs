@@ -6,6 +6,7 @@ using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
+using Scripts.UI.EditorUI.Components;
 using Scripts.UI.EditorUI.PrefabEditors;
 using UnityEngine;
 using static Scripts.Enums;
@@ -27,6 +28,7 @@ namespace Scripts.UI.EditorUI
         private TriggerEditor _triggerEditor;
         private StatusBar _statusBar;
         private CageController _selectedCage;
+        private SelectConfigurationWindow _selectConfiguration;
         private Transform _body;
         private Cursor3D _cursor3D;
 
@@ -37,6 +39,7 @@ namespace Scripts.UI.EditorUI
         public OpenFileDialog OpenFileDialog => _openFileDialog;
         public Cursor3D Cursor3D => _cursor3D;
         public CageController SelectedCage => _selectedCage;
+        public SelectConfigurationWindow SelectConfigurationWindow => _selectConfiguration;
         public bool isAnyObjectEdited;
 
         private ImageButton _playButton;
@@ -63,6 +66,7 @@ namespace Scripts.UI.EditorUI
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
             _statusBar = transform.Find("StatusBar").GetComponent<StatusBar>();
             _selectedCage = _body.Find("SelectedCage").GetComponent<CageController>();
+            _selectConfiguration = _body.Find("SelectConfigurationWindow").GetComponent<SelectConfigurationWindow>();
             
             WallGizmo = FindObjectOfType<WallGizmoController>();
             _cursor3D = FindObjectOfType<Cursor3D>();

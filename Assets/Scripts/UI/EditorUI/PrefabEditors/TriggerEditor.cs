@@ -69,6 +69,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             EditedConfiguration.TriggerType = enumIntValue.GetEnumValue<Enums.ETriggerType>();
             VisualizeOtherComponents();
         }
+        
+        private void OnReceiverListChanged(IEnumerable<PrefabConfiguration> updatedList)
+        {
+            SetEdited();
+            EditedConfiguration.Subscribers = updatedList.Select(ExtractReceiverIdentification).ToList();
+            VisualizeOtherComponents();
+        }
 
         protected override void InitializeOtherComponents()
         {
@@ -124,13 +131,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _positionControl.Value = PhysicalPrefab.transform.position - _prefabWallCenterPosition;
             _positionControl.ValueChanged.AddListener(OnPositionChanged);
             _positionControl.SetActive(true);
-        }
-
-        private void OnReceiverListChanged(IEnumerable<PrefabConfiguration> updatedList)
-        {
-            SetEdited();
-
-            EditedConfiguration.Subscribers = updatedList.Select(ExtractReceiverIdentification).ToList();
         }
 
         private string ExtractReceiverIdentification(PrefabConfiguration configuration)

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Scripts.Helpers.Extensions;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.UI.Components;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Scripts.UI.EditorUI.Components
 {
@@ -16,19 +16,22 @@ namespace Scripts.UI.EditorUI.Components
 
         protected HashSet<TButton> _buttons;
 
-        protected Action<T> OnItemClicked;
+        protected UnityEvent<T> OnItemClicked { get; } = new();
+        protected UnityEvent OnCancelClicked { get; } = new();
 
-        private void Awake()
+        protected virtual void Awake()
         {
             _buttons = new HashSet<TButton>();
         }
 
-        public void Open(string listTitle, IEnumerable<T> prefabs, Action<T> onItemClicked, Action onClose = null)
+        public void Open(string listTitle, IEnumerable<T> prefabs, UnityAction<T> onItemClicked, UnityAction onClose = null)
         {
             SetActive(true);
             title.SetTitle(listTitle);
-            OnItemClicked = null;
-            OnItemClicked = onItemClicked;
+            OnItemClicked.RemoveAllListeners();
+            OnItemClicked.AddListener(onItemClicked);
+            OnCancelClicked.RemoveAllListeners();
+            OnCancelClicked.AddListener(onClose);
 
             listContent.gameObject.DismissAllChildrenToPool(true);
 
@@ -54,5 +57,10 @@ namespace Scripts.UI.EditorUI.Components
         public void Close() => SetActive(false);
 
         protected abstract void OnItemClicked_internal(T item);
+
+        protected virtual void OnCancelClicked_internal()
+        {
+            OnCancelClicked.Invoke();
+        }
     }
 }

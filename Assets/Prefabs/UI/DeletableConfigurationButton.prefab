@@ -58,7 +58,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: 2
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
@@ -90,7 +90,7 @@ PrefabInstance:
     - target: {fileID: 556200289220753405, guid: 1d186b17b9bd3be4a822ca37252f4aa4,
         type: 3}
       propertyPath: m_fontSize
-      value: 21.75
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2439203152481558588, guid: 1d186b17b9bd3be4a822ca37252f4aa4,
         type: 3}
@@ -436,6 +436,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2718820258759477428, guid: e8733a67d0a0fb342b73f0817923e432,
         type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 26
+      objectReference: {fileID: 0}
+    - target: {fileID: 2718820258759477428, guid: e8733a67d0a0fb342b73f0817923e432,
+        type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -472,7 +477,7 @@ PrefabInstance:
     - target: {fileID: 4762484503227370753, guid: e8733a67d0a0fb342b73f0817923e432,
         type: 3}
       propertyPath: m_Name
-      value: IconButton
+      value: DeleteButton
       objectReference: {fileID: 0}
     - target: {fileID: 4782098365378267031, guid: e8733a67d0a0fb342b73f0817923e432,
         type: 3}
@@ -586,9 +591,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: 20
+  m_MinWidth: 30
   m_MinHeight: -1
-  m_PreferredWidth: 20
+  m_PreferredWidth: 30
   m_PreferredHeight: -1
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1

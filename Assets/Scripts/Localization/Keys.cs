@@ -3,6 +3,7 @@
     public static class Keys
     {
         public const string AddEndPoint = "AddEndPoint";
+        public const string AddNewSubscriber = "AddNewSubscriber";
         public const string AddWaypoint = "AddWaypoint";
         public const string AvailablePrefabs = "AvailablePrefabs";
         public const string Cancel = "Cancel";
@@ -49,6 +50,7 @@
         public const string SaveEditedMapPrompt = "SaveEditedMapPrompt";
         public const string SelectMapToLoad = "SelectMapToLoad";
         public const string SelectPrefab = "SelectPrefab";
+        public const string SelectSubscriber = "SelectSubscriber";
         public const string South = "South";
         public const string SubscribedReceivers = "SubscribedReceivers";
         public const string SpeedTowardsPoint = "SpeedTowardsPoint";

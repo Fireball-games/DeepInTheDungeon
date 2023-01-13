@@ -35,7 +35,7 @@ namespace Scripts.Triggers
 
         private void OnTriggerNext(Trigger source)
         {
-            if (AtRest && source.subscribers.Contains(PrefabGuid))
+            if (AtRest && source.subscribers.Contains(Guid))
             {
                 TriggerNext();
             }

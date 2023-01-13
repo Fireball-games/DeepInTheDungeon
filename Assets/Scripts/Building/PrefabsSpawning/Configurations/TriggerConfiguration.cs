@@ -27,7 +27,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
 
         public TriggerConfiguration(Trigger trigger, string ownerGuid = null, bool spawnPrefabOnBuild = true) : base(trigger, ownerGuid, spawnPrefabOnBuild)
         {
-            Subscribers = trigger.presetSubscribers.Select(s => s.GUID).ToList();
+            Subscribers = trigger.presetSubscribers.Select(s => s.Guid).ToList();
             TriggerType = trigger.triggerType;
             Count = trigger.count;
             

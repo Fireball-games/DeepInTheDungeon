@@ -26,7 +26,8 @@ namespace Scripts.UI.EditorUI.Components
         {
             base.Set(item, onClick);
 
-            GameObject instancedPrefab = GameManager.Instance.MapBuilder.GetPrefabByGuid(item.Guid);
+            GameObject instancedPrefab = GameManager.Instance.MapBuilder
+                .GetPrefabByGuid(item.SpawnPrefabOnBuild ? item.Guid : item.OwnerGuid);
 
             if (item.PrefabType is Enums.EPrefabType.Trigger) AddIcon(EIcon.Trigger);
             if (item.PrefabType is Enums.EPrefabType.TriggerReceiver) AddIcon(EIcon.TriggerReceiver);

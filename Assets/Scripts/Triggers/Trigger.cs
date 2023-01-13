@@ -20,7 +20,7 @@ namespace Scripts.Triggers
         public bool mustBeOnSameTile = true;
         public float actionDuration = 0.3f;
         public bool atRest = true;
-        public List<PrefabBase> presetSubscribers;
+        public List<TriggerReceiver> presetSubscribers;
         public List<string> subscribers;
 
         protected static PlayerController Player => GameManager.Instance.Player;
@@ -36,11 +36,13 @@ namespace Scripts.Triggers
 
         private void Start()
         {
-            foreach (PrefabBase prefab in presetSubscribers)
+            subscribers.Clear();
+            
+            foreach (TriggerReceiver triggerReceiver in presetSubscribers)
             {
-                if (!subscribers.Contains(prefab.GUID))
+                if (!subscribers.Contains(triggerReceiver.Guid))
                 {
-                    subscribers.Add(prefab.GUID);
+                    subscribers.Add(triggerReceiver.Guid);
                 }
             }
         }

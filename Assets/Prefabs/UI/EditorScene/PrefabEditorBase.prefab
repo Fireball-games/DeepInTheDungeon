@@ -392,7 +392,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 700, y: -278}
+  m_AnchoredPosition: {x: 710, y: -291}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7192413934289436297
@@ -1164,22 +1164,22 @@ PrefabInstance:
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.a
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.6627451
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.6627451
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.6784314
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47fbd13509d918648ad43221a89ac17d, type: 3}
@@ -1787,6 +1787,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 948193099407358041, guid: 2c5214de14325ab41980611b211c2b6b,
+        type: 3}
+      propertyPath: m_Padding.m_Bottom
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1012332948342532890, guid: 2c5214de14325ab41980611b211c2b6b,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -1940,7 +1945,7 @@ PrefabInstance:
     - target: {fileID: 4900096076272054080, guid: 2c5214de14325ab41980611b211c2b6b,
         type: 3}
       propertyPath: m_fontSize
-      value: 33.55
+      value: 33.5
       objectReference: {fileID: 0}
     - target: {fileID: 4972473963253162959, guid: 2c5214de14325ab41980611b211c2b6b,
         type: 3}

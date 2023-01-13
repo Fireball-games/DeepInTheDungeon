@@ -7,6 +7,7 @@ using Scripts.Localization;
 using Scripts.System;
 using Scripts.Triggers;
 using Scripts.UI.Components;
+using Scripts.UI.EditorUI.Components;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
 
@@ -17,6 +18,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private Vector3Control _positionControl;
         private LabeledDropdown _triggerTypeDropdown;
         private NumericUpDown _triggerCountUpDown;
+        private EditableConfigurationList _receiverList;
 
         private Vector3 _prefabWallCenterPosition;
         private readonly Vector3 _wallCursor3DSize = new(0.15f, 1.1f, 1.1f);
@@ -80,6 +82,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _triggerCountUpDown = content.Find("TriggerCountUpDown").GetComponent<NumericUpDown>();
             _triggerCountUpDown.SetActive(false);
+
+            _receiverList = content.Find("ReceiverList").GetComponent<EditableConfigurationList>();
+            _receiverList.SetActive(false);
         }
 
         protected override void VisualizeOtherComponents()
@@ -94,6 +99,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 EditedConfiguration.TriggerType,
                 OnTriggerTypeChanged);
             _triggerTypeDropdown.SetActive(true);
+
+            IEnumerable<TriggerReceiverConfiguration> subscribers =
+                EditedConfiguration.Subscribers.Select(s => MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(s));
+
+            _receiverList.Set(t.Get(Keys.SubscribedReceivers), subscribers, OnReceiverListChanged);
+            _receiverList.SetActive(true);
             
             if (EditedConfiguration.TriggerType is Enums.ETriggerType.XTimes)
             {
@@ -113,6 +124,24 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _positionControl.Value = PhysicalPrefab.transform.position - _prefabWallCenterPosition;
             _positionControl.ValueChanged.AddListener(OnPositionChanged);
             _positionControl.SetActive(true);
+        }
+
+        private void OnReceiverListChanged(IEnumerable<PrefabConfiguration> updatedList)
+        {
+            SetEdited();
+
+            EditedConfiguration.Subscribers = updatedList.Select(ExtractReceiverIdentification).ToList();
+        }
+
+        private string ExtractReceiverIdentification(PrefabConfiguration configuration)
+        {
+            if (configuration is TriggerReceiverConfiguration receiver)
+            {
+                return receiver.Identification;
+            }
+            
+            Logger.Log($"Attempt to work some other object, where {nameof(TriggerReceiverConfiguration)} is expected.");
+            return null;
         }
     }
 }

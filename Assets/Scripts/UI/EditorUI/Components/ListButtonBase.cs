@@ -36,7 +36,11 @@ namespace Scripts.UI.EditorUI.Components
             
             displayedItem = item;
             OnClick.RemoveAllListeners();
-            OnClick.AddListener(onClick);
+            
+            if (onClick != null)
+            {
+                OnClick.AddListener(onClick);
+            }
             
             Text.color = _normalColor;
         }
@@ -66,6 +70,7 @@ namespace Scripts.UI.EditorUI.Components
 
         private void Initialize()
         {
+            AssignComponents();
             Button.onClick.RemoveAllListeners();
             Button.onClick.AddListener(OnClick_internal);
             

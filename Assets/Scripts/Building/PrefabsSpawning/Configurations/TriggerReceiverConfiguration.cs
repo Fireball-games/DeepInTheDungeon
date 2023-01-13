@@ -8,10 +8,12 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
     public class TriggerReceiverConfiguration : PrefabConfiguration
     {
         public int StartMovement;
+        public string Identification;
 
         public TriggerReceiverConfiguration(TriggerReceiver receiver, string ownerGuid = null, bool spawnPrefabOnBuild = true)
         {
             StartMovement = receiver.startMovement;
+            Identification = receiver.identification;
 
             PrefabName = string.IsNullOrEmpty(receiver.identification) ? global::System.Guid.NewGuid().ToString() : receiver.identification;
             TransformData = new PositionRotation(receiver.transform.position.Round(2), receiver.transform.rotation);

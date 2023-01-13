@@ -50,6 +50,7 @@
         public const string SelectMapToLoad = "SelectMapToLoad";
         public const string SelectPrefab = "SelectPrefab";
         public const string South = "South";
+        public const string SubscribedReceivers = "SubscribedReceivers";
         public const string SpeedTowardsPoint = "SpeedTowardsPoint";
         public const string StartPoint = "StartPoint";
         public const string Step = "Step";

@@ -3,26 +3,38 @@ using System.Collections.Generic;
 using Scripts.Helpers.Extensions;
 using Scripts.System.MonoBases;
 using UnityEngine;
+using UnityEngine.Events;
 using Object = UnityEngine.Object;
 
 namespace Scripts.UI.EditorUI.Components
 {
-    public class ListViewer : UIElementBase
+    public class EditableStringList : UIElementBase
     {
         [SerializeField] private ListButtonBase<ConfigurationListButton> itemPrefab;
         private Transform _content;
         
-        private List<Object> _list;
+        private IEnumerable<string> _list;
 
         private void Awake()
         {
-            _list = new List<Object>();
+            _list = new List<string>();
+        }
+
+        public void Set(IEnumerable<string> items, UnityAction onAddItemClicked, UnityAction<int> onItemDeleted)
+        {
+            _list = items;
+            
+            _content.gameObject.DismissAllChildrenToPool(true);
+            
+            _list.ForEach(item =>
+            {
+                
+            });
         }
 
         public void Clear()
         {
             _content.gameObject.DismissAllChildrenToPool(true);
-            _list.Clear();
         }
 
         public void Add(Object item)

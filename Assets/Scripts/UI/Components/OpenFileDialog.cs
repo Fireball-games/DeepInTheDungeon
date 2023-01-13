@@ -28,14 +28,14 @@ namespace Scripts.UI.Components
             foreach (Button button in fileItemsParent.GetComponentsInChildren<Button>())
             {
                 button.onClick.RemoveAllListeners();
-                ObjectPool.Instance.ReturnToPool(button.transform.parent.gameObject, true);
+                ObjectPool.Instance.ReturnToPool(button.transform.parent.gameObject);
             }
 
             foreach (string file in files)  
             {
                 string fileName = Path.GetFileNameWithoutExtension(file);
 
-                GameObject fileItem = ObjectPool.Instance.GetFromPool(fileItemPrefab, fileItemsParent, true);
+                GameObject fileItem = ObjectPool.Instance.GetFromPool(fileItemPrefab, fileItemsParent);
                 fileItem.GetComponentInChildren<TMP_Text>().text = fileName;
                 fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => onFileItemClicked?.Invoke(file));
             }

@@ -30,10 +30,9 @@ namespace Scripts.System.Pooling
             }
         }
 
-        public GameObject GetFromPool(GameObject go, GameObject parent, bool isUiObject = false) => 
-            GetFromPool(go, Vector3.zero, Quaternion.identity, parent, isUiObject);
+        public GameObject GetFromPool(GameObject go, GameObject parent) => GetFromPool(go, Vector3.zero, Quaternion.identity, parent);
         
-        public GameObject GetFromPool(GameObject go, Vector3 position, Quaternion rotation, GameObject parent = null, bool isUiObject = false) 
+        public GameObject GetFromPool(GameObject go, Vector3 position, Quaternion rotation, GameObject parent = null) 
         {
             if (Pool.ContainsKey(go.name) && Pool[go.name].Any())
             {
@@ -42,7 +41,7 @@ namespace Scripts.System.Pooling
                 removedObjectTransform.position = position;
                 removedObjectTransform.rotation = rotation;
                 
-                if (isUiObject)
+                if (removedObjectTransform is RectTransform)
                 {
                     removedObjectTransform.SetParent(ResolveParentTransform(removedObjectTransform.name, parent));
                 }
@@ -58,7 +57,7 @@ namespace Scripts.System.Pooling
             return InstantiateNewPoolObject(go, position, rotation, parent);
         }
 
-        public void ReturnToPool(GameObject returningObject, bool isUiObject = false)
+        public void ReturnToPool(GameObject returningObject)
         {
             if (!Pool.ContainsKey(returningObject.name))
             {
@@ -68,7 +67,7 @@ namespace Scripts.System.Pooling
             Transform returningObjectTransform = returningObject.transform;
             returningObjectTransform.position = transform.position;
             
-            if (isUiObject)
+            if (returningObjectTransform is RectTransform)
             {
                 returningObjectTransform.SetParent(ResolveParentTransform(returningObject.name, null));
             }
@@ -145,7 +144,7 @@ namespace Scripts.System.Pooling
                 for (int i = 0; i < item.howMany; i++)
                 {
                     GameObject newObject = InstantiateNewPoolObject(item.prefabGameObject, true);
-                    ReturnToPool(newObject, item.isUiObject);
+                    ReturnToPool(newObject);
                 }
             });
         }
@@ -177,7 +176,6 @@ namespace Scripts.System.Pooling
         {
             public GameObject prefabGameObject;
             public int howMany;
-            public bool isUiObject;
         }
     }
 }

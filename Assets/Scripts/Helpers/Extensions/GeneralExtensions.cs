@@ -102,7 +102,7 @@ namespace Scripts.Helpers.Extensions
                 // Logger.Log("Shooing kids to pool");
                 foreach (Transform child in go.transform)
                 {
-                    ObjectPool.Instance.ReturnToPool(child.gameObject, isUiObject);
+                    ObjectPool.Instance.ReturnToPool(child.gameObject);
                 }
             }
         }

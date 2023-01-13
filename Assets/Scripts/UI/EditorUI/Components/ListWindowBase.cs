@@ -40,7 +40,7 @@ namespace Scripts.UI.EditorUI.Components
             foreach (T prefab in prefabs)  
             {
                 TButton newButton = ObjectPool.Instance
-                    .GetFromPool(itemPrefab, listContent, true)
+                    .GetFromPool(itemPrefab, listContent)
                     .GetComponent<TButton>();
                 
                 newButton.Set(prefab, OnItemClicked_internal);

@@ -204,12 +204,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             RemoveOtherComponents();
             SetStatusText();
-            // _isEditingExistingPrefab = false;
 
-            if (EditedConfiguration != null
-                // && !Placeholder.activeSelf
-                /*&& EditedConfiguration.TransformData.Position == Placeholder.transform.position
-                && EditedConfiguration.TransformData.Rotation == Placeholder.transform.rotation*/)
+            if (EditedConfiguration != null)
             {
                 MapBuilder.RemovePrefab(EditedConfiguration);
                 EditedConfiguration.PrefabName = prefabName;

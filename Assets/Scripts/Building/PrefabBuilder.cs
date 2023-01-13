@@ -255,8 +255,9 @@ namespace Scripts.Building
         
         private void ProcessTriggerConfiguration(PrefabConfiguration configuration, GameObject newPrefab)
         {
-            if (configuration is TriggerConfiguration)
+            if (configuration is TriggerConfiguration triggerConfiguration)
             {
+                newPrefab.GetComponent<Trigger>().subscribers = triggerConfiguration.Subscribers;
                 newPrefab.transform.localRotation = configuration.TransformData.Rotation;
             }
         }

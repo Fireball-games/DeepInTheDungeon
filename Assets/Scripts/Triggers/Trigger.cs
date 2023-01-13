@@ -36,7 +36,7 @@ namespace Scripts.Triggers
 
         private void Start()
         {
-            subscribers.Clear();
+            // subscribers.Clear();
             
             foreach (TriggerReceiver triggerReceiver in presetSubscribers)
             {
@@ -64,6 +64,13 @@ namespace Scripts.Triggers
             bool sameTileValidation = !mustBeOnSameTile || Vector3.Distance(GameManager.Instance.PlayerPosition,position) <= 1f;
             
             return sameTileValidation && (position - Player.transform.position).sqrMagnitude <= MaxDistanceFromPlayer;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            
+            subscribers.Clear();
         }
     }
 }

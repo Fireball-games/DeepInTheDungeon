@@ -73,7 +73,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void OnReceiverListChanged(IEnumerable<PrefabConfiguration> updatedList)
         {
             SetEdited();
-            EditedConfiguration.Subscribers = updatedList.Select(ExtractReceiverIdentification).ToList();
+            EditedConfiguration.Subscribers = updatedList.Select(ExtractReceiverGuid).ToList();
             VisualizeOtherComponents();
         }
 
@@ -133,11 +133,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _positionControl.SetActive(true);
         }
 
-        private string ExtractReceiverIdentification(PrefabConfiguration configuration)
+        private string ExtractReceiverGuid(PrefabConfiguration configuration)
         {
             if (configuration is TriggerReceiverConfiguration receiver)
             {
-                return receiver.Identification;
+                return receiver.Guid;
             }
             
             Logger.Log($"Attempt to work some other object, where {nameof(TriggerReceiverConfiguration)} is expected.");

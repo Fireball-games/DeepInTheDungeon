@@ -31,7 +31,11 @@ namespace Scripts.UI.EditorUI.Components
             OnItemClicked.RemoveAllListeners();
             OnItemClicked.AddListener(onItemClicked);
             OnCancelClicked.RemoveAllListeners();
-            OnCancelClicked.AddListener(onClose);
+            
+            if (onClose != null)
+            {
+                OnCancelClicked.AddListener(onClose);
+            }
 
             listContent.gameObject.DismissAllChildrenToPool(true);
 

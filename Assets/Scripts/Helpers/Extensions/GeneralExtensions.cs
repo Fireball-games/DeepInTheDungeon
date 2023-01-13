@@ -44,11 +44,11 @@ namespace Scripts.Helpers.Extensions
             GridWest = new Vector3Int(0, 0, -1);
         }
 
-        public static void ForEach<T>(this IEnumerable<T> hashSet, Action<T> action)
+        public static void ForEach<T>(this IEnumerable<T> set, Action<T> action)
         {
             if (action == null) return;
             
-            foreach (T element in hashSet)
+            foreach (T element in set)
             {
                 action.Invoke(element);
             }

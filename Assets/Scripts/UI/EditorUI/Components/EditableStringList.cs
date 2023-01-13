@@ -10,7 +10,7 @@ namespace Scripts.UI.EditorUI.Components
 {
     public class EditableStringList : UIElementBase
     {
-        [SerializeField] private ListButtonBase<ConfigurationListButton> itemPrefab;
+        [SerializeField] private ConfigurationListButton itemPrefab;
         private Transform _content;
         
         private IEnumerable<string> _list;

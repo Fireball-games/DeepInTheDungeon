@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
@@ -28,11 +27,6 @@ namespace Scripts.UI.EditorUI.Components
             base.Set(item, onClick);
 
             GameObject instancedPrefab = GameManager.Instance.MapBuilder.GetPrefabByGuid(item.Guid);
-            
-            if (instancedPrefab)
-            {
-                PrefabBase prefabScript = instancedPrefab.GetComponent<PrefabBase>();
-            }
 
             if (item.PrefabType is Enums.EPrefabType.Trigger) AddIcon(EIcon.Trigger);
             if (item.PrefabType is Enums.EPrefabType.TriggerReceiver) AddIcon(EIcon.TriggerReceiver);

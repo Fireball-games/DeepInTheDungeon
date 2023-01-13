@@ -16,7 +16,7 @@ namespace Scripts.UI.EditorUI.Components
 
         protected TMP_Text Text;
         
-        private Button _button;
+        protected Button Button;
         private Color SelectedColor => Colors.Selected;
         
         private readonly Color _normalColor = Color.white;
@@ -58,13 +58,17 @@ namespace Scripts.UI.EditorUI.Components
             OnClick.Invoke(displayedItem);
         }
 
+        protected virtual void AssignComponents()
+        {
+            Button = transform.Find("Button").GetComponent<Button>();
+            Text = transform.Find("Button/Text").GetComponent<TMP_Text>();
+        }
+
         private void Initialize()
         {
-            _button = transform.Find("Button").GetComponent<Button>();
-            _button.onClick.RemoveAllListeners();
-            _button.onClick.AddListener(OnClick_internal);
+            Button.onClick.RemoveAllListeners();
+            Button.onClick.AddListener(OnClick_internal);
             
-            Text = transform.Find("Button/Text").GetComponent<TMP_Text>();
         }
     }
 }

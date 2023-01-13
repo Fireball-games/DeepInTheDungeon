@@ -47,11 +47,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected GameObject PhysicalPrefabBody;
         protected GameObject PhysicalPrefab;
         protected bool IsCurrentConfigurationChanged;
-        
+
         private TC _originalConfiguration;
         private HashSet<TPrefab> _availablePrefabs;
         private bool _isEditingExistingPrefab;
-        
+
         protected bool CanOpen => !IsCurrentConfigurationChanged;
         protected bool IsPrefabFinderActive => _existingList.IsActive;
 
@@ -82,6 +82,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected abstract TC CloneConfiguration(TC sourceConfiguration);
         protected abstract void VisualizeOtherComponents();
         protected abstract void InitializeOtherComponents();
+
         /// <summary>
         /// Method to remove other components inheriting editor needs, should not contain any other manipulation than with other components.  
         /// </summary>
@@ -107,32 +108,32 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             IEnumerable<TC> availableConfigurations = GetAvailableConfigurations();
 
             SetExistingList(true, availableConfigurations);
-            
+
             SetActive(true);
         }
 
         public virtual void Open(TC configuration)
         {
             if (!CanOpen) return;
-            
+
             if (configuration == null)
             {
                 // Close();
                 return;
             }
-            
+
             RemoveOtherComponents();
-            
+
             _isEditingExistingPrefab = true;
             IsCurrentConfigurationChanged = false;
             EditedPrefabType = configuration.PrefabType;
             EditedConfiguration = configuration;
             _originalConfiguration = CloneConfiguration(configuration);
-            
+
             SetupWindow(configuration.PrefabType);
 
             MoveCameraToPrefab(configuration.TransformData.Position);
-            
+
             SelectedCage.ShowAt(configuration.TransformData.Position,
                 GetCursor3DScale(),
                 configuration.TransformData.Rotation);
@@ -148,7 +149,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
             }
-            
+
             VisualizeOtherComponents();
         }
 
@@ -174,7 +175,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 SetStatusText(t.Get(Keys.NoPrefabsAvailable));
                 return;
             }
-            
+
             SelectedCage.ShowAt(placeholderTransformData.Position,
                 GetCursor3DScale(),
                 placeholderTransformData.Rotation);
@@ -187,7 +188,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetExistingList(false);
             SetPrefabList(true, _availablePrefabs);
         }
-        
+
         /// <summary>
         /// IPrefabEditor method
         /// </summary>
@@ -195,28 +196,30 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             RemoveAndClose();
         }
-        
-        public void MoveCameraToPrefab(Vector3 targetPosition) => 
+
+        public void MoveCameraToPrefab(Vector3 targetPosition) =>
             EditorCameraService.Instance.MoveCameraToPrefab(Vector3Int.RoundToInt(targetPosition));
 
         protected virtual void SetPrefab(string prefabName)
         {
             RemoveOtherComponents();
             SetStatusText();
-            _isEditingExistingPrefab = false;
+            // _isEditingExistingPrefab = false;
 
-            if (EditedConfiguration != null)
+            if (EditedConfiguration != null
+                // && !Placeholder.activeSelf
+                /*&& EditedConfiguration.TransformData.Position == Placeholder.transform.position
+                && EditedConfiguration.TransformData.Rotation == Placeholder.transform.rotation*/)
             {
                 MapBuilder.RemovePrefab(EditedConfiguration);
                 EditedConfiguration.PrefabName = prefabName;
-                EditedConfiguration.TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation);
                 EditedConfiguration = CloneConfiguration(EditedConfiguration);
             }
             else
             {
                 EditedConfiguration = GetNewConfiguration(prefabName);
             }
-            
+
             if (!MapBuilder.BuildPrefab(EditedConfiguration))
             {
                 SetStatusText(t.Get(Keys.ErrorBuildingPrefab));
@@ -226,11 +229,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _prefabTitle.SetActive(true);
             _prefabTitle.SetTitle(EditedConfiguration.PrefabName);
-            
+
             if (!EditedConfiguration.SpawnPrefabOnBuild) SetPrefabList(false);
 
             PhysicalPrefab = MapBuilder.GetPrefabByGuid(EditedConfiguration.Guid);
-            
+
             if (PhysicalPrefab)
             {
                 PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
@@ -239,7 +242,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetEdited();
             SetButtons();
             Placeholder.SetActive(false);
-            
+
             VisualizeOtherComponents();
         }
 
@@ -250,7 +253,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             IsCurrentConfigurationChanged = isEdited;
             Manager.isAnyObjectEdited = isEdited;
             SetButtons();
-            
+
             if (isEdited)
             {
                 EditorEvents.TriggerOnMapEdited();
@@ -268,9 +271,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _originalConfiguration = null;
             SetEdited(false);
             _prefabList.DeselectButtons();
-            
+
             Placeholder.SetActive(false);
-            
+
             SetButtons();
             VisualizeOtherComponents();
             SelectedCage.Hide();
@@ -282,9 +285,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 RemoveChanges();
             }
-            
+
             Placeholder.SetActive(false);
-            
+
             Open();
         }
 
@@ -294,10 +297,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 RemoveChanges();
             }
-            
+
             Close();
         }
-        
+
         private void RemoveChanges()
         {
             if (_isEditingExistingPrefab)
@@ -306,14 +309,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 MapBuilder.BuildPrefab(_originalConfiguration);
                 EditedConfiguration = CloneConfiguration(_originalConfiguration);
             }
-            
+
             if (!_isEditingExistingPrefab && EditedConfiguration != null)
             {
                 MapBuilder.RemovePrefab(EditedConfiguration);
                 EditedConfiguration = null;
                 _prefabList.DeselectButtons();
             }
-            
+
             SetEdited(false);
             SetButtons();
             VisualizeOtherComponents();
@@ -322,7 +325,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected virtual void SaveMap()
         {
             SetEdited(false);
-            
+
             _isEditingExistingPrefab = true;
             MapBuilder.AddReplacePrefabConfiguration(EditedConfiguration);
             MapEditorManager.Instance.SaveMap();
@@ -353,8 +356,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetActive(false);
         }
-        
-        
+
+
         private void SetButtons()
         {
             // bool prefabFinderButtonVisibility;
@@ -378,7 +381,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _statusText.gameObject.SetActive(true);
         }
-        
+
         private void SetupWindow(EPrefabType prefabType)
         {
             SetActive(true);
@@ -393,7 +396,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _saveButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Save);
 
             _deleteButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Delete);
-            
+
             SetButtons();
 
             _availablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
@@ -401,7 +404,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 .Where(prefab => prefab.prefabType == prefabType)
                 .ToHashSet();
         }
-        
+
         private void Close(EWorkMode _)
         {
             if (!CanOpen) RemoveAndClose();
@@ -416,9 +419,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _prefabList.SetActive(false);
                 return;
             }
-            
+
             if (items == null) return;
-            
+
             _prefabList.Open(t.Get(Keys.AvailablePrefabs), items, prefab => SetPrefab(prefab.gameObject.name), onClose);
         }
 
@@ -433,13 +436,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             }
 
             if (items == null) return;
-            
+
             _existingList.Open(t.Get(Keys.ExistingPrefabs), items, configuration => Open(configuration as TC), onClose);
         }
 
         private void AssignComponents()
         {
-            Transform bodyTransform = body.transform; 
+            Transform bodyTransform = body.transform;
             Placeholder = bodyTransform.Find("Placeholder").gameObject;
             _prefabList = bodyTransform.Find("AvailablePrefabs").GetComponent<PrefabList>();
             _existingList = bodyTransform.Find("ExistingPrefabs").GetComponent<ConfigurationList>();

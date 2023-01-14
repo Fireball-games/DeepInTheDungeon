@@ -249,7 +249,7 @@ namespace Scripts.MapEditor
                     _effectedWalls = EEffectedWalls.Both;
                     IsActive = true;
                 }
-                else if (Manager.TriggerEditMode == ETriggerEditMode.AddTrigger)
+                else if (Manager.TriggerEditMode == ETriggerEditMode.EditTrigger)
                 {
                     _effectedWalls = EEffectedWalls.OnWall;
                     IsActive = true;

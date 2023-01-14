@@ -161,7 +161,7 @@ MonoBehaviour:
   activePart: {fileID: 1715027707809379539}
   Guid: 
   startMovement: 1
-  identification: first receiver
+  identification: Door Gate /w Buttons
   moveType: 2
   activeProperty: 1
   steps:
@@ -358,6 +358,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4998416268976540309, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
         type: 3}
+      propertyPath: startMovement
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4998416268976540309, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
+        type: 3}
       propertyPath: mustBeOnSameTile
       value: 0
       objectReference: {fileID: 0}
@@ -445,6 +450,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GateButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 4998416268976540309, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
+        type: 3}
+      propertyPath: startMovement
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4998416268976540309, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
         type: 3}

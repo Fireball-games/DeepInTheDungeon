@@ -98,6 +98,8 @@ namespace Scripts.Building
 
             GameObject prefabGo = Prefabs.FirstOrDefault(go => go.GetComponent<PrefabBase>().GUID == configuration.Guid);
 
+            if (!configuration.SpawnPrefabOnBuild) return;
+            
             if (!prefabGo)
             {
                 Logger.LogWarning($"No prefab of name \"{configuration.PrefabName}\" found for removal in Prefabs.");

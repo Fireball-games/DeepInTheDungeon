@@ -10,7 +10,6 @@ namespace Scripts.UI.EditorUI
 {
     public class TriggerModeExpandedOptions : UIElementBase
     {
-        private ImageButton _addTriggerButton;
         private ImageButton _editTriggerButton;
         private ImageButton _editTriggerReceiverButton;
 
@@ -18,14 +17,12 @@ namespace Scripts.UI.EditorUI
 
         private void Awake()
         {
-            _addTriggerButton = body.transform.Find("AddTriggerButton").GetComponent<ImageButton>();
             _editTriggerButton = body.transform.Find("EditTriggerButton").GetComponent<ImageButton>();
             _editTriggerReceiverButton = body.transform.Find("EditTriggerReceiverButton").GetComponent<ImageButton>();
         }
 
         private void OnEnable()
         {
-            _addTriggerButton.OnClickWithSender += OnClick;
             _editTriggerButton.OnClickWithSender += OnClick;
             _editTriggerReceiverButton.OnClickWithSender += OnClick;
             
@@ -34,7 +31,6 @@ namespace Scripts.UI.EditorUI
 
         private void OnDisable()
         {
-            _addTriggerButton.OnClickWithSender -= OnClick;
             _editTriggerButton.OnClickWithSender -= OnClick;
             _editTriggerReceiverButton.OnClickWithSender -= OnClick;
             
@@ -56,7 +52,6 @@ namespace Scripts.UI.EditorUI
         private Dictionary<ETriggerEditMode, ImageButton> BuildButtonsMap() =>
             _buttonsMap = new Dictionary<ETriggerEditMode, ImageButton>
             {
-                {ETriggerEditMode.AddTrigger, _addTriggerButton},
                 {ETriggerEditMode.EditTrigger, _editTriggerButton},
                 {ETriggerEditMode.EditReceiver, _editTriggerReceiverButton},
             };

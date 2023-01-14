@@ -25,9 +25,8 @@
         public enum ETriggerEditMode
         {
             None = 0,
-            AddTrigger = 1,
-            EditTrigger = 2,
-            EditReceiver = 3,
+            EditTrigger = 1,
+            EditReceiver = 2,
         }
 
         public enum EGridPositionType

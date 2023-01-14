@@ -24,9 +24,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private readonly Vector3 _wallCursor3DSize = new(0.15f, 1.1f, 1.1f);
         private readonly Vector3 _genericCursor3DSize = new(0.33f, 0.33f, 0.33f);
 
+        private Transform _content;
+
         protected override void RemoveOtherComponents()
         {
-            
         }
 
         public override Vector3 GetCursor3DScale() =>
@@ -77,16 +78,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 Enums.ETriggerType.Multiple => 3,
                 _ => throw new ArgumentOutOfRangeException()
             };
-            
+
             VisualizeOtherComponents();
         }
 
         private void OnTriggerCountChanged(float newCount)
         {
             SetEdited();
-            EditedConfiguration.Count = (int)newCount;
+            EditedConfiguration.Count = (int) newCount;
         }
-        
+
         private void OnReceiverListChanged(IEnumerable<PrefabConfiguration> updatedList)
         {
             SetEdited();
@@ -96,61 +97,62 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void InitializeOtherComponents()
         {
-            Transform content = transform.Find("Body/Background/Frame/ScrollView/Viewport/Content");
-            
-            _positionControl = content.Find("PositionControl").GetComponent<Vector3Control>();
+            _content = transform.Find("Body/Background/Frame/ScrollView/Viewport/Content");
+
+            _positionControl = _content.Find("PositionControl").GetComponent<Vector3Control>();
             _positionControl.SetActive(false);
-            
-            _triggerTypeDropdown = content.Find("TriggerTypeDropdown").GetComponent<LabeledDropdown>();
+
+            _triggerTypeDropdown = _content.Find("TriggerTypeDropdown").GetComponent<LabeledDropdown>();
             _triggerTypeDropdown.SetActive(false);
 
-            _triggerCountUpDown = content.Find("TriggerCountUpDown").GetComponent<NumericUpDown>();
+            _triggerCountUpDown = _content.Find("TriggerCountUpDown").GetComponent<NumericUpDown>();
             _triggerCountUpDown.SetActive(false);
             _triggerCountUpDown.OnValueChanged.RemoveAllListeners();
             _triggerCountUpDown.OnValueChanged.AddListener(OnTriggerCountChanged);
 
-            _receiverList = content.Find("ReceiverList").GetComponent<EditableConfigurationList>();
+            _receiverList = _content.Find("ReceiverList").GetComponent<EditableConfigurationList>();
             _receiverList.SetActive(false);
         }
 
         protected override void VisualizeOtherComponents()
         {
-            _positionControl.SetActive(false);
-            _triggerTypeDropdown.SetActive(false);
-            _triggerCountUpDown.SetActive(false);
-            _receiverList.SetActive(false);
+            _positionControl.Reparent(body.transform, false);
+            _triggerTypeDropdown.Reparent(body.transform, false);
+            _triggerCountUpDown.Reparent(body.transform, false);
+            _receiverList.Reparent(body.transform, false);
 
             if (EditedConfiguration is null) return;
 
-            _triggerTypeDropdown.Set( $"{t.Get(Keys.TriggerType)}:",
+            if (EditedConfiguration.SpawnPrefabOnBuild)
+            {
+                _prefabWallCenterPosition = PhysicalPrefab.transform.position.ToVector3Int();
+                _prefabWallCenterPosition.x = (float) Math.Round(PhysicalPrefab.transform.position.x, 1);
+                Logger.Log($"WallCenter: {_prefabWallCenterPosition}");
+
+                _positionControl.ValueChanged.RemoveAllListeners();
+                _positionControl.Label.text = $"{t.Get(Keys.Position)}:";
+                _positionControl.Value = PhysicalPrefab.transform.position - _prefabWallCenterPosition;
+                _positionControl.ValueChanged.AddListener(OnPositionChanged);
+                _positionControl.Reparent(_content);
+            }
+
+            _triggerTypeDropdown.Set($"{t.Get(Keys.TriggerType)}:",
                 EditedConfiguration.TriggerType,
                 OnTriggerTypeChanged);
-            _triggerTypeDropdown.SetActive(true);
+            _triggerTypeDropdown.Reparent(_content);
+
+            if (EditedConfiguration.TriggerType is Enums.ETriggerType.Multiple)
+            {
+                _triggerCountUpDown.Value = EditedConfiguration.Count;
+                _triggerCountUpDown.Label.text = $"{t.Get(Keys.Count)} :";
+                _triggerCountUpDown.Reparent(_content);
+            }
 
             IEnumerable<TriggerReceiverConfiguration> subscribers =
                 EditedConfiguration.Subscribers.Select(s => MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(s));
 
             _receiverList.Set(t.Get(Keys.SubscribedReceivers), subscribers, OnReceiverListChanged);
-            _receiverList.SetActive(true);
-            
-            if (EditedConfiguration.TriggerType is Enums.ETriggerType.Multiple)
-            {
-                _triggerCountUpDown.Value = EditedConfiguration.Count;
-                _triggerCountUpDown.Label.text = $"{t.Get(Keys.Count)} :";
-                _triggerCountUpDown.SetActive(true);
-            }
-
-            if (!EditedConfiguration.SpawnPrefabOnBuild) return;
-
-            _prefabWallCenterPosition = PhysicalPrefab.transform.position.ToVector3Int();
-            _prefabWallCenterPosition.x = (float) Math.Round(PhysicalPrefab.transform.position.x, 1);
-            Logger.Log($"WallCenter: {_prefabWallCenterPosition}");
-
-            _positionControl.ValueChanged.RemoveAllListeners();
-            _positionControl.Label.text = $"{t.Get(Keys.Position)}:";
-            _positionControl.Value = PhysicalPrefab.transform.position - _prefabWallCenterPosition;
-            _positionControl.ValueChanged.AddListener(OnPositionChanged);
-            _positionControl.SetActive(true);
+            _receiverList.Reparent(_content);
         }
 
         private string ExtractReceiverGuid(PrefabConfiguration configuration)
@@ -159,7 +161,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 return receiver.Guid;
             }
-            
+
             Logger.Log($"Attempt to work some other object, where {nameof(TriggerReceiverConfiguration)} is expected.");
             return null;
         }

@@ -12,21 +12,21 @@ namespace Scripts.Triggers
     public abstract class Trigger : PrefabBase
     {
         private const float MaxDistanceFromPlayer = 0.7f;
-        
+        [Header("Behaviour settings")]
         public ETriggerType triggerType;
         /// <summary>
         /// How many times can be trigger triggered.
         /// </summary>
         public int count;
         public bool mustBeOnSameTile = true;
-        public float actionDuration = 0.3f;
         public bool atRest = true;
         public List<TriggerReceiver> presetSubscribers;
         public List<string> subscribers;
+        [Header("Movement settings")]
+        public int StartMovement;
 
         protected static PlayerController Player => GameManager.Instance.Player;
         protected Transform ActivePart;
-        protected int StartMovement;
         protected int CurrentMovement;
         
         protected virtual void Awake()
@@ -59,12 +59,24 @@ namespace Scripts.Triggers
         protected void TriggerNext(bool setAtRest = false)
         {
             if (count <= 0) return;
+
+            if (triggerType != ETriggerType.Repeat) count -= 1;
             
             atRest = setAtRest;
             EventsManager.TriggerOnTriggerNext(this);
         }
 
-        protected void SetResting(bool isAtRest) => atRest = isAtRest;
+        protected void SetResting(bool triggerNextOnStart = false)
+        {
+            if (triggerNextOnStart)
+            {
+                TriggerNext();
+            }
+            
+            atRest = true;
+        }
+
+        protected void SetBusy() => atRest = false;
 
         protected bool IsPositionValid()
         {

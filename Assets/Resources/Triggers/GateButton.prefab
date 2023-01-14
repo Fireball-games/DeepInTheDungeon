@@ -50,14 +50,21 @@ MonoBehaviour:
   prefabType: 9
   guid: 
   triggerType: 2
+  count: 0
   mustBeOnSameTile: 0
-  actionDuration: 0.3
   atRest: 1
   presetSubscribers: []
   subscribers: []
+  StartMovement: 0
   moveType: 1
   activeProperty: 1
-  movementVector: {x: 0.02, y: 0, z: 0}
+  steps:
+  - target: {x: 0.02, y: 0, z: 0}
+    duration: 0.3
+    movementEase: 1
+  - target: {x: 0, y: 0, z: 0}
+    duration: 0.3
+    movementEase: 1
 --- !u!65 &1545836108310302520
 BoxCollider:
   m_ObjectHideFlags: 0

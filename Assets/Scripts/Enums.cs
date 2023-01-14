@@ -29,6 +29,8 @@
             None = 0,
             ThereAndBack = 1,
             Switch = 2,
+            Multiple = 3,
+            Periodic = 4,
         }
 
         public enum EActiveProperty

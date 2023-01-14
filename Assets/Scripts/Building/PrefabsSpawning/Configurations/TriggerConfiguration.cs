@@ -13,6 +13,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         /// How many times can be trigger triggered.
         /// </summary>
         public int Count;
+        public int StartMovement;
 
         public TriggerConfiguration()
         {
@@ -23,6 +24,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             Subscribers = configuration.Subscribers;
             TriggerType = configuration.TriggerType;
             Count = configuration.Count;
+            StartMovement = configuration.StartMovement;
         }
 
         public TriggerConfiguration(Trigger trigger, string ownerGuid = null, bool spawnPrefabOnBuild = true) : base(trigger, ownerGuid, spawnPrefabOnBuild)
@@ -30,6 +32,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             Subscribers = trigger.presetSubscribers.Select(s => s.Guid).ToList();
             TriggerType = trigger.triggerType;
             Count = trigger.count;
+            StartMovement = trigger.startMovement;
             
             TransformData.Position = trigger.transform.position.Round(2);
         }

@@ -41,18 +41,18 @@ namespace Scripts.Triggers
             }
         }
         
-        public void SetMovementStep()
+        public override void SetMovementStep()
         {
             if (activeProperty is EActiveProperty.Position)
             {
-                ActivePart.localPosition = steps[StartMovement].target;
+                ActivePart.localPosition = steps[startMovement].target;
             }
             else
             {
-                ActivePart.localRotation = Quaternion.Euler(steps[StartMovement].target);
+                ActivePart.localRotation = Quaternion.Euler(steps[startMovement].target);
             }
 
-            CurrentMovement = StartMovement == steps.Count - 1 ? 0 : StartMovement + 1;
+            CurrentMovement = startMovement == steps.Count - 1 ? 0 : startMovement + 1;
         }
 
         protected override void OnTriggerActivated()
@@ -93,6 +93,8 @@ namespace Scripts.Triggers
             {
                 TriggerNext();
             }
+
+            if (count <= 0) return;
 
             _movementStore[^1].Restart();
         }

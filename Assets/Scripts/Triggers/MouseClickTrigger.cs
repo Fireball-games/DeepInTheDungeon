@@ -5,7 +5,7 @@ namespace Scripts.Triggers
     {
         private void OnMouseUp()
         {
-            if (atRest && IsPositionValid())
+            if (atRest && IsPositionValid() && count > 0)
             {
                 OnTriggerActivated();
             }

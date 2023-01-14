@@ -23,7 +23,7 @@ namespace Scripts.Triggers
         public List<TriggerReceiver> presetSubscribers;
         public List<string> subscribers;
         [Header("Movement settings")]
-        public int StartMovement;
+        public int startMovement;
 
         protected static PlayerController Player => GameManager.Instance.Player;
         protected Transform ActivePart;
@@ -86,6 +86,8 @@ namespace Scripts.Triggers
             
             return sameTileValidation && (position - Player.transform.position).sqrMagnitude <= MaxDistanceFromPlayer;
         }
+        
+        public abstract void SetMovementStep();
 
         public override void InitializeFromPool()
         {

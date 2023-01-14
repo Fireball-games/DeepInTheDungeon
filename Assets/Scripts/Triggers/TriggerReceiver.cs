@@ -1,5 +1,4 @@
-﻿using System;
-using Scripts.Building.Walls;
+﻿using Scripts.Building.Walls;
 using Scripts.EventsManagement;
 using UnityEngine;
 
@@ -12,7 +11,6 @@ namespace Scripts.Triggers
         public string Guid;  
         public int startMovement;
         public string identification;
-        [NonSerialized] public string PrefabGuid;
         
         protected int CurrentMovement;
 

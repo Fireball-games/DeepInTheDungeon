@@ -43,6 +43,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SpawnPrefabOnBuild = true,
 
             Subscribers = new List<string>(),
+            TriggerType = Enums.ETriggerType.Repeat,
+            Count = int.MaxValue,
+            StartMovement = 1,
         };
 
         protected override TriggerConfiguration CloneConfiguration(TriggerConfiguration sourceConfiguration) => new(sourceConfiguration);
@@ -57,7 +60,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void OnPositionChanged(Vector3 newPosition)
         {
             SetEdited();
-            Vector3 newPrefabWorldPosition = _prefabWallCenterPosition + new Vector3(newPosition.z, newPosition.x, newPosition.y);
+            Vector3 newPrefabWorldPosition = _prefabWallCenterPosition + new Vector3(newPosition.z, newPosition.y, newPosition.x);
             Logger.Log($"New prefab position: {newPrefabWorldPosition}");
             EditedConfiguration.TransformData.Position = newPrefabWorldPosition;
             PhysicalPrefab.transform.localPosition = newPrefabWorldPosition;
@@ -67,7 +70,21 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             SetEdited();
             EditedConfiguration.TriggerType = enumIntValue.GetEnumValue<Enums.ETriggerType>();
+            EditedConfiguration.Count = EditedConfiguration.TriggerType switch
+            {
+                Enums.ETriggerType.OneOff => 1,
+                Enums.ETriggerType.Repeat => int.MaxValue,
+                Enums.ETriggerType.Multiple => 3,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            
             VisualizeOtherComponents();
+        }
+
+        private void OnTriggerCountChanged(float newCount)
+        {
+            SetEdited();
+            EditedConfiguration.Count = (int)newCount;
         }
         
         private void OnReceiverListChanged(IEnumerable<PrefabConfiguration> updatedList)
@@ -89,6 +106,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _triggerCountUpDown = content.Find("TriggerCountUpDown").GetComponent<NumericUpDown>();
             _triggerCountUpDown.SetActive(false);
+            _triggerCountUpDown.OnValueChanged.RemoveAllListeners();
+            _triggerCountUpDown.OnValueChanged.AddListener(OnTriggerCountChanged);
 
             _receiverList = content.Find("ReceiverList").GetComponent<EditableConfigurationList>();
             _receiverList.SetActive(false);
@@ -99,6 +118,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _positionControl.SetActive(false);
             _triggerTypeDropdown.SetActive(false);
             _triggerCountUpDown.SetActive(false);
+            _receiverList.SetActive(false);
 
             if (EditedConfiguration is null) return;
 

@@ -26,8 +26,8 @@ namespace Scripts.Building
         private static TileDescription[,,] Layout => MapBuilder.Layout;
         private static bool IsInEditor => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
 
-        private Dictionary<string, Trigger> _triggers;
-        private Dictionary<string, TriggerReceiver> _triggerReceivers;
+        private readonly Dictionary<string, Trigger> _triggers;
+        private readonly Dictionary<string, TriggerReceiver> _triggerReceivers;
 
         public PrefabBuilder()
         {
@@ -77,7 +77,7 @@ namespace Scripts.Building
 
                 bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
 
-                if (isEditorMode && -newPrefab.transform.position.y < MapEditorManager.Instance.CurrentFloor)
+                if (isEditorMode && Mathf.RoundToInt(-newPrefab.transform.position.y) < MapEditorManager.Instance.CurrentFloor)
                 {
                     newPrefab.SetActive(false);
                 }
@@ -257,8 +257,28 @@ namespace Scripts.Building
         {
             if (configuration is TriggerConfiguration triggerConfiguration)
             {
-                newPrefab.GetComponent<Trigger>().subscribers = triggerConfiguration.Subscribers;
+                Trigger prefabScript = newPrefab.GetComponent<Trigger>();
+                
+                if (prefabScript)
+                {
+                    prefabScript.triggerType = triggerConfiguration.TriggerType;
+                    prefabScript.count = triggerConfiguration.Count;
+                    prefabScript.subscribers = triggerConfiguration.Subscribers;
+                    prefabScript.startMovement = triggerConfiguration.StartMovement;
+                    prefabScript.SetMovementStep();
+                }
+                
                 newPrefab.transform.localRotation = configuration.TransformData.Rotation;
+            }
+            
+            if (configuration is TriggerReceiverConfiguration receiverConfiguration)
+            {
+                TriggerReceiver prefabScript = newPrefab.GetComponent<TriggerReceiver>();
+                
+                if (prefabScript)
+                {
+                    prefabScript.SetMovementStep();
+                }
             }
         }
 
@@ -296,7 +316,7 @@ namespace Scripts.Building
         }
 
         /// <summary>
-        /// This method does:
+        /// This method works with embedded triggers only and does:
         /// - subscribes new prefab to its triggers
         /// - in editor - registers triggers/triggerReceivers into their lists
         /// - in editor - creates trigger/triggerReceiver configurations from new prefab and ads those into map prefabConfigurations
@@ -330,6 +350,7 @@ namespace Scripts.Building
                 }
                 
                 trigger.GUID = configuration.Guid;
+                trigger.SetMovementStep();
             }
 
             foreach (TriggerReceiver receiver in newPrefab.GetComponents<TriggerReceiver>())
@@ -353,7 +374,6 @@ namespace Scripts.Building
                     receiver.startMovement = configuration.StartMovement;
                 }
                 
-                receiver.PrefabGuid = prefabScript.GUID;
                 receiver.Guid = configuration.Guid;
                 receiver.SetMovementStep();
             }
@@ -407,10 +427,9 @@ namespace Scripts.Building
             {
                 foreach (TriggerConfiguration triggerConfiguration in GetAllConfigurationsByType<TriggerConfiguration>(Enums.EPrefabType.Trigger))
                 {
-                    // TODO: Not tested, test once more triggerReceivers can be assigned to trigger
-                    if (triggerConfiguration.Subscribers.Contains(receiver.PrefabGuid))
+                    if (triggerConfiguration.Subscribers.Contains(receiver.Guid))
                     {
-                        triggerConfiguration.Subscribers.Remove(receiver.PrefabGuid);
+                        triggerConfiguration.Subscribers.Remove(receiver.Guid);
                     }
                 }
                 

@@ -21,7 +21,7 @@
         {
             OneOff = 1,
             Repeat = 2,
-            XTimes = 3,
+            Multiple = 3,
         }
 
         public enum ETriggerMoveType

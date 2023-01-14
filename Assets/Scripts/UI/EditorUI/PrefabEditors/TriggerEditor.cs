@@ -113,7 +113,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _receiverList.Set(t.Get(Keys.SubscribedReceivers), subscribers, OnReceiverListChanged);
             _receiverList.SetActive(true);
             
-            if (EditedConfiguration.TriggerType is Enums.ETriggerType.XTimes)
+            if (EditedConfiguration.TriggerType is Enums.ETriggerType.Multiple)
             {
                 _triggerCountUpDown.Value = EditedConfiguration.Count;
                 _triggerCountUpDown.Label.text = $"{t.Get(Keys.Count)} :";

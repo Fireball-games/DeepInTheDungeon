@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Scripts.Building.Walls;
 using Scripts.EventsManagement;
 using Scripts.Player;
@@ -36,8 +37,6 @@ namespace Scripts.Triggers
 
         private void Start()
         {
-            // subscribers.Clear();
-            
             foreach (TriggerReceiver triggerReceiver in presetSubscribers)
             {
                 if (!subscribers.Contains(triggerReceiver.Guid))
@@ -45,12 +44,22 @@ namespace Scripts.Triggers
                     subscribers.Add(triggerReceiver.Guid);
                 }
             }
+
+            count = triggerType switch
+            {
+                ETriggerType.OneOff => 1,
+                ETriggerType.Repeat => int.MaxValue,
+                ETriggerType.Multiple => count,
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
         protected abstract void OnTriggerActivated();
         
         protected void TriggerNext(bool setAtRest = false)
         {
+            if (count <= 0) return;
+            
             atRest = setAtRest;
             EventsManager.TriggerOnTriggerNext(this);
         }

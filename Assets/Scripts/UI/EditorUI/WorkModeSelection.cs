@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Scripts.EventsManagement;
+using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
@@ -45,6 +46,7 @@ namespace Scripts.UI.EditorUI
         private void OnEnable()
         {
             EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
+            EditorEvents.OnMapEditedStatusChanged += OnEditedStatusChanged;
             _buildModeButton.OnClickWithSender += WorkModeButtonClicked;
             _buildModeButton.OnSelected += ActivateBuildModeOptions;
             _buildModeButton.OnDeselected += DeactivateBuildModeOptions;
@@ -59,6 +61,7 @@ namespace Scripts.UI.EditorUI
         private void OnDisable()
         {
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
+            EditorEvents.OnMapEditedStatusChanged -= OnEditedStatusChanged;
             _buildModeButton.OnClickWithSender -= WorkModeButtonClicked;
             _buildModeButton.OnSelected -= ActivateBuildModeOptions;
             _buildModeButton.OnDeselected -= DeactivateBuildModeOptions;
@@ -96,6 +99,11 @@ namespace Scripts.UI.EditorUI
                 
                 record.Key.SetSelected(false);
             }
+        }
+
+        private void OnEditedStatusChanged(bool isEdited)
+        {
+            _workModesMap.Keys.ForEach(button => button.SetInteractable(!isEdited));
         }
 
         private void WorkModeButtonClicked(MonoBehaviour sender)

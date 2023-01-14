@@ -59,13 +59,13 @@ namespace Scripts.MapEditor
         private void OnEnable()
         {
             MapBuilder.OnLayoutBuilt += OnLayoutBuilt;
-            EditorEvents.OnMapEdited += OnMapEdited;
+            EditorEvents.OnMapEditedStatusChanged += MapEditedStatusChanged;
         }
 
         private void OnDisable()
         {
             MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
-            EditorEvents.OnMapEdited -= OnMapEdited;
+            EditorEvents.OnMapEditedStatusChanged -= MapEditedStatusChanged;
         }
 
         public void OrderMapConstruction(MapDescription map,
@@ -235,9 +235,9 @@ namespace Scripts.MapEditor
             EditorCameraService.Instance.ResetCamera();
         }
         
-        private void OnMapEdited()
+        private void MapEditedStatusChanged(bool isEdited)
         {
-            MapIsChanged = true;
+            MapIsChanged = isEdited;
             MapIsSaved = false;
         }
 

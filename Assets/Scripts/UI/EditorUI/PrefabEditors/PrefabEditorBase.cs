@@ -247,12 +247,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected void SetEdited(bool isEdited = true)
         {
             IsCurrentConfigurationChanged = isEdited;
-            Manager.isAnyObjectEdited = isEdited;
+            Manager.SetAnyObjectEdited(isEdited);
             SetButtons();
 
             if (isEdited)
             {
-                EditorEvents.TriggerOnMapEdited();
+                EditorEvents.TriggerOnMapEditedStatusChanged(true);
             }
         }
 
@@ -341,12 +341,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Placeholder.SetActive(false);
 
             _prefabTitle.SetActive(false);
+            _prefabList.SetActive(false);
+            _existingList.SetActive(false);
+            _mainWindow.SetActive(false);
+            
             PhysicalPrefabBody = null;
             PhysicalPrefab = null;
 
             SelectedCage.Hide();
 
-            Manager.isAnyObjectEdited = false;
+            Manager.SetAnyObjectEdited(false);
             Manager.WallGizmo.Reset();
             EditorMouseService.Instance.RefreshMousePosition();
 
@@ -356,8 +360,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void SetButtons()
         {
-            // bool prefabFinderButtonVisibility;
-            // if (IsCurrentConfigurationChanged) prefabFinderButtonVisibility = false;
             _cancelButton.gameObject.SetActive(IsCurrentConfigurationChanged);
             _deleteButton.gameObject.SetActive(_isEditingExistingPrefab && EditedConfiguration is {SpawnPrefabOnBuild: true});
             _saveButton.gameObject.SetActive(IsCurrentConfigurationChanged);

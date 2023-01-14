@@ -40,7 +40,7 @@ namespace Scripts.UI.EditorUI
         public Cursor3D Cursor3D => _cursor3D;
         public CageController SelectedCage => _selectedCage;
         public SelectConfigurationWindow SelectConfigurationWindow => _selectConfiguration;
-        public bool isAnyObjectEdited;
+        public bool isAnyObjectEdited { get; private set; }
 
         private ImageButton _playButton;
         private Title _mapTitle;
@@ -175,6 +175,12 @@ namespace Scripts.UI.EditorUI
                     Logger.LogWarning($"Not implemented editor for type {configuration.PrefabType}.");
                     break;
             }
+        }
+
+        public void SetAnyObjectEdited(bool isEditing)
+        {
+            isAnyObjectEdited = isEditing;
+            EditorEvents.TriggerOnMapEditedStatusChanged(isEditing);
         }
 
         private void CloseEditorWindow()

@@ -28,7 +28,7 @@ namespace Scripts.Building.Walls
             set => guid = value;
         }
 
-        public virtual void Initialize()
+        public virtual void InitializeFromPool()
         {
             transform.position = Vector3.zero;
             guid = Guid.NewGuid().ToString();

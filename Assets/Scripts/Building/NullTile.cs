@@ -14,7 +14,7 @@ public class NullTile : MonoBehaviour, IPoolInitializable
 
     private int _myFloor;
 
-    public void Initialize()
+    public void InitializeFromPool()
     {
         ShowTile();
     }

@@ -179,7 +179,7 @@ namespace Scripts.UI.Components
             backgroundImage.color = IdleColor;
         }
 #endif
-        public void Initialize()
+        public void InitializeFromPool()
         {
             OnClick.RemoveAllListeners();
         }

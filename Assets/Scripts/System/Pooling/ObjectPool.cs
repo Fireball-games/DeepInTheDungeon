@@ -130,7 +130,7 @@ namespace Scripts.System.Pooling
             }
 
             IPoolInitializable initializable = target.GetComponent<IPoolInitializable>();
-            initializable?.Initialize();
+            initializable?.InitializeFromPool();
 
             return target;
         }

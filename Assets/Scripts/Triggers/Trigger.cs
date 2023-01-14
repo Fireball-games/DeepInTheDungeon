@@ -66,9 +66,9 @@ namespace Scripts.Triggers
             return sameTileValidation && (position - Player.transform.position).sqrMagnitude <= MaxDistanceFromPlayer;
         }
 
-        public override void Initialize()
+        public override void InitializeFromPool()
         {
-            base.Initialize();
+            base.InitializeFromPool();
             
             subscribers.Clear();
         }

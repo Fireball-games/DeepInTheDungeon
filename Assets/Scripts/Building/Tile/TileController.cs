@@ -46,7 +46,7 @@ namespace Scripts.Building.Tile
 
         public void SetMesh(ETileDirection direction, Mesh mesh) => _wallMap[direction].meshFilter.mesh = mesh;
         
-        public void Initialize()
+        public void InitializeFromPool()
         {
             transform.localScale = Vector3.one;
             // TODO: probably OK to remove once map layers are implemented

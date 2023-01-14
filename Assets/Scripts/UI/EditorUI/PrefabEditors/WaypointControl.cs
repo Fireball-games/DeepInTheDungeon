@@ -102,7 +102,7 @@ namespace Scripts.UI.Components
             OnDeleteButtonClicked.Invoke(this);
         }
 
-        public void Initialize()
+        public void InitializeFromPool()
         {
             OnPositionChanged.RemoveAllListeners();
             OnSpeedChanged.RemoveAllListeners();

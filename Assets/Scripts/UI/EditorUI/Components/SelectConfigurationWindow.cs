@@ -9,10 +9,8 @@ namespace Scripts.UI.EditorUI.Components
     {
         private Button _cancelButton;
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-
             SelectClickedItem = false;
 
             _cancelButton = transform.Find("Body/Background/Frame/CancelButtonWrapper/CancelButton").GetComponent<Button>();

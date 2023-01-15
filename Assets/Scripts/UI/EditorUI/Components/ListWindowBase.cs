@@ -19,11 +19,6 @@ namespace Scripts.UI.EditorUI.Components
         private UnityEvent<T> OnItemClicked { get; } = new();
         private UnityEvent OnCancelClicked { get; } = new();
 
-        protected virtual void Awake()
-        {
-            Buttons = new HashSet<TButton>();
-        }
-
         public void Open(string listTitle, IEnumerable<T> items, UnityAction<T> onItemClicked, UnityAction onClose = null)
         {
             SetActive(true);

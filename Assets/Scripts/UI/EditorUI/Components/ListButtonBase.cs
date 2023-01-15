@@ -29,7 +29,7 @@ namespace Scripts.UI.EditorUI.Components
             Initialize();
         }
 
-        public virtual void Set(T item, UnityAction<T> onClick)
+        public virtual void Set(T item, UnityAction<T> onClick, bool setSelectedOnClick = true)
         {
             if(!Text) Initialize();
             
@@ -37,6 +37,8 @@ namespace Scripts.UI.EditorUI.Components
             
             displayedItem = item;
             OnClick.RemoveAllListeners();
+
+            MarkSelectedOnClick = setSelectedOnClick;
             
             if (onClick != null)
             {

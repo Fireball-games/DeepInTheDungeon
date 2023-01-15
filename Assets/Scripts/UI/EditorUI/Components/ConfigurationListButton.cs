@@ -23,9 +23,9 @@ namespace Scripts.UI.EditorUI.Components
 
         private bool _canMoveToPrefab = true;
 
-        public override void Set(PrefabConfiguration item, UnityAction<PrefabConfiguration> onClick)
+        public override void Set(PrefabConfiguration item, UnityAction<PrefabConfiguration> onClick, bool setSelectedOnClick = true)
         {
-            base.Set(item, onClick);
+            base.Set(item, onClick, setSelectedOnClick);
 
             GameObject instancedPrefab = GameManager.Instance.MapBuilder
                 .GetPrefabByGuid(item.SpawnPrefabOnBuild ? item.Guid : item.OwnerGuid);

@@ -9,9 +9,9 @@ namespace Scripts.UI.EditorUI.Components
 {
     public class PrefabListButton : ListButtonBase<PrefabBase> 
     {
-        public override void Set(PrefabBase item, UnityAction<PrefabBase> onClick)
+        public override void Set(PrefabBase item, UnityAction<PrefabBase> onClick, bool setSelectedOnClick = true)
         {
-            base.Set(item, onClick);
+            base.Set(item, onClick, setSelectedOnClick);
 
             if (item.gameObject.GetBody()) AddIcon(EIcon.Wall);
             

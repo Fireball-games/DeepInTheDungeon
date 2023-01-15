@@ -119,8 +119,12 @@ namespace Scripts.UI.EditorUI
             ImageButton button = sender as ImageButton;
 
             if (!button) return;
+
+            int modeIndex = button == _triggerModeButton
+                ? _triggerModeOptions.LastSelectedMode == EWorkMode.Triggers ? 0 : 1
+                : 0;
             
-            Manager.SetWorkMode(_workModesMap[button][0]);
+            Manager.SetWorkMode(_workModesMap[button][modeIndex]);
         }
 
         private void TriggerWorkModeClicked(MonoBehaviour sender)

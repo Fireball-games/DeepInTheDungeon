@@ -738,6 +738,7 @@ MonoBehaviour:
   listContent: {fileID: 1471657217}
   itemPrefab: {fileID: 3413255929693086650, guid: 1d186b17b9bd3be4a822ca37252f4aa4,
     type: 3}
+  SelectClickedItem: 0
 --- !u!114 &486242465 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4950962234902749567, guid: 89771e02a86bc604fb4f037b34d5095d,
@@ -885,6 +886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b8caaf21c5641f4ac1e0d1778aa7370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MarkSelectedOnClick: 0
   iconPrefab: {fileID: 173023260266476895, guid: 9598bda8da5a37441876db0816970c59,
     type: 3}
 --- !u!1 &1079715955

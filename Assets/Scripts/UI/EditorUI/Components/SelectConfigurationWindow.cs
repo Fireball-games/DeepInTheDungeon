@@ -11,7 +11,7 @@ namespace Scripts.UI.EditorUI.Components
 
         protected void Awake()
         {
-            SelectClickedItem = false;
+            SetClickedItemSelected = false;
 
             _cancelButton = transform.Find("Body/Background/Frame/CancelButtonWrapper/CancelButton").GetComponent<Button>();
             _cancelButton.onClick.AddListener(OnCancelClicked_internal);

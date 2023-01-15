@@ -19,9 +19,9 @@ namespace Scripts.UI.EditorUI.Components
             _deleteButton.onClick.AddListener(OnDeleteClicked_Internal);
         }
 
-        public void Set(PrefabConfiguration item, UnityAction<PrefabConfiguration> onClick, UnityAction<PrefabConfiguration> onDeleteItemClick)
+        public void Set(PrefabConfiguration item, UnityAction<PrefabConfiguration> onClick, UnityAction<PrefabConfiguration> onDeleteItemClick, bool setSelectedOnClick)
         {
-            base.Set(item, onClick);
+            base.Set(item, onClick, setSelectedOnClick);
             
             OnDeleteClicked.RemoveAllListeners();
             OnDeleteClicked.AddListener(onDeleteItemClick);

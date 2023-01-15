@@ -49,7 +49,7 @@ namespace Scripts.UI.EditorUI.Components
                 DeletableConfigurationListButton newButton = ObjectPool.Instance.GetFromPool(itemPrefab.gameObject, _content.gameObject)
                     .GetComponent<DeletableConfigurationListButton>();
 
-                newButton.Set(item, null, OnDeleteButtonClicked);
+                newButton.Set(item, null, OnDeleteButtonClicked, false);
             });
 
             Button addButton = ObjectPool.Instance.GetFromPool(buttonPrefab.gameObject, _content.gameObject)

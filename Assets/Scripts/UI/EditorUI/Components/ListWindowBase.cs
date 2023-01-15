@@ -13,7 +13,7 @@ namespace Scripts.UI.EditorUI.Components
         [SerializeField] private Title title;
         [SerializeField] private GameObject listContent;
         [SerializeField] private GameObject itemPrefab;
-        public bool SelectClickedItem = true;
+        public bool SetClickedItemSelected = true;
 
         private HashSet<TButton> Buttons;
         private UnityEvent<T> OnItemClicked { get; } = new();
@@ -45,7 +45,7 @@ namespace Scripts.UI.EditorUI.Components
                     .GetFromPool(itemPrefab, listContent)
                     .GetComponent<TButton>();
                 
-                newButton.Set(prefab, OnItemClicked_internal);
+                newButton.Set(prefab, OnItemClicked_internal, SetClickedItemSelected);
 
                 Buttons.Add(newButton);
             }
@@ -59,7 +59,7 @@ namespace Scripts.UI.EditorUI.Components
 
         protected virtual void OnItemClicked_internal(T item)
         {
-            if (SelectClickedItem)
+            if (SetClickedItemSelected)
             {
                 string prefabName = GetItemIdentification(item);
             

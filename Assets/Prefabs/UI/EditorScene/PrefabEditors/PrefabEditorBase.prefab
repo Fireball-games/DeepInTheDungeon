@@ -1164,22 +1164,22 @@ PrefabInstance:
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.a
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.6627451
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.6627451
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.6784314
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47fbd13509d918648ad43221a89ac17d, type: 3}
@@ -2071,6 +2071,11 @@ PrefabInstance:
         type: 3}
       propertyPath: SelectClickedItem
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7182467505375380834, guid: 2c5214de14325ab41980611b211c2b6b,
+        type: 3}
+      propertyPath: SetClickedItemSelected
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7472446221877998128, guid: 2c5214de14325ab41980611b211c2b6b,
         type: 3}

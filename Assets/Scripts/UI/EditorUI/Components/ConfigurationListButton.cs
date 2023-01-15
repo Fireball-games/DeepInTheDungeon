@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
@@ -32,17 +33,20 @@ namespace Scripts.UI.EditorUI.Components
             if (item.PrefabType is Enums.EPrefabType.Trigger) AddIcon(EIcon.Trigger);
             if (item.PrefabType is Enums.EPrefabType.TriggerReceiver) AddIcon(EIcon.TriggerReceiver);
             if (!item.SpawnPrefabOnBuild) AddIcon(EIcon.Embedded);
-            
+
             if (instancedPrefab && instancedPrefab.GetBody()) AddIcon(EIcon.Wall);
             if (item is WallConfiguration configuration && configuration.HasPath()) AddIcon(EIcon.Move);
-            
+
             Text.text = displayedItem.DisplayName;
         }
 
         protected override void OnClick_internal()
         {
+            base.OnClick_internal();
+
+            _originalCameraTransformData = new PositionRotation(EditorCameraService.Instance.MoveCameraToPrefab(displayedItem.TransformData.Position), Quaternion.Euler(Vector3.zero));
+            _originalFloor = Mathf.FloorToInt(-displayedItem.TransformData.Position.y);
             Cursor3D.Hide();
-            OnClick.Invoke(displayedItem);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -50,7 +54,7 @@ namespace Scripts.UI.EditorUI.Components
             Cursor3D.ShowAt(displayedItem.TransformData.Position,
                 UIManager.OpenedEditor.GetCursor3DScale(),
                 displayedItem.TransformData.Rotation);
-            
+
             _canMoveToPrefab = true;
             StartCoroutine(MouseOverCoroutine());
         }
@@ -59,8 +63,9 @@ namespace Scripts.UI.EditorUI.Components
         {
             Cursor3D.Hide();
             _canMoveToPrefab = false;
-            StopCoroutine(MouseOverCoroutine());
             
+            StopCoroutine(MouseOverCoroutine());
+
             if (_originalCameraTransformData != null)
             {
                 MapEditorManager.Instance.SetFloor(_originalFloor);

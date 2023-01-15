@@ -12,17 +12,17 @@ namespace Scripts.Triggers
         public EActiveProperty activeProperty;
         public List<DoTweenMoveStep> steps;
 
-        private List<Tween> _movementStore;
+        private List<Tween> _positionStore;
 
         protected override void Awake()
         {
             base.Awake();
-            _movementStore = new List<Tween>();
+            _positionStore = new List<Tween>();
         }
         
         private void OnEnable()
         {
-            _movementStore?.Clear();
+            _positionStore?.Clear();
 
             for (int index = 0; index < steps.Count; index++)
             {
@@ -37,7 +37,7 @@ namespace Scripts.Triggers
                     newTween.OnPlay(SetBusy);
                 }
 
-                _movementStore?.Add(newTween);
+                _positionStore?.Add(newTween);
             }
         }
         
@@ -45,14 +45,14 @@ namespace Scripts.Triggers
         {
             if (activeProperty is EActiveProperty.Position)
             {
-                ActivePart.localPosition = steps[startMovement].target;
+                ActivePart.localPosition = steps[startPosition].target;
             }
             else
             {
-                ActivePart.localRotation = Quaternion.Euler(steps[startMovement].target);
+                ActivePart.localRotation = Quaternion.Euler(steps[startPosition].target);
             }
 
-            CurrentMovement = startMovement == steps.Count - 1 ? 0 : startMovement + 1;
+            CurrentPosition = startPosition == steps.Count - 1 ? 0 : startPosition + 1;
         }
 
         protected override void OnTriggerActivated()
@@ -60,20 +60,20 @@ namespace Scripts.Triggers
             switch (moveType)
             {
                 case ETriggerMoveType.ThereAndBack:
-                    CurrentMovement = 0;
-                    _movementStore[0].OnComplete(() => RunBackTween(true))
+                    CurrentPosition = 0;
+                    _positionStore[0].OnComplete(() => RunBackTween(true))
                         .Restart();
                     break;
                 case ETriggerMoveType.Switch:
-                    if (CurrentMovement == 0)
+                    if (CurrentPosition == 0)
                     {
-                        _movementStore[0].OnComplete(() => SetResting(true)).Restart();
-                        CurrentMovement = 1;
+                        _positionStore[0].OnComplete(() => SetResting(true)).Restart();
+                        CurrentPosition = 1;
                     }
                     else
                     {
-                        _movementStore[1].OnComplete(() => SetResting(true)).Restart();
-                        CurrentMovement = 0;
+                        _positionStore[1].OnComplete(() => SetResting(true)).Restart();
+                        CurrentPosition = 0;
                     }
 
                     break;
@@ -96,7 +96,7 @@ namespace Scripts.Triggers
 
             if (count <= 0) return;
 
-            _movementStore[^1].Restart();
+            _positionStore[^1].Restart();
         }
         
         private Tween BuildTween(DoTweenMoveStep step)

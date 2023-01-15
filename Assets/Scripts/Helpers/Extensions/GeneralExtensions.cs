@@ -47,7 +47,7 @@ namespace Scripts.Helpers.Extensions
         public static void ForEach<T>(this IEnumerable<T> set, Action<T> action)
         {
             if (action == null) return;
-            
+
             foreach (T element in set)
             {
                 action.Invoke(element);
@@ -149,16 +149,18 @@ namespace Scripts.Helpers.Extensions
 
             return null;
         }
-        
+
         public static T GetEnumValue<T>(this int value) where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum)
             {
                 throw new ArgumentException("T must be an enumerated type");
             }
-            return (T)Enum.ToObject(typeof(T), value);
+
+            return (T) Enum.ToObject(typeof(T), value);
         }
 
         public static void SetTextColor(this Button button, Color color) => button.GetComponentInChildren<TMP_Text>().color = color;
+        public static void SetText(this Button button, string text) => button.GetComponentInChildren<TMP_Text>().text = text;
     }
 }

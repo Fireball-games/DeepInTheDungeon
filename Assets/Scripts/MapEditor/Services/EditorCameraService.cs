@@ -95,15 +95,16 @@ namespace Scripts.MapEditor.Services
             }
         }
 
-        public void MoveCameraToPrefab(Vector3 worldPosition, bool smooth = true)
+        public Vector3 MoveCameraToPrefab(Vector3 worldPosition, bool smooth = true)
         {
             MapEditorManager.Instance.SetFloor((int) -worldPosition.y);
-
-            MoveCameraTo(
-                worldPosition.x,
+            Vector3 moveVector = new(worldPosition.x,
                 worldPosition.y + prefabMoveCameraDistance,
-                worldPosition.z - prefabMoveCameraXOffset,
-                smooth, true);
+                worldPosition.z - prefabMoveCameraXOffset);
+
+            MoveCameraTo(moveVector, smooth, true);
+
+            return moveVector;
         }
 
         public void MoveCameraTo(PositionRotation positionRotation)

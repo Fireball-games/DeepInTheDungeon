@@ -1164,22 +1164,22 @@ PrefabInstance:
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.a
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.b
-      value: 0
+      value: 0.6627451
       objectReference: {fileID: 0}
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.g
-      value: 0
+      value: 0.6627451
       objectReference: {fileID: 0}
     - target: {fileID: 7614926879159360215, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 0.6784314
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47fbd13509d918648ad43221a89ac17d, type: 3}
@@ -1224,6 +1224,11 @@ PrefabInstance:
     - target: {fileID: 1518080088416345238, guid: 1e500dd92d4aa5c43a2c797f9942064c,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2610927751768939789, guid: 1e500dd92d4aa5c43a2c797f9942064c,
+        type: 3}
+      propertyPath: SelectClickedItem
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4513338719699480634, guid: 1e500dd92d4aa5c43a2c797f9942064c,
@@ -1565,6 +1570,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8614682786838528594, guid: 1e500dd92d4aa5c43a2c797f9942064c,
+        type: 3}
+      propertyPath: m_Size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8701393015777787297, guid: 1e500dd92d4aa5c43a2c797f9942064c,
         type: 3}
@@ -1945,7 +1955,7 @@ PrefabInstance:
     - target: {fileID: 4900096076272054080, guid: 2c5214de14325ab41980611b211c2b6b,
         type: 3}
       propertyPath: m_fontSize
-      value: 33.5
+      value: 32.75
       objectReference: {fileID: 0}
     - target: {fileID: 4972473963253162959, guid: 2c5214de14325ab41980611b211c2b6b,
         type: 3}
@@ -2056,6 +2066,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7182467505375380834, guid: 2c5214de14325ab41980611b211c2b6b,
+        type: 3}
+      propertyPath: SelectClickedItem
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7472446221877998128, guid: 2c5214de14325ab41980611b211c2b6b,
         type: 3}

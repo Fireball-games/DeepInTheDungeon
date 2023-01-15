@@ -46,7 +46,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Subscribers = new List<string>(),
             TriggerType = Enums.ETriggerType.Repeat,
             Count = int.MaxValue,
-            StartMovement = 1,
+            StartPosition = 1,
         };
 
         protected override TriggerConfiguration CloneConfiguration(TriggerConfiguration sourceConfiguration) => new(sourceConfiguration);

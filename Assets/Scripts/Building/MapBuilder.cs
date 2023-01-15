@@ -10,6 +10,7 @@ using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.Pooling;
 using UnityEngine;
+using static Scripts.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
 
 namespace Scripts.Building
@@ -293,5 +294,8 @@ namespace Scripts.Building
 
         public IEnumerable<TC> GetConfigurationsByPrefabClass<TC, TP>() where TP : PrefabBase where TC : PrefabConfiguration 
             => _prefabBuilder.GetConfigurationsByPrefabClass<TC, TP>();
+
+        public IEnumerable<TC> GetConfigurations<TC>(EPrefabType prefabType) where TC : PrefabConfiguration 
+            => _prefabBuilder.GetConfigurations<TC>(prefabType);
     }
 }

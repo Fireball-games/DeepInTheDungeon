@@ -11,6 +11,7 @@ namespace Scripts.UI.EditorUI.Components
 {
     public abstract class ListButtonBase<T> : MonoBehaviour
     {
+        public bool MarkSelectedOnClick = true;
         [SerializeField] private Image iconPrefab;
         public T displayedItem;
 
@@ -58,7 +59,11 @@ namespace Scripts.UI.EditorUI.Components
 
         protected virtual void OnClick_internal()
         {
-            Text.color = SelectedColor;
+            if (MarkSelectedOnClick)
+            {
+                Text.color = SelectedColor;
+            }
+            
             OnClick.Invoke(displayedItem);
         }
 

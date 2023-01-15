@@ -13,6 +13,8 @@ namespace Scripts.UI.EditorUI.Components
         {
             base.Awake();
 
+            SelectClickedItem = false;
+
             _cancelButton = transform.Find("Body/Background/Frame/CancelButtonWrapper/CancelButton").GetComponent<Button>();
             _cancelButton.onClick.AddListener(OnCancelClicked_internal);
             _cancelButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Cancel);
@@ -21,13 +23,6 @@ namespace Scripts.UI.EditorUI.Components
         protected override void OnItemClicked_internal(PrefabConfiguration item)
         {
             base.OnItemClicked_internal(item);
-            
-            SetActive(false);
-        }
-
-        protected override void OnCancelClicked_internal()
-        {
-            base.OnCancelClicked_internal();
             
             SetActive(false);
         }

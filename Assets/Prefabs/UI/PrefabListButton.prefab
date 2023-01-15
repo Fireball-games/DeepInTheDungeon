@@ -200,10 +200,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477080c657dc45c6a05d0ed8a341af43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedColor: {r: 0, g: 1, b: 0.17391229, a: 1}
+  MarkSelectedOnClick: 1
   iconPrefab: {fileID: 173023260266476895, guid: 9598bda8da5a37441876db0816970c59,
     type: 3}
-  displayedPrefab: {fileID: 0}
+  displayedItem: {fileID: 0}
 --- !u!114 &1764615258768991049
 MonoBehaviour:
   m_ObjectHideFlags: 0

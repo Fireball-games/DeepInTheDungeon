@@ -194,13 +194,7 @@ namespace Scripts.Building
         {
             return MapDescription.PrefabConfigurations.FirstOrDefault(c => c.TransformData.Equals(transformData));
         }
-        
-        public static IEnumerable<T> GetAllConfigurationsByType<T>(Enums.EPrefabType prefabType) where T : PrefabConfiguration
-        {
-            return MapDescription.PrefabConfigurations.Where(c => c.PrefabType == prefabType)
-                .Select(c => c as T);
-        }
-        
+
         public IEnumerable<TC> GetConfigurationsByPrefabClass<TC, TP>() where TP : PrefabBase where TC : PrefabConfiguration
         {
             List<TC> result = new();
@@ -266,22 +260,23 @@ namespace Scripts.Building
                     prefabScript.triggerType = triggerConfiguration.TriggerType;
                     prefabScript.count = triggerConfiguration.Count;
                     prefabScript.subscribers = triggerConfiguration.Subscribers;
-                    prefabScript.startMovement = triggerConfiguration.StartMovement;
+                    prefabScript.startPosition = triggerConfiguration.StartPosition;
                     prefabScript.SetMovementStep();
                 }
                 
                 newPrefab.transform.localRotation = configuration.TransformData.Rotation;
             }
             
-            if (configuration is TriggerReceiverConfiguration receiverConfiguration)
-            {
-                TriggerReceiver prefabScript = newPrefab.GetComponent<TriggerReceiver>();
-                
-                if (prefabScript)
-                {
-                    prefabScript.SetPosition();
-                }
-            }
+            // if (configuration is TriggerReceiverConfiguration receiverConfiguration)
+            // {
+            //     TriggerReceiver prefabScript = newPrefab.GetComponent<TriggerReceiver>();
+            //     
+            //     if (prefabScript)
+            //     {
+            //         prefabScript.startPosition = receiverConfiguration.StartPosition;
+            //         prefabScript.SetPosition();
+            //     }
+            // }
         }
 
         private void ProcessWallConfiguration(PrefabConfiguration configuration, PrefabBase prefabScript, GameObject newPrefab)
@@ -373,9 +368,9 @@ namespace Scripts.Building
                         continue;
                     }
                     
-                    receiver.startPosition = configuration.StartPosition;
                 }
                 
+                receiver.startPosition = configuration.StartPosition;
                 receiver.Guid = configuration.Guid;
                 receiver.SetPosition();
             }
@@ -427,7 +422,7 @@ namespace Scripts.Building
 
             foreach (TriggerReceiver receiver in triggerReceivers)
             {
-                foreach (TriggerConfiguration triggerConfiguration in GetAllConfigurationsByType<TriggerConfiguration>(Enums.EPrefabType.Trigger))
+                foreach (TriggerConfiguration triggerConfiguration in GetConfigurations<TriggerConfiguration>(Enums.EPrefabType.Trigger))
                 {
                     if (triggerConfiguration.Subscribers.Contains(receiver.Guid))
                     {
@@ -453,5 +448,9 @@ namespace Scripts.Building
 
             return configuration != null;
         }
+
+        public IEnumerable<TC> GetConfigurations<TC>(Enums.EPrefabType ePrefabType) where TC : PrefabConfiguration =>
+            MapDescription.PrefabConfigurations.Where(c => c.PrefabType == ePrefabType)
+                .Select(c => c as TC);
     }
 }

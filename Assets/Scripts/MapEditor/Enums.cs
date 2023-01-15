@@ -13,6 +13,7 @@
             Items = 6,
             Enemies = 7,
             Triggers = 8,
+            TriggerReceivers = 9,
         }
 
         public enum ELevel
@@ -20,13 +21,6 @@
             Equal = 0,
             Upper = 1,
             Lower = 2
-        }
-
-        public enum ETriggerEditMode
-        {
-            None = 0,
-            EditTrigger = 1,
-            EditReceiver = 2,
         }
 
         public enum EGridPositionType

@@ -41,7 +41,6 @@ namespace Scripts.MapEditor
         public MapBuilder MapBuilder { get; private set; }
         public int CurrentFloor { get; private set; }
         public Dictionary<int, bool> FloorVisibilityMap { get; private set; }
-        public ETriggerEditMode TriggerEditMode { get; private set; } = ETriggerEditMode.EditTrigger;
 
         private bool _dontChangeCameraAfterLayoutIsBuild;
 
@@ -113,13 +112,6 @@ namespace Scripts.MapEditor
         {
             WorkLevel = newLevel;
             EditorEvents.TriggerOnWorkingLevelChanged(WorkLevel);
-        }
-        
-        public void SetTriggerEditMode(ETriggerEditMode newTriggerEditMode)
-        {
-            TriggerEditMode = newTriggerEditMode;
-            // Dont want trigger separate event for TriggerEditMode just yet, wall gizmo reacts on work mode change, might change.
-            EditorEvents.TriggerOnWorkModeChanged(EWorkMode.Triggers);
         }
 
         public void GoToMainMenu()

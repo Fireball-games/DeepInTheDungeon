@@ -26,6 +26,7 @@ namespace Scripts.UI.EditorUI
         private WallEditor _wallEditor;
         private PrefabTileEditor _prefabTileEditor;
         private TriggerEditor _triggerEditor;
+        private TriggerReceiverEditor _triggerReceiverEditor;
         private StatusBar _statusBar;
         private CageController _selectedCage;
         private SelectConfigurationWindow _selectConfiguration;
@@ -64,6 +65,7 @@ namespace Scripts.UI.EditorUI
             _wallEditor = _body.Find("WallEditor").GetComponent<WallEditor>();
             _prefabTileEditor = _body.Find("PrefabTileEditor").GetComponent<PrefabTileEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
+            _triggerReceiverEditor = _body.Find("TriggerReceiverEditor").GetComponent<TriggerReceiverEditor>();
             _statusBar = transform.Find("StatusBar").GetComponent<StatusBar>();
             _selectedCage = _body.Find("SelectedCage").GetComponent<CageController>();
             _selectConfiguration = _body.Find("SelectConfigurationWindow").GetComponent<SelectConfigurationWindow>();
@@ -75,7 +77,8 @@ namespace Scripts.UI.EditorUI
             {
                 {EWorkMode.Walls, _wallEditor},
                 {EWorkMode.PrefabTiles, _prefabTileEditor},
-                {EWorkMode.Triggers, _triggerEditor}
+                {EWorkMode.Triggers, _triggerEditor},
+                {EWorkMode.TriggerReceivers, _triggerReceiverEditor}
             };
         }
 

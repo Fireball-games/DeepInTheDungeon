@@ -6,11 +6,10 @@ using static Scripts.Enums;
 
 namespace Scripts.Triggers
 {
-    public class DoTweenTriggerReceiver : TriggerReceiver
+    public class DoTweenTriggerReceiver : TriggerReceiverWithPositions
     {
         public ETriggerMoveType moveType;
         public EActiveProperty activeProperty;
-        public List<DoTweenMoveStep> steps;
 
         private List<Tween> _movementStore;
 
@@ -42,18 +41,18 @@ namespace Scripts.Triggers
             }
         }
         
-        public override void SetMovementStep()
+        public override void SetPosition()
         {
             if (activeProperty is EActiveProperty.Position)
             {
-                activePart.localPosition = steps[startMovement].target;
+                activePart.localPosition = steps[startPosition].target;
             }
             else
             {
-                activePart.localRotation = Quaternion.Euler(steps[startMovement].target);
+                activePart.localRotation = Quaternion.Euler(steps[startPosition].target);
             }
 
-            CurrentMovement = startMovement == steps.Count - 1 ? 0 : startMovement + 1;
+            CurrentMovement = startPosition == steps.Count - 1 ? 0 : startPosition + 1;
         }
 
         protected override void TriggerNext()

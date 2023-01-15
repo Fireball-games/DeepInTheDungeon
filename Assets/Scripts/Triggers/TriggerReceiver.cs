@@ -9,7 +9,7 @@ namespace Scripts.Triggers
     {
         [SerializeField] protected Transform activePart;
         public string Guid;  
-        public int startMovement;
+        public int startPosition;
         public string identification;
         
         protected int CurrentMovement;
@@ -44,6 +44,6 @@ namespace Scripts.Triggers
         protected void SetResting() => AtRest = true;
 
         protected void SetBusy() => AtRest = false;
-        public abstract void SetMovementStep();
+        public abstract void SetPosition();
     }
 }

@@ -13,12 +13,14 @@ namespace Scripts.UI.EditorUI
         private ImageButton _editTriggerButton;
         private ImageButton _editTriggerReceiverButton;
 
-        private Dictionary<ETriggerEditMode, ImageButton> _buttonsMap;
+        private Dictionary<EWorkMode, ImageButton> _buttonsMap;
+        public EWorkMode LastSelectedMode { get; set; }
 
         private void Awake()
         {
             _editTriggerButton = body.transform.Find("EditTriggerButton").GetComponent<ImageButton>();
             _editTriggerReceiverButton = body.transform.Find("EditTriggerReceiverButton").GetComponent<ImageButton>();
+            LastSelectedMode = EWorkMode.Triggers;
         }
 
         private void OnEnable()
@@ -26,7 +28,7 @@ namespace Scripts.UI.EditorUI
             _editTriggerButton.OnClickWithSender += OnClick;
             _editTriggerReceiverButton.OnClickWithSender += OnClick;
             
-            EditorEvents.OnTriggerWorkModeChanged += SetSelected;
+            EditorEvents.OnWorkModeChanged += SetSelected;
         }
 
         private void OnDisable()
@@ -34,26 +36,34 @@ namespace Scripts.UI.EditorUI
             _editTriggerButton.OnClickWithSender -= OnClick;
             _editTriggerReceiverButton.OnClickWithSender -= OnClick;
             
-            EditorEvents.OnTriggerWorkModeChanged -= SetSelected;
+            EditorEvents.OnWorkModeChanged -= SetSelected;
         }
 
-        private void OnClick(ImageButton sender) => MapEditorManager.Instance.SetTriggerEditMode(_buttonsMap.GetFirstKeyByValue(sender));
+        private void OnClick(ImageButton sender)
+        {
+            EWorkMode workMode = _buttonsMap.GetFirstKeyByValue(sender);
+            LastSelectedMode = workMode;
+            MapEditorManager.Instance.SetWorkMode(workMode);
+        }
 
-        public void SetSelected(ETriggerEditMode triggerEditMode)
+        public void SetSelected(EWorkMode workMode)
         {
             _buttonsMap ??= BuildButtonsMap();
-            
-            foreach (ETriggerEditMode mode in _buttonsMap.Keys)
+
+            if (_buttonsMap.ContainsKey(workMode))
             {
-                _buttonsMap[mode].SetSelected(mode == triggerEditMode);
+                foreach (EWorkMode mode in _buttonsMap.Keys)
+                {
+                    _buttonsMap[mode].SetSelected(mode == workMode);
+                }
             }
         }
 
-        private Dictionary<ETriggerEditMode, ImageButton> BuildButtonsMap() =>
-            _buttonsMap = new Dictionary<ETriggerEditMode, ImageButton>
+        private Dictionary<EWorkMode, ImageButton> BuildButtonsMap() =>
+            _buttonsMap = new Dictionary<EWorkMode, ImageButton>
             {
-                {ETriggerEditMode.EditTrigger, _editTriggerButton},
-                {ETriggerEditMode.EditReceiver, _editTriggerReceiverButton},
+                {EWorkMode.Triggers, _editTriggerButton},
+                {EWorkMode.TriggerReceivers, _editTriggerReceiverButton},
             };
     }
 }

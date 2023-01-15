@@ -279,7 +279,7 @@ namespace Scripts.Building
                 
                 if (prefabScript)
                 {
-                    prefabScript.SetMovementStep();
+                    prefabScript.SetPosition();
                 }
             }
         }
@@ -373,11 +373,11 @@ namespace Scripts.Building
                         continue;
                     }
                     
-                    receiver.startMovement = configuration.StartMovement;
+                    receiver.startPosition = configuration.StartPosition;
                 }
                 
                 receiver.Guid = configuration.Guid;
-                receiver.SetMovementStep();
+                receiver.SetPosition();
             }
         }
 

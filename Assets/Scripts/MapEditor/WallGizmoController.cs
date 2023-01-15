@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
@@ -23,7 +22,6 @@ namespace Scripts.MapEditor
         [SerializeField] private WallGizmo southGizmo;
         [SerializeField] private WallGizmo westGizmo;
         [SerializeField] private GameObject wall;
-        [NonSerialized] public bool IsActive;
 
         private static EditorMouseService Mouse => EditorMouseService.Instance;
         private static MapEditorManager Manager => MapEditorManager.Instance;
@@ -36,11 +34,11 @@ namespace Scripts.MapEditor
         private PositionRotation _wallData;
         private bool _isWallPlacementValid;
         private bool _isWallAlreadyExisting;
+        private bool _isActive;
 
-        public enum EEffectedWalls
+        private enum EEffectedWalls
         {
-            None = 0,
-            OnWall = 1,
+            Wall = 1,
             Between = 2,
             Both = 3,
         }
@@ -48,7 +46,7 @@ namespace Scripts.MapEditor
         private void Awake()
         {
             body.SetActive(false);
-            IsActive = false;
+            _isActive = false;
 
             _wallData = new PositionRotation();
 
@@ -93,7 +91,7 @@ namespace Scripts.MapEditor
 
         private void Update()
         {
-            if (!IsActive) return;
+            if (!_isActive) return;
 
             HandleMouseclick();
             HandleMouseOverGizmos();
@@ -152,7 +150,7 @@ namespace Scripts.MapEditor
             _isWallPlacementValid = false;
             _prefabType = EPrefabType.WallBetween;
 
-            if (_effectedWalls == EEffectedWalls.Both || _effectedWalls == EEffectedWalls.OnWall)
+            if (_effectedWalls == EEffectedWalls.Both || _effectedWalls == EEffectedWalls.Wall)
             {
                 if (direction == ETileDirection.North && 
                     Manager.EditedLayout.ByGridV3Int(_currentMousePosition + GeneralExtensions.GridNorth) == null
@@ -236,7 +234,7 @@ namespace Scripts.MapEditor
         private void OnWorkModeChanged(EWorkMode workMode)
         {
             _workMode = workMode;
-            IsActive = false;
+            _isActive = false;
 
             if (workMode != EWorkMode.Walls && workMode != EWorkMode.Triggers)
             {
@@ -247,12 +245,12 @@ namespace Scripts.MapEditor
                 if (workMode == EWorkMode.Walls)
                 {
                     _effectedWalls = EEffectedWalls.Both;
-                    IsActive = true;
+                    _isActive = true;
                 }
-                else if (Manager.TriggerEditMode == ETriggerEditMode.EditTrigger)
+                else
                 {
-                    _effectedWalls = EEffectedWalls.OnWall;
-                    IsActive = true;
+                    _effectedWalls = EEffectedWalls.Wall;
+                    _isActive = true;
                 }
             }
         }

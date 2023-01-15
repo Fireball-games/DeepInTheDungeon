@@ -36,6 +36,7 @@
         public const string NoFilesToShow = "NoFilesToShow";
         public const string NoMapToPlayLoaded = "NoMapToPlayLoaded";
         public const string NoPrefabsAvailable = "NoPrefabsAvailable";
+        public const string NothingToEditForConfiguration = "NothingToEditForConfiguration";
         public const string North = "North";
         public const string Offset = "Offset";
         public const string Point = "Point";
@@ -48,6 +49,7 @@
         public const string SaveFailed = "SaveFailed";
         public const string SaveMap = "SaveMap";
         public const string SaveEditedMapPrompt = "SaveEditedMapPrompt";
+        public const string SelectConfiguration = "SelectConfiguration";
         public const string SelectMapToLoad = "SelectMapToLoad";
         public const string SelectPrefab = "SelectPrefab";
         public const string SelectSubscriber = "SelectSubscriber";
@@ -55,6 +57,7 @@
         public const string SubscribedReceivers = "SubscribedReceivers";
         public const string SpeedTowardsPoint = "SpeedTowardsPoint";
         public const string StartPoint = "StartPoint";
+        public const string StartPosition = "StartPosition";
         public const string Step = "Step";
         public const string TriggerType = "TriggerType";
         public const string Up = "Up";

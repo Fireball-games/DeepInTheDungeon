@@ -1,4 +1,5 @@
-﻿using Scripts.Helpers.Extensions;
+﻿using System;
+using Scripts.Helpers.Extensions;
 using Scripts.System;
 using Scripts.Triggers;
 using static Scripts.Enums;
@@ -7,12 +8,12 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
 {
     public class TriggerReceiverConfiguration : PrefabConfiguration
     {
-        public int StartMovement;
+        public int StartPosition;
         public string Identification;
 
         public TriggerReceiverConfiguration(TriggerReceiver receiver, string ownerGuid = null, bool spawnPrefabOnBuild = true)
         {
-            StartMovement = receiver.startMovement;
+            StartPosition = receiver.startPosition;
             Identification = receiver.identification;
 
             PrefabName = string.IsNullOrEmpty(receiver.identification) ? global::System.Guid.NewGuid().ToString() : receiver.identification;

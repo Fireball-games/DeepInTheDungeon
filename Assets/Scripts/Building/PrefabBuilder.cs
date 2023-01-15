@@ -99,7 +99,7 @@ namespace Scripts.Building
             GameObject prefabGo = Prefabs.FirstOrDefault(go => go.GetComponent<PrefabBase>().GUID == configuration.Guid);
 
             if (!configuration.SpawnPrefabOnBuild) return;
-            
+
             if (!prefabGo)
             {
                 Logger.LogWarning($"No prefab of name \"{configuration.PrefabName}\" found for removal in Prefabs.");
@@ -198,7 +198,7 @@ namespace Scripts.Building
         public IEnumerable<TC> GetConfigurationsByPrefabClass<TC, TP>() where TP : PrefabBase where TC : PrefabConfiguration
         {
             List<TC> result = new();
-            
+
             foreach (PrefabBase script in Prefabs.Select(go => go.GetComponent<PrefabBase>()))
             {
                 if (script is TP @base) result.Add(GetConfigurationByGuid<TC>(@base.GUID));
@@ -206,7 +206,7 @@ namespace Scripts.Building
 
             return result;
         }
-        
+
         public TC GetConfigurationByGuid<TC>(string guid) where TC : PrefabConfiguration
         {
             return MapDescription.PrefabConfigurations.Where(c => c.Guid == guid).FirstOrDefault() as TC;
@@ -248,13 +248,13 @@ namespace Scripts.Building
                 newPrefab.GetBody().rotation = configuration.TransformData.Rotation;
             }
         }
-        
+
         private void ProcessTriggerConfiguration(PrefabConfiguration configuration, GameObject newPrefab)
         {
             if (configuration is TriggerConfiguration triggerConfiguration)
             {
                 Trigger prefabScript = newPrefab.GetComponent<Trigger>();
-                
+
                 if (prefabScript)
                 {
                     prefabScript.triggerType = triggerConfiguration.TriggerType;
@@ -263,20 +263,9 @@ namespace Scripts.Building
                     prefabScript.startPosition = triggerConfiguration.StartPosition;
                     prefabScript.SetMovementStep();
                 }
-                
+
                 newPrefab.transform.localRotation = configuration.TransformData.Rotation;
             }
-            
-            // if (configuration is TriggerReceiverConfiguration receiverConfiguration)
-            // {
-            //     TriggerReceiver prefabScript = newPrefab.GetComponent<TriggerReceiver>();
-            //     
-            //     if (prefabScript)
-            //     {
-            //         prefabScript.startPosition = receiverConfiguration.StartPosition;
-            //         prefabScript.SetPosition();
-            //     }
-            // }
         }
 
         private void ProcessWallConfiguration(PrefabConfiguration configuration, PrefabBase prefabScript, GameObject newPrefab)
@@ -328,7 +317,7 @@ namespace Scripts.Building
             foreach (Trigger trigger in newPrefab.GetComponentsInChildren<Trigger>().Where(c => c != prefabScript))
             {
                 TriggerConfiguration configuration;
-                
+
                 if (IsInEditor)
                 {
                     _triggers.TryAdd(trigger.GUID, trigger);
@@ -342,10 +331,10 @@ namespace Scripts.Building
                         Logger.LogWarning("Failed to find configuration for trigger", logObject: trigger);
                         continue;
                     }
-                    
+
                     trigger.subscribers = configuration.Subscribers;
                 }
-                
+
                 trigger.GUID = configuration.Guid;
                 trigger.SetMovementStep();
             }
@@ -353,7 +342,7 @@ namespace Scripts.Building
             foreach (TriggerReceiver receiver in newPrefab.GetComponents<TriggerReceiver>())
             {
                 TriggerReceiverConfiguration configuration;
-                    
+
                 if (IsInEditor)
                 {
                     _triggerReceivers.TryAdd(receiver.Guid, receiver);
@@ -367,9 +356,8 @@ namespace Scripts.Building
                         Logger.LogWarning("Failed to find configuration for trigger", logObject: receiver);
                         continue;
                     }
-                    
                 }
-                
+
                 receiver.startPosition = configuration.StartPosition;
                 receiver.Guid = configuration.Guid;
                 receiver.SetPosition();
@@ -383,12 +371,12 @@ namespace Scripts.Building
                 // Logger.Log("Configuration is already present.");
                 return configuration;
             }
-            
+
             TriggerConfiguration newConfiguration = new(trigger, ownerGuid, false);
             AddReplacePrefabConfiguration(newConfiguration);
             return newConfiguration;
         }
-        
+
         private TriggerReceiverConfiguration AddTriggerReceiverConfigurationToMap(TriggerReceiver triggerReceiver, string ownerGuid)
         {
             if (GetConfigurationByOwnerGuidAndName(ownerGuid, triggerReceiver.identification, out TriggerReceiverConfiguration configuration))
@@ -396,7 +384,7 @@ namespace Scripts.Building
                 // Logger.Log("Configuration is already present.");
                 return configuration;
             }
-            
+
             TriggerReceiverConfiguration newConfiguration = new(triggerReceiver, ownerGuid, false);
             AddReplacePrefabConfiguration(newConfiguration);
             return newConfiguration;
@@ -411,13 +399,13 @@ namespace Scripts.Building
         {
             MapDescription.PrefabConfigurations.Remove(configuration);
         }
-        
+
         private void RemoveEmbeddedTriggers(GameObject prefab)
         {
             PrefabBase prefabScript = prefab.GetComponent<PrefabBase>();
 
             if (!prefabScript) return;
-            
+
             TriggerReceiver[] triggerReceivers = prefab.GetComponents<TriggerReceiver>();
 
             foreach (TriggerReceiver receiver in triggerReceivers)
@@ -429,13 +417,12 @@ namespace Scripts.Building
                         triggerConfiguration.Subscribers.Remove(receiver.Guid);
                     }
                 }
-                
+
                 RemoveConfiguration(receiver.Guid);
             }
 
             foreach (Trigger trigger in prefab.GetComponentsInChildren<Trigger>())
             {
-                
                 RemoveConfiguration(trigger.GUID);
             }
         }

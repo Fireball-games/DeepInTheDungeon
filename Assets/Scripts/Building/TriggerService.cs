@@ -159,7 +159,10 @@ namespace Scripts.Building
 
             newPrefab.transform.localRotation = configuration.TransformData.Rotation;
 
-            PathsService.AddTriggerPath(triggerConfiguration);
+            if (IsInEditor)
+            {
+                PathsService.AddTriggerPath(triggerConfiguration);
+            }
         }
     }
 }

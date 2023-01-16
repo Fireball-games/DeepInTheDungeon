@@ -284,6 +284,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             Placeholder.SetActive(false);
 
+            Close();
             Open();
         }
 

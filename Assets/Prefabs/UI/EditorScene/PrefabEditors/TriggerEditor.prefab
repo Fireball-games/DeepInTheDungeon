@@ -705,22 +705,22 @@ PrefabInstance:
     - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
       propertyPath: m_Color.a
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
       propertyPath: m_Color.b
-      value: 0
+      value: 0.6627451
       objectReference: {fileID: 0}
     - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
       propertyPath: m_Color.g
-      value: 0
+      value: 0.6627451
       objectReference: {fileID: 0}
     - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 0.6784314
       objectReference: {fileID: 0}
     - target: {fileID: 6328801447179413717, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
@@ -1722,6 +1722,36 @@ PrefabInstance:
         type: 3}
       propertyPath: step
       value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4580674741078676612, guid: 05f51444f72799742b9fb5cf4117b1c1,
+        type: 3}
+      propertyPath: xMinimumMaximum.x
+      value: -0.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 4580674741078676612, guid: 05f51444f72799742b9fb5cf4117b1c1,
+        type: 3}
+      propertyPath: xMinimumMaximum.y
+      value: 0.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 4580674741078676612, guid: 05f51444f72799742b9fb5cf4117b1c1,
+        type: 3}
+      propertyPath: yMinimumMaximum.x
+      value: -0.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 4580674741078676612, guid: 05f51444f72799742b9fb5cf4117b1c1,
+        type: 3}
+      propertyPath: yMinimumMaximum.y
+      value: 0.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 4580674741078676612, guid: 05f51444f72799742b9fb5cf4117b1c1,
+        type: 3}
+      propertyPath: zMinimumMaximum.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4580674741078676612, guid: 05f51444f72799742b9fb5cf4117b1c1,
+        type: 3}
+      propertyPath: zMinimumMaximum.y
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4687472042950671766, guid: 05f51444f72799742b9fb5cf4117b1c1,
         type: 3}

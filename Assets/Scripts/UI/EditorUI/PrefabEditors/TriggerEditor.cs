@@ -61,10 +61,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void OnPositionChanged(Vector3 newPosition)
         {
             SetEdited();
-            Vector3 newPrefabWorldPosition = _prefabWallCenterPosition + new Vector3(newPosition.z, newPosition.y, newPosition.x);
-            Logger.Log($"New prefab position: {newPrefabWorldPosition}");
-            EditedConfiguration.TransformData.Position = newPrefabWorldPosition;
-            PhysicalPrefab.transform.localPosition = newPrefabWorldPosition;
+            Vector3 newPrefabLocalPosition = /*_prefabWallCenterPosition +*/ new Vector3(newPosition.z, newPosition.y, newPosition.x);
+            Logger.Log($"New prefab local position: {newPrefabLocalPosition}.");
+            EditedConfiguration.TransformData.Position = newPrefabLocalPosition;
+            PhysicalPrefab.transform.position = newPrefabLocalPosition;
         }
 
         private void OnTriggerTypeChanged(int enumIntValue)
@@ -125,13 +125,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (EditedConfiguration.SpawnPrefabOnBuild)
             {
-                _prefabWallCenterPosition = PhysicalPrefab.transform.position.ToVector3Int();
-                _prefabWallCenterPosition.x = (float) Math.Round(PhysicalPrefab.transform.position.x, 1);
-                Logger.Log($"WallCenter: {_prefabWallCenterPosition}");
+                // Quaternion inverseRotation = Quaternion.Inverse(PhysicalPrefab.transform.rotation);
+                // Vector3 objectPositionInWallSpace = inverseRotation * PhysicalPrefab.transform.localPosition;
+                // _prefabWallCenterPosition = new Vector3(objectPositionInWallSpace.x + 0.5f, objectPositionInWallSpace.y + 0.5f, objectPositionInWallSpace.z);
+                // _prefabWallCenterPosition = PhysicalPrefab.transform.localPosition.ToVector3Int();
+                // _prefabWallCenterPosition.x = (float) Math.Round(PhysicalPrefab.transform.localPosition.x, 1, MidpointRounding.ToEven);
+                // Logger.Log($"WallCenter: {_prefabWallCenterPosition}, LocalPosition: {PhysicalPrefab.transform.localPosition}");
 
                 _positionControl.ValueChanged.RemoveAllListeners();
                 _positionControl.Label.text = $"{t.Get(Keys.Position)}:";
-                _positionControl.Value = PhysicalPrefab.transform.position - _prefabWallCenterPosition;
+                Vector3 position = PhysicalPrefab.transform.position; //TODO continue here
+                _positionControl.Value = PhysicalPrefab.transform.position /*- _prefabWallCenterPosition*/;
                 _positionControl.ValueChanged.AddListener(OnPositionChanged);
                 _positionControl.Reparent(_content);
             }

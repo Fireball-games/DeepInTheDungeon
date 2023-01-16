@@ -21,6 +21,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private EditableConfigurationList _receiverList;
 
         private Vector3 _prefabWallCenterPosition;
+        private Vector3 _editedPrefabPosition;
+        private int _editedPrefabRotationY;
         private readonly Vector3 _wallCursor3DSize = new(0.15f, 1.1f, 1.1f);
         private readonly Vector3 _genericCursor3DSize = new(0.33f, 0.33f, 0.33f);
 
@@ -61,7 +63,26 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void OnPositionChanged(Vector3 newPosition)
         {
             SetEdited();
-            Vector3 newPrefabWorldPosition = _prefabWallCenterPosition + new Vector3(newPosition.z, newPosition.y, newPosition.x);
+            Vector3 newPrefabWorldPosition = _prefabWallCenterPosition;
+            switch (_editedPrefabRotationY)
+            {
+                case 0:
+                    newPrefabWorldPosition += new Vector3(-newPosition.z, newPosition.y, -newPosition.x);
+                    break;
+                case 90:
+                    newPrefabWorldPosition += new Vector3(-newPosition.x, newPosition.y, newPosition.z);
+                    break;
+                case 180:
+                    newPrefabWorldPosition += new Vector3(newPosition.z, newPosition.y, newPosition.x);
+                    break;
+                case 270:
+                    newPrefabWorldPosition += new Vector3(newPosition.x, newPosition.y, -newPosition.z);
+                    break;
+                default:
+                    Logger.Log($"Wrong Y rotation detected: {_editedPrefabRotationY}");
+                    break;
+            }
+
             Logger.Log($"New prefab position: {newPrefabWorldPosition}");
             EditedConfiguration.TransformData.Position = newPrefabWorldPosition;
             PhysicalPrefab.transform.localPosition = newPrefabWorldPosition;
@@ -125,9 +146,20 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (EditedConfiguration.SpawnPrefabOnBuild)
             {
-                _prefabWallCenterPosition = PhysicalPrefab.transform.position.ToVector3Int();
-                _prefabWallCenterPosition.x = (float) Math.Round(PhysicalPrefab.transform.position.x, 1);
-                Logger.Log($"WallCenter: {_prefabWallCenterPosition}");
+                Vector3 prefabPosition = PhysicalPrefab.transform.position;
+                _editedPrefabRotationY = Mathf.RoundToInt(PhysicalPrefab.transform.rotation.eulerAngles.y);
+                _prefabWallCenterPosition = prefabPosition.ToVector3Int();
+
+                if (Mathf.RoundToInt(_editedPrefabRotationY) == 0)
+                    _prefabWallCenterPosition.x = (float) Math.Round(PhysicalPrefab.transform.position.x, 1);
+                if (Mathf.RoundToInt(_editedPrefabRotationY) == 90)
+                    _prefabWallCenterPosition.z = (float) Math.Round(PhysicalPrefab.transform.position.z, 1);
+                if (Mathf.RoundToInt(_editedPrefabRotationY) == 180)
+                    _prefabWallCenterPosition.x = (float) Math.Round(PhysicalPrefab.transform.position.x, 1);
+                if (Mathf.RoundToInt(_editedPrefabRotationY) == 270)
+                    _prefabWallCenterPosition.z = (float) Math.Round(PhysicalPrefab.transform.position.z, 1);
+
+                Logger.Log($"WallCenter: {_prefabWallCenterPosition}, prefab position: {prefabPosition}");
 
                 _positionControl.ValueChanged.RemoveAllListeners();
                 _positionControl.Label.text = $"{t.Get(Keys.Position)}:";

@@ -275,7 +275,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SelectedCage.Hide();
         }
 
-        private void RemoveAndReopen()
+        protected virtual void RemoveAndReopen()
         {
             if (IsCurrentConfigurationChanged)
             {
@@ -287,7 +287,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Open();
         }
 
-        protected virtual void RemoveAndClose()
+        private void RemoveAndClose()
         {
             if (IsCurrentConfigurationChanged)
             {
@@ -297,7 +297,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Close();
         }
 
-        private void RemoveChanges()
+        protected void RemoveChanges()
         {
             if (_isEditingExistingPrefab)
             {

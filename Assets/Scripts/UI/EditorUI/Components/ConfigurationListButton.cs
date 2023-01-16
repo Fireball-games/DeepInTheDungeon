@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
@@ -20,6 +19,7 @@ namespace Scripts.UI.EditorUI.Components
 
         private EditorUIManager UIManager => EditorUIManager.Instance;
         private Cursor3D Cursor3D => UIManager.Cursor3D;
+        private EditorCameraService CameraService => EditorCameraService.Instance;
 
         private bool _canMoveToPrefab = true;
 
@@ -44,8 +44,10 @@ namespace Scripts.UI.EditorUI.Components
         {
             base.OnClick_internal();
 
-            _originalCameraTransformData = new PositionRotation(EditorCameraService.Instance.MoveCameraToPrefab(displayedItem.TransformData.Position), Quaternion.Euler(Vector3.zero));
-            _originalFloor = Mathf.FloorToInt(-displayedItem.TransformData.Position.y);
+            _originalCameraTransformData =
+                new PositionRotation(CameraService.MoveCameraToPrefab(Vector3Int.RoundToInt(displayedItem.TransformData.Position)),
+                    Quaternion.Euler(Vector3.zero));
+            _originalFloor = Mathf.RoundToInt(-displayedItem.TransformData.Position.y);
             Cursor3D.Hide();
         }
 
@@ -63,7 +65,7 @@ namespace Scripts.UI.EditorUI.Components
         {
             Cursor3D.Hide();
             _canMoveToPrefab = false;
-            
+
             StopCoroutine(MouseOverCoroutine());
 
             if (_originalCameraTransformData != null)
@@ -83,7 +85,7 @@ namespace Scripts.UI.EditorUI.Components
 
             _canMoveToPrefab = true;
             _originalFloor = MapEditorManager.Instance.CurrentFloor;
-            _originalCameraTransformData = EditorCameraService.Instance.GetCameraTransformData();
+            _originalCameraTransformData = CameraService.GetCameraTransformData();
             UIManager.OpenedEditor.MoveCameraToPrefab(Vector3Int.RoundToInt(displayedItem.TransformData.Position));
         }
     }

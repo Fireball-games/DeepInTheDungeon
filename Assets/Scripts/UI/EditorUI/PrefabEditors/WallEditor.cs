@@ -79,7 +79,7 @@ namespace Scripts.UI.EditorUI
             base.SaveMap();
         }
 
-        protected override void RemoveAndClose()
+        protected override void RemoveAndReopen()
         {
             if (IsCurrentConfigurationChanged)
             {
@@ -87,7 +87,7 @@ namespace Scripts.UI.EditorUI
                 {
                     DestroyPath(EPathsType.Waypoint, EditedConfiguration.WayPoints);
                 }
-
+                
                 RemoveOtherComponents();
             }
             else
@@ -97,8 +97,8 @@ namespace Scripts.UI.EditorUI
                     HighlightPath(EPathsType.Waypoint, EditedConfiguration.WayPoints, false);
                 }
             }
-
-            base.RemoveAndClose();
+            
+            base.RemoveAndReopen();
         }
 
         private static PositionRotation CalculateWallForPath(List<Waypoint> path, bool isForLowerLadderPath)

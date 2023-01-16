@@ -47,13 +47,13 @@ namespace Scripts.Helpers.Extensions
             return V3I;
         }
 
-        public static Vector3 Round(this Vector3 source, int decimalNumbers)
+        public static Vector3 Round(this Vector3 source, int decimalPlaces)
         {
-            V3.x = (float)Math.Round(source.x, decimalNumbers);
-            V3.y = (float)Math.Round(source.y, decimalNumbers);
-            V3.z = (float)Math.Round(source.z, decimalNumbers);
-
-            return new Vector3(V3.x, V3.y, V3.z);
+            float multiplier = (float)Math.Pow(10.0f, decimalPlaces);
+            source.x = (float)Math.Round(source.x * multiplier, MidpointRounding.AwayFromZero) / multiplier;
+            source.y = (float)Math.Round(source.y * multiplier, MidpointRounding.AwayFromZero) / multiplier;
+            source.z = (float)Math.Round(source.z * multiplier, MidpointRounding.AwayFromZero) / multiplier;
+            return source;
         }
     }
 }

@@ -29,11 +29,10 @@ namespace Scripts.MapEditor.Services
         private static Material _waypointsLineNormalMaterial;
         private static Material _waypointLinesHighlightedMaterial;
         private static GameObject _parent;
-        private static bool _areWaypointsShown = true;
-        // TODO: implement this in AddTriggerPath!
-        private static bool _areTriggerPathsShown = true;
 
         private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
+
+        private static Dictionary<EPathsType, bool> _visibilityMap;
 
         public enum EPathsType
         {
@@ -48,6 +47,12 @@ namespace Scripts.MapEditor.Services
                 [EPathsType.Waypoint] = new(),
                 [EPathsType.Trigger] = new()
             };
+
+            _visibilityMap = new Dictionary<EPathsType, bool>
+            {
+                { EPathsType.Waypoint, true },
+                { EPathsType.Trigger, false },
+            };
             
             _parent = new GameObject("Waypoints");
             _waypointMesh = waypointPrefab.GetComponent<MeshFilter>().sharedMesh;
@@ -60,7 +65,7 @@ namespace Scripts.MapEditor.Services
 
         public static void ShowPaths(EPathsType pathsType)
         {
-            _areWaypointsShown = true;
+            _visibilityMap[pathsType] = true;
             foreach (PathController controller in _paths[pathsType].Values)
             {
                 controller.gameObject.SetActive(true);
@@ -69,7 +74,7 @@ namespace Scripts.MapEditor.Services
 
         public static void HidePaths(EPathsType pathsType)
         {
-            _areWaypointsShown = false;
+            _visibilityMap[pathsType] = false;
             
             foreach (PathController controller in _paths[pathsType].Values.Where(controller => !controller.isHighlighted))
             {
@@ -117,7 +122,7 @@ namespace Scripts.MapEditor.Services
                 return;
             }
             
-            if (!_areWaypointsShown)
+            if (!_visibilityMap[EPathsType.Waypoint])
                 HidePaths(EPathsType.Waypoint);
         }
         
@@ -125,11 +130,13 @@ namespace Scripts.MapEditor.Services
         {
             if (configuration.Subscribers.Count == 0) return;
             
-            IEnumerable<Vector3> points = new List<Vector3>{configuration.TransformData.Position.Round(2)};
-            points = points.Union(configuration.Subscribers
+            List<Vector3> points = new List<Vector3>{configuration.TransformData.Position};
+            points.AddRange(configuration.Subscribers
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(s))
-                .Select(trc => trc.TransformData.Position.Round(2)));
+                .Select(trc => trc.TransformData.Position.Round(2))
+                .ToList());
+            points[0] = points[0].Round(2);
             
             (Vector3, Vector3) key = GetKey(points);
             DestroyPath(EPathsType.Trigger, key);
@@ -161,7 +168,7 @@ namespace Scripts.MapEditor.Services
                 return;
             }
             
-            if (!_areWaypointsShown)
+            if (!_visibilityMap[EPathsType.Trigger])
                 HidePaths(EPathsType.Trigger);
         }
         
@@ -251,24 +258,37 @@ namespace Scripts.MapEditor.Services
             switch (controller.typeOfPath)
             {
                 case EPathsType.Waypoint:
-                    BuildWaypointsLines(controller);
+                    BuildWaypointsLines(controller.Waypoints.Values);
                     break;
                 case EPathsType.Trigger:
+                    BuildTriggerLines(controller.Waypoints.Values);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        private static void BuildWaypointsLines(PathController controller)
+        private static void BuildWaypointsLines(IEnumerable<WaypointParts> waypointParts)
         {
-            List<Vector3> positions = controller.Waypoints.Values.Select(wp => wp.MeshRenderer.transform.position).ToList();
-            for (int i = 0; i < controller.Waypoints.Count - 1; i++)
+            List<Vector3> positions = waypointParts.Select(wp => wp.MeshRenderer.transform.position).ToList();
+            for (int i = 0; i < waypointParts.Count() - 1; i++)
             {
-                WaypointParts parts = controller.Waypoints.ElementAt(i).Value;
+                WaypointParts parts = waypointParts.ElementAt(i);
                 LineRenderer lr = parts.LineRenderer;
                 lr.enabled = true;
                 lr.SetPositions(new[] {positions[i], positions[i + 1]});
+            }
+        }
+
+        private static void BuildTriggerLines(IEnumerable<WaypointParts> waypointParts)
+        {
+            List<Vector3> positions = waypointParts.Select(wp => wp.MeshRenderer.transform.position).ToList();
+            for (int i = 1; i < waypointParts.Count(); i++)
+            {
+                WaypointParts parts = waypointParts.ElementAt(i);
+                LineRenderer lr = parts.LineRenderer;
+                lr.enabled = true;
+                lr.SetPositions(new[] {positions[0], positions[i]});
             }
         }
 

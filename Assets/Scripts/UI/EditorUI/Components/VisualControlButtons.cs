@@ -2,6 +2,7 @@ using Scripts.EventsManagement;
 using Scripts.MapEditor.Services;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
+using static Scripts.MapEditor.Services.PathsService;
 
 namespace Scripts.UI.EditorUI.Components
 {
@@ -9,6 +10,7 @@ namespace Scripts.UI.EditorUI.Components
     {
         private ToggleFramedButton _perspectiveToggle;
         private ToggleFramedButton _waypointsShowToggle;
+        private ToggleFramedButton _triggerPathsToggle;
 
         private void Awake()
         {
@@ -17,6 +19,8 @@ namespace Scripts.UI.EditorUI.Components
             _perspectiveToggle.dontToggleOnclick = true;
             _waypointsShowToggle = body.transform.Find("WaypointsShowToggle").GetComponent<ToggleFramedButton>();
             _waypointsShowToggle.OnClick.AddListener(OnWaypointsShowToggleClick);
+            _triggerPathsToggle = body.transform.Find("TriggerPathsShowToggle").GetComponent<ToggleFramedButton>();
+            _triggerPathsToggle.OnClick.AddListener(OnTriggerPathsToggleClick);
         }
 
         private void OnEnable()
@@ -45,9 +49,17 @@ namespace Scripts.UI.EditorUI.Components
         private void OnWaypointsShowToggleClick()
         {
             if (_waypointsShowToggle.toggled)
-                PathsService.ShowPaths(PathsService.EPathsType.Waypoint);
+                ShowPaths(EPathsType.Waypoint);
             else
-                PathsService.HidePaths(PathsService.EPathsType.Waypoint);
+                HidePaths(EPathsType.Waypoint);
+        }
+
+        private void OnTriggerPathsToggleClick()
+        {
+            if (_triggerPathsToggle.toggled)
+                HidePaths(EPathsType.Trigger);
+            else
+                ShowPaths(EPathsType.Trigger);
         }
     }
 }

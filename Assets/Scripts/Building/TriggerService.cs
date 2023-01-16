@@ -2,10 +2,12 @@
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
+using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.Triggers;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
@@ -142,21 +144,22 @@ namespace Scripts.Building
         
         internal void ProcessTriggerConfiguration(PrefabConfiguration configuration, GameObject newPrefab)
         {
-            if (configuration is TriggerConfiguration triggerConfiguration)
+            if (configuration is not TriggerConfiguration triggerConfiguration) return;
+            
+            Trigger prefabScript = newPrefab.GetComponent<Trigger>();
+
+            if (prefabScript)
             {
-                Trigger prefabScript = newPrefab.GetComponent<Trigger>();
-
-                if (prefabScript)
-                {
-                    prefabScript.triggerType = triggerConfiguration.TriggerType;
-                    prefabScript.count = triggerConfiguration.Count;
-                    prefabScript.subscribers = triggerConfiguration.Subscribers;
-                    prefabScript.startPosition = triggerConfiguration.StartPosition;
-                    prefabScript.SetMovementStep();
-                }
-
-                newPrefab.transform.localRotation = configuration.TransformData.Rotation;
+                prefabScript.triggerType = triggerConfiguration.TriggerType;
+                prefabScript.count = triggerConfiguration.Count;
+                prefabScript.subscribers = triggerConfiguration.Subscribers;
+                prefabScript.startPosition = triggerConfiguration.StartPosition;
+                prefabScript.SetMovementStep();
             }
+
+            newPrefab.transform.localRotation = configuration.TransformData.Rotation;
+
+            PathsService.AddTriggerPath(triggerConfiguration);
         }
     }
 }

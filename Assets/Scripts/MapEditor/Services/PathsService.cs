@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building;
+using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Helpers.Extensions;
 using Scripts.ScriptableObjects;
+using Scripts.System;
 using UnityEngine;
 using UnityEngine.Rendering;
 using PathsType = System.Collections.Generic.Dictionary<Scripts.MapEditor.Services.PathsService.EPathsType, System.Collections.Generic.Dictionary<(UnityEngine.Vector3, UnityEngine.Vector3), Scripts.MapEditor.PathController>>;
@@ -26,7 +29,11 @@ namespace Scripts.MapEditor.Services
         private static Material _waypointsLineNormalMaterial;
         private static Material _waypointLinesHighlightedMaterial;
         private static GameObject _parent;
-        private static bool _areWaypointsShows = true;
+        private static bool _areWaypointsShown = true;
+        // TODO: implement this in AddTriggerPath!
+        private static bool _areTriggerPathsShown = true;
+
+        private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
 
         public enum EPathsType
         {
@@ -53,7 +60,7 @@ namespace Scripts.MapEditor.Services
 
         public static void ShowPaths(EPathsType pathsType)
         {
-            _areWaypointsShows = true;
+            _areWaypointsShown = true;
             foreach (PathController controller in _paths[pathsType].Values)
             {
                 controller.gameObject.SetActive(true);
@@ -62,9 +69,9 @@ namespace Scripts.MapEditor.Services
 
         public static void HidePaths(EPathsType pathsType)
         {
-            _areWaypointsShows = false;
+            _areWaypointsShown = false;
             
-            foreach (PathController controller in _paths[pathsType].Values.Where(controller => !controller.IsHighlighted))
+            foreach (PathController controller in _paths[pathsType].Values.Where(controller => !controller.isHighlighted))
             {
                 controller.gameObject.SetActive(false);
             }
@@ -78,12 +85,12 @@ namespace Scripts.MapEditor.Services
 
         public static void DestroyPath(EPathsType pathType, List<Waypoint> path) => DestroyPath(pathType, GetKey(path));
 
-        public static void AddWaypointPath(EPathsType pathType, List<Waypoint> waypoints, bool highlightAfterBuild = false)
+        public static void AddWaypointPath(List<Waypoint> waypoints, bool highlightAfterBuild = false)
         {
             (Vector3, Vector3) key = GetKey(waypoints);
-            DestroyPath(pathType, key);
+            DestroyPath(EPathsType.Waypoint, key);
 
-            GameObject pathParent = new($"Path_{key.Item1}_{key.Item2}")
+            GameObject pathParent = new($"waypointPath_{key.Item1}_{key.Item2}")
             {
                 transform =
                 {
@@ -92,6 +99,7 @@ namespace Scripts.MapEditor.Services
             };
 
             PathController controller = pathParent.AddComponent<PathController>();
+            controller.typeOfPath = EPathsType.Waypoint;
 
             foreach (Waypoint waypoint in waypoints)
             {
@@ -109,8 +117,52 @@ namespace Scripts.MapEditor.Services
                 return;
             }
             
-            if (!_areWaypointsShows)
+            if (!_areWaypointsShown)
                 HidePaths(EPathsType.Waypoint);
+        }
+        
+        public static void AddTriggerPath(TriggerConfiguration configuration, bool highlightAfterBuild = false)
+        {
+            if (configuration.Subscribers.Count == 0) return;
+            
+            IEnumerable<Vector3> points = new List<Vector3>{configuration.TransformData.Position.Round(2)};
+            points = points.Union(configuration.Subscribers
+                .Where(s => !string.IsNullOrEmpty(s))
+                .Select(s => MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(s))
+                .Select(trc => trc.TransformData.Position.Round(2)));
+            
+            (Vector3, Vector3) key = GetKey(points);
+            DestroyPath(EPathsType.Trigger, key);
+
+            GameObject pathParent = new($"TriggerPath_{key.Item1}_{key.Item2}")
+            {
+                transform =
+                {
+                    parent = _parent.transform
+                }
+            };
+
+            PathController controller = pathParent.AddComponent<PathController>();
+            controller.typeOfPath = EPathsType.Trigger;
+
+            foreach (Vector3 point in points)
+            {
+                GameObject drawnWaypoint = DrawWaypoint(point, controller);
+                drawnWaypoint.transform.parent = pathParent.transform;
+            }
+
+            _paths[EPathsType.Trigger].Add(key, controller);
+
+            BuildLines(controller);
+
+            if (highlightAfterBuild)
+            {
+                HighlightPath(EPathsType.Trigger, controller);
+                return;
+            }
+            
+            if (!_areWaypointsShown)
+                HidePaths(EPathsType.Trigger);
         }
         
         public static void DestroyAllPaths()
@@ -133,9 +185,9 @@ namespace Scripts.MapEditor.Services
         
         private static void HighlightPath(EPathsType pathType, (Vector3, Vector3) key, bool isHighlighted = true)
         {
-            if (!_paths[pathType].TryGetValue(key, out PathController controller) || controller.IsHighlighted == isHighlighted) return;
+            if (!_paths[pathType].TryGetValue(key, out PathController controller) || controller.isHighlighted == isHighlighted) return;
 
-            controller.IsHighlighted = isHighlighted;
+            controller.isHighlighted = isHighlighted;
 
             for (int index = 0; index < controller.Waypoints.Count; index++)
             {
@@ -173,6 +225,13 @@ namespace Scripts.MapEditor.Services
                 : new ValueTuple<Vector3, Vector3>(waypoints[0].position.Round(2), waypoints[1].position.Round(2));
         }
 
+        private static (Vector3, Vector3) GetKey(IEnumerable<Vector3> points)
+        {
+            return points.Count() == 1 
+                ? (points.ElementAt(0).ToVector3Int(), Vector3.negativeInfinity) 
+                : new ValueTuple<Vector3, Vector3>(points.ElementAt(0).Round(2), points.ElementAt(0).Round(2));
+        }
+
         private static void HighlightPath(EPathsType pathType, PathController pathController, bool isHighlighted = true)
         {
             HighlightPath(pathType, _paths[pathType].GetFirstKeyByValue(pathController), isHighlighted);
@@ -188,6 +247,20 @@ namespace Scripts.MapEditor.Services
         }
 
         private static void BuildLines(PathController controller)
+        {
+            switch (controller.typeOfPath)
+            {
+                case EPathsType.Waypoint:
+                    BuildWaypointsLines(controller);
+                    break;
+                case EPathsType.Trigger:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static void BuildWaypointsLines(PathController controller)
         {
             List<Vector3> positions = controller.Waypoints.Values.Select(wp => wp.MeshRenderer.transform.position).ToList();
             for (int i = 0; i < controller.Waypoints.Count - 1; i++)

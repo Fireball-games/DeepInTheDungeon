@@ -26,6 +26,8 @@ namespace Scripts.Building
         private static MapDescription MapDescription => MapBuilder.MapDescription;
         private static HashSet<GameObject> Prefabs => MapBuilder.Prefabs;
         private static TileDescription[,,] Layout => MapBuilder.Layout;
+        private static bool IsInEditMode => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
+        
         private readonly TriggerService _triggerService;
 
         public PrefabBuilder()
@@ -256,7 +258,7 @@ namespace Scripts.Building
                     physicalPart.localPosition = position;
                 }
 
-                if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
+                if (IsInEditMode)
                 {
                     if (prefabScript is WallPrefabBase script)
                     {
@@ -267,7 +269,7 @@ namespace Scripts.Building
 
                         if (wallConfiguration.HasPath())
                         {
-                            AddWaypointPath(EPathsType.Waypoint, wallConfiguration.WayPoints);
+                            AddWaypointPath(wallConfiguration.WayPoints);
                         }
                     }
                 }

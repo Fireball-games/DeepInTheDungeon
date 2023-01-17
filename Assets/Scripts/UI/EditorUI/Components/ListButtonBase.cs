@@ -34,6 +34,7 @@ namespace Scripts.UI.EditorUI.Components
             if(!Text) Initialize();
             
             Text.gameObject.DismissAllChildrenToPool(true);
+            SetInteractable(true);
             
             displayedItem = item;
             OnClick.RemoveAllListeners();
@@ -49,6 +50,8 @@ namespace Scripts.UI.EditorUI.Components
         }
 
         public void SetSelected(bool isSelected) => Text.color = isSelected ? SelectedColor : _normalColor;
+
+        public void SetInteractable(bool isInteractable) => Button.interactable = isInteractable;
 
         protected void AddIcon(EIcon icon)
         {
@@ -80,7 +83,6 @@ namespace Scripts.UI.EditorUI.Components
             AssignComponents();
             Button.onClick.RemoveAllListeners();
             Button.onClick.AddListener(OnClick_internal);
-            
         }
     }
 }

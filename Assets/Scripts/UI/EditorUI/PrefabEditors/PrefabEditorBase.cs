@@ -298,7 +298,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Close();
         }
 
-        protected void RemoveChanges()
+        private void RemoveChanges()
         {
             if (_isEditingExistingPrefab)
             {
@@ -436,7 +436,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (items == null) return;
 
-            _existingList.Open(t.Get(Keys.ExistingPrefabs), items, configuration => Open(configuration as TC), onClose);
+            _existingList.Open(t.Get(Keys.ExistingPrefabs),
+                items,
+                configuration => Open(configuration as TC),
+                false,
+                onClose);
         }
 
         private void AssignComponents()

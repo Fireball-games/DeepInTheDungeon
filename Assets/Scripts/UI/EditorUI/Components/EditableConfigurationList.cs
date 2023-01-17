@@ -19,6 +19,7 @@ namespace Scripts.UI.EditorUI.Components
     {
         [SerializeField] private ConfigurationListButton itemPrefab;
         [SerializeField] private Button buttonPrefab;
+        public bool isCameraStayingOnNavigatedPosition;
         private Transform _content;
         private Title _title;
 
@@ -49,7 +50,7 @@ namespace Scripts.UI.EditorUI.Components
                 DeletableConfigurationListButton newButton = ObjectPool.Instance.GetFromPool(itemPrefab.gameObject, _content.gameObject)
                     .GetComponent<DeletableConfigurationListButton>();
 
-                newButton.Set(item, null, OnDeleteButtonClicked, false);
+                newButton.Set(item, null, OnDeleteButtonClicked, false, interactableNavigationButton: false, isCameraStayingOnNavigatedPosition);
             });
 
             Button addButton = ObjectPool.Instance.GetFromPool(buttonPrefab.gameObject, _content.gameObject)

@@ -14,6 +14,8 @@ namespace Scripts.UI.EditorUI.Components
         [SerializeField] private GameObject listContent;
         [SerializeField] private GameObject itemPrefab;
         public bool SetClickedItemSelected = true;
+        
+        protected TButton LastAddedButton; 
 
         private HashSet<TButton> Buttons;
         private UnityEvent<T> OnItemClicked { get; } = new();
@@ -39,19 +41,27 @@ namespace Scripts.UI.EditorUI.Components
 
             if (items == null) return;
 
-            foreach (T prefab in items)  
+            foreach (T item in items)  
             {
                 TButton newButton = ObjectPool.Instance
                     .GetFromPool(itemPrefab, listContent)
                     .GetComponent<TButton>();
-                
-                newButton.Set(prefab, OnItemClicked_internal, SetClickedItemSelected);
+
+                SetButton(newButton, item);
 
                 Buttons.Add(newButton);
+                LastAddedButton = newButton;
             }
         }
 
+        protected virtual void SetButton(TButton button, T item)
+        {
+            button.Set(item, OnItemClicked_internal, SetClickedItemSelected);
+        }
+
         public void DeselectButtons() => Buttons.ForEach(b => b.SetSelected(false));
+
+        public void SetButtonsInteractable(bool isInteractable) => Buttons.ForEach(b => b.SetInteractable(isInteractable));
 
         public void Close() => SetActive(false);
 
@@ -61,11 +71,11 @@ namespace Scripts.UI.EditorUI.Components
         {
             if (SetClickedItemSelected)
             {
-                string prefabName = GetItemIdentification(item);
+                string identification = GetItemIdentification(item);
             
                 foreach (TButton button in Buttons)
                 {
-                    if (GetItemIdentification(button.displayedItem) != prefabName)
+                    if (GetItemIdentification(button.displayedItem) != identification)
                     {
                         button.SetSelected(false);
                     }
@@ -75,7 +85,7 @@ namespace Scripts.UI.EditorUI.Components
             OnItemClicked.Invoke(item);
         }
 
-        protected virtual void OnCancelClicked_internal()
+        protected void OnCancelClicked_internal()
         {
             SetActive(false);
         }

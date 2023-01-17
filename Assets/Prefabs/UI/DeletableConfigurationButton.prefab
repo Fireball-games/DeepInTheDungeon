@@ -81,6 +81,7 @@ MonoBehaviour:
   MarkSelectedOnClick: 0
   iconPrefab: {fileID: 173023260266476895, guid: 9598bda8da5a37441876db0816970c59,
     type: 3}
+  isCameraStayingOnNavigatedPosition: 0
 --- !u!1001 &379971880161164760
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92,6 +93,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 21.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 864170680288398951, guid: 1d186b17b9bd3be4a822ca37252f4aa4,
+        type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 0.7921569
       objectReference: {fileID: 0}
     - target: {fileID: 2439203152481558588, guid: 1d186b17b9bd3be4a822ca37252f4aa4,
         type: 3}

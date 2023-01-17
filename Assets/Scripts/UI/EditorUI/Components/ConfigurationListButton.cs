@@ -13,6 +13,8 @@ namespace Scripts.UI.EditorUI.Components
 {
     public class ConfigurationListButton : ListButtonBase<PrefabConfiguration>, IPointerEnterHandler, IPointerExitHandler
     {
+        public bool isCameraStayingOnNavigatedPosition;
+        
         private readonly WaitForSecondsRealtime _startNavigatingDelay = new(0.5f);
         private PositionRotation _originalCameraTransformData;
         private int _originalFloor;
@@ -23,9 +25,11 @@ namespace Scripts.UI.EditorUI.Components
 
         private bool _canMoveToPrefab = true;
 
-        public override void Set(PrefabConfiguration item, UnityAction<PrefabConfiguration> onClick, bool setSelectedOnClick = true)
+        public void Set(PrefabConfiguration item, UnityAction<PrefabConfiguration> onClick, bool setSelectedOnClick = true, bool _isCameraStayingOnNavigatedPosition = false)
         {
             base.Set(item, onClick, setSelectedOnClick);
+
+            isCameraStayingOnNavigatedPosition = _isCameraStayingOnNavigatedPosition;
 
             GameObject instancedPrefab = GameManager.Instance.MapBuilder
                 .GetPrefabByGuid(item.SpawnPrefabOnBuild ? item.Guid : item.OwnerGuid);
@@ -44,10 +48,18 @@ namespace Scripts.UI.EditorUI.Components
         {
             base.OnClick_internal();
 
-            _originalCameraTransformData =
-                new PositionRotation(CameraService.MoveCameraToPrefab(Vector3Int.RoundToInt(displayedItem.TransformData.Position)),
-                    Quaternion.Euler(Vector3.zero));
-            _originalFloor = Mathf.RoundToInt(-displayedItem.TransformData.Position.y);
+            if (isCameraStayingOnNavigatedPosition)
+            {
+                _originalCameraTransformData =
+                    new PositionRotation(CameraService.MoveCameraToPrefab(Vector3Int.RoundToInt(displayedItem.TransformData.Position)),
+                        Quaternion.Euler(Vector3.zero));
+                _originalFloor = Mathf.RoundToInt(-displayedItem.TransformData.Position.y);
+            }
+            else
+            {
+                OnPointerExit(null);
+            }
+            
             Cursor3D.Hide();
         }
 

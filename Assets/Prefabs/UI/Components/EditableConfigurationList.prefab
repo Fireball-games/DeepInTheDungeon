@@ -121,6 +121,7 @@ MonoBehaviour:
     type: 3}
   buttonPrefab: {fileID: 2696964824841636374, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
     type: 3}
+  isCameraStayingOnNavigatedPosition: 0
 --- !u!114 &4418940800784240223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,6 +161,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 173023260266476895, guid: 9598bda8da5a37441876db0816970c59,
         type: 3}
+    - target: {fileID: 1061662927926424511, guid: 2a2fad49680ffea4eb89fb4581e88b24,
+        type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 0.7921569
+      objectReference: {fileID: 0}
     - target: {fileID: 2027042080850290338, guid: 2a2fad49680ffea4eb89fb4581e88b24,
         type: 3}
       propertyPath: m_AnchorMax.y

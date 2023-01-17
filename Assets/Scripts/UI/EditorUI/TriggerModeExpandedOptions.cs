@@ -29,6 +29,7 @@ namespace Scripts.UI.EditorUI
             _editTriggerReceiverButton.OnClickWithSender += OnClick;
             
             EditorEvents.OnWorkModeChanged += SetSelected;
+            EditorEvents.OnMapEditedStatusChanged += OnMapEditedStatusChanged;
         }
 
         private void OnDisable()
@@ -37,6 +38,12 @@ namespace Scripts.UI.EditorUI
             _editTriggerReceiverButton.OnClickWithSender -= OnClick;
             
             EditorEvents.OnWorkModeChanged -= SetSelected;
+            EditorEvents.OnMapEditedStatusChanged -= OnMapEditedStatusChanged;
+        }
+
+        private void OnMapEditedStatusChanged(bool isChanged)
+        {
+            _buttonsMap.Values.ForEach(b => b.SetInteractable(!isChanged));
         }
 
         private void OnClick(ImageButton sender)

@@ -120,6 +120,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void SetEdited(bool isEdited)
         {
             _isConfigurationEdited = isEdited;
+            _existingReceivers.SetButtonsInteractable(!isEdited);
             SetButtons();
             EditorEvents.TriggerOnMapEditedStatusChanged(isEdited);
         }
@@ -156,7 +157,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void OnStartPositionChanged(float newValue)
         {
             SetEdited(true);
-            int newPosition = (int) newValue;
+            int newPosition = (int) Mathf.Clamp(newValue, 0, ((TriggerReceiverWithPositions) _editedPrefab).steps.Count - 1);
             _editedConfiguration.StartPosition = newPosition;
             _editedPrefab.startPosition = newPosition;
             _editedPrefab.SetPosition();

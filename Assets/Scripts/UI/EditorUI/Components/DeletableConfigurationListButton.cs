@@ -19,9 +19,16 @@ namespace Scripts.UI.EditorUI.Components
             _deleteButton.onClick.AddListener(OnDeleteClicked_Internal);
         }
 
-        public void Set(PrefabConfiguration item, UnityAction<PrefabConfiguration> onClick, UnityAction<PrefabConfiguration> onDeleteItemClick, bool setSelectedOnClick)
+        public void Set(PrefabConfiguration item,
+            UnityAction<PrefabConfiguration> onClick,
+            UnityAction<PrefabConfiguration> onDeleteItemClick,
+            bool setSelectedOnClick,
+            bool interactableNavigationButton = true,
+            bool _isCameraStayingOnNavigatedPosition = false)
         {
-            base.Set(item, onClick, setSelectedOnClick);
+            base.Set(item, onClick, setSelectedOnClick, _isCameraStayingOnNavigatedPosition);
+
+            Button.interactable = interactableNavigationButton;
             
             OnDeleteClicked.RemoveAllListeners();
             OnDeleteClicked.AddListener(onDeleteItemClick);

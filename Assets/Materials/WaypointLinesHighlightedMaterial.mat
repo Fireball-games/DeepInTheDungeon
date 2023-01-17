@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: WaypointLinesHighlightedMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: f6751d257e98a9446b3e829f9ab9a137,
+  m_Shader: {fileID: -6465566751694194690, guid: d9df3717485c46142a23eb1cb14c7354,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -98,6 +98,8 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _ColorWeight: 1
+    - _Color_weight: 1
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -117,6 +119,7 @@ Material:
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _Speed: 3
     - _SrcBlend: 1
     - _Surface: 0
     - _WorkflowMode: 1

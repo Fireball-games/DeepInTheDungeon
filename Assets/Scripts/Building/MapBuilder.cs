@@ -10,6 +10,7 @@ using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.Pooling;
 using UnityEngine;
+using UnityEngine.Events;
 using static Scripts.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
 
@@ -23,7 +24,7 @@ namespace Scripts.Building
         private TileBuilderBase _playBuilder;
         private TileBuilderBase _editorBuilder;
 
-        public event Action OnLayoutBuilt;
+        public UnityEvent OnLayoutBuilt { get; } = new();
 
         internal Transform LayoutParent;
         internal TileDescription[,,] Layout;
@@ -136,13 +137,11 @@ namespace Scripts.Building
             };
         }
 
-        public GameObject GetPhysicalTileByGridPosition(int floor, int row, int column)
-        {
-            Vector3Int worldPosition = new(row, -floor, column);
-
-            return PhysicalTiles[worldPosition];
-        }
-
+        public GameObject GetPhysicalTileByGridPosition(int floor, int row, int column) 
+            => GetPhysicalTileByWorldPosition(new Vector3(row, -floor, column).ToVector3Int());
+        
+        public GameObject GetPhysicalTileByWorldPosition(Vector3 worldPosition) => PhysicalTiles[worldPosition.ToVector3Int()];
+        
         /// <summary>
         /// Determinate if floor should be visible, usable only from Editor
         /// </summary>
@@ -180,6 +179,8 @@ namespace Scripts.Building
             }
 
             yield return new WaitUntil(() => _runningFloorBuilds == 0);
+
+            yield return _prefabBuilder.ProcessPostBuildLayoutPrefabs();
 
             OnLayoutBuilt?.Invoke();
         }

@@ -44,7 +44,7 @@ namespace Scripts.System
             EventsManager.OnSceneStartedLoading += OnSceneStartedLoading;
             EventsManager.OnSceneFinishedLoading += OnSceneFinishedLoading;
             
-            mapBuilder.OnLayoutBuilt += OnLayoutBuilt;
+            mapBuilder.OnLayoutBuilt.AddListener(OnLayoutBuilt);
         }
 
         private void OnDisable()
@@ -53,7 +53,7 @@ namespace Scripts.System
             EventsManager.OnSceneStartedLoading -= OnSceneStartedLoading;
             EventsManager.OnSceneFinishedLoading -= OnSceneFinishedLoading;
             
-            mapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
+            mapBuilder.OnLayoutBuilt.RemoveListener(OnLayoutBuilt);
         }
 
         private void StartBuildingLevel()

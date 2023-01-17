@@ -57,13 +57,13 @@ namespace Scripts.MapEditor
 
         private void OnEnable()
         {
-            MapBuilder.OnLayoutBuilt += OnLayoutBuilt;
+            MapBuilder.OnLayoutBuilt.AddListener(OnLayoutBuilt);
             EditorEvents.OnMapEditedStatusChanged += MapEditedStatusChanged;
         }
 
         private void OnDisable()
         {
-            MapBuilder.OnLayoutBuilt -= OnLayoutBuilt;
+            MapBuilder.OnLayoutBuilt.RemoveListener(OnLayoutBuilt);
             EditorEvents.OnMapEditedStatusChanged -= MapEditedStatusChanged;
         }
 

@@ -13,6 +13,7 @@ using Scripts.System.Pooling;
 using Scripts.Triggers;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Scripts.Enums;
 using static Scripts.MapEditor.Services.PathsService;
 using Logger = Scripts.Helpers.Logger;
 
@@ -27,7 +28,7 @@ namespace Scripts.Building
         private static HashSet<GameObject> Prefabs => MapBuilder.Prefabs;
         private static TileDescription[,,] Layout => MapBuilder.Layout;
         private static bool IsInEditMode => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
-        
+
         private readonly TriggerService _triggerService;
 
         public PrefabBuilder()
@@ -141,6 +142,11 @@ namespace Scripts.Building
             return !result ? null : result;
         }
 
+        public IEnumerable<TP> GetPrefabsByPrefabType<TP>() where TP : PrefabBase =>
+            Prefabs.Select(p => p.GetComponent<PrefabBase>())
+                .Where(p => p.GetComponent<PrefabBase>() is TP)
+                .Select(p => p as TP); 
+
         public IEnumerable<T> GetPrefabConfigurationsOnWorldPosition<T>(Vector3 worldPosition)
             where T : PrefabConfiguration
         {
@@ -163,11 +169,11 @@ namespace Scripts.Building
                 MapDescription.PrefabConfigurations.Add(newConfiguration);
             }
         }
-        
-        public IEnumerable<TC> GetConfigurations<TC>(Enums.EPrefabType ePrefabType) where TC : PrefabConfiguration =>
+
+        public IEnumerable<TC> GetConfigurations<TC>(EPrefabType ePrefabType) where TC : PrefabConfiguration =>
             MapDescription.PrefabConfigurations.Where(c => c.PrefabType == ePrefabType)
                 .Select(c => c as TC);
-        
+
         public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation transformData)
         {
             return MapDescription.PrefabConfigurations.FirstOrDefault(c => c.TransformData.Equals(transformData));
@@ -258,22 +264,42 @@ namespace Scripts.Building
                     physicalPart.localPosition = position;
                 }
 
-                if (IsInEditMode)
+                if (!IsInEditMode || prefabScript is not WallPrefabBase script) return;
+                
+                if (script && script.presentedInEditor)
                 {
-                    if (prefabScript is WallPrefabBase script)
-                    {
-                        if (script && script.presentedInEditor)
-                        {
-                            script.presentedInEditor.SetActive(true);
-                        }
+                    script.presentedInEditor.SetActive(true);
+                }
 
-                        if (wallConfiguration.HasPath())
-                        {
-                            AddReplaceWaypointPath(wallConfiguration.Guid, wallConfiguration.WayPoints);
-                        }
-                    }
+                if (wallConfiguration.HasPath())
+                {
+                    AddReplaceWaypointPath(wallConfiguration.Guid, wallConfiguration.WayPoints);
                 }
             }
+        }
+        
+        public IEnumerator ProcessPostBuildLayoutPrefabs()
+        {
+            // Tile Prefabs
+            // TODO: getting wrong tile, continue by fixing this
+            // foreach (TilePrefab tilePrefab in GetPrefabsByPrefabType<TilePrefab>()) 
+            // {
+            //     if (tilePrefab.disableFloor)
+            //     {
+            //         MapBuilder.GetPhysicalTileByWorldPosition(tilePrefab.transform.position)
+            //             .GetComponent<TileController>()
+            //             .HideWall(TileDescription.ETileDirection.Floor);
+            //     }
+            //     
+            //     if (tilePrefab.disableCeiling)
+            //     {
+            //         MapBuilder.GetPhysicalTileByWorldPosition(tilePrefab.transform.position)
+            //             .GetComponent<TileController>()
+            //             .HideWall(TileDescription.ETileDirection.Ceiling);
+            //     }
+            // }
+            
+            yield return null;
         }
 
         internal void RemoveConfiguration(string guid)

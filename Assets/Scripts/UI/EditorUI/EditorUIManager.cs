@@ -182,6 +182,8 @@ namespace Scripts.UI.EditorUI
 
         public void SetAnyObjectEdited(bool isEditing)
         {
+            if (isAnyObjectEdited == isEditing) return;
+            
             isAnyObjectEdited = isEditing;
             EditorEvents.TriggerOnMapEditedStatusChanged(isEditing);
         }

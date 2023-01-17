@@ -18,6 +18,8 @@ namespace Scripts.MapEditor.Services
         [SerializeField] private Material highlightedMaterial;
         [SerializeField] private Material waypointLinesNormalMaterial;
         [SerializeField] private Material waypointLinesHighlightedMaterial;
+        [SerializeField] private Material triggerLinesNormalMaterial;
+        [SerializeField] private Material triggerLinesHighlightedMaterial;
         [SerializeField] private GameObject waypointPrefab;
         [SerializeField] private Vector3 waypointScale = new(0.3f, 0.3f, 0.3f);
 
@@ -28,11 +30,15 @@ namespace Scripts.MapEditor.Services
         private static Material _highlightedMaterial;
         private static Material _waypointsLineNormalMaterial;
         private static Material _waypointLinesHighlightedMaterial;
+        private static Material _triggersLineNormalMaterial;
+        private static Material _triggersLinesHighlightedMaterial;
         private static GameObject _parent;
 
         private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
 
         private static Dictionary<EPathsType, bool> _visibilityMap;
+        private static Dictionary<EPathsType, Material> _lineNormalMaterialMap;
+        private static Dictionary<EPathsType, Material> _lineHighlightedMaterialMap;
 
         public enum EPathsType
         {
@@ -53,7 +59,7 @@ namespace Scripts.MapEditor.Services
                 { EPathsType.Waypoint, true },
                 { EPathsType.Trigger, false },
             };
-            
+
             _parent = new GameObject("Waypoints");
             _waypointMesh = waypointPrefab.GetComponent<MeshFilter>().sharedMesh;
             _waypointScale = waypointScale;
@@ -61,6 +67,20 @@ namespace Scripts.MapEditor.Services
             _highlightedMaterial = highlightedMaterial;
             _waypointsLineNormalMaterial = waypointLinesNormalMaterial;
             _waypointLinesHighlightedMaterial = waypointLinesHighlightedMaterial;
+            _triggersLineNormalMaterial = triggerLinesNormalMaterial;
+            _triggersLinesHighlightedMaterial = triggerLinesHighlightedMaterial;
+            
+            _lineNormalMaterialMap = new Dictionary<EPathsType, Material>
+            {
+                {EPathsType.Waypoint, _waypointsLineNormalMaterial},
+                {EPathsType.Trigger, _triggersLineNormalMaterial}
+            };
+            
+            _lineHighlightedMaterialMap = new Dictionary<EPathsType, Material>
+            {
+                {EPathsType.Waypoint, _waypointLinesHighlightedMaterial},
+                {EPathsType.Trigger, _triggersLinesHighlightedMaterial}
+            };
         }
 
         public static void ShowPaths(EPathsType pathsType)
@@ -212,11 +232,11 @@ namespace Scripts.MapEditor.Services
             {
                 for (int index = 0; index < waypointsParts.Count; index++)
                 {
-                    HighlightPoint(waypointsParts.ElementAt(pointIndex).Value, index == pointIndex);
+                    HighlightPoint(pathType, waypointsParts.ElementAt(pointIndex).Value, index == pointIndex);
                 }
             }
             
-            HighlightPoint(waypointsParts.ElementAt(pointIndex).Value, isHighlighted);
+            HighlightPoint(pathType, waypointsParts.ElementAt(pointIndex).Value, isHighlighted);
         }
         
         public static void DestroyPath(EPathsType pathType, string key)
@@ -232,10 +252,10 @@ namespace Scripts.MapEditor.Services
             HighlightPath(pathType, _paths[pathType].GetFirstKeyByValue(pathController), isHighlighted);
         }
 
-        private static void HighlightPoint(WaypointParts waypoint, bool isHighlighted = true)
+        private static void HighlightPoint(EPathsType pathType, WaypointParts waypoint, bool isHighlighted = true)
         {
             Material pointMaterial = isHighlighted ? _highlightedMaterial : _normalMaterial;
-            Material lineMaterial = isHighlighted ? _waypointLinesHighlightedMaterial : _waypointsLineNormalMaterial;
+            Material lineMaterial = isHighlighted ? _lineHighlightedMaterialMap[pathType] : _lineNormalMaterialMap[pathType];
 
             waypoint.MeshRenderer.material = new Material(pointMaterial);
             waypoint.LineRenderer.material = new Material(lineMaterial);
@@ -298,7 +318,7 @@ namespace Scripts.MapEditor.Services
 
             LineRenderer lr = newWaypoint.AddComponent<LineRenderer>();
             lr.enabled = false;
-            lr.material = new Material(_waypointsLineNormalMaterial);
+            lr.material = new Material(_lineNormalMaterialMap[controller.typeOfPath]);
             lr.numCapVertices = 5;
             lr.shadowCastingMode = ShadowCastingMode.Off;
             lr.allowOcclusionWhenDynamic = false;

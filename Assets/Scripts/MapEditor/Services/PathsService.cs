@@ -193,6 +193,11 @@ namespace Scripts.MapEditor.Services
             {
                 HighlightPoint(pathType, key, index, isHighlighted);
             }
+            
+            if (!isHighlighted && !_visibilityMap[pathType])
+            {
+                HidePaths(pathType);
+            }
         }
         
         public static void HighlightPoint(EPathsType pathType, string key, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
@@ -293,6 +298,7 @@ namespace Scripts.MapEditor.Services
             lr.numCapVertices = 5;
             lr.shadowCastingMode = ShadowCastingMode.Off;
             lr.allowOcclusionWhenDynamic = false;
+            lr.textureMode = LineTextureMode.Tile;
             lr.startWidth = 0.1f;
             lr.endWidth = 0.001f;
 

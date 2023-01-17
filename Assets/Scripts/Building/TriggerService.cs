@@ -130,6 +130,7 @@ namespace Scripts.Building
                     if (triggerConfiguration.Subscribers.Contains(receiver.Guid))
                     {
                         triggerConfiguration.Subscribers.Remove(receiver.Guid);
+                        PathsService.AddReplaceTriggerPath(triggerConfiguration);
                     }
                 }
 
@@ -161,7 +162,7 @@ namespace Scripts.Building
 
             if (IsInEditor)
             {
-                PathsService.AddTriggerPath(triggerConfiguration);
+                PathsService.AddReplaceTriggerPath(triggerConfiguration);
             }
         }
     }

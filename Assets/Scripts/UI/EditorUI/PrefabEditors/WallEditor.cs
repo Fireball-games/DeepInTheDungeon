@@ -192,7 +192,7 @@ namespace Scripts.UI.EditorUI
             };
 
             MapBuilder.BuildPrefab(_createdOppositeWall);
-            AddWaypointPath(_createdOppositeWall.Guid, oppositePoints);
+            AddReplaceWaypointPath(_createdOppositeWall.Guid, oppositePoints);
             SetEdited();
         }
 
@@ -268,7 +268,7 @@ namespace Scripts.UI.EditorUI
                 }
 
                 _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
-                AddWaypointPath(EditedConfiguration.Guid, EditedConfiguration.WayPoints, true);
+                AddReplaceWaypointPath(EditedConfiguration.Guid, EditedConfiguration.WayPoints, true);
                 HandleCreateOppositePathButton();
             }
         }
@@ -279,7 +279,7 @@ namespace Scripts.UI.EditorUI
             DestroyPath(EPathsType.Waypoint, EditedConfiguration.Guid);
             List<Waypoint> waypoints = path.ToList();
             EditedConfiguration.WayPoints = waypoints;
-            AddWaypointPath(EditedConfiguration.Guid, waypoints);
+            AddReplaceWaypointPath(EditedConfiguration.Guid, waypoints);
             HighlightPoint(EPathsType.Waypoint, EditedConfiguration.Guid, effectedWaypointIndex, isExclusiveHighlight: true);
             HandleCreateOppositePathButton();
         }

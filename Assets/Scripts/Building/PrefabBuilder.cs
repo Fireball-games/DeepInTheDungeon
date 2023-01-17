@@ -269,7 +269,7 @@ namespace Scripts.Building
 
                         if (wallConfiguration.HasPath())
                         {
-                            AddWaypointPath(wallConfiguration.Guid, wallConfiguration.WayPoints);
+                            AddReplaceWaypointPath(wallConfiguration.Guid, wallConfiguration.WayPoints);
                         }
                     }
                 }

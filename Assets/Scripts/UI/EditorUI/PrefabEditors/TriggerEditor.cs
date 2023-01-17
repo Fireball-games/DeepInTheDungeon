@@ -9,6 +9,7 @@ using Scripts.Triggers;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.Components;
 using UnityEngine;
+using static Scripts.MapEditor.Services.PathsService;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
@@ -30,6 +31,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void RemoveOtherComponents()
         {
+            if (EditedConfiguration != null)
+            {
+                DestroyPath(EPathsType.Trigger, EditedConfiguration.Guid);
+            }
         }
 
         public override Vector3 GetCursor3DScale() =>
@@ -60,6 +65,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 .Select(c => c as TriggerConfiguration);
         }
 
+        protected override void RemoveAndReopen()
+        {
+            if (EditedConfiguration != null)
+            {
+                HighlightPath(EPathsType.Trigger, EditedConfiguration.Guid, false);
+            }
+            
+            base.RemoveAndReopen();
+        }
+
         private void OnPositionChanged(Vector3 newPosition)
         {
             SetEdited();
@@ -86,6 +101,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Logger.Log($"New prefab position: {newPrefabWorldPosition}");
             EditedConfiguration.TransformData.Position = newPrefabWorldPosition;
             PhysicalPrefab.transform.localPosition = newPrefabWorldPosition;
+            
+            RedrawPath();
         }
 
         private void OnTriggerTypeChanged(int enumIntValue)
@@ -113,7 +130,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             SetEdited();
             EditedConfiguration.Subscribers = updatedList.Select(ExtractReceiverGuid).ToList();
+            RedrawPath();
             VisualizeOtherComponents();
+        }
+
+        private void RedrawPath()
+        {
+            AddReplaceTriggerPath(EditedConfiguration, true);
         }
 
         protected override void InitializeOtherComponents()
@@ -159,7 +182,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 if (Mathf.RoundToInt(_editedPrefabRotationY) == 270)
                     _prefabWallCenterPosition.z = (float) Math.Round(PhysicalPrefab.transform.position.z, 1);
 
-                Logger.Log($"WallCenter: {_prefabWallCenterPosition}, prefab position: {prefabPosition}");
+                // Logger.Log($"WallCenter: {_prefabWallCenterPosition}, prefab position: {prefabPosition}");
 
                 _positionControl.ValueChanged.RemoveAllListeners();
                 _positionControl.Label.text = $"{t.Get(Keys.Position)}:";
@@ -185,6 +208,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _receiverList.Set(t.Get(Keys.SubscribedReceivers), subscribers, OnReceiverListChanged);
             _receiverList.Reparent(_content);
+            
+            RedrawPath();
         }
 
         private string ExtractReceiverGuid(PrefabConfiguration configuration)

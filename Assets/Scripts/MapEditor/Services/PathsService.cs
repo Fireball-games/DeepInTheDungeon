@@ -83,7 +83,7 @@ namespace Scripts.MapEditor.Services
         }
 
 
-        public static void AddWaypointPath(string key, List<Waypoint> waypoints, bool highlightAfterBuild = false)
+        public static void AddReplaceWaypointPath(string key, List<Waypoint> waypoints, bool highlightAfterBuild = false)
         {
             DestroyPath(EPathsType.Waypoint, key);
 
@@ -118,9 +118,13 @@ namespace Scripts.MapEditor.Services
                 HidePaths(EPathsType.Waypoint);
         }
         
-        public static void AddTriggerPath(TriggerConfiguration configuration, bool highlightAfterBuild = false)
+        public static void AddReplaceTriggerPath(TriggerConfiguration configuration, bool highlightAfterBuild = false)
         {
-            if (configuration.Subscribers.Count == 0) return;
+            if (configuration.Subscribers.Count == 0)
+            {
+                DestroyPath(EPathsType.Trigger, configuration.Guid);
+                return;
+            }
 
             string key = configuration.Guid;
             

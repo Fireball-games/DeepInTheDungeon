@@ -439,7 +439,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _existingList.Open(t.Get(Keys.ExistingPrefabs),
                 items,
                 configuration => Open(configuration as TC),
-                false,
+                true,
                 onClose);
         }
 

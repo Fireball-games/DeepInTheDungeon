@@ -8,7 +8,7 @@ using Scripts.ScriptableObjects;
 using Scripts.System;
 using UnityEngine;
 using UnityEngine.Rendering;
-using PathsType = System.Collections.Generic.Dictionary<Scripts.MapEditor.Services.PathsService.EPathsType, System.Collections.Generic.Dictionary<(UnityEngine.Vector3, UnityEngine.Vector3), Scripts.MapEditor.PathController>>;
+using PathsType = System.Collections.Generic.Dictionary<Scripts.MapEditor.Services.PathsService.EPathsType, System.Collections.Generic.Dictionary<string, Scripts.MapEditor.PathController>>;
 
 namespace Scripts.MapEditor.Services
 {
@@ -82,20 +82,12 @@ namespace Scripts.MapEditor.Services
             }
         }
 
-        public static void HighlightPath(EPathsType pathsType, List<Waypoint> path, bool isHighlighted = true) =>
-            HighlightPath(pathsType, GetKey(path), isHighlighted);
 
-        public static void HighlightPoint(EPathsType pathType, List<Waypoint> path, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false) =>
-            HighlightPoint(pathType, GetKey(path), pointIndex, isHighlighted, isExclusiveHighlight);
-
-        public static void DestroyPath(EPathsType pathType, List<Waypoint> path) => DestroyPath(pathType, GetKey(path));
-
-        public static void AddWaypointPath(List<Waypoint> waypoints, bool highlightAfterBuild = false)
+        public static void AddWaypointPath(string key, List<Waypoint> waypoints, bool highlightAfterBuild = false)
         {
-            (Vector3, Vector3) key = GetKey(waypoints);
             DestroyPath(EPathsType.Waypoint, key);
 
-            GameObject pathParent = new($"waypointPath_{key.Item1}_{key.Item2}")
+            GameObject pathParent = new($"waypointPath_{waypoints[0].position}")
             {
                 transform =
                 {
@@ -112,7 +104,7 @@ namespace Scripts.MapEditor.Services
                 drawnWaypoint.transform.parent = pathParent.transform;
             }
 
-            _paths[EPathsType.Waypoint].Add(GetKey(waypoints), controller);
+            _paths[EPathsType.Waypoint].Add(key, controller);
 
             BuildLines(controller);
 
@@ -129,8 +121,10 @@ namespace Scripts.MapEditor.Services
         public static void AddTriggerPath(TriggerConfiguration configuration, bool highlightAfterBuild = false)
         {
             if (configuration.Subscribers.Count == 0) return;
+
+            string key = configuration.Guid;
             
-            List<Vector3> points = new List<Vector3>{configuration.TransformData.Position};
+            List<Vector3> points = new() {configuration.TransformData.Position};
             points.AddRange(configuration.Subscribers
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(s))
@@ -138,10 +132,9 @@ namespace Scripts.MapEditor.Services
                 .ToList());
             points[0] = points[0].Round(2);
             
-            (Vector3, Vector3) key = GetKey(points);
             DestroyPath(EPathsType.Trigger, key);
 
-            GameObject pathParent = new($"TriggerPath_{key.Item1}_{key.Item2}")
+            GameObject pathParent = new($"TriggerPath_{points[0]}")
             {
                 transform =
                 {
@@ -176,7 +169,7 @@ namespace Scripts.MapEditor.Services
         {
             foreach (EPathsType pathType in new PathsType(_paths).Keys)
             {
-                foreach ((Vector3, Vector3) key in new Dictionary<(Vector3,Vector3), PathController>(_paths[pathType]).Keys)
+                foreach (string key in new Dictionary<string, PathController>(_paths[pathType]).Keys)
                 {
                     DestroyPath(pathType, key);
                 }
@@ -190,7 +183,7 @@ namespace Scripts.MapEditor.Services
             return (path[2].position.Round(1) - path[1].position.Round(1)).normalized == Vector3.down;
         }
         
-        private static void HighlightPath(EPathsType pathType, (Vector3, Vector3) key, bool isHighlighted = true)
+        public static void HighlightPath(EPathsType pathType, string key, bool isHighlighted = true)
         {
             if (!_paths[pathType].TryGetValue(key, out PathController controller) || controller.isHighlighted == isHighlighted) return;
 
@@ -202,7 +195,7 @@ namespace Scripts.MapEditor.Services
             }
         }
         
-        private static void HighlightPoint(EPathsType pathType, (Vector3, Vector3) key, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
+        public static void HighlightPoint(EPathsType pathType, string key, int pointIndex, bool isHighlighted = true, bool isExclusiveHighlight = false)
         {
             Dictionary<GameObject, WaypointParts> waypointsParts = _paths[pathType][key].Waypoints;
             
@@ -217,26 +210,12 @@ namespace Scripts.MapEditor.Services
             HighlightPoint(waypointsParts.ElementAt(pointIndex).Value, isHighlighted);
         }
         
-        private static void DestroyPath(EPathsType pathType, (Vector3, Vector3) key)
+        public static void DestroyPath(EPathsType pathType, string key)
         {
             if (!_paths[pathType].ContainsKey(key)) return;
 
             Destroy(_paths[pathType][key].gameObject);
             _paths[pathType].Remove(key);
-        }
-
-        private static (Vector3, Vector3) GetKey(List<Waypoint> waypoints)
-        {
-            return waypoints.Count == 1 
-                ? (waypoints[0].position.ToVector3Int(), Vector3.negativeInfinity) 
-                : new ValueTuple<Vector3, Vector3>(waypoints[0].position.Round(2), waypoints[1].position.Round(2));
-        }
-
-        private static (Vector3, Vector3) GetKey(IEnumerable<Vector3> points)
-        {
-            return points.Count() == 1 
-                ? (points.ElementAt(0).ToVector3Int(), Vector3.negativeInfinity) 
-                : new ValueTuple<Vector3, Vector3>(points.ElementAt(0).Round(2), points.ElementAt(0).Round(2));
         }
 
         private static void HighlightPath(EPathsType pathType, PathController pathController, bool isHighlighted = true)

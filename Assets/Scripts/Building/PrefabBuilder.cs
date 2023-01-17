@@ -115,7 +115,7 @@ namespace Scripts.Building
 
             if (configuration is WallConfiguration {WayPoints: { }} wall && wall.WayPoints.Any())
             {
-                DestroyPath(EPathsType.Waypoint, wall.WayPoints);
+                DestroyPath(EPathsType.Waypoint, wall.Guid);
             }
 
             _triggerService.RemoveEmbeddedTriggers(prefabGo);
@@ -200,7 +200,7 @@ namespace Scripts.Building
 
                 if (wall.WayPoints == null || !wall.WayPoints.Any()) continue;
 
-                DestroyPath(EPathsType.Waypoint, wall.WayPoints);
+                DestroyPath(EPathsType.Waypoint, wall.Guid);
 
                 foreach (Waypoint waypoint in wall.WayPoints)
                 {
@@ -269,7 +269,7 @@ namespace Scripts.Building
 
                         if (wallConfiguration.HasPath())
                         {
-                            AddWaypointPath(wallConfiguration.WayPoints);
+                            AddWaypointPath(wallConfiguration.Guid, wallConfiguration.WayPoints);
                         }
                     }
                 }

@@ -180,7 +180,7 @@ namespace Scripts.Building
 
             yield return new WaitUntil(() => _runningFloorBuilds == 0);
 
-            yield return _prefabBuilder.ProcessPostBuildLayoutPrefabs();
+            yield return StartCoroutine(_prefabBuilder.ProcessPostBuildLayoutPrefabs());
 
             OnLayoutBuilt?.Invoke();
         }
@@ -193,9 +193,9 @@ namespace Scripts.Building
                 StartCoroutine(BuildRow(floor, row, layout));
             }
 
-            _runningFloorBuilds -= 1;
-
             yield return new WaitUntil(() => _runningRowBuilds == 0);
+            
+            _runningFloorBuilds -= 1;
         }
 
         private int _runningRowBuilds;

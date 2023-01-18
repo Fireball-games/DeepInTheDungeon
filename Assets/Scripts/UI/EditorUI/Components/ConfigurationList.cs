@@ -16,7 +16,10 @@ namespace Scripts.UI.EditorUI.Components
         {
             base.Open(listTitle, items, onItemClicked, onClose);
 
-            LastAddedButton.isCameraStayingOnNavigatedPosition = _isCameraStayingOnNavigatedPosition;
+            if (LastAddedButton)
+            {
+                LastAddedButton.isCameraStayingOnNavigatedPosition = _isCameraStayingOnNavigatedPosition;
+            }
             isCameraStayingOnNavigatedPosition = _isCameraStayingOnNavigatedPosition;
         }
 

@@ -143,9 +143,7 @@ namespace Scripts.Building
         }
 
         public IEnumerable<TP> GetPrefabsByPrefabType<TP>() where TP : PrefabBase =>
-            Prefabs.Select(p => p.GetComponent<PrefabBase>())
-                .Where(p => p.GetComponent<PrefabBase>() is TP)
-                .Select(p => p as TP); 
+            Prefabs.Select(p => p.GetComponent<PrefabBase>()).OfType<TP>(); 
 
         public IEnumerable<T> GetPrefabConfigurationsOnWorldPosition<T>(Vector3 worldPosition)
             where T : PrefabConfiguration
@@ -282,22 +280,22 @@ namespace Scripts.Building
         {
             // Tile Prefabs
             // TODO: getting wrong tile, continue by fixing this
-            // foreach (TilePrefab tilePrefab in GetPrefabsByPrefabType<TilePrefab>()) 
-            // {
-            //     if (tilePrefab.disableFloor)
-            //     {
-            //         MapBuilder.GetPhysicalTileByWorldPosition(tilePrefab.transform.position)
-            //             .GetComponent<TileController>()
-            //             .HideWall(TileDescription.ETileDirection.Floor);
-            //     }
-            //     
-            //     if (tilePrefab.disableCeiling)
-            //     {
-            //         MapBuilder.GetPhysicalTileByWorldPosition(tilePrefab.transform.position)
-            //             .GetComponent<TileController>()
-            //             .HideWall(TileDescription.ETileDirection.Ceiling);
-            //     }
-            // }
+            foreach (TilePrefab tilePrefab in GetPrefabsByPrefabType<TilePrefab>()) 
+            {
+                if (tilePrefab.disableFloor)
+                {
+                    MapBuilder.GetPhysicalTileByWorldPosition(tilePrefab.transform.position)
+                        .GetComponent<TileController>()
+                        .HideWall(TileDescription.ETileDirection.Floor);
+                }
+                
+                if (tilePrefab.disableCeiling)
+                {
+                    MapBuilder.GetPhysicalTileByWorldPosition(tilePrefab.transform.position)
+                        .GetComponent<TileController>()
+                        .HideWall(TileDescription.ETileDirection.Ceiling);
+                }
+            }
             
             yield return null;
         }

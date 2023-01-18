@@ -102,9 +102,11 @@ namespace Scripts.Building
                 
                 // TODO: manage mesh and material via stored names
             }
-            
-            tileTransform.position = new Vector3(row, 0 - floor, column);
-            PhysicalTiles.Add(tileTransform.position.ToVector3Int(), newTile.gameObject);
+
+            Vector3 worldPosition = new(row, -floor, column); 
+            // tileTransform.position = new Vector3(row, 0 - floor, column);
+            tileTransform.position = worldPosition;
+            PhysicalTiles.Add(worldPosition.ToVector3Int(), newTile.gameObject);
         }
     }
 }

@@ -6,7 +6,7 @@ using static Scripts.Enums;
 
 namespace Scripts.Triggers
 {
-    public class DoTweenTrigger : MouseClickTrigger
+    public class DoTweenClickTrigger : MouseClickTrigger
     {
         public ETriggerMoveType moveType;
         public EActiveProperty activeProperty;

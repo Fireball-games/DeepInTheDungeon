@@ -55,7 +55,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             base.SetPrefab(prefabName);
 
-            MapBuilder.Layout.ByGridV3Int(PhysicalPrefabBody.transform.position.ToGridPosition()).IsForMovement = EditedConfiguration.IsWalkable;
+            MapBuilder.Layout.ByGridV3Int(PhysicalPrefab.transform.position.ToGridPosition()).IsForMovement = EditedConfiguration.IsWalkable;
         }
 
         protected override void VisualizeOtherComponents()

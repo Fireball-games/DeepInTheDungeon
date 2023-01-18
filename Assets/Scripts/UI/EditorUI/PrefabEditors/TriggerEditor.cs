@@ -65,7 +65,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void RemoveAndReopen()
         {
-            if (EditedConfiguration != null)
+            if (IsCurrentConfigurationChanged)
+            {
+                DestroyPath(EPathsType.Trigger, EditedConfiguration.Guid);
+                
+                RemoveOtherComponents();
+            }
+            else if (EditedConfiguration != null)
             {
                 HighlightPath(EPathsType.Trigger, EditedConfiguration.Guid, false);
             }

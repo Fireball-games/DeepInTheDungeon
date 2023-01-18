@@ -61,7 +61,11 @@ namespace Scripts.Building
                 }
 
                 trigger.GUID = configuration.Guid;
-                trigger.SetMovementStep();
+                
+                if (trigger is IPositionsTrigger positionsTrigger)
+                {
+                    positionsTrigger.SetPosition();
+                }
             }
 
             foreach (TriggerReceiver receiver in newPrefab.GetComponents<TriggerReceiver>())

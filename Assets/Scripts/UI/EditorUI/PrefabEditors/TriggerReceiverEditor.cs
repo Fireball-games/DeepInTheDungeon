@@ -137,14 +137,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             bool anyComponentsShown = false;
 
-            if (_editedPrefab is TriggerReceiverWithPositions positionsReceiver)
+            if (_editedPrefab is IPositionsTrigger positionsReceiver)
             {
                 anyComponentsShown = true;
                 _startPositionUpDownWrapper.SetActive(true);
                 _startPositionUpDown.OnValueChanged.RemoveAllListeners();
                 _startPositionUpDown.Label.text = t.Get(Keys.StartPosition);
-                _startPositionUpDown.maximum = positionsReceiver.steps.Count - 1;
-                _startPositionUpDown.Value = positionsReceiver.startPosition;
+                _startPositionUpDown.maximum = positionsReceiver.GetSteps().Count - 1;
+                _startPositionUpDown.Value = positionsReceiver.GetStartPosition();
                 _startPositionUpDown.OnValueChanged.AddListener(OnStartPositionChanged);
             }
 
@@ -157,7 +157,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void OnStartPositionChanged(float newValue)
         {
             SetEdited(true);
-            int newPosition = (int) Mathf.Clamp(newValue, 0, ((TriggerReceiverWithPositions) _editedPrefab).steps.Count - 1);
+            int newPosition = (int) Mathf.Clamp(newValue, 0, ((IPositionsTrigger) _editedPrefab).GetSteps().Count - 1);
             _editedConfiguration.StartPosition = newPosition;
             _editedPrefab.startPosition = newPosition;
             _editedPrefab.SetPosition();

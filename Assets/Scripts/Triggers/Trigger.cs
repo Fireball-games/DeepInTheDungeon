@@ -86,8 +86,6 @@ namespace Scripts.Triggers
             
             return sameTileValidation && (position - Player.transform.position).sqrMagnitude <= MaxDistanceFromPlayer;
         }
-        
-        public abstract void SetMovementStep();
 
         public override void InitializeFromPool()
         {

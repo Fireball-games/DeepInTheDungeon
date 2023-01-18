@@ -2,17 +2,11 @@
 
 namespace Scripts.Triggers
 {
-    public class TriggerReceiverWithPositions : TriggerReceiver
+    public interface IPositionsTrigger
     {
-        public List<DoTweenMoveStep> steps;
-        protected override void TriggerNext()
-        {
-            
-        }
+        public List<DoTweenMoveStep> GetSteps();
+        public int GetStartPosition();
+        public void SetPosition();
 
-        public override void SetPosition()
-        {
-            
-        }
     }
 }

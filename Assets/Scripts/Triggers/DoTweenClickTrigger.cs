@@ -6,7 +6,7 @@ using static Scripts.Enums;
 
 namespace Scripts.Triggers
 {
-    public class DoTweenClickTrigger : MouseClickTrigger
+    public class DoTweenClickTrigger : MouseClickTrigger, IPositionsTrigger
     {
         public ETriggerMoveType moveType;
         public EActiveProperty activeProperty;
@@ -41,7 +41,7 @@ namespace Scripts.Triggers
             }
         }
         
-        public override void SetMovementStep()
+        public  void SetPosition()
         {
             if (activeProperty is EActiveProperty.Position)
             {
@@ -112,5 +112,9 @@ namespace Scripts.Triggers
 
             return result;
         }
+
+        public List<DoTweenMoveStep> GetSteps() => steps;
+
+        public int GetStartPosition() => startPosition;
     }
 }

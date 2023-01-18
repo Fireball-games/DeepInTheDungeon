@@ -6,10 +6,11 @@ using static Scripts.Enums;
 
 namespace Scripts.Triggers
 {
-    public class DoTweenTriggerReceiver : TriggerReceiverWithPositions
+    public class DoTweenTriggerReceiver : TriggerReceiver, IPositionsTrigger
     {
         public ETriggerMoveType moveType;
         public EActiveProperty activeProperty;
+        public List<DoTweenMoveStep> steps;
 
         private List<Tween> _movementStore;
 
@@ -40,7 +41,10 @@ namespace Scripts.Triggers
                 _movementStore?.Add(newTween);
             }
         }
-        
+
+        public List<DoTweenMoveStep> GetSteps() => steps;
+        public int GetStartPosition() => startPosition;
+
         public override void SetPosition()
         {
             if (activeProperty is EActiveProperty.Position)

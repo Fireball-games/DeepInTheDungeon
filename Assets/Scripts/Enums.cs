@@ -39,5 +39,12 @@
             Position = 1,
             Rotation = 2,
         }
+
+        public enum ETriggerActivatedDetail
+        {
+            None = 0,
+            SwitchedOn = 1,
+            SwitchedOff = 2,
+        }
     }
 }

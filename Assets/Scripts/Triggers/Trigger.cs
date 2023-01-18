@@ -54,7 +54,7 @@ namespace Scripts.Triggers
             };
         }
 
-        protected abstract void OnTriggerActivated();
+        protected abstract void OnTriggerActivated(ETriggerActivatedDetail activatedDetail = ETriggerActivatedDetail.None);
         
         protected void TriggerNext(bool setAtRest = false)
         {

@@ -55,7 +55,7 @@ namespace Scripts.Triggers
             CurrentPosition = startPosition == steps.Count - 1 ? 0 : startPosition + 1;
         }
 
-        protected override void OnTriggerActivated()
+        protected override void OnTriggerActivated(ETriggerActivatedDetail _ = ETriggerActivatedDetail.None)
         {
             switch (moveType)
             {

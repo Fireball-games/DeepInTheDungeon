@@ -44,6 +44,7 @@ namespace Scripts.Triggers
 
         public List<DoTweenMoveStep> GetSteps() => steps;
         public int GetStartPosition() => startPosition;
+        public void SetStartPosition(int newStartPosition) => startPosition = newStartPosition;
 
         public override void SetPosition()
         {

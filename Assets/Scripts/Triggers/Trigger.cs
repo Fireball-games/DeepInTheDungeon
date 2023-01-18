@@ -22,8 +22,6 @@ namespace Scripts.Triggers
         public bool atRest = true;
         public List<TriggerReceiver> presetSubscribers;
         public List<string> subscribers;
-        [Header("Movement settings")]
-        public int startPosition;
 
         protected static PlayerController Player => GameManager.Instance.Player;
         protected Transform ActivePart;

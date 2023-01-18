@@ -21,6 +21,11 @@ namespace Scripts.Triggers
             throw new NotImplementedException();
         }
 
+        public void SetStartPosition(int newStartPosition)
+        {
+            throw new NotImplementedException();
+        }
+
         public void SetPosition()
         {
             throw new NotImplementedException();

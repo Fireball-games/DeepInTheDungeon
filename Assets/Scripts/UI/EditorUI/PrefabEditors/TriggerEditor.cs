@@ -27,8 +27,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private readonly Vector3 _wallCursor3DSize = new(0.15f, 1.1f, 1.1f);
         private readonly Vector3 _genericCursor3DSize = new(0.33f, 0.33f, 0.33f);
 
-        private Transform _content;
-
         protected override void RemoveOtherComponents()
         {
             if (EditedConfiguration != null)
@@ -141,29 +139,27 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void InitializeOtherComponents()
         {
-            _content = transform.Find("Body/Background/Frame/ScrollView/Viewport/Content");
-
-            _positionControl = _content.Find("PositionControl").GetComponent<Vector3Control>();
+            _positionControl = Content.Find("PositionControl").GetComponent<Vector3Control>();
             _positionControl.SetActive(false);
 
-            _triggerTypeDropdown = _content.Find("TriggerTypeDropdown").GetComponent<LabeledDropdown>();
+            _triggerTypeDropdown = Content.Find("TriggerTypeDropdown").GetComponent<LabeledDropdown>();
             _triggerTypeDropdown.SetActive(false);
 
-            _triggerCountUpDown = _content.Find("TriggerCountUpDown").GetComponent<NumericUpDown>();
+            _triggerCountUpDown = Content.Find("TriggerCountUpDown").GetComponent<NumericUpDown>();
             _triggerCountUpDown.SetActive(false);
             _triggerCountUpDown.OnValueChanged.RemoveAllListeners();
             _triggerCountUpDown.OnValueChanged.AddListener(OnTriggerCountChanged);
 
-            _receiverList = _content.Find("ReceiverList").GetComponent<EditableConfigurationList>();
+            _receiverList = Content.Find("ReceiverList").GetComponent<EditableConfigurationList>();
             _receiverList.SetActive(false);
         }
 
         protected override void VisualizeOtherComponents()
         {
-            _positionControl.Reparent(body.transform, false);
-            _triggerTypeDropdown.Reparent(body.transform, false);
-            _triggerCountUpDown.Reparent(body.transform, false);
-            _receiverList.Reparent(body.transform, false);
+            _positionControl.SetActive(false);
+            _triggerTypeDropdown.SetActive(false);
+            _triggerCountUpDown.SetActive(false);
+            _receiverList.SetActive(false);
 
             if (EditedConfiguration is null) return;
 
@@ -186,28 +182,28 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
                 _positionControl.ValueChanged.RemoveAllListeners();
                 _positionControl.Label.text = $"{t.Get(Keys.Position)}:";
-                _positionControl.Value = PhysicalPrefab.transform.position - _prefabWallCenterPosition;
+                _positionControl.Value = prefabPosition - _prefabWallCenterPosition;
                 _positionControl.ValueChanged.AddListener(OnPositionChanged);
-                _positionControl.Reparent(_content);
+                _positionControl.SetActive(true);
             }
 
             _triggerTypeDropdown.Set($"{t.Get(Keys.TriggerType)}:",
                 EditedConfiguration.TriggerType,
                 OnTriggerTypeChanged);
-            _triggerTypeDropdown.Reparent(_content);
+            _triggerTypeDropdown.SetActive(true);
 
             if (EditedConfiguration.TriggerType is Enums.ETriggerType.Multiple)
             {
                 _triggerCountUpDown.Value = EditedConfiguration.Count;
                 _triggerCountUpDown.Label.text = $"{t.Get(Keys.Count)} :";
-                _triggerCountUpDown.Reparent(_content);
+                _triggerCountUpDown.SetActive(true);
             }
 
             IEnumerable<TriggerReceiverConfiguration> subscribers =
                 EditedConfiguration.Subscribers.Select(s => MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(s));
 
             _receiverList.Set(t.Get(Keys.SubscribedReceivers), subscribers, OnReceiverListChanged);
-            _receiverList.Reparent(_content);
+            _receiverList.SetActive(true);
             
             RedrawPath();
         }

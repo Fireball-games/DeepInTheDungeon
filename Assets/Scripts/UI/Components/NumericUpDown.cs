@@ -96,7 +96,7 @@ namespace Scripts.UI.Components
 
             if (!isSilent)
             {
-                OnValueChanged.Invoke(newValue);
+                OnValueChanged.Invoke(Value);
             }
         }
 

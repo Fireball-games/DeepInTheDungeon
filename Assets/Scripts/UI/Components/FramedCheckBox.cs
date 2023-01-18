@@ -14,7 +14,7 @@ namespace Scripts.UI.Components
 
         private void Awake()
         {
-            _checkbox = body.transform.Find("CheckBox").GetComponent<Toggle>();
+            _checkbox = body.transform.Find("Checkbox").GetComponent<Toggle>();
             _checkbox.onValueChanged.AddListener(OnValueChanged_internal);
             
             _label = _checkbox.transform.Find("Label").GetComponent<TMP_Text>();

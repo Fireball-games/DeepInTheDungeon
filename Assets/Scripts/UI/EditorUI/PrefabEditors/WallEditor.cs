@@ -139,17 +139,17 @@ namespace Scripts.UI.EditorUI
 
         protected override void InitializeOtherComponents()
         {
-            _offsetSlider = body.transform.Find("Background/Frame/OffsetHandling/OffsetSlider").GetComponent<LabeledSlider>();
+            _offsetSlider = Content.Find("OffsetHandling/OffsetSlider").GetComponent<LabeledSlider>();
             _offsetSlider.SetActive(false);
             _offsetSlider.SetLabel(t.Get(Keys.Offset));
 
-            _offsetNumericUpDown = body.transform.Find("Background/Frame/OffsetHandling/NumericUpDown").GetComponent<NumericUpDown>();
+            _offsetNumericUpDown = Content.Find("OffsetHandling/NumericUpDown").GetComponent<NumericUpDown>();
             _offsetNumericUpDown.gameObject.SetActive(false);
 
             _waypointEditor = body.transform.Find("WaypointsEditor").GetComponent<WaypointEditor>();
             _waypointEditor.SetActive(false);
 
-            _createOppositePathButton = body.transform.Find("Background/Frame/Buttons/CreateOppositePathButton").GetComponent<Button>();
+            _createOppositePathButton = Content.Find("CreateOppositePathButton").GetComponent<Button>();
             _createOppositePathButton.onClick.RemoveAllListeners();
             _createOppositePathButton.onClick.AddListener(GenerateOppositePath);
             _createOppositePathButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.CreateOppositePath);

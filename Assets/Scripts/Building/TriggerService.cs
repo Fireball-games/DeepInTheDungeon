@@ -158,8 +158,11 @@ namespace Scripts.Building
                 prefabScript.triggerType = triggerConfiguration.TriggerType;
                 prefabScript.count = triggerConfiguration.Count;
                 prefabScript.subscribers = triggerConfiguration.Subscribers;
-                prefabScript.startPosition = triggerConfiguration.StartPosition;
-                prefabScript.SetMovementStep();
+                if (prefabScript is IPositionsTrigger positionsTrigger)
+                {
+                    positionsTrigger.SetStartPosition(triggerConfiguration.StartPosition);
+                    positionsTrigger.SetPosition();
+                }
             }
 
             newPrefab.transform.localRotation = configuration.TransformData.Rotation;

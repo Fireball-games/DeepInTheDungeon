@@ -10,6 +10,7 @@ namespace Scripts.Triggers
     {
         public ETriggerMoveType moveType;
         public EActiveProperty activeProperty;
+        public int startPosition;
         public List<DoTweenMoveStep> steps;
 
         private List<Tween> _positionStore;
@@ -40,7 +41,7 @@ namespace Scripts.Triggers
                 _positionStore?.Add(newTween);
             }
         }
-        
+
         public  void SetPosition()
         {
             if (activeProperty is EActiveProperty.Position)
@@ -114,7 +115,7 @@ namespace Scripts.Triggers
         }
 
         public List<DoTweenMoveStep> GetSteps() => steps;
-
         public int GetStartPosition() => startPosition;
+        public void SetStartPosition(int newStartPosition) => startPosition = newStartPosition;
     }
 }

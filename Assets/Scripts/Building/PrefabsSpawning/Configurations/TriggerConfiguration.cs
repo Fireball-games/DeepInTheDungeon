@@ -32,7 +32,11 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             Subscribers = trigger.presetSubscribers.Select(s => s.Guid).ToList();
             TriggerType = trigger.triggerType;
             Count = trigger.count;
-            StartPosition = trigger.startPosition;
+            
+            if (trigger is IPositionsTrigger positionsTrigger)
+            {
+                StartPosition = positionsTrigger.GetStartPosition();
+            }
             
             TransformData.Position = trigger.transform.position.Round(2);
         }

@@ -27,6 +27,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         where TPrefab : PrefabBase
     {
         protected GameObject Placeholder;
+        protected Transform Content;
 
         private PrefabList _prefabList;
         private ConfigurationList _existingList;
@@ -446,13 +447,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void AssignComponents()
         {
             Transform bodyTransform = body.transform;
+            Transform frame = bodyTransform.GetChild(0).GetChild(0);
+            Content = frame.Find("ScrollingContent/Viewport/Content");
+            
             Placeholder = bodyTransform.Find("Placeholder").gameObject;
             _prefabList = bodyTransform.Find("AvailablePrefabs").GetComponent<PrefabList>();
             _existingList = bodyTransform.Find("ExistingPrefabs").GetComponent<ConfigurationList>();
-            Transform frame = bodyTransform.GetChild(0).GetChild(0);
             _prefabTitle = frame.Find("Header/PrefabTitle").GetComponent<Title>();
             _prefabsFinderButton = frame.Find("Header/PrefabFinderButton").GetComponent<ImageButton>();
-            _statusText = frame.Find("StatusText").GetComponent<TMP_Text>();
+            _statusText = Content.Find("StatusText").GetComponent<TMP_Text>();
             Transform buttons = frame.Find("Buttons");
             _mainWindow = bodyTransform.Find("Background").gameObject;
             _cancelButton = buttons.Find("CancelButton").GetComponent<Button>();

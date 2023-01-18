@@ -158,6 +158,7 @@ namespace Scripts.Building
                 prefabScript.triggerType = triggerConfiguration.TriggerType;
                 prefabScript.count = triggerConfiguration.Count;
                 prefabScript.subscribers = triggerConfiguration.Subscribers;
+                
                 if (prefabScript is IPositionsTrigger positionsTrigger)
                 {
                     positionsTrigger.SetStartPosition(triggerConfiguration.StartPosition);

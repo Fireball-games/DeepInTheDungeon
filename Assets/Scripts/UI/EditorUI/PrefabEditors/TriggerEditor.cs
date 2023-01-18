@@ -4,6 +4,7 @@ using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
+using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.Triggers;
 using Scripts.UI.Components;

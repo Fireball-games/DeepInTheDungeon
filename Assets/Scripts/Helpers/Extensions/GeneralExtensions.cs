@@ -73,9 +73,13 @@ namespace Scripts.Helpers.Extensions
             return source[gridPosition.x][gridPosition.y][gridPosition.z];
         }
 
-        public static T ByGridV3Int<T>(this T[,,] source, Vector3Int position)
+        public static T ByGridV3Int<T>(this T[,,] source, Vector3Int position) where T: class
         {
-            return source[position.x, position.y, position.z];
+            if (source.HasIndex(position)) 
+                return source[position.x, position.y, position.z];
+            
+            Logger.LogWarning($"Attempt to read index out of bounds: {position}");
+            return null;
         }
 
         public static bool HasIndex<T>(this List<List<List<T>>> source, Vector3Int gridPosition)

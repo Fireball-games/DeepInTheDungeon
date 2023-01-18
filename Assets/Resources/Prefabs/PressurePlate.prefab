@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6230604345974836758}
   - component: {fileID: 9092768665574081962}
-  - component: {fileID: 2105600182296215260}
   m_Layer: 0
   m_Name: PressurePlate
   m_TagString: Untagged
@@ -51,19 +50,6 @@ MonoBehaviour:
   isWalkable: 1
   disableFloor: 1
   disableCeiling: 0
---- !u!65 &2105600182296215260
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 443069167683944211}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.58, y: 1, z: 0.58}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1895534215785322187
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,7 +77,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1895534215785322187}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
   m_LocalScale: {x: 0.0096, y: 0.0096, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -171,7 +157,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 486652403328750983}
-  - component: {fileID: 8123160089398808996}
+  - component: {fileID: 2748358832015656215}
+  - component: {fileID: 6031514785848567482}
   m_Layer: 0
   m_Name: PressurePlate
   m_TagString: Untagged
@@ -187,7 +174,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2270544125887310802}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -195,7 +182,7 @@ Transform:
   m_Father: {fileID: 4358536214560201882}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8123160089398808996
+--- !u!114 &2748358832015656215
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -204,7 +191,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2270544125887310802}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79518e7e9722414b99b3d8a72f6ceaf1, type: 3}
+  m_Script: {fileID: 11500000, guid: 391c5aa0bbea49ebaef7dc1104cc1b3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefabType: 9
@@ -215,16 +202,32 @@ MonoBehaviour:
   atRest: 1
   presetSubscribers: []
   subscribers: []
-  startPosition: 1
-  moveType: 1
+  allowedLayers:
+    serializedVersion: 2
+    m_Bits: 57344
+  moveType: 2
   activeProperty: 1
+  startPosition: 1
   steps:
-  - target: {x: 0, y: -0.05, z: 0}
+  - target: {x: 0, y: 0, z: 0}
     duration: 0.3
     movementEase: 1
-  - target: {x: 0, y: 0, z: 0}
+  - target: {x: 0, y: -0.05, z: 0}
     duration: 1
-    movementEase: 1
+    movementEase: 9
+--- !u!65 &6031514785848567482
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2270544125887310802}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.58, y: 0.06, z: 0.58}
+  m_Center: {x: 0, y: 0.04, z: 0}
 --- !u!1 &4669800552667117279
 GameObject:
   m_ObjectHideFlags: 0

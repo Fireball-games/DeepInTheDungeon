@@ -198,7 +198,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             RemoveAndClose();
         }
 
-        public void MoveCameraToPrefab(Vector3 targetPosition) =>
+        public virtual void MoveCameraToPrefab(Vector3 targetPosition) =>
             EditorCameraService.Instance.MoveCameraToPrefab(Vector3Int.RoundToInt(targetPosition));
 
         protected virtual void SetPrefab(string prefabName)

@@ -112,6 +112,19 @@ namespace Scripts.Building
             if (configuration is TilePrefabConfiguration)
             {
                 Layout.ByGridV3Int(prefabGo.transform.position.ToGridPosition()).IsForMovement = true;
+
+                if (IsInEditMode)
+                {
+                    TilePrefab prefabScript = prefabGo.GetComponent<TilePrefab>();
+                    
+                    if (prefabScript)
+                    {
+                        TileController prefabTile = MapBuilder.GetPhysicalTileByWorldPosition(prefabScript.transform.position)
+                            .GetComponent<TileController>();
+                        if (prefabScript.disableFloor) prefabTile.ShowWall(TileDescription.ETileDirection.Floor);
+                        if (prefabScript.disableCeiling) prefabTile.ShowWall(TileDescription.ETileDirection.Ceiling);
+                    }
+                }
             }
 
             if (configuration is WallConfiguration {WayPoints: { }} wall && wall.WayPoints.Any())

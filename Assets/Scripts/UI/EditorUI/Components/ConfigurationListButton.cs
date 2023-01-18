@@ -20,7 +20,7 @@ namespace Scripts.UI.EditorUI.Components
         private int _originalFloor;
 
         private EditorUIManager UIManager => EditorUIManager.Instance;
-        private Cursor3D Cursor3D => UIManager.Cursor3D;
+        private Cursor3D Cursor3D => UIManager ? UIManager.Cursor3D : null;
         private EditorCameraService CameraService => EditorCameraService.Instance;
 
         private bool _canMoveToPrefab = true;

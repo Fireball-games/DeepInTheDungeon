@@ -37,7 +37,7 @@ namespace Scripts.UI.EditorUI
             Guid = Guid.NewGuid().ToString(),
             PrefabType = EditedPrefabType,
             PrefabName = prefabName,
-            TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation),
+            TransformData = new PositionRotation(SelectedCage.transform.position, SelectedCage.transform.rotation),
             SpawnPrefabOnBuild = true,
 
             WayPoints = new List<Waypoint>(),

@@ -64,6 +64,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             // TODO: implement OnStartPositionChanged and here set it on new prefab, so preset prefab values persist, like in TilePrefabEditor
             // TODO: Try to set it in GetNewPrefabConfiguration - obtain prefab object from PrefabStore and set it by those values
             // TODO: if above works, do the same for TilePrefabEditor
+            // TODO: OR do this mechanic while building the prefab, like triggers do it now
         }
 
         protected override IEnumerable<TriggerConfiguration> GetAvailableConfigurations()

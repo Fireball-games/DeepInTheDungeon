@@ -22,7 +22,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Guid = Guid.NewGuid().ToString(),
             PrefabType = EditedPrefabType,
             PrefabName = prefabName,
-            TransformData = new PositionRotation(Placeholder.transform.position, Quaternion.Euler(Vector3.zero)),
+            TransformData = new PositionRotation(SelectedCage.transform.position, Quaternion.Euler(Vector3.zero)),
             SpawnPrefabOnBuild = true,
             
             IsWalkable = false,
@@ -55,8 +55,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void SetPrefab(string prefabName)
         {
-            Placeholder.transform.position = SelectedCage.transform.position;
-            
             base.SetPrefab(prefabName);
 
             TilePrefab prefabScript = PhysicalPrefab.GetComponent<TilePrefab>();

@@ -66,6 +66,7 @@ namespace Scripts.Building
             {
                 GameObject newPrefab = BuildPhysicalPrefab(configuration);
 
+                TriggerService.ProcessEmbeddedTriggerReceivers(newPrefab);
                 TriggerService.ProcessEmbeddedTriggers(newPrefab);
 
                 bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;

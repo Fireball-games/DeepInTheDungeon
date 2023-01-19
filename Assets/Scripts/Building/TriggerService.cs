@@ -46,6 +46,7 @@ namespace Scripts.Building
                     _triggers.TryAdd(trigger.GUID, trigger);
 
                     configuration = AddTriggerConfigurationToMap(trigger, prefabScript.GUID);
+                    PathsService.AddReplaceTriggerPath(configuration);
                 }
                 else
                 {
@@ -66,7 +67,14 @@ namespace Scripts.Building
                     positionsTrigger.SetPosition();
                 }
             }
+        }
 
+        public static void ProcessEmbeddedTriggerReceivers(GameObject newPrefab)
+        {
+            PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
+
+            if (!prefabScript) return;
+            
             foreach (TriggerReceiver receiver in newPrefab.GetComponents<TriggerReceiver>())
             {
                 TriggerReceiverConfiguration configuration;

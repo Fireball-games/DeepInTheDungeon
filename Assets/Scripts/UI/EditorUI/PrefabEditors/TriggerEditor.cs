@@ -57,6 +57,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override TriggerConfiguration CloneConfiguration(TriggerConfiguration sourceConfiguration) => new(sourceConfiguration);
 
+        protected override void SetPrefab(string prefabName)
+        {
+            base.SetPrefab(prefabName);
+            
+            // TODO: implement OnStartPositionChanged and here set it on new prefab, so preset prefab values persist, like in TilePrefabEditor
+            // TODO: Try to set it in GetNewPrefabConfiguration - obtain prefab object from PrefabStore and set it by those values
+            // TODO: if above works, do the same for TilePrefabEditor
+        }
+
         protected override IEnumerable<TriggerConfiguration> GetAvailableConfigurations()
         {
             return MapBuilder.MapDescription.PrefabConfigurations

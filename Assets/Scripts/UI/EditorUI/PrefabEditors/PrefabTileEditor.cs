@@ -60,7 +60,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             base.SetPrefab(prefabName);
 
             TilePrefab prefabScript = PhysicalPrefab.GetComponent<TilePrefab>();
-            MapBuilder.Layout.ByGridV3Int(PhysicalPrefab.transform.position.ToGridPosition()).IsForMovement = EditedConfiguration.IsWalkable;
             SetIsWalkableInLayout(prefabScript.isWalkable);
 
             if (prefabScript.disableFloor) WallService.ActivateWall(prefabScript.transform.position, TileDescription.ETileDirection.Floor, false);

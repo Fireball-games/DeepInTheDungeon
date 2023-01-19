@@ -28,14 +28,14 @@ namespace Scripts.Building
         private static TileDescription[,,] Layout => MapBuilder.Layout;
         private static bool IsInEditMode => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
 
-        internal void BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
+        internal IEnumerator BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
         {
             if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
             {
                 DestroyAllPaths();
             }
 
-            MapBuilder.StartCoroutine(BuildPrefabsCoroutine(configurations));
+            yield return MapBuilder.StartCoroutine(BuildPrefabsCoroutine(configurations));
         }
 
         private IEnumerator BuildPrefabsCoroutine(IEnumerable configurations)
@@ -266,7 +266,7 @@ namespace Scripts.Building
         public IEnumerator ProcessPostBuildLayoutPrefabs()
         {
             // Tile Prefabs
-            // TODO: getting wrong tile, continue by fixing this
+            
             foreach (TilePrefab tilePrefab in GetPrefabsByPrefabType<TilePrefab>()) 
             {
                 if (tilePrefab.disableFloor)

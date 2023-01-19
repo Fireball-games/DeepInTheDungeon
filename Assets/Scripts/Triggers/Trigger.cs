@@ -6,6 +6,7 @@ using Scripts.Player;
 using Scripts.System;
 using UnityEngine;
 using static Scripts.Enums;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Triggers
 {
@@ -31,6 +32,11 @@ namespace Scripts.Triggers
         {
             subscribers = new List<string>();
             ActivePart = transform.Find("ActivePart");
+
+            if (!GetComponent<TriggerActivatorBase>())
+            {
+                Logger.LogError("Detected trigger without TriggerActivator.", logObject: this);
+            }
         }
 
         private void Start()
@@ -52,7 +58,7 @@ namespace Scripts.Triggers
             };
         }
 
-        protected abstract void OnTriggerActivated(ETriggerActivatedDetail activatedDetail = ETriggerActivatedDetail.None);
+        internal abstract void OnTriggerActivated(ETriggerActivatedDetail activatedDetail = ETriggerActivatedDetail.None);
         
         protected void TriggerNext(bool setAtRest = false)
         {
@@ -76,7 +82,7 @@ namespace Scripts.Triggers
 
         protected void SetBusy() => atRest = false;
 
-        protected bool IsPositionValid()
+        internal bool IsPositionValid()
         {
             Vector3 position = transform.position;
             

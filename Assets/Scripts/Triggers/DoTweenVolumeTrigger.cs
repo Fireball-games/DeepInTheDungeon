@@ -6,7 +6,7 @@ using static Scripts.Enums;
 
 namespace Scripts.Triggers
 {
-    public class DoTweenVolumeTrigger : VolumeTrigger, IPositionsTrigger
+    public class DoTweenVolumeTrigger : Trigger, IPositionsTrigger
     {
         public ETriggerMoveType moveType;
         public EActiveProperty activeProperty;
@@ -56,7 +56,7 @@ namespace Scripts.Triggers
             CurrentPosition = startPosition == steps.Count - 1 ? 0 : startPosition + 1;
         }
 
-        protected override void OnTriggerActivated(ETriggerActivatedDetail _ = ETriggerActivatedDetail.None)
+        internal override void OnTriggerActivated(ETriggerActivatedDetail _ = ETriggerActivatedDetail.None)
         {
             switch (moveType)
             {

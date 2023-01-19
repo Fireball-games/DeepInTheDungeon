@@ -59,14 +59,19 @@ namespace Scripts.Building
             }
         }
 
-        public void BuildMap(MapDescription mapDescription)
+        public void BuildMap(MapDescription mapDescription) => StartCoroutine(BuildMapCoroutine(mapDescription));
+
+        public IEnumerator BuildMapCoroutine(MapDescription mapDescription)
         {
             DemolishMap();
 
             MapDescription = mapDescription;
 
-            StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
-            _prefabBuilder.BuildPrefabs(mapDescription.PrefabConfigurations);
+            yield return StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
+            yield return _prefabBuilder.BuildPrefabs(mapDescription.PrefabConfigurations);
+            yield return StartCoroutine(_prefabBuilder.ProcessPostBuildLayoutPrefabs());
+
+            OnLayoutBuilt?.Invoke();
         }
 
         public void SetLayout(TileDescription[,,] layout) => Layout = layout;
@@ -179,10 +184,6 @@ namespace Scripts.Building
             }
 
             yield return new WaitUntil(() => _runningFloorBuilds == 0);
-
-            yield return StartCoroutine(_prefabBuilder.ProcessPostBuildLayoutPrefabs());
-
-            OnLayoutBuilt?.Invoke();
         }
 
         private IEnumerator BuildFloor(int floor, TileDescription[,,] layout)

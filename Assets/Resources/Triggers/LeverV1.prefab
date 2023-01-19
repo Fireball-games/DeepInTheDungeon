@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 834535373684832564}
   - component: {fileID: 22916625258349260}
   - component: {fileID: 5807939958074986943}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: lever_box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9069469543985747960}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,9 +127,8 @@ GameObject:
   - component: {fileID: 973165119074694348}
   - component: {fileID: 7356108265066933798}
   - component: {fileID: 2495811677636689651}
-  - component: {fileID: 10305317381948061}
-  m_Layer: 8
-  m_Name: Cube
+  m_Layer: 0
+  m_Name: back_face
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -200,19 +199,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &10305317381948061
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4164195113027154536}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7850092262426922572
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,7 +210,7 @@ GameObject:
   - component: {fileID: 6524440130058670306}
   - component: {fileID: 3331772044924402060}
   - component: {fileID: 6758207218812589164}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: lever_1_xB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -306,6 +292,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2814974798401602049}
   - component: {fileID: 6471382566873402021}
+  - component: {fileID: 854613738620229892}
   - component: {fileID: 1953888227602383794}
   m_Layer: 0
   m_Name: LeverV1
@@ -351,9 +338,9 @@ MonoBehaviour:
   atRest: 1
   presetSubscribers: []
   subscribers: []
-  startPosition: 1
   moveType: 2
   activeProperty: 2
+  startPosition: 1
   steps:
   - target: {x: 0, y: 0, z: 50}
     duration: 0.5
@@ -361,6 +348,18 @@ MonoBehaviour:
   - target: {x: 0, y: 0, z: 0}
     duration: 0.5
     movementEase: 9
+--- !u!114 &854613738620229892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8597373633990148879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 381bb781e9fd46659596211b680ca9c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &1953888227602383794
 BoxCollider:
   m_ObjectHideFlags: 0

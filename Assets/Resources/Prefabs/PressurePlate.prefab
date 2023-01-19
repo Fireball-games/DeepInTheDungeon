@@ -157,8 +157,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 486652403328750983}
-  - component: {fileID: 2748358832015656215}
   - component: {fileID: 6031514785848567482}
+  - component: {fileID: 8206232829368099351}
+  - component: {fileID: 5749258612593445232}
   m_Layer: 0
   m_Name: PressurePlate
   m_TagString: Untagged
@@ -182,39 +183,6 @@ Transform:
   m_Father: {fileID: 4358536214560201882}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2748358832015656215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2270544125887310802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 391c5aa0bbea49ebaef7dc1104cc1b3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabType: 9
-  guid: 
-  triggerType: 2
-  count: 0
-  mustBeOnSameTile: 1
-  atRest: 1
-  presetSubscribers: []
-  subscribers: []
-  allowedLayers:
-    serializedVersion: 2
-    m_Bits: 57344
-  moveType: 2
-  activeProperty: 1
-  startPosition: 1
-  steps:
-  - target: {x: 0, y: -0.05, z: 0}
-    duration: 0.3
-    movementEase: 1
-  - target: {x: 0, y: 0, z: 0}
-    duration: 1
-    movementEase: 9
 --- !u!65 &6031514785848567482
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -228,6 +196,51 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.58, y: 0.06, z: 0.58}
   m_Center: {x: 0, y: -0.46, z: 0}
+--- !u!114 &8206232829368099351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2270544125887310802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79518e7e9722414b99b3d8a72f6ceaf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabType: 9
+  guid: 
+  triggerType: 2
+  count: 0
+  mustBeOnSameTile: 1
+  atRest: 1
+  presetSubscribers: []
+  subscribers: []
+  moveType: 2
+  activeProperty: 1
+  startPosition: 1
+  steps:
+  - target: {x: 0, y: -0.05, z: 0}
+    duration: 0
+    movementEase: 1
+  - target: {x: 0, y: 0, z: 0}
+    duration: 1
+    movementEase: 9
+--- !u!114 &5749258612593445232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2270544125887310802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c79f67a300545d491e98412a8c2efa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowedLayers:
+    serializedVersion: 2
+    m_Bits: 57344
 --- !u!1 &4669800552667117279
 GameObject:
   m_ObjectHideFlags: 0

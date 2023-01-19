@@ -273,7 +273,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetButtons();
             VisualizeOtherComponents();
-            SelectedCage.Hide();
+            // SelectedCage.Hide();
         }
 
         protected virtual void RemoveAndReopen()

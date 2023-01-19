@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
@@ -28,13 +27,6 @@ namespace Scripts.Building
         private static HashSet<GameObject> Prefabs => MapBuilder.Prefabs;
         private static TileDescription[,,] Layout => MapBuilder.Layout;
         private static bool IsInEditMode => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
-
-        private readonly TriggerService _triggerService;
-
-        public PrefabBuilder()
-        {
-            _triggerService = new TriggerService(this);
-        }
 
         internal void BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
         {
@@ -74,7 +66,7 @@ namespace Scripts.Building
             {
                 GameObject newPrefab = BuildPhysicalPrefab(configuration);
 
-                _triggerService.ProcessTriggersOnPrefab(newPrefab);
+                TriggerService.ProcessEmbeddedTriggers(newPrefab);
 
                 bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
 
@@ -126,19 +118,21 @@ namespace Scripts.Building
                     }
                 }
             }
+            
+            WallService.Remove(configuration);
 
-            if (configuration is WallConfiguration {WayPoints: { }} wall && wall.WayPoints.Any())
-            {
-                DestroyPath(EPathsType.Waypoint, wall.Guid);
-            }
-
-            _triggerService.RemoveEmbeddedTriggers(prefabGo);
+            TriggerService.RemoveEmbeddedTriggers(prefabGo);
 
             prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
             Transform offsetTransform = prefabGo.GetBody();
             if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
 
             ObjectPool.Instance.ReturnToPool(prefabGo);
+        }
+        
+        public void RemoveConfiguration(string guid)
+        {
+            RemoveConfiguration(GetConfigurationByGuid<PrefabConfiguration>(guid));
         }
 
         public GameObject GetPrefabByGuid(string guid)
@@ -206,6 +200,15 @@ namespace Scripts.Building
         {
             return MapDescription.PrefabConfigurations.Where(c => c.Guid == guid).FirstOrDefault() as TC;
         }
+        
+        public bool GetConfigurationByOwnerGuidAndName<T>(string ownerGuid, string prefabName, out T configuration) where T : PrefabConfiguration
+        {
+            configuration = MapDescription.PrefabConfigurations
+                .Where(c => c.OwnerGuid == ownerGuid && c.PrefabName == prefabName)
+                .FirstOrDefault() as T;
+
+            return configuration != null;
+        }
 
         public void ChangePrefabPositionsBy(Vector3 positionChangeDelta)
         {
@@ -244,8 +247,8 @@ namespace Scripts.Building
             prefabScript.GUID = configuration.Guid;
 
             ProcessTileConfiguration(configuration, newPrefab);
-            ProcessWallConfiguration(configuration, prefabScript, newPrefab);
-            _triggerService.ProcessTriggerConfiguration(configuration, newPrefab);
+            WallService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
+            TriggerService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
 
             MapBuilder.Prefabs.Add(newPrefab);
 
@@ -260,35 +263,6 @@ namespace Scripts.Building
             }
         }
 
-        private void ProcessWallConfiguration(PrefabConfiguration configuration, PrefabBase prefabScript, GameObject newPrefab)
-        {
-            if (configuration is WallConfiguration wallConfiguration)
-            {
-                newPrefab.transform.localRotation = configuration.TransformData.Rotation;
-
-                Transform physicalPart = newPrefab.GetBody();
-
-                if (physicalPart)
-                {
-                    Vector3 position = physicalPart.localPosition;
-                    position.x += wallConfiguration.Offset;
-                    physicalPart.localPosition = position;
-                }
-
-                if (!IsInEditMode || prefabScript is not WallPrefabBase script) return;
-                
-                if (script && script.presentedInEditor)
-                {
-                    script.presentedInEditor.SetActive(true);
-                }
-
-                if (wallConfiguration.HasPath())
-                {
-                    AddReplaceWaypointPath(wallConfiguration.Guid, wallConfiguration.WayPoints);
-                }
-            }
-        }
-        
         public IEnumerator ProcessPostBuildLayoutPrefabs()
         {
             // Tile Prefabs
@@ -313,23 +287,9 @@ namespace Scripts.Building
             yield return null;
         }
 
-        internal void RemoveConfiguration(string guid)
-        {
-            RemoveConfiguration(GetConfigurationByGuid<PrefabConfiguration>(guid));
-        }
-
         private void RemoveConfiguration(PrefabConfiguration configuration)
         {
             MapDescription.PrefabConfigurations.Remove(configuration);
-        }
-
-        internal bool GetConfigurationByOwnerGuidAndName<T>(string ownerGuid, string prefabName, out T configuration) where T : PrefabConfiguration
-        {
-            configuration = MapDescription.PrefabConfigurations
-                .Where(c => c.OwnerGuid == ownerGuid && c.PrefabName == prefabName)
-                .FirstOrDefault() as T;
-
-            return configuration != null;
         }
 
         private int FindIndexOfConfiguration(PrefabConfiguration configuration) =>

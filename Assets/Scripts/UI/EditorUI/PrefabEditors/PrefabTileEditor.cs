@@ -1,4 +1,5 @@
 ﻿using System;
+using Scripts.Building;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
 using Scripts.Building.Walls;
@@ -54,14 +55,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void SetPrefab(string prefabName)
         {
+            Placeholder.transform.position = SelectedCage.transform.position;
+            
             base.SetPrefab(prefabName);
 
             TilePrefab prefabScript = PhysicalPrefab.GetComponent<TilePrefab>();
             MapBuilder.Layout.ByGridV3Int(PhysicalPrefab.transform.position.ToGridPosition()).IsForMovement = EditedConfiguration.IsWalkable;
             SetIsWalkableInLayout(prefabScript.isWalkable);
 
-            // if (prefabScript.disableFloor) WallService.DisableWall(prefabScript.transform.position, TileDescription.ETileDirection.Floor);
-            // if (prefabScript.disableCeiling) WallService.DisableWall(prefabScript.transform.position, TileDescription.ETileDirection.Ceiling);
+            if (prefabScript.disableFloor) WallService.ActivateWall(prefabScript.transform.position, TileDescription.ETileDirection.Floor, false);
+            if (prefabScript.disableCeiling) WallService.ActivateWall(prefabScript.transform.position, TileDescription.ETileDirection.Ceiling, false);
         }
 
         protected override void VisualizeOtherComponents()

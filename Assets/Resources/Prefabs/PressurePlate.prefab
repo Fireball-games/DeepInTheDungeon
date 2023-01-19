@@ -209,10 +209,10 @@ MonoBehaviour:
   activeProperty: 1
   startPosition: 1
   steps:
-  - target: {x: 0, y: 0, z: 0}
+  - target: {x: 0, y: -0.05, z: 0}
     duration: 0.3
     movementEase: 1
-  - target: {x: 0, y: -0.05, z: 0}
+  - target: {x: 0, y: 0, z: 0}
     duration: 1
     movementEase: 9
 --- !u!65 &6031514785848567482
@@ -227,7 +227,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.58, y: 0.06, z: 0.58}
-  m_Center: {x: 0, y: 0.04, z: 0}
+  m_Center: {x: 0, y: -0.46, z: 0}
 --- !u!1 &4669800552667117279
 GameObject:
   m_ObjectHideFlags: 0

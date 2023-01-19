@@ -119,19 +119,6 @@ namespace Scripts.Helpers.Extensions
                 EqualityComparer<TValue>.Default.Equals(entry.Value, value)).Key;
         }
 
-        public static Color SetIntensity(this Color source, float intensity)
-        {
-            Color result = new()
-            {
-                r = source.r * intensity,
-                g = source.g * intensity,
-                b = source.b * intensity
-            };
-            return result;
-        }
-
-        public static Color Clone(this Color source) => new(source.r, source.g, source.b, source.a);
-
         public static void CreateDirectoryIfNotExists(this string directoryPath)
         {
             if (!Directory.Exists(directoryPath))

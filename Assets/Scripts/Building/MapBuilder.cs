@@ -298,5 +298,10 @@ namespace Scripts.Building
 
         public IEnumerable<TC> GetConfigurations<TC>(EPrefabType prefabType) where TC : PrefabConfiguration 
             => _prefabBuilder.GetConfigurations<TC>(prefabType);
+
+        public bool GetConfigurationByOwnerGuidAndName<TC>(string ownerGuid, string prefabName, out TC configuration) where TC : PrefabConfiguration
+            => _prefabBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, prefabName, out configuration);
+
+        public void RemoveConfiguration(string guid) => _prefabBuilder.RemoveConfiguration(guid);
     }
 }

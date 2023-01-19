@@ -7,21 +7,19 @@ using Scripts.System;
 using Scripts.Triggers;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
-    public class TriggerService
+    public static class TriggerService
     {
+        private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
         private static bool IsInEditor => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
 
-        private readonly PrefabBuilder _prefabBuilder;
-        private readonly Dictionary<string, Trigger> _triggers;
-        private readonly Dictionary<string, TriggerReceiver> _triggerReceivers;
+        public static readonly Dictionary<string, Trigger> _triggers;
+        public static readonly Dictionary<string, TriggerReceiver> _triggerReceivers;
         
-        public TriggerService(PrefabBuilder prefabBuilder)
+        static TriggerService()
         {
-            _prefabBuilder = prefabBuilder;
             _triggers = new Dictionary<string, Trigger>();
             _triggerReceivers = new Dictionary<string, TriggerReceiver>();
         }
@@ -33,7 +31,7 @@ namespace Scripts.Building
         /// - in editor - creates trigger/triggerReceiver configurations from new prefab and ads those into map prefabConfigurations
         /// </summary>
         /// <param name="newPrefab"></param>
-        internal void ProcessTriggersOnPrefab(GameObject newPrefab)
+        internal static void ProcessEmbeddedTriggers(GameObject newPrefab)
         {
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
 
@@ -51,7 +49,7 @@ namespace Scripts.Building
                 }
                 else
                 {
-                    if (!_prefabBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.GUID, trigger.gameObject.name, out configuration))
+                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.GUID, trigger.gameObject.name, out configuration))
                     {
                         Logger.LogWarning("Failed to find configuration for trigger", logObject: trigger);
                         continue;
@@ -64,6 +62,7 @@ namespace Scripts.Building
                 
                 if (trigger is IPositionsTrigger positionsTrigger)
                 {
+                    positionsTrigger.SetStartPosition(configuration.StartPosition);
                     positionsTrigger.SetPosition();
                 }
             }
@@ -80,7 +79,7 @@ namespace Scripts.Building
                 }
                 else
                 {
-                    if (!_prefabBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.GUID, receiver.identification, out configuration))
+                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.GUID, receiver.identification, out configuration))
                     {
                         Logger.LogWarning("Failed to find configuration for trigger", logObject: receiver);
                         continue;
@@ -93,33 +92,33 @@ namespace Scripts.Building
             }
         }
         
-        private TriggerConfiguration AddTriggerConfigurationToMap(Trigger trigger, string ownerGuid)
+        private static TriggerConfiguration AddTriggerConfigurationToMap(Trigger trigger, string ownerGuid)
         {
-            if (_prefabBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, trigger.name, out TriggerConfiguration configuration))
+            if (MapBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, trigger.name, out TriggerConfiguration configuration))
             {
                 // Logger.Log("Configuration is already present.");
                 return configuration;
             }
 
             TriggerConfiguration newConfiguration = new(trigger, ownerGuid, false);
-            _prefabBuilder.AddReplacePrefabConfiguration(newConfiguration);
+            MapBuilder.AddReplacePrefabConfiguration(newConfiguration);
             return newConfiguration;
         }
 
-        private TriggerReceiverConfiguration AddTriggerReceiverConfigurationToMap(TriggerReceiver triggerReceiver, string ownerGuid)
+        private static TriggerReceiverConfiguration AddTriggerReceiverConfigurationToMap(TriggerReceiver triggerReceiver, string ownerGuid)
         {
-            if (_prefabBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, triggerReceiver.identification, out TriggerReceiverConfiguration configuration))
+            if (MapBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, triggerReceiver.identification, out TriggerReceiverConfiguration configuration))
             {
                 // Logger.Log("Configuration is already present.");
                 return configuration;
             }
 
             TriggerReceiverConfiguration newConfiguration = new(triggerReceiver, ownerGuid, false);
-            _prefabBuilder.AddReplacePrefabConfiguration(newConfiguration);
+            MapBuilder.AddReplacePrefabConfiguration(newConfiguration);
             return newConfiguration;
         }
         
-        internal void RemoveEmbeddedTriggers(GameObject prefab)
+        internal static void RemoveEmbeddedTriggers(GameObject prefab)
         {
             PrefabBase prefabScript = prefab.GetComponent<PrefabBase>();
 
@@ -129,7 +128,7 @@ namespace Scripts.Building
 
             foreach (TriggerReceiver receiver in triggerReceivers)
             {
-                foreach (TriggerConfiguration triggerConfiguration in _prefabBuilder.GetConfigurations<TriggerConfiguration>(Enums.EPrefabType.Trigger))
+                foreach (TriggerConfiguration triggerConfiguration in MapBuilder.GetConfigurations<TriggerConfiguration>(Enums.EPrefabType.Trigger))
                 {
                     if (triggerConfiguration.Subscribers.Contains(receiver.Guid))
                     {
@@ -138,28 +137,26 @@ namespace Scripts.Building
                     }
                 }
 
-                _prefabBuilder.RemoveConfiguration(receiver.Guid);
+                MapBuilder.RemoveConfiguration(receiver.Guid);
             }
 
             foreach (Trigger trigger in prefab.GetComponentsInChildren<Trigger>())
             {
-                _prefabBuilder.RemoveConfiguration(trigger.GUID);
+                MapBuilder.RemoveConfiguration(trigger.GUID);
             }
         }
         
-        internal void ProcessTriggerConfiguration(PrefabConfiguration configuration, GameObject newPrefab)
+        internal static void ProcessConfigurationOnBuild(PrefabConfiguration configuration, PrefabBase prefabScript, GameObject newPrefab)
         {
-            if (configuration is not TriggerConfiguration triggerConfiguration) return;
-            
-            Trigger prefabScript = newPrefab.GetComponent<Trigger>();
+            if (configuration is not TriggerConfiguration triggerConfiguration || prefabScript is not Trigger script) return;
 
             if (prefabScript)
             {
-                prefabScript.triggerType = triggerConfiguration.TriggerType;
-                prefabScript.count = triggerConfiguration.Count;
-                prefabScript.subscribers = triggerConfiguration.Subscribers;
+                script.triggerType = triggerConfiguration.TriggerType;
+                script.count = triggerConfiguration.Count;
+                script.subscribers = triggerConfiguration.Subscribers;
                 
-                if (prefabScript is IPositionsTrigger positionsTrigger)
+                if (script is IPositionsTrigger positionsTrigger)
                 {
                     positionsTrigger.SetStartPosition(triggerConfiguration.StartPosition);
                     positionsTrigger.SetPosition();

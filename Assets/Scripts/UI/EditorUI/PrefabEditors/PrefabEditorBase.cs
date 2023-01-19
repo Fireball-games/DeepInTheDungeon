@@ -40,8 +40,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private Title _prefabTitle;
         private TMP_Text _statusText;
         private EditorUIManager Manager => EditorUIManager.Instance;
-        private CageController SelectedCage => Manager.SelectedCage;
 
+        protected CageController SelectedCage => Manager.SelectedCage;
         protected MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
         protected TC EditedConfiguration;
         protected EPrefabType EditedPrefabType;

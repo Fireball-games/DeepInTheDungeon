@@ -94,8 +94,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d619a4ae4b66444db0536efa68274581, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraPanSpeed: 100
-  cameraZoomSpeed: 1500
+  minPanSpeed: 10
+  maxPanSpeed: 70
+  cameraZoomSpeed: 300
+  minZoomHeight: 2
   maxZoomHeight: 20
   cameraRotationSpeed: 400
   prefabMoveCameraDistance: 8

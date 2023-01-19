@@ -10,11 +10,13 @@ namespace Scripts.MapEditor.Services
 {
     public class EditorCameraService : SingletonNotPersisting<EditorCameraService>
     {
-        public float cameraPanSpeed = 100f;
+        public float minPanSpeed = 20f;
+        public float maxPanSpeed = 100f;
 
         [Tooltip("If using smooth zoom, then its good about 8000, normal is good around 1500.")] [SerializeField]
         private float cameraZoomSpeed = 100f;
 
+        [SerializeField] private float minZoomHeight = 2f;
         [SerializeField] private float maxZoomHeight = 20f;
         [SerializeField] private float cameraRotationSpeed = 100f;
         [SerializeField] private float prefabMoveCameraDistance = 8f;
@@ -24,12 +26,17 @@ namespace Scripts.MapEditor.Services
         [NonSerialized] public static bool IsOrthographic = true;
 
         private EditorMouseService Mouse => EditorMouseService.Instance;
+        private MapEditorManager Manager => MapEditorManager.Instance;
+        private float FloorYPosition => -Manager.CurrentFloor;
+        
         private Vector3 _cameraMoveVector = Vector3.zero;
 
         public PositionRotation GetCameraTransformData() => new(cameraHolder.transform.position, cameraHolder.transform.rotation);
 
         internal void ResetCamera()
         {
+            PositionRotation cameraResetData = new(new Vector3(Manager.EditedLayout[0].Count / 2, Manager.EditedLayout.Count + 5f, Manager.EditedLayout[0][0].Count / 2), Quaternion.Euler(Vector3.zero));
+            MoveCameraTo(cameraResetData);
             RotateCameraSmooth(Vector3.zero);
         }
 
@@ -57,11 +64,15 @@ namespace Scripts.MapEditor.Services
 
                 if (xDelta == 0f && yDelta == 0f) return;
 
+                float minMaxHeightAlpha = Mathf.InverseLerp(FloorYPosition + minZoomHeight, FloorYPosition + maxZoomHeight,
+                    cameraHolder.transform.position.y);
+                float zoomDependantPanSpeed = Mathf.Lerp(minPanSpeed, maxPanSpeed, minMaxHeightAlpha);
+                
                 Matrix4x4 worldToLocalMatrix = transform.worldToLocalMatrix;
                 Vector3 localForward = worldToLocalMatrix.MultiplyVector(-cameraHolder.forward);
                 Vector3 localRight = worldToLocalMatrix.MultiplyVector(cameraHolder.right);
-                Vector3 moveVector = localRight * (yDelta * Time.deltaTime * cameraPanSpeed);
-                moveVector += localForward * (xDelta * Time.deltaTime * cameraPanSpeed);
+                Vector3 moveVector = localRight * (yDelta * Time.deltaTime * zoomDependantPanSpeed);
+                moveVector += localForward * (xDelta * Time.deltaTime * zoomDependantPanSpeed);
 
                 cameraHolder.position += moveVector;
             }
@@ -159,9 +170,7 @@ namespace Scripts.MapEditor.Services
 
             Vector3 newPosition = cameraHolder.position + _cameraMoveVector;
 
-            newPosition.y = Mathf.Clamp(
-                newPosition.y,
-                -MapEditorManager.Instance.EditedLayout.Count + 3, maxZoomHeight);
+            newPosition.y = Mathf.Clamp(newPosition.y,FloorYPosition + minZoomHeight, FloorYPosition + maxZoomHeight);
 
             if (smooth)
             {

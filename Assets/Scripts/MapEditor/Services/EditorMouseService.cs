@@ -114,7 +114,7 @@ namespace Scripts.MapEditor.Services
             }
             else
             {
-                cameraService.HandleMouseWheel();
+                // cameraService.HandleMouseWheel();
                 SetGridPosition();
                 cameraService.HandleMouseMovement();
             }

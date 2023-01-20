@@ -4,7 +4,6 @@ using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
-using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.Triggers;
 using Scripts.UI.Components;
@@ -18,6 +17,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
     public class TriggerEditor : PrefabEditorBase<TriggerConfiguration, Trigger>
     {
         private Vector3Control _positionControl;
+        private NumericUpDown _startPositionUpDown;
         private LabeledDropdown _triggerTypeDropdown;
         private NumericUpDown _triggerCountUpDown;
         private EditableConfigurationList _receiverList;
@@ -57,16 +57,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override TriggerConfiguration CloneConfiguration(TriggerConfiguration sourceConfiguration) => new(sourceConfiguration);
 
-        protected override void SetPrefab(string prefabName)
-        {
-            base.SetPrefab(prefabName);
-            
-            // TODO: implement OnStartPositionChanged and here set it on new prefab, so preset prefab values persist, like in TilePrefabEditor
-            // TODO: Try to set it in GetNewPrefabConfiguration - obtain prefab object from PrefabStore and set it by those values
-            // TODO: if above works, do the same for TilePrefabEditor
-            // TODO: OR do this mechanic while building the prefab, like triggers do it now
-        }
-
         protected override IEnumerable<TriggerConfiguration> GetAvailableConfigurations()
         {
             return MapBuilder.MapDescription.PrefabConfigurations
@@ -88,6 +78,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             }
             
             base.RemoveAndReopen();
+        }
+        
+        protected override void SaveMap()
+        {
+            HighlightPath(EPathsType.Trigger, EditedConfiguration.Guid, false);
+
+            base.SaveMap();
         }
 
         private void OnPositionChanged(Vector3 newPosition)
@@ -149,6 +146,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             VisualizeOtherComponents();
         }
 
+        private void OnStartPositionChanged(float newPosition)
+        {
+            SetEdited();
+            int position = (int) newPosition;
+            EditedConfiguration.StartPosition = position;
+            IPositionsTrigger positionTrigger = EditedPrefab as IPositionsTrigger;
+            positionTrigger!.SetStartPosition(position);
+            positionTrigger!.SetPosition();
+        }
+
         private void RedrawPath()
         {
             AddReplaceTriggerPath(EditedConfiguration, true);
@@ -157,13 +164,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected override void InitializeOtherComponents()
         {
             _positionControl = Content.Find("PositionControl").GetComponent<Vector3Control>();
-            _positionControl.SetActive(false);
+            // _positionControl.SetActive(false);
+
+            _startPositionUpDown = Content.Find("StartPositionUpDown").GetComponent<NumericUpDown>();
+            _startPositionUpDown.OnValueChanged.AddListener(OnStartPositionChanged);
+            // _startPositionUpDown.SetActive(false);
 
             _triggerTypeDropdown = Content.Find("TriggerTypeDropdown").GetComponent<LabeledDropdown>();
-            _triggerTypeDropdown.SetActive(false);
+            // _triggerTypeDropdown.SetActive(false);
 
             _triggerCountUpDown = Content.Find("TriggerCountUpDown").GetComponent<NumericUpDown>();
-            _triggerCountUpDown.SetActive(false);
+            // _triggerCountUpDown.SetActive(false);
             _triggerCountUpDown.OnValueChanged.RemoveAllListeners();
             _triggerCountUpDown.OnValueChanged.AddListener(OnTriggerCountChanged);
 
@@ -174,6 +185,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected override void VisualizeOtherComponents()
         {
             _positionControl.SetActive(false);
+            _startPositionUpDown.SetActive(false);
             _triggerTypeDropdown.SetActive(false);
             _triggerCountUpDown.SetActive(false);
             _receiverList.SetActive(false);
@@ -202,6 +214,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _positionControl.Value = prefabPosition - _prefabWallCenterPosition;
                 _positionControl.ValueChanged.AddListener(OnPositionChanged);
                 _positionControl.SetActive(true);
+            }
+
+            if (EditedPrefab is IPositionsTrigger positionsTrigger)
+            {
+                _startPositionUpDown.Label.text = t.Get(Keys.StartPosition);
+                _startPositionUpDown.maximum = positionsTrigger.GetSteps().Count - 1;
+                _startPositionUpDown.Value = positionsTrigger.GetStartPosition();
+                _startPositionUpDown.SetActive(true);
             }
 
             _triggerTypeDropdown.Set($"{t.Get(Keys.TriggerType)}:",

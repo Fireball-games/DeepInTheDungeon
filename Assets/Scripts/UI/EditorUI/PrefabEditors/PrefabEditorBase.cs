@@ -44,6 +44,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected CageController SelectedCage => Manager.SelectedCage;
         protected MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
         protected TC EditedConfiguration;
+        protected TPrefab EditedPrefab;
         protected EPrefabType EditedPrefabType;
         protected GameObject PhysicalPrefabBody;
         protected GameObject PhysicalPrefab;
@@ -144,10 +145,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetExistingList(false);
             SetPrefabList(EditedConfiguration.SpawnPrefabOnBuild, _availablePrefabs!);
-
+            
             PhysicalPrefab = MapBuilder.GetPrefabByGuid(configuration.Guid);
+            
             if (PhysicalPrefab)
             {
+                EditedPrefab = PhysicalPrefab.GetComponent<TPrefab>();
                 PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
             }
 
@@ -233,6 +236,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (PhysicalPrefab)
             {
+                EditedPrefab = PhysicalPrefab.GetComponent<TPrefab>();
                 PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
             }
 
@@ -265,6 +269,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabList.DeselectButtons();
             _isEditingExistingPrefab = false;
             EditedConfiguration = null;
+            EditedPrefab = null;
             _originalConfiguration = null;
             SetEdited(false);
             _prefabList.DeselectButtons();
@@ -273,7 +278,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetButtons();
             VisualizeOtherComponents();
-            // SelectedCage.Hide();
         }
 
         protected virtual void RemoveAndReopen()
@@ -312,6 +316,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 MapBuilder.RemovePrefab(EditedConfiguration);
                 EditedConfiguration = null;
+                EditedPrefab = null;
                 _prefabList.DeselectButtons();
             }
 
@@ -334,6 +339,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected void Close()
         {
             EditedConfiguration = null;
+            EditedPrefab = null;
             _originalConfiguration = null;
             _isEditingExistingPrefab = false;
             EditedPrefabType = EPrefabType.Invalid;

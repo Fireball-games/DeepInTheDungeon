@@ -59,8 +59,5 @@ namespace Scripts.Building.PrefabsBuilding
                 AddReplaceWaypointPath(wallConfiguration.Guid, wallConfiguration.WayPoints);
             }
         }
-
-        public static void SetForMovement(Vector3 worldPosition, bool isWalkable) 
-            => MapBuilder.Layout.ByGridV3Int(worldPosition.ToGridPosition()).IsForMovement = isWalkable;
     }
 }

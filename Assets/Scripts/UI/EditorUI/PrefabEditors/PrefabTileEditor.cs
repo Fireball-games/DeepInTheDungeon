@@ -17,16 +17,21 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         [SerializeField] private RotationWidget rotationWidget;
         [SerializeField] private FramedCheckBox isWalkableCheckBox;
 
-        protected override TilePrefabConfiguration GetNewConfiguration(string prefabName) => new()
+        protected override TilePrefabConfiguration GetNewConfiguration(string prefabName)
         {
-            Guid = Guid.NewGuid().ToString(),
-            PrefabType = EditedPrefabType,
-            PrefabName = prefabName,
-            TransformData = new PositionRotation(SelectedCage.transform.position, Quaternion.Euler(Vector3.zero)),
-            SpawnPrefabOnBuild = true,
+            TilePrefab storedPrefab = PrefabStore.GetPrefabByName<TilePrefab>(prefabName);
             
-            IsWalkable = false,
-        };
+            return new TilePrefabConfiguration
+            {
+                Guid = Guid.NewGuid().ToString(),
+                PrefabType = EditedPrefabType,
+                PrefabName = prefabName,
+                TransformData = new PositionRotation(SelectedCage.transform.position, Quaternion.Euler(Vector3.zero)),
+                SpawnPrefabOnBuild = true,
+
+                IsWalkable = storedPrefab.isWalkable,
+            };
+        }
 
         protected override TilePrefabConfiguration CloneConfiguration(TilePrefabConfiguration sourceConfiguration) => new(sourceConfiguration);
 
@@ -51,17 +56,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             }
 
             MapBuilder.Layout.ByGridV3Int(PhysicalPrefabBody.transform.position.ToGridPosition()).IsForMovement = script.isWalkable;
-        }
-
-        protected override void SetPrefab(string prefabName)
-        {
-            base.SetPrefab(prefabName);
-
-            TilePrefab prefabScript = PhysicalPrefab.GetComponent<TilePrefab>();
-            SetIsWalkableInLayout(prefabScript.isWalkable);
-
-            if (prefabScript.disableFloor) WallService.ActivateWall(prefabScript.transform.position, TileDescription.ETileDirection.Floor, false);
-            if (prefabScript.disableCeiling) WallService.ActivateWall(prefabScript.transform.position, TileDescription.ETileDirection.Ceiling, false);
         }
 
         protected override void VisualizeOtherComponents()
@@ -95,7 +89,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             SetEdited();
             EditedConfiguration.IsWalkable = isWalkable;
-            WallService.SetForMovement(PhysicalPrefabBody.transform.position, isWalkable);
+            MapBuilder.SetTileForMovement(PhysicalPrefabBody.transform.position, isWalkable);
         }
     }
 }

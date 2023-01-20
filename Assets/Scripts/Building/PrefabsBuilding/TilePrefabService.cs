@@ -6,6 +6,7 @@ using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
 using Scripts.System;
 using UnityEngine;
+using static Scripts.Building.Tile.TileDescription;
 
 namespace Scripts.Building.PrefabsBuilding
 {
@@ -24,11 +25,21 @@ namespace Scripts.Building.PrefabsBuilding
 
         public static void ProcessConfigurationOnBuild(PrefabConfiguration configuration, PrefabBase prefabScript, GameObject newPrefab)
         {
-            if (configuration is not TilePrefabConfiguration || prefabScript is not TilePrefab script) return;
+            if (configuration is not TilePrefabConfiguration tileConfiguration|| prefabScript is not TilePrefab script) return;
             
             newPrefab.GetBody().rotation = configuration.TransformData.Rotation;
 
             TilePrefabs.TryAdd(configuration.Guid, script);
+
+            // IsWalkable is set in Layout in post-build to prevent race condition with building tiles, so here only on prefab
+            script.isWalkable = tileConfiguration.IsWalkable;
+            // To update map when spawning new tile prefab.
+            if (IsInEditMode)
+            {
+                if (script.disableFloor) WallService.ActivateWall(prefabScript.transform.position, ETileDirection.Floor, false);
+                if (script.disableCeiling) WallService.ActivateWall(prefabScript.transform.position, ETileDirection.Ceiling, false);
+            }
+            
         }
         
         public static void Remove(PrefabConfiguration configuration, PrefabBase prefabScript)
@@ -37,7 +48,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             if (TilePrefabs.ContainsKey(configuration.Guid)) TilePrefabs.Remove(configuration.Guid);
             
-            WallService.SetForMovement(prefabScript.transform.position, true);
+            MapBuilder.SetTileForMovement(prefabScript.transform.position, true);
 
             if (IsInEditMode)
             {
@@ -45,29 +56,29 @@ namespace Scripts.Building.PrefabsBuilding
                 {
                     TileController prefabTile = MapBuilder.GetPhysicalTileByWorldPosition(prefabScript.transform.position)
                         .GetComponent<TileController>();
-                    if (script.disableFloor) prefabTile.ShowWall(TileDescription.ETileDirection.Floor);
-                    if (script.disableCeiling) prefabTile.ShowWall(TileDescription.ETileDirection.Ceiling);
+                    if (script.disableFloor) prefabTile.ShowWall(ETileDirection.Floor);
+                    if (script.disableCeiling) prefabTile.ShowWall(ETileDirection.Ceiling);
                 }
             }
         }
 
         public static void ProcessPostBuild()
         {
-            foreach (TilePrefab tilePrefab in TilePrefabs.Values) 
+            foreach (TilePrefab tilePrefab in TilePrefabs.Values)
             {
+                Vector3 worldPosition = tilePrefab.transform.position;
+                
                 if (tilePrefab.disableFloor)
                 {
-                    MapBuilder.GetPhysicalTileByWorldPosition(tilePrefab.transform.position)
-                        .GetComponent<TileController>()
-                        .HideWall(TileDescription.ETileDirection.Floor);
+                    WallService.ActivateWall(worldPosition, ETileDirection.Floor, false);
                 }
                 
                 if (tilePrefab.disableCeiling)
                 {
-                    MapBuilder.GetPhysicalTileByWorldPosition(tilePrefab.transform.position)
-                        .GetComponent<TileController>()
-                        .HideWall(TileDescription.ETileDirection.Ceiling);
+                    WallService.ActivateWall(worldPosition, ETileDirection.Ceiling, false);
                 }
+                
+                MapBuilder.SetTileForMovement(worldPosition, tilePrefab.isWalkable);
             }
         }
     }

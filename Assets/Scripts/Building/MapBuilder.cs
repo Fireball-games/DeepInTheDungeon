@@ -170,6 +170,9 @@ namespace Scripts.Building
                 prefab.SetActive(floorVisibilityMap[Mathf.RoundToInt(-prefab.transform.position.y)]);
             }
         }
+        
+        public void SetTileForMovement(Vector3 worldPosition, bool isWalkable) 
+            => Layout.ByGridV3Int(worldPosition.ToGridPosition()).IsForMovement = isWalkable;
 
         private int _runningFloorBuilds;
 

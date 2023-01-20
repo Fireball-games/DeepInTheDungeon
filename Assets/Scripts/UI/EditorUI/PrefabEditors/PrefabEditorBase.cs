@@ -349,8 +349,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Placeholder.SetActive(false);
 
             _prefabTitle.SetActive(false);
-            _prefabList.SetActive(false);
-            _existingList.SetActive(false);
+            SetPrefabList(false);
+            SetExistingList(false);
             _mainWindow.SetActive(false);
             
             PhysicalPrefabBody = null;

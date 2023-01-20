@@ -3,10 +3,10 @@ using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
 using Scripts.EventsManagement;
-using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.Triggers;
 using UnityEngine;
+using static Scripts.MapEditor.Services.PathsService;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building.PrefabsBuilding
@@ -49,7 +49,7 @@ namespace Scripts.Building.PrefabsBuilding
                     Triggers.TryAdd(trigger.GUID, trigger);
 
                     configuration = AddTriggerConfigurationToMap(trigger, prefabScript.GUID);
-                    PathsService.AddReplaceTriggerPath(configuration);
+                    AddReplaceTriggerPath(configuration);
                 }
                 else
                 {
@@ -103,6 +103,11 @@ namespace Scripts.Building.PrefabsBuilding
             }
         }
         
+        public static void Remove(PrefabConfiguration configuration)
+        {
+            DestroyPath(EPathsType.Trigger, configuration.Guid);
+        }
+        
         private static TriggerConfiguration AddTriggerConfigurationToMap(Trigger trigger, string ownerGuid)
         {
             if (MapBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, trigger.name, out TriggerConfiguration configuration))
@@ -144,7 +149,7 @@ namespace Scripts.Building.PrefabsBuilding
                     if (triggerConfiguration.Subscribers.Contains(receiver.Guid))
                     {
                         triggerConfiguration.Subscribers.Remove(receiver.Guid);
-                        PathsService.AddReplaceTriggerPath(triggerConfiguration);
+                        AddReplaceTriggerPath(triggerConfiguration);
                     }
                 }
 
@@ -178,7 +183,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             if (IsInEditor)
             {
-                PathsService.AddReplaceTriggerPath(triggerConfiguration);
+                AddReplaceTriggerPath(triggerConfiguration);
             }
         }
     }

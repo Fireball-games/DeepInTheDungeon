@@ -4,6 +4,7 @@ using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
+using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.Triggers;
 using Scripts.UI.Components;
@@ -41,19 +42,24 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 ? IsPrefabFinderActive ? _genericCursor3DSize : _wallCursor3DSize
                 : _genericCursor3DSize;
 
-        protected override TriggerConfiguration GetNewConfiguration(string prefabName) => new()
+        protected override TriggerConfiguration GetNewConfiguration(string prefabName)
         {
-            Guid = Guid.NewGuid().ToString(),
-            PrefabType = EditedPrefabType,
-            PrefabName = prefabName,
-            TransformData = new PositionRotation(Placeholder.transform.position, Placeholder.transform.rotation),
-            SpawnPrefabOnBuild = true,
+            Trigger storePrefab = PrefabStore.GetPrefabByName<Trigger>(prefabName);
+            return new()
+            {
+                Guid = Guid.NewGuid().ToString(),
+                PrefabType = EditedPrefabType,
+                PrefabName = prefabName,
+                TransformData = new PositionRotation(SelectedCage.transform.position, SelectedCage.transform.rotation),
+                SpawnPrefabOnBuild = true,
 
-            Subscribers = new List<string>(),
-            TriggerType = Enums.ETriggerType.Repeat,
-            Count = int.MaxValue,
-            StartPosition = 1,
-        };
+                Subscribers = new List<string>(),
+                TriggerType = storePrefab.triggerType,
+                Count = storePrefab.triggerType == Enums.ETriggerType.OneOff 
+                    ? 1 : storePrefab.triggerType == Enums.ETriggerType.Repeat ? 2 : int.MaxValue,
+                StartPosition = 1,
+            };
+        }
 
         protected override TriggerConfiguration CloneConfiguration(TriggerConfiguration sourceConfiguration) => new(sourceConfiguration);
 
@@ -87,6 +93,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             base.SaveMap();
         }
 
+        private void MoveCameraToPrefabFocused(PositionRotation targetData)
+        {
+            Vector3 localForward = targetData.Rotation * Vector3.forward;
+            targetData.Position += localForward;
+            targetData.Rotation = Quaternion.LookRotation(localForward, targetData.Rotation * Vector3.up);
+            EditorCameraService.Instance.MoveCameraTo(targetData);
+        }
+
         private void OnPositionChanged(Vector3 newPosition)
         {
             SetEdited();
@@ -110,7 +124,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                     break;
             }
 
-            Logger.Log($"New prefab position: {newPrefabWorldPosition}");
+            // Logger.Log($"New prefab position: {newPrefabWorldPosition}");
             EditedConfiguration.TransformData.Position = newPrefabWorldPosition;
             PhysicalPrefab.transform.localPosition = newPrefabWorldPosition;
             
@@ -164,22 +178,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected override void InitializeOtherComponents()
         {
             _positionControl = Content.Find("PositionControl").GetComponent<Vector3Control>();
-            // _positionControl.SetActive(false);
 
             _startPositionUpDown = Content.Find("StartPositionUpDown").GetComponent<NumericUpDown>();
             _startPositionUpDown.OnValueChanged.AddListener(OnStartPositionChanged);
-            // _startPositionUpDown.SetActive(false);
 
             _triggerTypeDropdown = Content.Find("TriggerTypeDropdown").GetComponent<LabeledDropdown>();
-            // _triggerTypeDropdown.SetActive(false);
 
             _triggerCountUpDown = Content.Find("TriggerCountUpDown").GetComponent<NumericUpDown>();
-            // _triggerCountUpDown.SetActive(false);
             _triggerCountUpDown.OnValueChanged.RemoveAllListeners();
             _triggerCountUpDown.OnValueChanged.AddListener(OnTriggerCountChanged);
 
             _receiverList = Content.Find("ReceiverList").GetComponent<EditableConfigurationList>();
-            _receiverList.SetActive(false);
         }
 
         protected override void VisualizeOtherComponents()

@@ -17,7 +17,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         {
             Offset = configuration.Offset;
 
-            WayPoints = Waypoint.CloneCollection(configuration.WayPoints).ToList();
+            WayPoints = new List<Waypoint>();
         }
 
         public bool HasPath() => WayPoints != null && WayPoints.Any();

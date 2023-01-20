@@ -104,6 +104,7 @@ namespace Scripts.Building.PrefabsBuilding
             
             TilePrefabService.Remove(configuration, prefabGo.GetComponent<PrefabBase>());
             WallService.Remove(configuration);
+            TriggerService.Remove(configuration);
 
             TriggerService.RemoveEmbeddedTriggers(prefabGo);
 

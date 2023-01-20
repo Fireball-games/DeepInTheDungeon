@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
 using Scripts.Building.Walls;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
@@ -95,6 +96,8 @@ namespace Scripts.Building
             NullTilesMap.Clear();
             PhysicalTiles.Clear();
             Prefabs.Clear();
+
+            EventsManager.TriggerOnMapDemolished();
         }
 
         /// <summary>

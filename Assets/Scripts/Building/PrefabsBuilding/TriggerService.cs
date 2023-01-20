@@ -2,26 +2,29 @@
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Walls;
+using Scripts.EventsManagement;
 using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.Triggers;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
 
-namespace Scripts.Building
+namespace Scripts.Building.PrefabsBuilding
 {
     public static class TriggerService
     {
         private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
         private static bool IsInEditor => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
 
-        public static readonly Dictionary<string, Trigger> _triggers;
-        public static readonly Dictionary<string, TriggerReceiver> _triggerReceivers;
+        public static readonly Dictionary<string, Trigger> Triggers;
+        public static readonly Dictionary<string, TriggerReceiver> TriggerReceivers;
         
         static TriggerService()
         {
-            _triggers = new Dictionary<string, Trigger>();
-            _triggerReceivers = new Dictionary<string, TriggerReceiver>();
+            Triggers = new Dictionary<string, Trigger>();
+            TriggerReceivers = new Dictionary<string, TriggerReceiver>();
+            
+            EventsManager.OnMapDemolished += () => { Triggers.Clear(); TriggerReceivers.Clear(); };
         }
         
         /// <summary>
@@ -43,7 +46,7 @@ namespace Scripts.Building
 
                 if (IsInEditor)
                 {
-                    _triggers.TryAdd(trigger.GUID, trigger);
+                    Triggers.TryAdd(trigger.GUID, trigger);
 
                     configuration = AddTriggerConfigurationToMap(trigger, prefabScript.GUID);
                     PathsService.AddReplaceTriggerPath(configuration);
@@ -81,7 +84,7 @@ namespace Scripts.Building
 
                 if (IsInEditor)
                 {
-                    _triggerReceivers.TryAdd(receiver.Guid, receiver);
+                    TriggerReceivers.TryAdd(receiver.Guid, receiver);
 
                     configuration = AddTriggerReceiverConfigurationToMap(receiver, prefabScript.GUID);
                 }

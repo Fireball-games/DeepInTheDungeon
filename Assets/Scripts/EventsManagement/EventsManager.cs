@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using CW.Common;
 using Scripts.Triggers;
 using UnityEngine;
 
@@ -17,7 +15,8 @@ namespace Scripts.EventsManagement
         public static event Action OnModalClicked;
         public static event Action<Vector3> OnPlayerRotationChanged; 
         public static event Action<Vector3> OnPlayerPositionChanged;
-        public static event Action<Trigger> OnTriggerNext; 
+        public static event Action<Trigger> OnTriggerNext;
+        public static event Action OnMapDemolished;
 
         // ***********    Triggers    ***********
 
@@ -31,5 +30,6 @@ namespace Scripts.EventsManagement
         public static void TriggerOnPlayerRotationChanged(Vector3 targetRotation) => OnPlayerRotationChanged?.Invoke(targetRotation);
         public static void TriggerOnPlayerPositionChanged(Vector3 newPosition) => OnPlayerPositionChanged?.Invoke(newPosition);
         public static void TriggerOnTriggerNext(Trigger source ) => OnTriggerNext?.Invoke(source);
+        public static void TriggerOnMapDemolished() => OnMapDemolished?.Invoke();
     }
 }

@@ -16,7 +16,7 @@ using static Scripts.Enums;
 using static Scripts.MapEditor.Services.PathsService;
 using Logger = Scripts.Helpers.Logger;
 
-namespace Scripts.Building
+namespace Scripts.Building.PrefabsBuilding
 {
     public class PrefabBuilder
     {
@@ -101,25 +101,8 @@ namespace Scripts.Building
             }
 
             Prefabs.Remove(prefabGo);
-
-            if (configuration is TilePrefabConfiguration)
-            {
-                Layout.ByGridV3Int(prefabGo.transform.position.ToGridPosition()).IsForMovement = true;
-
-                if (IsInEditMode)
-                {
-                    TilePrefab prefabScript = prefabGo.GetComponent<TilePrefab>();
-                    
-                    if (prefabScript)
-                    {
-                        TileController prefabTile = MapBuilder.GetPhysicalTileByWorldPosition(prefabScript.transform.position)
-                            .GetComponent<TileController>();
-                        if (prefabScript.disableFloor) prefabTile.ShowWall(TileDescription.ETileDirection.Floor);
-                        if (prefabScript.disableCeiling) prefabTile.ShowWall(TileDescription.ETileDirection.Ceiling);
-                    }
-                }
-            }
             
+            TilePrefabService.Remove(configuration, prefabGo.GetComponent<PrefabBase>());
             WallService.Remove(configuration);
 
             TriggerService.RemoveEmbeddedTriggers(prefabGo);
@@ -229,6 +212,13 @@ namespace Scripts.Building
                 }
             }
         }
+        
+        public IEnumerator ProcessPostBuildLayoutPrefabs()
+        {
+            TilePrefabService.ProcessPostBuild();
+            
+            yield return null;
+        }
 
         private GameObject BuildPhysicalPrefab(PrefabConfiguration configuration)
         {
@@ -247,45 +237,13 @@ namespace Scripts.Building
 
             prefabScript.GUID = configuration.Guid;
 
-            ProcessTileConfiguration(configuration, newPrefab);
+            TilePrefabService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
             WallService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
             TriggerService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
 
             MapBuilder.Prefabs.Add(newPrefab);
 
             return newPrefab;
-        }
-
-        private void ProcessTileConfiguration(PrefabConfiguration configuration, GameObject newPrefab)
-        {
-            if (configuration is TilePrefabConfiguration)
-            {
-                newPrefab.GetBody().rotation = configuration.TransformData.Rotation;
-            }
-        }
-
-        public IEnumerator ProcessPostBuildLayoutPrefabs()
-        {
-            // Tile Prefabs
-            
-            foreach (TilePrefab tilePrefab in GetPrefabsByPrefabType<TilePrefab>()) 
-            {
-                if (tilePrefab.disableFloor)
-                {
-                    MapBuilder.GetPhysicalTileByWorldPosition(tilePrefab.transform.position)
-                        .GetComponent<TileController>()
-                        .HideWall(TileDescription.ETileDirection.Floor);
-                }
-                
-                if (tilePrefab.disableCeiling)
-                {
-                    MapBuilder.GetPhysicalTileByWorldPosition(tilePrefab.transform.position)
-                        .GetComponent<TileController>()
-                        .HideWall(TileDescription.ETileDirection.Ceiling);
-                }
-            }
-            
-            yield return null;
         }
 
         private void RemoveConfiguration(PrefabConfiguration configuration)

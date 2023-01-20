@@ -7,7 +7,7 @@ using Scripts.System;
 using UnityEngine;
 using static Scripts.MapEditor.Services.PathsService;
 
-namespace Scripts.Building
+namespace Scripts.Building.PrefabsBuilding
 {
     public static class WallService
     {
@@ -59,5 +59,8 @@ namespace Scripts.Building
                 AddReplaceWaypointPath(wallConfiguration.Guid, wallConfiguration.WayPoints);
             }
         }
+
+        public static void SetForMovement(Vector3 worldPosition, bool isWalkable) 
+            => MapBuilder.Layout.ByGridV3Int(worldPosition.ToGridPosition()).IsForMovement = isWalkable;
     }
 }

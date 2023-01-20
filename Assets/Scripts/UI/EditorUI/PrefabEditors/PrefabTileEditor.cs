@@ -1,5 +1,5 @@
 ﻿using System;
-using Scripts.Building;
+using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
 using Scripts.Building.Walls;
@@ -95,7 +95,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             SetEdited();
             EditedConfiguration.IsWalkable = isWalkable;
-            MapBuilder.Layout.ByGridV3Int(PhysicalPrefabBody.transform.position.ToGridPosition()).IsForMovement = isWalkable;
+            WallService.SetForMovement(PhysicalPrefabBody.transform.position, isWalkable);
         }
     }
 }

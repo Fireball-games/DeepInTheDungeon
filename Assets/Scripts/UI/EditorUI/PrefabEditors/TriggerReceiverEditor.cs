@@ -122,7 +122,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _isConfigurationEdited = isEdited;
             _existingReceivers.SetButtonsInteractable(!isEdited);
             SetButtons();
-            EditorEvents.TriggerOnMapEditedStatusChanged(isEdited);
+            EditorEvents.TriggerOnPrefabEdited(isEdited);
         }
 
         private void VisualizeComponents()

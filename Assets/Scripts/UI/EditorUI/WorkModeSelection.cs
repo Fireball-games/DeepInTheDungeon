@@ -47,7 +47,7 @@ namespace Scripts.UI.EditorUI
         private void OnEnable()
         {
             EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
-            EditorEvents.OnMapEditedStatusChanged += OnEditedStatusChanged;
+            EditorEvents.OnPrefabEdited += OnPrefabEdited;
             _buildModeButton.OnClickWithSender += WorkModeButtonClicked;
             _buildModeButton.OnSelected += ActivateBuildModeOptions;
             _buildModeButton.OnDeselected += DeactivateBuildModeOptions;
@@ -62,7 +62,7 @@ namespace Scripts.UI.EditorUI
         private void OnDisable()
         {
             EditorEvents.OnWorkModeChanged -= OnWorkModeChanged;
-            EditorEvents.OnMapEditedStatusChanged -= OnEditedStatusChanged;
+            EditorEvents.OnPrefabEdited -= OnPrefabEdited;
             _buildModeButton.OnClickWithSender -= WorkModeButtonClicked;
             _buildModeButton.OnSelected -= ActivateBuildModeOptions;
             _buildModeButton.OnDeselected -= DeactivateBuildModeOptions;
@@ -109,7 +109,7 @@ namespace Scripts.UI.EditorUI
             }
         }
 
-        private void OnEditedStatusChanged(bool isEdited)
+        private void OnPrefabEdited(bool isEdited)
         {
             _workModesMap.Keys.ForEach(button => button.SetInteractable(!isEdited));
         }

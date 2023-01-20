@@ -185,7 +185,7 @@ namespace Scripts.UI.EditorUI
             if (isAnyObjectEdited == isEditing) return;
             
             isAnyObjectEdited = isEditing;
-            EditorEvents.TriggerOnMapEditedStatusChanged(isEditing);
+            EditorEvents.TriggerOnPrefabEdited(isEditing);
         }
 
         private void CloseEditorWindow()

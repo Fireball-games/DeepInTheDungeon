@@ -14,7 +14,7 @@ namespace Scripts.UI.EditorUI
         private ImageButton _editTriggerReceiverButton;
 
         private Dictionary<EWorkMode, ImageButton> _buttonsMap;
-        public EWorkMode LastSelectedMode { get; set; }
+        public EWorkMode LastSelectedMode { get; private set; }
 
         private void Awake()
         {
@@ -29,7 +29,7 @@ namespace Scripts.UI.EditorUI
             _editTriggerReceiverButton.OnClickWithSender += OnClick;
             
             EditorEvents.OnWorkModeChanged += SetSelected;
-            EditorEvents.OnMapEditedStatusChanged += OnMapEditedStatusChanged;
+            EditorEvents.OnPrefabEdited += OnPrefabEdited;
         }
 
         private void OnDisable()
@@ -38,10 +38,10 @@ namespace Scripts.UI.EditorUI
             _editTriggerReceiverButton.OnClickWithSender -= OnClick;
             
             EditorEvents.OnWorkModeChanged -= SetSelected;
-            EditorEvents.OnMapEditedStatusChanged -= OnMapEditedStatusChanged;
+            EditorEvents.OnPrefabEdited -= OnPrefabEdited;
         }
 
-        private void OnMapEditedStatusChanged(bool isChanged)
+        private void OnPrefabEdited(bool isChanged)
         {
             _buttonsMap.Values.ForEach(b => b.SetInteractable(!isChanged));
         }

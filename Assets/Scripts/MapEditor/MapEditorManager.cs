@@ -58,13 +58,15 @@ namespace Scripts.MapEditor
         private void OnEnable()
         {
             MapBuilder.OnLayoutBuilt.AddListener(OnLayoutBuilt);
-            EditorEvents.OnMapEditedStatusChanged += MapEditedStatusChanged;
+            EditorEvents.OnMapLayoutChanged += OnMapLayoutChanged;
+            EditorEvents.OnPrefabEdited += OnPrefabEdited;
         }
 
         private void OnDisable()
         {
             MapBuilder.OnLayoutBuilt.RemoveListener(OnLayoutBuilt);
-            EditorEvents.OnMapEditedStatusChanged -= MapEditedStatusChanged;
+            EditorEvents.OnMapLayoutChanged -= OnMapLayoutChanged;
+            EditorEvents.OnPrefabEdited -= OnPrefabEdited;
         }
 
         public void OrderMapConstruction(MapDescription map,
@@ -169,7 +171,7 @@ namespace Scripts.MapEditor
             }
             
             EditorUIManager.Instance.StatusBar.RegisterMessage(t.Get(Keys.MapSaved), StatusBar.EMessageType.Positive);
-
+            EditorEvents.TriggerOnPrefabEdited(false);
             MapIsChanged = false;
             MapIsSaved = true;
         }
@@ -226,10 +228,15 @@ namespace Scripts.MapEditor
 
             EditorCameraService.Instance.ResetCamera();
         }
-        
-        private void MapEditedStatusChanged(bool isEdited)
+
+        private void OnPrefabEdited(bool isEdited)
         {
             MapIsChanged = isEdited;
+        }
+        
+        private void OnMapLayoutChanged()
+        {
+            MapIsChanged = true;
             MapIsSaved = false;
         }
 

@@ -322,7 +322,7 @@ namespace Scripts.MapEditor.Services
             }
             else
             {
-                EditorEvents.TriggerOnMapEditedStatusChanged(true);
+                EditorEvents.TriggerOnMapLayoutChanged();
 
                 MapBuilder.ChangePrefabPositionsBy(new Vector3(rowAdjustment, -floorAdjustment, columnAdjustment));
 

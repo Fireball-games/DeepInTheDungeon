@@ -193,11 +193,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void VisualizeOtherComponents()
         {
-            _positionControl.SetActive(false);
-            _startPositionUpDown.SetActive(false);
-            _triggerTypeDropdown.SetActive(false);
-            _triggerCountUpDown.SetActive(false);
-            _receiverList.SetActive(false);
+            _positionControl.SetCollapsed(true);
+            _startPositionUpDown.SetCollapsed(true);
+            _triggerTypeDropdown.SetCollapsed(true);
+            _triggerCountUpDown.SetCollapsed(true);
+            _receiverList.SetCollapsed(true);
 
             if (EditedConfiguration is null) return;
 
@@ -222,7 +222,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _positionControl.Label.text = $"{t.Get(Keys.Position)}:";
                 _positionControl.Value = prefabPosition - _prefabWallCenterPosition;
                 _positionControl.ValueChanged.AddListener(OnPositionChanged);
-                _positionControl.SetActive(true);
+                _positionControl.SetCollapsed(false);
             }
 
             if (EditedPrefab is IPositionsTrigger positionsTrigger)
@@ -230,26 +230,26 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _startPositionUpDown.Label.text = t.Get(Keys.StartPosition);
                 _startPositionUpDown.maximum = positionsTrigger.GetSteps().Count - 1;
                 _startPositionUpDown.Value = positionsTrigger.GetStartPosition();
-                _startPositionUpDown.SetActive(true);
+                _startPositionUpDown.SetCollapsed(false);
             }
 
             _triggerTypeDropdown.Set($"{t.Get(Keys.TriggerType)}:",
                 EditedConfiguration.TriggerType,
                 OnTriggerTypeChanged);
-            _triggerTypeDropdown.SetActive(true);
+            _triggerTypeDropdown.SetCollapsed(false);
 
             if (EditedConfiguration.TriggerType is Enums.ETriggerType.Multiple)
             {
                 _triggerCountUpDown.Value = EditedConfiguration.Count;
                 _triggerCountUpDown.Label.text = $"{t.Get(Keys.Count)} :";
-                _triggerCountUpDown.SetActive(true);
+                _triggerCountUpDown.SetCollapsed(false);
             }
 
             IEnumerable<TriggerReceiverConfiguration> subscribers =
                 EditedConfiguration.Subscribers.Select(s => MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(s));
 
             _receiverList.Set(t.Get(Keys.SubscribedReceivers), subscribers, OnReceiverListChanged);
-            _receiverList.SetActive(true);
+            _receiverList.SetCollapsed(false);
             
             RedrawPath();
         }

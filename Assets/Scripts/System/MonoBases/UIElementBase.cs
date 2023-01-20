@@ -5,50 +5,33 @@ namespace Scripts.System.MonoBases
     public class UIElementBase : MonoBehaviour
     {
         [SerializeField] protected GameObject body;
-
-        private Vector3 _originalScale;
-
+        
+        /// <summary>
+        /// Disables body.
+        /// </summary>
+        /// <param name="isActive"></param>
         public virtual void SetActive(bool isActive)
         {
-            if (isActive)
-            {
-                if (transform.localScale != Vector3.zero)
-                {
-                    _originalScale = transform.localScale;
-                }
-                else
-                {
-                    SetCollapsed(false);
-                }
-            }
-            
             if (body)
             {
                 body.SetActive(isActive);
             }
         }
 
-        public void Reparent(Transform newParent, bool isActive = true)
-        {
-            transform.SetParent(newParent);
-            SetActive(isActive);
-        }
-
+        /// <summary>
+        /// Same as SetActive, but disables whole element, not just body.
+        /// </summary>
+        /// <param name="isCollapsed"></param>
         public void SetCollapsed(bool isCollapsed)
         {
             if (isCollapsed)
             {
-                if (transform.localScale == Vector3.zero) return;
-                
-                _originalScale = transform.localScale;
-                transform.localScale = Vector3.zero;
+                gameObject.SetActive(false);
                 SetActive(false);
             }
             else
             {
-                if (transform.localScale == _originalScale) return;
-                
-                transform.localScale = _originalScale;
+                gameObject.SetActive(true);
                 SetActive(true);
             }
         }

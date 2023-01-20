@@ -204,7 +204,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         public virtual void MoveCameraToPrefab(Vector3 targetPosition) =>
             EditorCameraService.Instance.MoveCameraToPrefab(Vector3Int.RoundToInt(targetPosition));
 
-        protected virtual void SetPrefab(string prefabName)
+        private void SetPrefab(string prefabName)
         {
             RemoveOtherComponents();
             SetStatusText();
@@ -254,11 +254,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             IsCurrentConfigurationChanged = isEdited;
             Manager.SetAnyObjectEdited(isEdited);
             SetButtons();
-
-            if (isEdited)
-            {
-                EditorEvents.TriggerOnMapEditedStatusChanged(true);
-            }
+            
+            EditorEvents.TriggerOnPrefabEdited(isEdited);
         }
 
         protected virtual void Delete()

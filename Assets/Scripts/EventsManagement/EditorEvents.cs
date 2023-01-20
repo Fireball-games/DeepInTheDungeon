@@ -11,7 +11,8 @@ namespace Scripts.EventsManagement
         public static event Action<Vector3Int, Vector3Int> OnMouseGridPositionChanged;
         public static event Action<ELevel> OnWorkingLevelChanged;
         public static event Action<int?> OnFloorChanged;
-        public static event Action<bool> OnMapEditedStatusChanged;
+        public static event Action OnMapLayoutChanged;
+        public static event Action<bool> OnPrefabEdited;
         public static event Action<bool> OnCameraPerspectiveChanged;
 
         // ***********    Triggers    ***********
@@ -27,7 +28,9 @@ namespace Scripts.EventsManagement
 
         public static void TriggerOnFloorChanged(int? floor) => OnFloorChanged?.Invoke(floor);
 
-        public static void TriggerOnMapEditedStatusChanged(bool isEdited) => OnMapEditedStatusChanged?.Invoke(isEdited);
+        public static void TriggerOnMapLayoutChanged() => OnMapLayoutChanged?.Invoke();
+        
+        public static void TriggerOnPrefabEdited(bool isEdited) => OnPrefabEdited?.Invoke(isEdited);
 
         public static void TriggerOnCameraPerspectiveChanged(bool isOrthographic) => OnCameraPerspectiveChanged?.Invoke(isOrthographic);
     }

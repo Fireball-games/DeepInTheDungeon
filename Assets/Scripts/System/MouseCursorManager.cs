@@ -15,11 +15,14 @@ namespace Scripts.System
         private static bool _isDefaultCursorSet = true;
 
         private static EditorUIManager UIManager => EditorUIManager.Instance;
+        private static bool IsInEditMode => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
         private static Cursor3D _cursor3D;
         private static Cursor3D Cursor3D
         {
             get
             {
+                if (!IsInEditMode) return null;
+                
                 if(!_cursor3D)
                 {
                     _cursor3D = FindObjectOfType<Cursor3D>();
@@ -102,7 +105,7 @@ namespace Scripts.System
         
         public static void Hide3DCursor()
         {
-            if (!UIManager.isAnyObjectEdited)
+            if (IsInEditMode && !UIManager.isAnyObjectEdited)
             {
                 Cursor3D.Hide();
             }

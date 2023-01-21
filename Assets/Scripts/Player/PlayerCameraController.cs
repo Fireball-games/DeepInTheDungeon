@@ -1,21 +1,28 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Scripts.System.MonoBases;
+using Scripts.UI.PlayMode;
 using UnityEngine;
 
-public class PlayerCameraController : MonoBehaviour
+public class PlayerCameraController : SingletonNotPersisting<PlayerCameraController>
 {
+    private static PlayMouseService MouseService => PlayMouseService.Instance;
     private Transform _cameraArm;
     private Transform _cameraHolder;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+        
         _cameraArm = transform.Find("CameraArm");
         _cameraHolder = _cameraArm.Find("MainCamera");
     }
 
     private void Update()
     {
-        throw new NotImplementedException();
+        
+    }
+
+    public void HandleMouseMovement()
+    {
+        
     }
 }

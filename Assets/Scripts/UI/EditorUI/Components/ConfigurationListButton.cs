@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Scripts.Building;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
@@ -19,6 +20,7 @@ namespace Scripts.UI.EditorUI.Components
         private PositionRotation _originalCameraTransformData;
         private int _originalFloor;
 
+        private MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
         private EditorUIManager UIManager => EditorUIManager.Instance;
         private Cursor3D Cursor3D => UIManager ? UIManager.Cursor3D : null;
         private EditorCameraService CameraService => EditorCameraService.Instance;
@@ -65,9 +67,15 @@ namespace Scripts.UI.EditorUI.Components
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            Cursor3D.ShowAt(displayedItem.TransformData.Position,
+            // Transform prefabTransform = MapBuilder.GetPrefabByGuid(displayedItem.Guid).transform;
+            // Vector3 position = prefabTransform.position;
+            // Quaternion rotation = prefabTransform.rotation;
+            Quaternion rotation = displayedItem.TransformData.Rotation;
+            Vector3 position = displayedItem.TransformData.Position;
+            // rotation.x = rotation.z = 0;
+            Cursor3D.ShowAt(/*displayedItem.TransformData.Position*/ position,
                 UIManager.OpenedEditor.GetCursor3DScale(),
-                displayedItem.TransformData.Rotation);
+                rotation);
 
             _canMoveToPrefab = true;
             StartCoroutine(MouseOverCoroutine());

@@ -39,7 +39,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             PrefabName = prefab.name;
             TransformData = new PositionRotation(prefab.transform.position.Round(2), prefab.transform.rotation);
             PrefabType = prefab.prefabType;
-            Guid = string.IsNullOrEmpty(prefab.GUID) ? global::System.Guid.NewGuid().ToString() : prefab.GUID;
+            Guid = string.IsNullOrEmpty(prefab.Guid) ? global::System.Guid.NewGuid().ToString() : prefab.Guid;
             SpawnPrefabOnBuild = spawnPrefabOnBuild;
             OwnerGuid = ownerGuid;
         }

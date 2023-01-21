@@ -1,18 +1,17 @@
 ﻿using System;
-using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.Tile;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.System;
+using Scripts.Triggers;
 using Scripts.UI.Components;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
-    public class PrefabTileEditor : PrefabEditorBase<TilePrefabConfiguration, TilePrefab>
+    public class TilePrefabEditor : PrefabEditorBase<TilePrefabConfiguration, TilePrefab>
     {
         [SerializeField] private RotationWidget rotationWidget;
         [SerializeField] private FramedCheckBox isWalkableCheckBox;
@@ -83,6 +82,30 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetEdited();
             PhysicalPrefabBody.transform.Rotate(Vector3.up, angles);
             EditedConfiguration.TransformData.Rotation = PhysicalPrefabBody.transform.rotation;
+
+            UpdateEmbeddedPrefabsTransformData();
+        }
+
+        private void UpdateEmbeddedPrefabsTransformData()
+        {
+            foreach (TriggerReceiver receiver in EditedPrefab.GetComponents<TriggerReceiver>())
+            {
+                TriggerReceiverConfiguration configuration = MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(receiver.Guid);
+                configuration.TransformData.Position = receiver.transform.position;
+                configuration.TransformData.Rotation = receiver.transform.rotation;
+            }
+            
+            UpdatePrefabTransformData<TriggerReceiverConfiguration, Trigger>();
+        }
+
+        private void UpdatePrefabTransformData<TConfiguration, TPrefabType>() where TConfiguration : PrefabConfiguration where TPrefabType : PrefabBase
+        {
+            foreach (TPrefabType trigger in EditedPrefab.GetComponentsInChildren<TPrefabType>())
+            {
+                TConfiguration configuration = MapBuilder.GetConfigurationByGuid<TConfiguration>(trigger.Guid);
+                configuration.TransformData.Position = trigger.transform.position;
+                configuration.TransformData.Rotation = trigger.transform.rotation;
+            }
         }
 
         private void SetIsWalkableInLayout(bool isWalkable)

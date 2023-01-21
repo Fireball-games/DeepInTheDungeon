@@ -90,7 +90,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             RemoveConfiguration(config);
 
-            GameObject prefabGo = Prefabs.FirstOrDefault(go => go.GetComponent<PrefabBase>().GUID == configuration.Guid);
+            GameObject prefabGo = Prefabs.FirstOrDefault(go => go.GetComponent<PrefabBase>().Guid == configuration.Guid);
 
             if (!configuration.SpawnPrefabOnBuild) return;
 
@@ -122,7 +122,7 @@ namespace Scripts.Building.PrefabsBuilding
 
         public GameObject GetPrefabByGuid(string guid)
         {
-            GameObject result = Prefabs.FirstOrDefault(p => p.GetComponent<PrefabBase>().GUID == guid);
+            GameObject result = Prefabs.FirstOrDefault(p => p.GetComponent<PrefabBase>().Guid == guid);
 
             return !result ? null : result;
         }
@@ -175,7 +175,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             foreach (PrefabBase script in Prefabs.Select(go => go.GetComponent<PrefabBase>()))
             {
-                if (script is TP @base) result.Add(GetConfigurationByGuid<TC>(@base.GUID));
+                if (script is TP @base) result.Add(GetConfigurationByGuid<TC>(@base.Guid));
             }
 
             return result;
@@ -236,7 +236,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
 
-            prefabScript.GUID = configuration.Guid;
+            prefabScript.Guid = configuration.Guid;
 
             TilePrefabService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
             WallService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);

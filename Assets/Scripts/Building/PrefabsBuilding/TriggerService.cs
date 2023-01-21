@@ -46,14 +46,14 @@ namespace Scripts.Building.PrefabsBuilding
 
                 if (IsInEditor)
                 {
-                    Triggers.TryAdd(trigger.GUID, trigger);
+                    Triggers.TryAdd(trigger.Guid, trigger);
 
-                    configuration = AddTriggerConfigurationToMap(trigger, prefabScript.GUID);
+                    configuration = AddTriggerConfigurationToMap(trigger, prefabScript.Guid);
                     AddReplaceTriggerPath(configuration);
                 }
                 else
                 {
-                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.GUID, trigger.gameObject.name, out configuration))
+                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.Guid, trigger.gameObject.name, out configuration))
                     {
                         Logger.LogWarning("Failed to find configuration for trigger", logObject: trigger);
                         continue;
@@ -62,7 +62,7 @@ namespace Scripts.Building.PrefabsBuilding
                     trigger.subscribers = configuration.Subscribers;
                 }
 
-                trigger.GUID = configuration.Guid;
+                trigger.Guid = configuration.Guid;
                 
                 if (trigger is IPositionsTrigger positionsTrigger)
                 {
@@ -86,11 +86,11 @@ namespace Scripts.Building.PrefabsBuilding
                 {
                     TriggerReceivers.TryAdd(receiver.Guid, receiver);
 
-                    configuration = AddTriggerReceiverConfigurationToMap(receiver, prefabScript.GUID);
+                    configuration = AddTriggerReceiverConfigurationToMap(receiver, prefabScript.Guid);
                 }
                 else
                 {
-                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.GUID, receiver.identification, out configuration))
+                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.Guid, receiver.identification, out configuration))
                     {
                         Logger.LogWarning("Failed to find configuration for trigger", logObject: receiver);
                         continue;
@@ -158,7 +158,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             foreach (Trigger trigger in prefab.GetComponentsInChildren<Trigger>())
             {
-                MapBuilder.RemoveConfiguration(trigger.GUID);
+                MapBuilder.RemoveConfiguration(trigger.Guid);
             }
         }
         

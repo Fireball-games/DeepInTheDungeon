@@ -24,7 +24,7 @@ namespace Scripts.UI.EditorUI
         private DialogBase _confirmationDialog;
         private OpenFileDialog _openFileDialog;
         private WallEditor _wallEditor;
-        private PrefabTileEditor _prefabTileEditor;
+        private TilePrefabEditor _tilePrefabEditor;
         private TriggerEditor _triggerEditor;
         private TriggerReceiverEditor _triggerReceiverEditor;
         private StatusBar _statusBar;
@@ -63,7 +63,7 @@ namespace Scripts.UI.EditorUI
             _confirmationDialog = transform.Find("ConfirmationDialog Variant").GetComponent<DialogBase>();
             _openFileDialog = transform.Find("OpenFileDialog").GetComponent<OpenFileDialog>();
             _wallEditor = _body.Find("WallEditor").GetComponent<WallEditor>();
-            _prefabTileEditor = _body.Find("PrefabTileEditor").GetComponent<PrefabTileEditor>();
+            _tilePrefabEditor = _body.Find("PrefabTileEditor").GetComponent<TilePrefabEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
             _triggerReceiverEditor = _body.Find("TriggerReceiverEditor").GetComponent<TriggerReceiverEditor>();
             _statusBar = transform.Find("StatusBar").GetComponent<StatusBar>();
@@ -76,7 +76,7 @@ namespace Scripts.UI.EditorUI
             _editors = new Dictionary<EWorkMode, IPrefabEditor>
             {
                 {EWorkMode.Walls, _wallEditor},
-                {EWorkMode.PrefabTiles, _prefabTileEditor},
+                {EWorkMode.PrefabTiles, _tilePrefabEditor},
                 {EWorkMode.Triggers, _triggerEditor},
                 {EWorkMode.TriggerReceivers, _triggerReceiverEditor}
             };
@@ -138,8 +138,8 @@ namespace Scripts.UI.EditorUI
                 case EPrefabType.Item:
                     break;
                 case EPrefabType.PrefabTile:
-                    _prefabTileEditor.Open(prefabType, placeholderTransformData);
-                    OpenedEditor = _prefabTileEditor;
+                    _tilePrefabEditor.Open(prefabType, placeholderTransformData);
+                    OpenedEditor = _tilePrefabEditor;
                     break;
                 case EPrefabType.Trigger:
                     _triggerEditor.Open(prefabType, placeholderTransformData);
@@ -171,8 +171,8 @@ namespace Scripts.UI.EditorUI
                 case EPrefabType.Item:
                     break;
                 case EPrefabType.PrefabTile:
-                    _prefabTileEditor.Open(configuration as TilePrefabConfiguration);
-                    OpenedEditor = _prefabTileEditor;
+                    _tilePrefabEditor.Open(configuration as TilePrefabConfiguration);
+                    OpenedEditor = _tilePrefabEditor;
                     break;
                 default:
                     Logger.LogWarning($"Not implemented editor for type {configuration.PrefabType}.");

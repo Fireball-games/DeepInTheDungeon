@@ -15,7 +15,7 @@ namespace Scripts.Helpers
         public const string EnemiesDirectoryName = "Enemies";
         public const string PropsDirectoryName = "Props";
         public const string ItemsDirectoryName = "Items";
-        public const string PrefabsDirectoryName = "Prefabs";
+        public const string PrefabsDirectoryName = "TilePrefabs";
         public const string TriggersDirectoryName = "Triggers";
         
         public static string MapDirectoryPath => Path.Combine(PersistentPath, MapDirectoryName);

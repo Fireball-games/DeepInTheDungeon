@@ -3,7 +3,7 @@ using Scripts.System;
 using TMPro;
 using UnityEngine;
 
-namespace Scripts.UI
+namespace Scripts.UI.PlayMode
 {
    public class GridPositionController : MonoBehaviour
    {

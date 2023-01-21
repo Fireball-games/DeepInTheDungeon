@@ -233,6 +233,7 @@ namespace Scripts.Player
                 if (_targetRotation.y < 0f) _targetRotation.y = 270f;
                 if (_targetRotation.x is > 330f and < 361f) _targetRotation.x = 0f;
                 if (_targetRotation.x < 0f) _targetRotation.x = 270f;
+                _targetRotation.z = 0;
 
                 if (!smoothTransition)
                 {

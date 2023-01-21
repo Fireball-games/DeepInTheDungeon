@@ -13,9 +13,8 @@ using static Scripts.System.MouseCursorManager;
 
 namespace Scripts.MapEditor.Services
 {
-    public class EditorMouseService : SingletonNotPersisting<EditorMouseService>
+    public class EditorMouseService : MouseServiceBase<EditorMouseService>
     {
-        [SerializeField] private float maxValidClickTime = 0.1f;
         [SerializeField] private Cursor3D cursor3D;
         [SerializeField] private GameObject upperFloorTrigger;
         [SerializeField] private EditorCameraService cameraService;
@@ -26,15 +25,11 @@ namespace Scripts.MapEditor.Services
         public Vector3Int MouseGridPosition => _lastGridPosition;
         public Vector3Int LastLeftButtonUpWorldPosition { get; private set; }
         public EGridPositionType GridPositionType { get; private set; } = EGridPositionType.None;
-        public bool LeftClickExpired { get; private set; }
-        public bool RightClickExpired { get; private set; }
-        public bool LeftClickedOnUI { get; private set; }
 
         private MapBuildService _buildService;
         private Plane _layerPlane;
         private Vector3Int _lastGridPosition;
         private readonly Vector3Int _invalidGridPosition = new(-10000, -10000, -10000);
-        private readonly Vector2 _defaultMouseHotspot = Vector2.zero;
 
         private WallPrefabBase _lastEnteredWall;
         private GameObject _lastPrefabOnPosition;
@@ -43,23 +38,6 @@ namespace Scripts.MapEditor.Services
         private float _lastRightClickTime;
 
         private bool _isManipulatingCameraPosition;
-        private bool _uiIsBlocking;
-
-        public bool IsManipulatingCameraPosition
-        {
-            get => _isManipulatingCameraPosition;
-            set
-            {
-                if (value == _isManipulatingCameraPosition) return;
-
-                if (!_isManipulatingCameraPosition)
-                {
-                    ResetCursor();
-                }
-
-                _isManipulatingCameraPosition = value;
-            }
-        }
 
         protected override void Awake()
         {
@@ -89,7 +67,7 @@ namespace Scripts.MapEditor.Services
 
             if (EventSystem.current.IsPointerOverGameObject())
             {
-                _uiIsBlocking = true;
+                UIIsBlocking = true;
                 SetDefaultCursor();
 
                 return;
@@ -97,10 +75,10 @@ namespace Scripts.MapEditor.Services
             
             cameraService.HandleMouseWheel();
 
-            if (_uiIsBlocking)
+            if (UIIsBlocking)
             {
                 RefreshMousePosition();
-                _uiIsBlocking = false;
+                UIIsBlocking = false;
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -135,9 +113,10 @@ namespace Scripts.MapEditor.Services
             SetGridPosition(invalidateLastPosition);
         }
 
-        public void ResetCursor()
+        public override void ResetCursor()
         {
-            MouseCursorManager.ResetCursor();
+            base.ResetCursor();
+            
             RefreshMousePosition(true);
         }
 
@@ -174,40 +153,6 @@ namespace Scripts.MapEditor.Services
 
         private void RecreateMousePlane() => _layerPlane = _layerPlane = new Plane(Vector3.up,
             new Vector3(0f, 0.5f - Manager.CurrentFloor, 0f));
-
-        private void ValidateClicks()
-        {
-            float currentTime = Time.time;
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                LeftClickExpired = false;
-                _lastLeftClickTime = Time.time;
-
-                LeftClickedOnUI = false;
-
-                if (EventSystem.current.IsPointerOverGameObject())
-                {
-                    LeftClickedOnUI = true;
-                }
-            }
-
-            if (Input.GetMouseButtonDown(1))
-            {
-                RightClickExpired = false;
-                _lastRightClickTime = Time.time;
-            }
-
-            if (!LeftClickExpired && currentTime - _lastLeftClickTime > maxValidClickTime)
-            {
-                LeftClickExpired = true;
-            }
-
-            if (!RightClickExpired && currentTime - _lastRightClickTime > maxValidClickTime)
-            {
-                RightClickExpired = true;
-            }
-        }
 
         private void ProcessMouseButtonUp(int mouseButtonUpped)
         {
@@ -302,7 +247,7 @@ namespace Scripts.MapEditor.Services
 
             if (!layout.HasIndex(newGridPosition))
             {
-                Cursor.SetCursor(null, _defaultMouseHotspot, CursorMode.Auto);
+                SetCursor(ECursorType.Default);
                 Hide3DCursor();
                 return;
             }

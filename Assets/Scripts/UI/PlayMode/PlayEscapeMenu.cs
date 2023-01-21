@@ -6,54 +6,57 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayEscapeMenu : DialogBase
+namespace Scripts.UI.PlayMode
 {
-    [SerializeField] private Button toEditorButton;
-    [SerializeField] private Button toMainSceneButton;
-
-    private bool isOpened;
-
-    private void Update()
+    public class PlayEscapeMenu : DialogBase
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        [SerializeField] private Button toEditorButton;
+        [SerializeField] private Button toMainSceneButton;
+
+        private bool isOpened;
+
+        private void Update()
         {
-            if (!isOpened)
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                isOpened = true;
-                Open();
-                return;
+                if (!isOpened)
+                {
+                    isOpened = true;
+                    Open();
+                    return;
+                }
+
+                isOpened = false;
+                CloseDialog();
             }
+        }
 
-            isOpened = false;
-            CloseDialog();
-        }
-    }
-
-    private void Open()
-    {
-        base.Open();
-        if (GameManager.Instance.IsPlayingFromEditor)
+        private void Open()
         {
-            toEditorButton.gameObject.SetActive(true);
-            toEditorButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.ReturnToEditor);
-            toEditorButton.onClick.AddListener(LeaveToEditor); 
-        }
-        else
-        {
-            toEditorButton.gameObject.SetActive(false);
-        }
+            base.Open();
+            if (GameManager.Instance.IsPlayingFromEditor)
+            {
+                toEditorButton.gameObject.SetActive(true);
+                toEditorButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.ReturnToEditor);
+                toEditorButton.onClick.AddListener(LeaveToEditor); 
+            }
+            else
+            {
+                toEditorButton.gameObject.SetActive(false);
+            }
         
-        toMainSceneButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.ReturnToMainScene);
-        toMainSceneButton.onClick.AddListener(LeaveToMainScene);
-    }
+            toMainSceneButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.ReturnToMainScene);
+            toMainSceneButton.onClick.AddListener(LeaveToMainScene);
+        }
 
-    private void LeaveToMainScene()
-    {
-        SceneLoader.Instance.LoadMainScene();
-    }
+        private void LeaveToMainScene()
+        {
+            SceneLoader.Instance.LoadMainScene();
+        }
 
-    private void LeaveToEditor()
-    {
-        SceneLoader.Instance.LoadEditorScene();
+        private void LeaveToEditor()
+        {
+            SceneLoader.Instance.LoadEditorScene();
+        }
     }
 }

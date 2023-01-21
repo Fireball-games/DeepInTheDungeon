@@ -4,7 +4,7 @@ using Scripts.Player;
 using Scripts.System;
 using UnityEngine;
 
-namespace Scripts.UI
+namespace Scripts.UI.PlayMode
 {
    public class CompassController : MonoBehaviour
    {

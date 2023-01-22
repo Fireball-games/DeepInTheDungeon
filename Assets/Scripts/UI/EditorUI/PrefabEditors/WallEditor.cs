@@ -210,8 +210,8 @@ namespace Scripts.UI.EditorUI
         protected override void VisualizeOtherComponents()
         {
             _waypointEditor.SetActive(false);
-            _offsetSlider.SetActive(false);
-            _offsetNumericUpDown.gameObject.SetActive(false);
+            _offsetSlider.SetCollapsed(true);
+            _offsetNumericUpDown.SetCollapsed(true);
             _createOppositePathButton.gameObject.SetActive(false);
 
             if (EditedConfiguration == null) return;
@@ -219,12 +219,12 @@ namespace Scripts.UI.EditorUI
             if (PhysicalPrefabBody)
             {
                 _offsetSlider.OnValueChanged.RemoveAllListeners();
-                _offsetSlider.SetActive(true);
+                _offsetSlider.SetCollapsed(false);
                 _offsetSlider.Value = EditedConfiguration.Offset;
                 _offsetSlider.OnValueChanged.AddListener(OnOffsetValueChanged);
 
                 _offsetNumericUpDown.OnValueChanged.RemoveAllListeners();
-                _offsetNumericUpDown.gameObject.SetActive(true);
+                _offsetNumericUpDown.SetCollapsed(false);
                 _offsetNumericUpDown.Value = EditedConfiguration.Offset;
                 _offsetNumericUpDown.minimum = -0.5f;
                 _offsetNumericUpDown.maximum = 0.5f;
@@ -232,16 +232,16 @@ namespace Scripts.UI.EditorUI
                 _offsetNumericUpDown.OnValueChanged.AddListener(OnOffsetValueChanged);
             }
 
-            WallPrefabBase script = PhysicalPrefab.GetComponentInParent<WallPrefabBase>();
+            // WallPrefabBase script = PhysicalPrefab.GetComponentInParent<WallPrefabBase>();
 
-            if (!script) return;
+            if (!EditedPrefab) return;
 
-            if (script.presentedInEditor)
+            if (EditedPrefab.presentedInEditor)
             {
-                script.transform.Find("EditorPresentation").gameObject.SetActive(true);
+                EditedPrefab.transform.Find("EditorPresentation").gameObject.SetActive(true);
             }
 
-            if (script is IMovementWall movementScript)
+            if (EditedPrefab is IMovementWall movementScript)
             {
                 if (EditedConfiguration.WayPoints.Count < 2 && movementScript.GetWaypointPreset())
                 {

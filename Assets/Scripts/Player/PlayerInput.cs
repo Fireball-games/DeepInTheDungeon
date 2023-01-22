@@ -11,6 +11,7 @@ namespace Scripts.Player
         public KeyCode right = KeyCode.D;
         public KeyCode turnLeft = KeyCode.Q;
         public KeyCode turnRight = KeyCode.E;
+        public KeyCode toggleLookingMode = KeyCode.R;
 
         private PlayerMovement _player;
 
@@ -27,6 +28,8 @@ namespace Scripts.Player
             if (Input.GetKeyUp(right)) _player.MoveRight();
             if (Input.GetKeyUp(turnLeft)) _player.RotateLeft();
             if (Input.GetKeyUp(turnRight)) _player.RotateRight();
+
+            if (Input.GetKeyUp(toggleLookingMode)) PlayerCameraController.Instance.IsLookModeOn = !PlayerCameraController.Instance.IsLookModeOn;
         }
     }
 }

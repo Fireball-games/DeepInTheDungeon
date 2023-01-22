@@ -67,8 +67,17 @@ namespace Scripts.System
 
         public static void ResetCursor()
         {
+            Cursor.lockState = IsInEditMode ? CursorLockMode.None : CursorLockMode.Confined;
+            Cursor.visible = true;
+            
             Hide3DCursor();
             SetDefaultCursor();
+        }
+
+        public static void HideAndLock()
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         
         public static void SetCursor(ECursorType type)

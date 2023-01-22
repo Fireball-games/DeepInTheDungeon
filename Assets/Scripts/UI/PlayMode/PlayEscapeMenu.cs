@@ -13,22 +13,28 @@ namespace Scripts.UI.PlayMode
         [SerializeField] private Button toEditorButton;
         [SerializeField] private Button toMainSceneButton;
 
+        private static PlayerCameraController PlayerCameraController => PlayerCameraController.Instance;
+
         private bool isOpened;
+        private bool _isFreeLookOnOnOpen;
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (!Input.GetKeyDown(KeyCode.Escape)) return;
+            
+            if (!isOpened)
             {
-                if (!isOpened)
-                {
-                    isOpened = true;
-                    Open();
-                    return;
-                }
-
-                isOpened = false;
-                CloseDialog();
+                _isFreeLookOnOnOpen = PlayerCameraController.IsLookModeOn;
+                PlayerCameraController.IsLookModeOn = false;
+                PlayerCameraController.ResetCamera();
+                isOpened = true;
+                Open();
+                return;
             }
+
+            PlayerCameraController.IsLookModeOn = _isFreeLookOnOnOpen;
+            isOpened = false;
+            CloseDialog();
         }
 
         private void Open()

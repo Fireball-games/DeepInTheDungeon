@@ -12,24 +12,46 @@ namespace Scripts.Player
         public KeyCode turnLeft = KeyCode.Q;
         public KeyCode turnRight = KeyCode.E;
         public KeyCode toggleLookingMode = KeyCode.R;
+        public KeyCode toggleLeaningMode = KeyCode.LeftShift;
+        public KeyCode leanForward = KeyCode.W;
+        public KeyCode leanLeft = KeyCode.A;
+        public KeyCode leanRight = KeyCode.D;
 
-        private PlayerMovement _player;
+        private PlayerMovement _playerMovement;
+
+        private static PlayerCameraController PlayerCamera => PlayerCameraController.Instance;
 
         private void Awake()
         {
-            _player = GetComponent<PlayerMovement>();
+            _playerMovement = GetComponent<PlayerMovement>();
         }
 
         private void Update()
         {
-            if (Input.GetKeyUp(forward)) _player.MoveForward();
-            if (Input.GetKeyUp(back)) _player.MoveBackwards();
-            if (Input.GetKeyUp(left)) _player.MoveLeft();
-            if (Input.GetKeyUp(right)) _player.MoveRight();
-            if (Input.GetKeyUp(turnLeft)) _player.RotateLeft();
-            if (Input.GetKeyUp(turnRight)) _player.RotateRight();
+            if (!PlayerCamera) return;
+            
+            PlayerCamera.isLeaning = Input.GetKey(toggleLeaningMode);
 
-            if (Input.GetKeyUp(toggleLookingMode)) PlayerCameraController.Instance.IsLookModeOn = !PlayerCameraController.Instance.IsLookModeOn;
+            if (!PlayerCamera.isLeaning)
+            {
+                if (Input.GetKeyUp(forward)) _playerMovement.MoveForward();
+                if (Input.GetKeyUp(back)) _playerMovement.MoveBackwards();
+                if (Input.GetKeyUp(left)) _playerMovement.MoveLeft();
+                if (Input.GetKeyUp(right)) _playerMovement.MoveRight();
+                if (Input.GetKeyUp(turnLeft)) _playerMovement.RotateLeft();
+                if (Input.GetKeyUp(turnRight)) _playerMovement.RotateRight();
+
+                if (!PlayerCamera.IsLookModeOn)
+                {
+                    PlayerCamera.ResetCamera();
+                }
+            }
+            else
+            {
+                PlayerCamera.Lean(Input.GetKey(leanForward), Input.GetKey(leanLeft), Input.GetKey(leanRight));
+            }
+
+            if (Input.GetKeyUp(toggleLookingMode)) PlayerCamera.IsLookModeOn = !PlayerCamera.IsLookModeOn;
         }
     }
 }

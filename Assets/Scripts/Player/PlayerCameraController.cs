@@ -3,15 +3,31 @@ using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.PlayMode;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 public class PlayerCameraController : SingletonNotPersisting<PlayerCameraController>
 {
+    [Header("Free Look Mode settings")]
     [SerializeField] private float lookSpeed = 150f;
     [SerializeField] private float minXRotation = -60f;
     [SerializeField] private float maxXRotation = 60f;
     [SerializeField] private float minYRotation = -60f;
     [SerializeField] private float maxYRotation = 65f;
+    
+    [Header("Leaning settings")]
+    [SerializeField] private float leanAngle = 10f;
+    [SerializeField] private float upLeanAngle = 50f;
+    [SerializeField] private float minLeanZRotation = -10f;
+    [SerializeField] private float maxLeanZRotation = 10f;
+    [SerializeField] private float minLeanXRotation = 0f;
+    [SerializeField] private float maxLeanXRotation = 50f;
+    
+    private Quaternion originalRotation;
+    private float currentZRotation;
+    private float currentXRotation;
 
+    public bool isLeaning;
+    
     private bool _isLookModeOn;
     public bool IsLookModeOn
     {
@@ -43,6 +59,7 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
     {
         base.Awake();
 
+        originalRotation = Quaternion.Euler(Vector3.zero);
         _cameraArm = transform.Find("CameraArm");
         _cameraHolder = _cameraArm.Find("MainCamera");
     }
@@ -71,15 +88,36 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
 
     public void ResetCamera()
     {
+        if (!_cameraAtRest) return;
+        
         ResetCameraHolder();
     }
 
     private void ResetCameraHolder()
     {
-        _cameraAtRest = false;
-        _cameraHolder.DOLocalRotate(Vector3.zero, 0.5f)
-            .OnComplete(() => { _cameraAtRest = true; MouseCursorManager.ResetCursor(); })
-            .Play();
+        if (_cameraHolder.localRotation != Quaternion.Euler(Vector3.zero))
+        {
+            _cameraAtRest = false;
+            _cameraHolder.DOLocalRotate(Vector3.zero, 0.5f)
+                .OnComplete(() =>
+                {
+                    _cameraAtRest = true;
+                    MouseCursorManager.ResetCursor();
+                })
+                .Play();
+        }
+        
+        if (_cameraArm.localRotation != Quaternion.Euler(Vector3.zero))
+        {
+            _cameraAtRest = false;
+            _cameraArm.DOLocalRotate(Vector3.zero, 0.5f)
+                .OnComplete(() =>
+                {
+                    _cameraAtRest = true;
+                    MouseCursorManager.ResetCursor();
+                })
+                .Play();
+        }
     }
 
     private void HandleMouseMovement()
@@ -113,5 +151,44 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
         newRotation = Quaternion.Euler(xRotation, yRotation, 0);
 
         _cameraHolder.localRotation = newRotation;
+    }
+
+    public void Lean(bool isLeaningForward, bool isLeaningLeft, bool isLeaningRight)
+    {
+        if (isLeaningLeft)
+        {
+            Logger.Log("Leaning left On");
+            Quaternion leanLeft = Quaternion.AngleAxis(leanAngle, Vector3.forward);
+            _cameraArm.localRotation = originalRotation * leanLeft;
+        } else if (isLeaningRight)
+        {
+            Logger.Log("Leaning Right On");
+            Quaternion leanRight = Quaternion.AngleAxis(-leanAngle, Vector3.forward);
+            _cameraArm.localRotation = originalRotation * leanRight;
+        } else if (isLeaningForward)
+        {
+            Quaternion leanUp = Quaternion.AngleAxis(upLeanAngle, Vector3.right);
+            _cameraArm.localRotation = originalRotation * leanUp;
+        }
+        else
+        {
+            ResetCamera();
+        }
+
+        currentZRotation = _cameraArm.localEulerAngles.z;
+        currentXRotation = _cameraArm.localEulerAngles.x;
+        
+        if (currentZRotation > 180)
+        {
+            currentZRotation -= 360;
+        }
+        if (currentXRotation > 180)
+        {
+            currentXRotation -= 360;
+        }
+        currentZRotation = Mathf.Clamp(currentZRotation, minLeanZRotation, maxLeanZRotation);
+        currentXRotation = Mathf.Clamp(currentXRotation, minLeanXRotation, maxLeanXRotation);
+
+        _cameraArm.localRotation = Quaternion.Euler(currentXRotation, 0, currentZRotation);
     }
 }

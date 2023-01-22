@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapBuilder: {fileID: 7648017574634641509}
-  playerPrefab: {fileID: 5562948617168804262, guid: 11e06ad3dd581734799e4e87ed373741,
+  playerPrefab: {fileID: 3099802677195412099, guid: 11e06ad3dd581734799e4e87ed373741,
     type: 3}
 --- !u!114 &7648017574634641509
 MonoBehaviour:
@@ -166,35 +166,27 @@ MonoBehaviour:
   - prefabGameObject: {fileID: 3750255083309139020, guid: fbc9fe3fc3a15014d9f2814836b4ebc5,
       type: 3}
     howMany: 1
-    isUiObject: 0
   - prefabGameObject: {fileID: 5562948617168804265, guid: 11e06ad3dd581734799e4e87ed373741,
       type: 3}
     howMany: 1
-    isUiObject: 0
   - prefabGameObject: {fileID: 3116078653165614161, guid: 824ff2df5e6e4ca41a03a71ae478f788,
       type: 3}
     howMany: 200
-    isUiObject: 0
   - prefabGameObject: {fileID: 4470904905357970976, guid: a05b758c757783240ad1a6387b66fe1e,
       type: 3}
     howMany: 1000
-    isUiObject: 0
   - prefabGameObject: {fileID: 3010988750656366452, guid: e738f8e62d516d44686c9f374c6128b5,
       type: 3}
     howMany: 10
-    isUiObject: 1
   - prefabGameObject: {fileID: 5243739357109772409, guid: 042886c57a4422f4983ad891ee03a011,
       type: 3}
     howMany: 1
-    isUiObject: 1
   - prefabGameObject: {fileID: 4461747613523957429, guid: 71cc1265532794d4cab0421a29227564,
       type: 3}
     howMany: 1
-    isUiObject: 1
   - prefabGameObject: {fileID: 8187718477893324096, guid: 5a6152e3dff24724f819da543729d5bf,
       type: 3}
     howMany: 10
-    isUiObject: 1
   storeParent: {fileID: 5617565299547472302}
 --- !u!114 &6375206753180630512
 MonoBehaviour:

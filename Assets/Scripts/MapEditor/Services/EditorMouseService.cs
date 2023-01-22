@@ -34,11 +34,6 @@ namespace Scripts.MapEditor.Services
         private WallPrefabBase _lastEnteredWall;
         private GameObject _lastPrefabOnPosition;
 
-        private float _lastLeftClickTime;
-        private float _lastRightClickTime;
-
-        private bool _isManipulatingCameraPosition;
-
         protected override void Awake()
         {
             base.Awake();

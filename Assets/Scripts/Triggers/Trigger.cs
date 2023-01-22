@@ -24,9 +24,10 @@ namespace Scripts.Triggers
         public List<TriggerReceiver> presetSubscribers;
         public List<string> subscribers;
 
-        protected static PlayerController Player => GameManager.Instance.Player;
         protected Transform ActivePart;
         protected int CurrentPosition;
+        
+        private static PlayerController Player => GameManager.Instance.Player;
         
         protected virtual void Awake()
         {

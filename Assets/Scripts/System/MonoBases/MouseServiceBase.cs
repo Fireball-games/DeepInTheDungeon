@@ -13,8 +13,9 @@ namespace Scripts.System.MonoBases
         
         protected bool UIIsBlocking;
         
-        private float _lastLeftClickTime;
-        private float _lastRightClickTime;
+        protected float LastLeftClickTime;
+        protected float LastRightClickTime;
+        
         private bool _isManipulatingCameraPosition;
         public bool IsManipulatingCameraPosition
         {
@@ -44,7 +45,7 @@ namespace Scripts.System.MonoBases
             if (Input.GetMouseButtonDown(0))
             {
                 LeftClickExpired = false;
-                _lastLeftClickTime = Time.time;
+                LastLeftClickTime = Time.time;
 
                 LeftClickedOnUI = EventSystem.current.IsPointerOverGameObject();
             }
@@ -52,15 +53,15 @@ namespace Scripts.System.MonoBases
             if (Input.GetMouseButtonDown(1))
             {
                 RightClickExpired = false;
-                _lastRightClickTime = Time.time;
+                LastRightClickTime = Time.time;
             }
 
-            if (!LeftClickExpired && currentTime - _lastLeftClickTime > maxValidClickTime)
+            if (!LeftClickExpired && currentTime - LastLeftClickTime > maxValidClickTime)
             {
                 LeftClickExpired = true;
             }
 
-            if (!RightClickExpired && currentTime - _lastRightClickTime > maxValidClickTime)
+            if (!RightClickExpired && currentTime - LastRightClickTime > maxValidClickTime)
             {
                 RightClickExpired = true;
             }

@@ -2,7 +2,7 @@
 
 namespace Scripts.Player
 {
-    [RequireComponent(typeof(PlayerController))]
+    [RequireComponent(typeof(PlayerMovement))]
     public class PlayerInput : MonoBehaviour
     {
         public KeyCode forward = KeyCode.W;
@@ -12,21 +12,21 @@ namespace Scripts.Player
         public KeyCode turnLeft = KeyCode.Q;
         public KeyCode turnRight = KeyCode.E;
 
-        private PlayerController _playerController;
+        private PlayerMovement _player;
 
         private void Awake()
         {
-            _playerController = GetComponent<PlayerController>();
+            _player = GetComponent<PlayerMovement>();
         }
 
         private void Update()
         {
-            if (Input.GetKeyUp(forward)) _playerController.MoveForward();
-            if (Input.GetKeyUp(back)) _playerController.MoveBackwards();
-            if (Input.GetKeyUp(left)) _playerController.MoveLeft();
-            if (Input.GetKeyUp(right)) _playerController.MoveRight();
-            if (Input.GetKeyUp(turnLeft)) _playerController.RotateLeft();
-            if (Input.GetKeyUp(turnRight)) _playerController.RotateRight();
+            if (Input.GetKeyUp(forward)) _player.MoveForward();
+            if (Input.GetKeyUp(back)) _player.MoveBackwards();
+            if (Input.GetKeyUp(left)) _player.MoveLeft();
+            if (Input.GetKeyUp(right)) _player.MoveRight();
+            if (Input.GetKeyUp(turnLeft)) _player.RotateLeft();
+            if (Input.GetKeyUp(turnRight)) _player.RotateRight();
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Scripts.UI.PlayMode
          {
             compassImage.transform.rotation = Quaternion.RotateTowards(compassImage.transform.rotation,
                Quaternion.Euler(targetRotation),
-               Time.deltaTime * PlayerController.TransitionRotationSpeed );
+               Time.deltaTime * PlayerMovement.TransitionRotationSpeed );
          
             yield return null;
          }

@@ -9,7 +9,7 @@ namespace Scripts.UI.PlayMode
     public class PlayMouseService : MouseServiceBase<PlayMouseService>
     {
         private static GameManager Manager => GameManager.Instance;
-        private static PlayerCameraController PlayerCamera => PlayerCameraController.Instance;
+        private static PlayerCameraController PlayerCamera => PlayerCameraController.Instance; 
         
         private void Update()
         {

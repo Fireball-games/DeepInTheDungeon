@@ -18,6 +18,7 @@ namespace Scripts.Player
         public KeyCode leanRight = KeyCode.D;
 
         private PlayerMovement _playerMovement;
+        private bool _lookModeOnBeforeLean;
 
         private static PlayerCameraController PlayerCamera => PlayerCameraController.Instance;
 
@@ -49,6 +50,17 @@ namespace Scripts.Player
             else
             {
                 PlayerCamera.Lean(Input.GetKey(leanForward), Input.GetKey(leanLeft), Input.GetKey(leanRight));
+            }
+
+            if (Input.GetKeyDown(toggleLeaningMode))
+            {
+                _lookModeOnBeforeLean = PlayerCamera.IsLookModeOn;
+                PlayerCamera.IsLookModeOn = false;
+            }
+
+            if (Input.GetKeyUp(toggleLeaningMode))
+            {
+                PlayerCamera.IsLookModeOn = _lookModeOnBeforeLean;
             }
 
             if (Input.GetKeyUp(toggleLookingMode)) PlayerCamera.IsLookModeOn = !PlayerCamera.IsLookModeOn;

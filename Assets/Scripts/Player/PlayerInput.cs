@@ -61,7 +61,7 @@ namespace Scripts.Player
 
             if (!PlayerCamera.isLeaning && Input.GetKeyUp(toggleLookingMode))
             {
-                PlayerCamera.IsLookModeOn = !PlayerCamera.IsLookModeOn;
+                PlayerCamera.HandleLookModeOnKeyClick();
             }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Player
 {

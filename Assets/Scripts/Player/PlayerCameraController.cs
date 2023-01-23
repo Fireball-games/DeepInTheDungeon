@@ -1,9 +1,9 @@
 using DG.Tweening;
+using Scripts.Helpers;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.PlayMode;
 using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
 
 public class PlayerCameraController : SingletonNotPersisting<PlayerCameraController>
 {
@@ -20,7 +20,7 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
     [SerializeField] private float upLeanAngle = 50f;
     [SerializeField] private float minLeanZRotation = -10f;
     [SerializeField] private float maxLeanZRotation = 10f;
-    [SerializeField] private float minLeanXRotation = 0f;
+    [SerializeField] private float minLeanXRotation;
     [SerializeField] private float maxLeanXRotation = 50f;
     
     private Quaternion originalRotation;
@@ -45,7 +45,6 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
             }
             else
             {
-                Logger.Log("resetting camera from look mode off");
                 ResetCameraHolder();
             }
         }
@@ -129,8 +128,8 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
     {
         MouseCursorManager.HideAndLock();
         
-        float mouseX = Input.GetAxis("Mouse X") * lookSpeed * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
+        float mouseX = Input.GetAxis(Strings.MouseXAxis) * lookSpeed * Time.deltaTime;
+        float mouseY = Input.GetAxis(Strings.MouseYAxis) * lookSpeed * Time.deltaTime;
 
         Quaternion xQuaternion = Quaternion.AngleAxis(mouseX, Vector3.up);
         Quaternion yQuaternion = Quaternion.AngleAxis(mouseY, Vector3.left);

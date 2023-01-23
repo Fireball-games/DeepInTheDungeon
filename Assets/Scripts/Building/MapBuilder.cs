@@ -14,6 +14,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using static Scripts.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
+using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
@@ -128,6 +130,20 @@ namespace Scripts.Building
                     RegenerateTile(floor + direction.y, row + direction.x, column + direction.z);
                 }
             }
+        }
+        
+        public Campaign GenerateDefaultCampaign()
+        {
+            MapDescription defaultMap = GenerateDefaultMap(3, 5, 5);
+            
+            Campaign defaultCampaign = new()
+            {
+                StartMapName = defaultMap.MapName,
+                LastPlayedMap = defaultMap.MapName,
+                Maps = new List<MapDescription> { defaultMap },
+            };
+            
+            return defaultCampaign;
         }
 
         public static MapDescription GenerateDefaultMap(int floors, int rows, int columns)

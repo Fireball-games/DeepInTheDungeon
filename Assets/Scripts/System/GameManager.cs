@@ -8,6 +8,7 @@ using Scripts.ScenesManagement;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.System
 {
@@ -25,6 +26,7 @@ namespace Scripts.System
         public bool IsPlayingFromEditor { get; set; }
         public EGameMode GameMode => _gameMode;
 
+        private Campaign _currentCampaign;
         private MapDescription _currentMap;
         private bool _movementEnabled;
         private EGameMode _gameMode = EGameMode.Play;
@@ -66,11 +68,19 @@ namespace Scripts.System
 
             _startLevelAfterBuildFinishes = true;
 
-            _currentMap ??= FileOperationsHelper.LoadLastPlayedMap();
+            _currentCampaign ??= FileOperationsHelper.LoadLastPlayedCampaign();
 
-            _currentMap ??= MapBuilder.GenerateDefaultMap(3, 5, 5);
+            _currentCampaign ??= MapBuilder.GenerateDefaultCampaign();
+
+            if (_currentCampaign == null)
+            {
+                Logger.LogWarning("No Campaign resolved for loading.");
+                return;
+            }
             
-            PlayerPrefs.SetString(Strings.LastPlayedMap, _currentMap.MapName);
+            _currentMap ??= _currentCampaign.GetStartMap();
+
+            PlayerPrefs.SetString(Strings.LastPlayedMap, FileOperationsHelper.GetCampaignMapKey(_currentCampaign, _currentMap));
             
             mapBuilder.BuildMap(_currentMap);
         }

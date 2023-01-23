@@ -43,6 +43,12 @@ namespace Scripts.Helpers
         {
             return Path.Combine(MapDirectoryName, $"{mapName}.map");
         }
+        
+        public static Campaign LoadLastPlayedCampaign()
+        {
+            Logger.LogNotImplemented();
+            return null;
+        }
 
         public static MapDescription LoadLastPlayedMap()
         {
@@ -90,5 +96,7 @@ namespace Scripts.Helpers
         private static string GetFullRelativeMapPath(string mapName) => Path.Combine(MapDirectoryName, $"{mapName}{MapFileExtension}");
 
         private static string GetFullMapPath(string mapName) => Path.Combine(MapDirectoryPath, $"{mapName}{MapFileExtension}");
+
+        public static string GetCampaignMapKey(Campaign currentCampaign, MapDescription currentMap) => $"{currentCampaign}_{currentMap}";
     }
 }

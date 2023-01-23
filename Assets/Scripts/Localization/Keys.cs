@@ -14,6 +14,7 @@
         public const string CreateMap = "CreateMap";
         public const string CreateOppositePath = "CreateOppositePath";
         public const string Default = "Default";
+        public const string DefaultCampaignName = "DefaultCampaignName";
         public const string Delete = "Delete";
         public const string DontSave = "DontSave";
         public const string Down = "Down";

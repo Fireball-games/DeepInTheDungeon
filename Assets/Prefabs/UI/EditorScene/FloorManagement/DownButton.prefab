@@ -208,8 +208,8 @@ RectTransform:
   m_GameObject: {fileID: 4461747613523957429}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4113808866584403117}
   m_Father: {fileID: 0}
@@ -244,13 +244,7 @@ MonoBehaviour:
   frame: {fileID: 21300000, guid: ee5fbd8aad25a2846a34765f04c71685, type: 3}
   icon: {fileID: 21300000, guid: e6c56222d8458ee418cf280162696f62, type: 3}
   background: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  idleColor: {r: 0.6792453, g: 0.66322535, b: 0.66322535, a: 1}
-  enteredColor: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
-  clickedColor: {r: 0.1745283, g: 1, b: 0.36716476, a: 1}
-  selectedColor: {r: 0.7735849, g: 0.5450381, b: 0, a: 1}
-  selectedEnteredColor: {r: 0.5603146, g: 0.6509434, b: 0.009211446, a: 1}
   clickedEffectDuration: 0.1
-  mouseClickOverlay: {fileID: 3729568082934574324}
   frameImage: {fileID: 5547979997833720309}
   iconImage: {fileID: 6632501962528775676}
   backgroundImage: {fileID: 6241579272799469929}
@@ -327,7 +321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6792453, g: 0.66322535, b: 0.66322535, a: 1}
+  m_Color: {r: 0.6784314, g: 0.6627451, b: 0.6627451, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

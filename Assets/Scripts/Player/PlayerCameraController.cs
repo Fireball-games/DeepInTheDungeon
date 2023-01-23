@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.System;
 using Scripts.System.MonoBases;
@@ -28,7 +29,8 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
     private float currentXRotation;
 
     public bool isLeaning;
-    
+
+    private bool _isLookModeFromRightClick;
     private bool _isLookModeOn;
     public bool IsLookModeOn
     {
@@ -47,6 +49,8 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
             {
                 ResetCameraHolder();
             }
+            
+            PlayEvents.TriggerOnLookModeActiveChanged(_isLookModeOn);
         }
     }
     
@@ -71,19 +75,32 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
 
         if (IsLookModeOn)
         {
+            if (Input.GetMouseButtonUp(1))
+            {
+                if (_isLookModeFromRightClick)
+                {
+                    _isLookModeFromRightClick = false;
+                    IsLookModeOn = false;
+                    return;
+                }
+            }
+            
             HandleMouseMovement();
         }
         else
         {
             if (_cameraAtRest 
+                && !IsLookModeOn
                 && !isLeaning 
                 && MouseService.RightClickExpired 
                 && Input.GetMouseButton(1))
             {
+                IsLookModeOn = true;
+                _isLookModeFromRightClick = true;
                 HandleMouseMovement();
             }
 
-            if (Input.GetMouseButtonUp(1) && _cameraHolder.localRotation.eulerAngles != Vector3.zero)
+            if (Input.GetMouseButtonUp(1))
             {
                 ResetCameraHolder();
             }
@@ -177,8 +194,9 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
             ResetCamera();
         }
 
-        currentZRotation = _cameraArm.localEulerAngles.z;
-        currentXRotation = _cameraArm.localEulerAngles.x;
+        Vector3 localEulerAngles = _cameraArm.localEulerAngles;
+        currentZRotation = localEulerAngles.z;
+        currentXRotation = localEulerAngles.x;
         
         if (currentZRotation > 180)
         {
@@ -192,5 +210,17 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
         currentXRotation = Mathf.Clamp(currentXRotation, minLeanXRotation, maxLeanXRotation);
 
         _cameraArm.localRotation = Quaternion.Euler(currentXRotation, 0, currentZRotation);
+    }
+
+    public void HandleLookModeOnKeyClick()
+    {
+        if (_isLookModeFromRightClick)
+        {
+            _isLookModeFromRightClick = false;
+        }
+        else
+        {
+            IsLookModeOn = !IsLookModeOn;
+        }
     }
 }

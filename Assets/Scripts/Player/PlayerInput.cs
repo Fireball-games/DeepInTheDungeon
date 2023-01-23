@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Player
 {
@@ -41,11 +42,6 @@ namespace Scripts.Player
                 if (Input.GetKeyUp(right)) _playerMovement.MoveRight();
                 if (Input.GetKeyUp(turnLeft)) _playerMovement.RotateLeft();
                 if (Input.GetKeyUp(turnRight)) _playerMovement.RotateRight();
-
-                if (!PlayerCamera.IsLookModeOn)
-                {
-                    PlayerCamera.ResetCamera();
-                }
             }
             else
             {
@@ -60,10 +56,14 @@ namespace Scripts.Player
 
             if (Input.GetKeyUp(toggleLeaningMode))
             {
+                PlayerCamera.ResetCamera();
                 PlayerCamera.IsLookModeOn = _lookModeOnBeforeLean;
             }
 
-            if (Input.GetKeyUp(toggleLookingMode)) PlayerCamera.IsLookModeOn = !PlayerCamera.IsLookModeOn;
+            if (!PlayerCamera.isLeaning && Input.GetKeyUp(toggleLookingMode))
+            {
+                PlayerCamera.IsLookModeOn = !PlayerCamera.IsLookModeOn;
+            }
         }
     }
 }

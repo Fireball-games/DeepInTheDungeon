@@ -347,6 +347,10 @@ MonoBehaviour:
   turnLeft: 113
   turnRight: 101
   toggleLookingMode: 114
+  toggleLeaningMode: 304
+  leanForward: 119
+  leanLeft: 97
+  leanRight: 100
 --- !u!114 &2126531506181812384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,6 +381,14 @@ MonoBehaviour:
   maxXRotation: 60
   minYRotation: -60
   maxYRotation: 65
+  leanSpeed: 5
+  leanAngle: 10
+  upLeanAngle: 50
+  minLeanZRotation: -10
+  maxLeanZRotation: 10
+  minLeanXRotation: 0
+  maxLeanXRotation: 50
+  isLeaning: 0
 --- !u!136 &239811148008407513
 CapsuleCollider:
   m_ObjectHideFlags: 0

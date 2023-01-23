@@ -13,8 +13,9 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
     [SerializeField] private float maxXRotation = 60f;
     [SerializeField] private float minYRotation = -60f;
     [SerializeField] private float maxYRotation = 65f;
-    
-    [Header("Leaning settings")]
+
+    [Header("Leaning settings")] [SerializeField]
+    private float leanSpeed = 100f;
     [SerializeField] private float leanAngle = 10f;
     [SerializeField] private float upLeanAngle = 50f;
     [SerializeField] private float minLeanZRotation = -10f;
@@ -44,6 +45,7 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
             }
             else
             {
+                Logger.Log("resetting camera from look mode off");
                 ResetCameraHolder();
             }
         }
@@ -74,7 +76,10 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
         }
         else
         {
-            if (_cameraAtRest && MouseService.RightClickExpired && Input.GetMouseButton(1))
+            if (_cameraAtRest 
+                && !isLeaning 
+                && MouseService.RightClickExpired 
+                && Input.GetMouseButton(1))
             {
                 HandleMouseMovement();
             }
@@ -157,17 +162,15 @@ public class PlayerCameraController : SingletonNotPersisting<PlayerCameraControl
     {
         if (isLeaningLeft)
         {
-            Logger.Log("Leaning left On");
-            Quaternion leanLeft = Quaternion.AngleAxis(leanAngle, Vector3.forward);
+            Quaternion leanLeft = Quaternion.AngleAxis(Mathf.Lerp(currentZRotation, leanAngle, leanSpeed * Time.deltaTime), Vector3.forward);
             _cameraArm.localRotation = originalRotation * leanLeft;
         } else if (isLeaningRight)
         {
-            Logger.Log("Leaning Right On");
-            Quaternion leanRight = Quaternion.AngleAxis(-leanAngle, Vector3.forward);
+            Quaternion leanRight = Quaternion.AngleAxis(Mathf.Lerp(currentZRotation, -leanAngle, leanSpeed * Time.deltaTime), Vector3.forward);
             _cameraArm.localRotation = originalRotation * leanRight;
         } else if (isLeaningForward)
         {
-            Quaternion leanUp = Quaternion.AngleAxis(upLeanAngle, Vector3.right);
+            Quaternion leanUp = Quaternion.AngleAxis(Mathf.Lerp(currentXRotation,upLeanAngle, leanSpeed * Time.deltaTime), Vector3.right);
             _cameraArm.localRotation = originalRotation * leanUp;
         }
         else

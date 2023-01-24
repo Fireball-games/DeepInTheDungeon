@@ -14,17 +14,9 @@ namespace Scripts.UI.Components
         [SerializeField] private GameObject fileItemsParent;
         [SerializeField] private GameObject fileItemPrefab;
 
-        private void Awake()
+        public async void Show(string dialogTitle, IEnumerable<string> files, Action<string> onFileItemClicked)
         {
-            cancelButton.onClick.AddListener(CloseDialog);
-        }
-
-        public void Open(string dialogTitle, IEnumerable<string> files, Action<string> onFileItemClicked, Action onClose = null)
-        {
-            base.Open(dialogTitle, onClose);
             
-            // fileItemsParent.DismissAllChildrenToPool(true);
-
             foreach (Button button in fileItemsParent.GetComponentsInChildren<Button>())
             {
                 button.onClick.RemoveAllListeners();
@@ -39,6 +31,8 @@ namespace Scripts.UI.Components
                 fileItem.GetComponentInChildren<TMP_Text>().text = fileName;
                 fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => onFileItemClicked?.Invoke(file));
             }
+            
+            await base.Show(dialogTitle);
         }
     }
 }

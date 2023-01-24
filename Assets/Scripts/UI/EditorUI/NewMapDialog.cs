@@ -1,4 +1,4 @@
-using System;
+using System.Threading.Tasks;
 using Scripts.Localization;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
@@ -28,16 +28,12 @@ namespace Scripts.UI.EditorUI
             mapNameInput.SetTitleText(t.Get(Keys.NewMapName));
         }
 
-        public void Open(
-            string dialogTitle,
-            string placeholderMapName,
-            Action onOk = null,
-            Action onCancel = null)
+        public async Task<EConfirmResult> Show(string dialogTitle, string placeholderMapName)
         {
             mapNameInput.SetInputText("");
-            base.Open(dialogTitle, onOk, onCancel, t.Get(Keys.CreateMap));
-            
             mapNameInput.SetPlaceholderText(placeholderMapName);
+            
+            return await base.Show(dialogTitle,  t.Get(Keys.CreateMap));
         }
     }
 }

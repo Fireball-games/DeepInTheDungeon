@@ -28,7 +28,7 @@ namespace Scripts.UI.PlayMode
                 PlayerCameraController.IsLookModeOn = false;
                 PlayerCameraController.ResetCamera();
                 isOpened = true;
-                Open();
+                Show();
                 return;
             }
 
@@ -37,9 +37,8 @@ namespace Scripts.UI.PlayMode
             CloseDialog();
         }
 
-        private void Open()
+        private async void Show()
         {
-            base.Open();
             if (GameManager.Instance.IsPlayingFromEditor)
             {
                 toEditorButton.gameObject.SetActive(true);
@@ -53,6 +52,11 @@ namespace Scripts.UI.PlayMode
         
             toMainSceneButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.ReturnToMainScene);
             toMainSceneButton.onClick.AddListener(LeaveToMainScene);
+
+            if (await base.Show() is not EConfirmResult.Cancel) return;
+            
+            PlayerCameraController.IsLookModeOn = _isFreeLookOnOnOpen;
+            isOpened = false;
         }
 
         private void LeaveToMainScene()

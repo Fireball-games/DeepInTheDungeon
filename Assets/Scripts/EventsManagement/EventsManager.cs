@@ -1,6 +1,7 @@
 using System;
 using Scripts.Triggers;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Scripts.EventsManagement
 {
@@ -12,7 +13,7 @@ namespace Scripts.EventsManagement
         public static event Action<string> OnSceneFinishedLoading;
         public static event Action OnModalShowRequested;
         public static event Action OnModalHideRequested;
-        public static event Action OnModalClicked;
+        public static readonly UnityEvent OnModalClicked = new();
         public static event Action<Vector3> OnPlayerRotationChanged; 
         public static event Action<Vector3> OnPlayerPositionChanged;
         public static event Action<Trigger> OnTriggerNext;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.Helpers;
 using Scripts.Localization;
@@ -12,6 +13,7 @@ using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Scripts.System.MonoBases.DialogBase;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI
@@ -59,38 +61,26 @@ namespace Scripts.UI.EditorUI
             return $"{newMapName}{number}";
         }
         
-        private void OnLoadClicked()
+        private async void OnLoadClicked()
         {
             _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.CampaignDirectoryName);
 
             if (_existingFiles == null || !_existingFiles.Any())
             {
-                EditorUIManager.Instance.StatusBar.RegisterMessage(
+                EditorUIManager.StatusBar.RegisterMessage(
                     t.Get(Keys.NoFilesToShow),
                     StatusBar.EMessageType.Warning);
                 return;
             }
 
-            if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved)
+            if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved && await OpenConfirmationDialog() is EConfirmResult.Ok)
             {
-                OpenConfirmationDialog(LoadMapConfirmedWithSave, LoadMapConfirmed);
-                return;
+                EditorManager.SaveMap();
             }
             
-            LoadMapConfirmed();
+            EditorUIManager.OpenFileDialog.Show(t.Get(Keys.SelectMapToLoad), _existingFiles, LoadMap);
         }
 
-        private void LoadMapConfirmedWithSave()
-        {
-            EditorManager.SaveMap();
-            LoadMapConfirmed();
-        }
-
-        private void LoadMapConfirmed()
-        {
-            EditorUIManager.OpenFileDialog.Open(t.Get(Keys.SelectMapToLoad), _existingFiles, LoadMap);
-        }
-        
         private void OnSaveClicked()
         {
             if (!EditorManager.MapIsSaved)
@@ -99,49 +89,33 @@ namespace Scripts.UI.EditorUI
                 return;
             }
 
-            EditorUIManager.Instance.StatusBar.RegisterMessage(
+            EditorUIManager.StatusBar.RegisterMessage(
                     t.Get(Keys.NoChangesToSave),
                     StatusBar.EMessageType.Warning);
         }
         
-        private void OnNewMapClicked()
+        private async void OnNewMapClicked()
         {
-            if (MapEditorManager.Instance.MapIsBeingBuilt) return;
+            if (EditorManager.MapIsBeingBuilt) return;
 
-            if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved)
+            if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved && await OpenConfirmationDialog() == EConfirmResult.Ok)
             {
-                OpenConfirmationDialog(OpenNewMapDialogWithSave, OpenNewMapDialog);
-                return;
+                EditorManager.SaveMap();
             }
 
-            OpenNewMapDialog();
+            if (await EditorUIManager.NewMapDialog.Show(t.Get(Keys.NewMapDialogTitle), GetDefaultMapName()) == EConfirmResult.Ok)
+            {
+                OnNewMapDialogOK();
+            }
         }
-
-        private void OpenConfirmationDialog(Action onOk, Action onCancel)
-        {
-            EditorUIManager.Instance.ConfirmationDialog.Open(
+        
+        private async Task<EConfirmResult> OpenConfirmationDialog() =>
+            await EditorUIManager.ConfirmationDialog.Show(
                 t.Get(Keys.SaveEditedMapPrompt),
-                onOk,
-                onCancel,
                 t.Get(Keys.SaveMap),
                 t.Get(Keys.DontSave)
             );
-        }
 
-        private void OpenNewMapDialogWithSave()
-        {
-            EditorManager.SaveMap();
-            OpenNewMapDialog();
-        }
-
-        private void OpenNewMapDialog()
-        {
-            EditorUIManager.Instance.NewMapDialog.Open(t.Get(Keys.NewMapDialogTitle),
-                GetDefaultMapName(),
-                OnNewMapDialogOK
-            );
-        }
-        
         private void OnNewMapDialogOK()
         {
             NewMapDialog dialog = EditorUIManager.Instance.NewMapDialog;
@@ -187,6 +161,7 @@ namespace Scripts.UI.EditorUI
             }
             
             EditorUIManager.OpenFileDialog.CloseDialog();
+            
             EditorManager.OrderMapConstruction(loadedMap, true);
         }
     }

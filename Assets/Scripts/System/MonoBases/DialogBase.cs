@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.MapEditor.Services;
@@ -17,9 +17,15 @@ namespace Scripts.System.MonoBases
         [SerializeField] protected Button confirmButton;
         [SerializeField] protected TMP_Text cancelText;
         [SerializeField] protected TMP_Text confirmText;
-        
-        protected event Action OnCancel;
-        protected event Action OnOk;
+
+        private TaskCompletionSource<EConfirmResult> _taskCompletionSource;
+        private bool _isClosed;
+
+        public enum EConfirmResult
+        {
+            Ok,
+            Cancel
+        }
 
         private void Awake()
         {
@@ -36,13 +42,10 @@ namespace Scripts.System.MonoBases
             }
         }
 
-        public void Open(
-            string dialogTitle = null,
-            Action onOk = null,
-            Action onCancel = null,
-            string confirmButtonText = null,
-            string cancelButtonText = null)
+        public async Task<EConfirmResult> Show(string dialogTitle = null, string confirmButtonText = null, string cancelButtonText = null)
         {
+            _isClosed = false;
+            
             if (!string.IsNullOrEmpty(confirmButtonText) && confirmButton) confirmText.text = confirmButtonText;
             if (!string.IsNullOrEmpty(cancelButtonText) && cancelButton) cancelText.text = cancelButtonText;
             if (title) title.SetTitle(dialogTitle);
@@ -52,36 +55,40 @@ namespace Scripts.System.MonoBases
                 EditorMouseService.Instance.ResetCursor();
             }
             
-            OnCancel = onCancel;
-            OnOk = onOk;
-            EventsManager.OnModalClicked += CloseDialog;
+            EventsManager.OnModalClicked.RemoveAllListeners();
+            EventsManager.OnModalClicked.AddListener(OnCancelClicked);
             Modal.Show();
 
+            _taskCompletionSource = new TaskCompletionSource<EConfirmResult>();
             SetActive(true);
-        }
-
-        public void CloseDialog()
-        {
-            EventsManager.OnModalClicked -= CloseDialog;
-            Modal.Hide();
-            
-            SetActive(false);
+            return await _taskCompletionSource.Task;
         }
 
         private void OnCancelClicked()
         {
-            OnCancel?.Invoke();
-            OnCancel = null;
-            
-            CloseDialog();
+            OnConfirm(EConfirmResult.Cancel);
         }
 
         private void OnOKClicked()
         {
-            OnOk?.Invoke();
-            OnOk = null;
+            OnConfirm(EConfirmResult.Ok);
+        }
+        
+        public void CloseDialog()
+        {
+            OnConfirm(EConfirmResult.Cancel);
+        }
+
+        protected void OnConfirm(EConfirmResult result)
+        {
+            if (_isClosed) return;
             
-            CloseDialog();
+            _isClosed = true;
+            _taskCompletionSource.SetResult(result);
+            
+            Modal.Hide();
+            
+            SetActive(false);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Scripts.System
         public PlayerController Player => player;
         public Vector3Int PlayerPosition => Player.transform.position.ToVector3Int();
         public MapBuilder MapBuilder => mapBuilder;
+        public Campaign CurrentCampaign => _currentCampaign;
         public MapDescription CurrentMap => _currentMap;
         public bool MovementEnabled => _movementEnabled;
         public bool IsPlayingFromEditor { get; set; }
@@ -60,8 +61,6 @@ namespace Scripts.System
 
         private void StartBuildingLevel()
         {
-            // TODO: once applicable -> ensure, that first map loaded after install of the game is main campaign
-            
             _gameMode = EGameMode.Play;
             
             _movementEnabled = false;
@@ -77,10 +76,10 @@ namespace Scripts.System
                 Logger.LogWarning("No Campaign resolved for loading.");
                 return;
             }
-            
-            _currentMap ??= _currentCampaign.GetStartMap();
 
-            PlayerPrefs.SetString(Strings.LastPlayedMap, FileOperationsHelper.GetCampaignMapKey(_currentCampaign, _currentMap));
+            _currentMap ??= _currentCampaign.GetStarterMap();
+
+            PlayerPrefs.SetString(Strings.LastPlayedCampaign, _currentCampaign.CampaignName);
             
             mapBuilder.BuildMap(_currentMap);
         }

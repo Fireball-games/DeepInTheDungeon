@@ -151,17 +151,19 @@ namespace Scripts.MapEditor
         
         public void SaveMap()
         {
-            MapDescription currentMap = GameManager.Instance.CurrentMap;
+            Campaign currentCampaign = GameManager.Instance.CurrentCampaign;
             
-            string mapName = currentMap.MapName;
+            string campaignName = currentCampaign.CampaignName;
 
-            string mapDirectoryPath = FileOperationsHelper.MapDirectoryPath;
+            string campaignDirectoryPath = FileOperationsHelper.CampaignDirectoryPath;
             
-            mapDirectoryPath.CreateDirectoryIfNotExists();
+            campaignDirectoryPath.CreateDirectoryIfNotExists();
+
+            currentCampaign.ReplaceMap(GameManager.Instance.CurrentMap);
 
             try
             {
-                ES3.Save(mapName, currentMap, FileOperationsHelper.GetSavePath(mapName));
+                ES3.Save(campaignName, currentCampaign, FileOperationsHelper.GetSavePath(campaignName));
             }
             catch (Exception e)
             {

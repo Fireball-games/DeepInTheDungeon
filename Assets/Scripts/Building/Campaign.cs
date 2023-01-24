@@ -1,31 +1,35 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.Localization;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
     public class Campaign
     {
-        public string CampaignID;
+        public string CampaignName;
         public string StartMapName;
         public string LastPlayedMap;
         public List<MapDescription> Maps;
 
         public Campaign()
         {
-            CampaignID = t.Get(Keys.DefaultCampaignName);
+            CampaignName = t.Get(Keys.DefaultCampaignName);
             Maps = new List<MapDescription>();
         }
 
-        public MapDescription GetStartMap()
+        public IEnumerable<string> MapsNames => Maps?.Select(map => map.MapName) ?? Enumerable.Empty<string>();
+
+        public MapDescription GetStarterMap()
         {
-            if (!string.IsNullOrEmpty(LastPlayedMap))
-            {
-                return Maps.FirstOrDefault(map => map.MapName == LastPlayedMap);
-            }
-            
-            return Maps.FirstOrDefault(map => map.MapName == StartMapName);
+            return !string.IsNullOrEmpty(LastPlayedMap) 
+                ? Maps.FirstOrDefault(map => map.MapName == LastPlayedMap) 
+                : Maps.FirstOrDefault(map => map.MapName == StartMapName);
+        }
+
+        public void ReplaceMap(MapDescription newMapVersion)
+        {
+            int index = Maps.FindIndex(map => map.MapName == newMapVersion.MapName);
+            Maps[index] = newMapVersion;
         }
     }
 }

@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Scripts.Building;
 using Scripts.Helpers;
 using Scripts.Localization;
 using Scripts.MapEditor;
+using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using TMPro;
@@ -21,8 +23,10 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private Button saveButton;
         [SerializeField] private Button newMapButton;
 
-        private static MapEditorManager Manager => MapEditorManager.Instance;
-        private static EditorUIManager UIManager => EditorUIManager.Instance;
+        private static GameManager GameManager => GameManager.Instance;
+        private static MapEditorManager EditorManager => MapEditorManager.Instance;
+        private static EditorUIManager EditorUIManager => EditorUIManager.Instance;
+        
         private string[] _existingFiles;
 
         private void OnEnable()
@@ -41,9 +45,7 @@ namespace Scripts.UI.EditorUI
         {
             string newMapName = t.Get(Keys.NewMap);
             
-            string[] fileNames = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectoryName);
-
-            fileNames ??= new string[]{};
+            IEnumerable<string> fileNames = GameManager.CurrentCampaign.MapsNames;
 
             fileNames = fileNames.Select(Path.GetFileName).ToArray();
 
@@ -59,7 +61,7 @@ namespace Scripts.UI.EditorUI
         
         private void OnLoadClicked()
         {
-            _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.MapDirectoryName);
+            _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.CampaignDirectoryName);
 
             if (_existingFiles == null || !_existingFiles.Any())
             {
@@ -69,7 +71,7 @@ namespace Scripts.UI.EditorUI
                 return;
             }
 
-            if (Manager.MapIsChanged || !Manager.MapIsSaved)
+            if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved)
             {
                 OpenConfirmationDialog(LoadMapConfirmedWithSave, LoadMapConfirmed);
                 return;
@@ -80,20 +82,20 @@ namespace Scripts.UI.EditorUI
 
         private void LoadMapConfirmedWithSave()
         {
-            Manager.SaveMap();
+            EditorManager.SaveMap();
             LoadMapConfirmed();
         }
 
         private void LoadMapConfirmed()
         {
-            UIManager.OpenFileDialog.Open(t.Get(Keys.SelectMapToLoad), _existingFiles, LoadMap);
+            EditorUIManager.OpenFileDialog.Open(t.Get(Keys.SelectMapToLoad), _existingFiles, LoadMap);
         }
         
         private void OnSaveClicked()
         {
-            if (!Manager.MapIsSaved)
+            if (!EditorManager.MapIsSaved)
             {
-                Manager.SaveMap();
+                EditorManager.SaveMap();
                 return;
             }
 
@@ -106,7 +108,7 @@ namespace Scripts.UI.EditorUI
         {
             if (MapEditorManager.Instance.MapIsBeingBuilt) return;
 
-            if (Manager.MapIsChanged || !Manager.MapIsSaved)
+            if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved)
             {
                 OpenConfirmationDialog(OpenNewMapDialogWithSave, OpenNewMapDialog);
                 return;
@@ -128,7 +130,7 @@ namespace Scripts.UI.EditorUI
 
         private void OpenNewMapDialogWithSave()
         {
-            Manager.SaveMap();
+            EditorManager.SaveMap();
             OpenNewMapDialog();
         }
 
@@ -157,12 +159,12 @@ namespace Scripts.UI.EditorUI
                 ? GetDefaultMapName()
                 : mapName;
             
-            Manager.OrderMapConstruction(newMap);
+            EditorManager.OrderMapConstruction(newMap);
         }
 
         private void OnExitClicked()
         {
-            Manager.GoToMainMenu();
+            EditorManager.GoToMainMenu();
         }
 
         private void LoadMap(string filePath)
@@ -184,8 +186,8 @@ namespace Scripts.UI.EditorUI
                 return;
             }
             
-            UIManager.OpenFileDialog.CloseDialog();
-            Manager.OrderMapConstruction(loadedMap, true);
+            EditorUIManager.OpenFileDialog.CloseDialog();
+            EditorManager.OrderMapConstruction(loadedMap, true);
         }
     }
 }

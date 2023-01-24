@@ -10,7 +10,7 @@ namespace Scripts.Helpers
 {
     public static class FileOperationsHelper
     {
-        public const string MapDirectoryName = "Maps";
+        public const string CampaignDirectoryName = "Maps";
         public const string WallsDirectoryName = "Walls";
         public const string EnemiesDirectoryName = "Enemies";
         public const string PropsDirectoryName = "Props";
@@ -18,9 +18,9 @@ namespace Scripts.Helpers
         public const string PrefabsDirectoryName = "TilePrefabs";
         public const string TriggersDirectoryName = "Triggers";
         
-        public static string MapDirectoryPath => Path.Combine(PersistentPath, MapDirectoryName);
+        public static string CampaignDirectoryPath => Path.Combine(PersistentPath, CampaignDirectoryName);
+        private const string CampaignFileExtension = ".bytes";
         
-        private const string MapFileExtension = ".map";
         private static readonly string PersistentPath = Application.persistentDataPath;
 
         public static string[] GetFilesInDirectory(string relativeDirectoryPath = "", string extensionFilter = "all")
@@ -39,35 +39,27 @@ namespace Scripts.Helpers
             return allFiles;
         }
 
-        public static string GetSavePath(string mapName)
-        {
-            return Path.Combine(MapDirectoryName, $"{mapName}.map");
-        }
-        
+        public static string GetSavePath(string mapName) => Path.Combine(CampaignDirectoryName, $"{mapName}.map");
+
+        /// <summary>
+        /// Loads last played campaign or Main Campaign if no level was played yet.
+        /// </summary>
+        /// <returns>Obtained campaign or null</returns>
         public static Campaign LoadLastPlayedCampaign()
         {
-            Logger.LogNotImplemented();
-            return null;
-        }
+            string campaignName = PlayerPrefs.GetString(Strings.LastPlayedCampaign, Strings.MainCampaign);
 
-        public static MapDescription LoadLastPlayedMap()
-        {
-            string mapName = PlayerPrefs.GetString(Strings.LastPlayedMap, null);
+            if (string.IsNullOrEmpty(campaignName)) return null;
 
-            if (string.IsNullOrEmpty(mapName)) return null;
-
-            if (!File.Exists(GetFullMapPath(mapName)))
-            {
-                return null;
-            }
+            if (!File.Exists(GetFullCampaignPath(campaignName))) return null;
 
             try
             {
-                return ES3.Load<MapDescription>(mapName, GetFullRelativeMapPath(mapName));
+                return ES3.Load<Campaign>(campaignName, GetFullRelativeCampaignPath(campaignName));
             }
             catch (Exception e)
             {
-                Logger.Log($"Failed to load level from file: {mapName}: {e}", Logger.ELogSeverity.Release);
+                Logger.Log($"Failed to load campaign from file: {campaignName}: {e}", Logger.ELogSeverity.Release);
                 return null;
             }
         }
@@ -93,10 +85,8 @@ namespace Scripts.Helpers
             _ => throw new ArgumentOutOfRangeException(nameof(prefabType), prefabType, null)
         };
 
-        private static string GetFullRelativeMapPath(string mapName) => Path.Combine(MapDirectoryName, $"{mapName}{MapFileExtension}");
+        private static string GetFullRelativeCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
 
-        private static string GetFullMapPath(string mapName) => Path.Combine(MapDirectoryPath, $"{mapName}{MapFileExtension}");
-
-        public static string GetCampaignMapKey(Campaign currentCampaign, MapDescription currentMap) => $"{currentCampaign}_{currentMap}";
+        private static string GetFullCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryPath, $"{campaignName}{CampaignFileExtension}");
     }
 }

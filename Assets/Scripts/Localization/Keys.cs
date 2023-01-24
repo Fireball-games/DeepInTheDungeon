@@ -29,6 +29,7 @@
         public const string Load = "Load";
         public const string LoadingFileFailed = "LoadingFileFailed";
         public const string MapSaved = "MapSaved";
+        public const string MapSelection = "MapSelection";
         public const string NewMap = "NewMap";
         public const string NewMapDialogTitle = "NewMapDialogTitle";
         public const string NewMapName = "NewMapName";

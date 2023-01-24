@@ -88,5 +88,7 @@ namespace Scripts.Helpers
         private static string GetFullRelativeCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
 
         private static string GetFullCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryPath, $"{campaignName}{CampaignFileExtension}");
+
+        public static string GetCampaignMapKey(string campaignName, string mapName) => $"{campaignName}_{mapName}";
     }
 }

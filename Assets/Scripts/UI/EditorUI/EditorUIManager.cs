@@ -22,7 +22,7 @@ namespace Scripts.UI.EditorUI
         private FileOperations _fileOperations;
         private NewMapDialog _newMapDialog;
         private DialogBase _confirmationDialog;
-        private OpenFileDialog _openFileDialog;
+        private MapSelectionDialog _mapSelectionDialog;
         private WallEditor _wallEditor;
         private TilePrefabEditor _tilePrefabEditor;
         private TriggerEditor _triggerEditor;
@@ -37,7 +37,7 @@ namespace Scripts.UI.EditorUI
         public StatusBar StatusBar => _statusBar;
         public NewMapDialog NewMapDialog => _newMapDialog;
         public DialogBase ConfirmationDialog => _confirmationDialog;
-        public OpenFileDialog OpenFileDialog => _openFileDialog;
+        public MapSelectionDialog MapSelectionDialog => _mapSelectionDialog;
         public Cursor3D Cursor3D => _cursor3D;
         public CageController SelectedCage => _selectedCage;
         public SelectConfigurationWindow SelectConfigurationWindow => _selectConfiguration;
@@ -61,7 +61,7 @@ namespace Scripts.UI.EditorUI
             _fileOperations = _body.Find("FileOperations").GetComponent<FileOperations>();
             _newMapDialog = transform.Find("NewMapDialog").GetComponent<NewMapDialog>();
             _confirmationDialog = transform.Find("ConfirmationDialog Variant").GetComponent<DialogBase>();
-            _openFileDialog = transform.Find("OpenFileDialog").GetComponent<OpenFileDialog>();
+            _mapSelectionDialog = transform.Find("MapSelectionDialog").GetComponent<MapSelectionDialog>();
             _wallEditor = _body.Find("WallEditor").GetComponent<WallEditor>();
             _tilePrefabEditor = _body.Find("PrefabTileEditor").GetComponent<TilePrefabEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();

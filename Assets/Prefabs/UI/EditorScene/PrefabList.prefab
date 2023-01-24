@@ -233,6 +233,7 @@ MonoBehaviour:
   listContent: {fileID: 8522848420131743933}
   itemPrefab: {fileID: 938356229554018401, guid: 7388775bf62139e408fcf82178b93094,
     type: 3}
+  SetClickedItemSelected: 1
 --- !u!114 &948193099407358041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,7 +474,7 @@ PrefabInstance:
     - target: {fileID: 2369424273657079581, guid: dbab2df7ebc497349a7b5bb91a18f97f,
         type: 3}
       propertyPath: m_fontSize
-      value: 32.8
+      value: 37.4
       objectReference: {fileID: 0}
     - target: {fileID: 3616750005964622927, guid: dbab2df7ebc497349a7b5bb91a18f97f,
         type: 3}
@@ -768,7 +769,7 @@ PrefabInstance:
     - target: {fileID: 1770800856078579036, guid: cc5e3a500027fab44945ff968eece8fc,
         type: 3}
       propertyPath: m_Size
-      value: 0.9999998
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1935053090259998638, guid: cc5e3a500027fab44945ff968eece8fc,
         type: 3}

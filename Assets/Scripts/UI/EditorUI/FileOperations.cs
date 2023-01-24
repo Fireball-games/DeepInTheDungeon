@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.System;
@@ -29,7 +30,14 @@ namespace Scripts.UI.EditorUI
         private static MapEditorManager EditorManager => MapEditorManager.Instance;
         private static EditorUIManager EditorUIManager => EditorUIManager.Instance;
         
+        private List<Campaign> _existingCampaigns;
+
         private string[] _existingFiles;
+
+        private void Awake()
+        {
+            _existingCampaigns = new List<Campaign>();
+        }
 
         private void OnEnable()
         {
@@ -64,13 +72,25 @@ namespace Scripts.UI.EditorUI
         private async void OnLoadClicked()
         {
             _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.CampaignDirectoryName);
+            _existingCampaigns.Clear();
 
-            if (_existingFiles == null || !_existingFiles.Any())
+            if (_existingFiles != null && _existingFiles.Any())
             {
-                EditorUIManager.StatusBar.RegisterMessage(
-                    t.Get(Keys.NoFilesToShow),
-                    StatusBar.EMessageType.Warning);
-                return;
+                _existingFiles.ForEach(campaignFile =>
+                {
+                    try
+                    {
+                        Campaign loadedCampaign = ES3.Load<Campaign>(Path.GetFileNameWithoutExtension(campaignFile));
+                        if (loadedCampaign != null)
+                        {
+                            _existingCampaigns.Add(loadedCampaign);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log($"Error loading Campaign: {e.Message}");
+                    }
+                });
             }
 
             if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved && await OpenConfirmationDialog() is EConfirmResult.Ok)
@@ -78,7 +98,7 @@ namespace Scripts.UI.EditorUI
                 EditorManager.SaveMap();
             }
             
-            EditorUIManager.OpenFileDialog.Show(t.Get(Keys.SelectMapToLoad), _existingFiles, LoadMap);
+            EditorUIManager.MapSelectionDialog.Show( _existingCampaigns, LoadMap);
         }
 
         private void OnSaveClicked()
@@ -160,7 +180,7 @@ namespace Scripts.UI.EditorUI
                 return;
             }
             
-            EditorUIManager.OpenFileDialog.CloseDialog();
+            EditorUIManager.MapSelectionDialog.CloseDialog();
             
             EditorManager.OrderMapConstruction(loadedMap, true);
         }

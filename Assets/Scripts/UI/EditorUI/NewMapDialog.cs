@@ -19,13 +19,13 @@ namespace Scripts.UI.EditorUI
         private void OnEnable()
         {
             rowsInput.SetInputText(rowsCount.ToString());
-            rowsInput.SetTitleText(t.Get(Keys.Rows));
+            rowsInput.SetLabelText(t.Get(Keys.Rows));
             columnsInput.SetInputText(columnsCount.ToString());
-            columnsInput.SetTitleText(t.Get(Keys.Columns));
+            columnsInput.SetLabelText(t.Get(Keys.Columns));
             floorsInput.SetInputText(floorsCount.ToString());
-            floorsInput.SetTitleText(t.Get(Keys.Floors));
+            floorsInput.SetLabelText(t.Get(Keys.Floors));
             mapNameInput.SetPlaceholderText(t.Get(Keys.NewMapNamePrompt));
-            mapNameInput.SetTitleText(t.Get(Keys.NewMapName));
+            mapNameInput.SetLabelText(t.Get(Keys.NewMapName));
         }
 
         public async Task<EConfirmResult> Show(string dialogTitle, string placeholderMapName)

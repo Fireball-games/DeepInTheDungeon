@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
 using Scripts.MapEditor;
@@ -23,6 +24,7 @@ namespace Scripts.UI.EditorUI
         private NewMapDialog _newMapDialog;
         private DialogBase _confirmationDialog;
         private MapSelectionDialog _mapSelectionDialog;
+        private InputDialog _inputDialog;
         private WallEditor _wallEditor;
         private TilePrefabEditor _tilePrefabEditor;
         private TriggerEditor _triggerEditor;
@@ -62,6 +64,7 @@ namespace Scripts.UI.EditorUI
             _newMapDialog = transform.Find("NewMapDialog").GetComponent<NewMapDialog>();
             _confirmationDialog = transform.Find("ConfirmationDialog Variant").GetComponent<DialogBase>();
             _mapSelectionDialog = transform.Find("MapSelectionDialog").GetComponent<MapSelectionDialog>();
+            _inputDialog = transform.Find("InputDialog").GetComponent<InputDialog>();
             _wallEditor = _body.Find("WallEditor").GetComponent<WallEditor>();
             _tilePrefabEditor = _body.Find("PrefabTileEditor").GetComponent<TilePrefabEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
@@ -195,6 +198,11 @@ namespace Scripts.UI.EditorUI
             OpenedEditor?.CloseWithRemovingChanges();
 
             OpenedEditor = null;
+        }
+
+        public async Task<string> ShowInputFieldDialog(string title, string placeholder = "")
+        {
+            return await _inputDialog.Show(title, placeholder, "");
         }
     }
 }

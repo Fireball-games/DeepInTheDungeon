@@ -9,6 +9,7 @@ using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
+using Scripts.UI.EditorUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,12 +25,13 @@ namespace Scripts.UI.Components
         private Campaign _selectedCampaign;
         
         private Button _loadLastEditedMapButton;
+        private Title _lastEditedMapDescription;
         
         private Title _selectCampaignTitle;
-        private GameObject _campaignsScrollView;
         private Transform _campaignsParent;
         private Button _addCampaignButton;
         
+        private Title _selectCampaignPrompt;
         private Title _selectMapTitle;
         private GameObject _mapsScrollView;
         private Transform _mapsItemsParent;
@@ -51,20 +53,26 @@ namespace Scripts.UI.Components
             Transform content = body.transform.Find("Background/Frame/Content");
             
             _loadLastEditedMapButton = content.Find("LastEditedMapButton").GetComponent<Button>();
+            _lastEditedMapDescription = content.Find("LastEditedMapDescription").GetComponent<Title>();
             
             _campaignsParent = content.Find("CampaignsScrollView/Viewport/Content");
-            _campaignsScrollView = content.Find("CampaignsScrollView").gameObject;
             _selectCampaignTitle = content.Find("SelectCampaignTitle").GetComponent<Title>();
             _addCampaignButton = content.Find("AddCampaignButton").GetComponent<Button>();
             
+            _selectCampaignPrompt = content.Find("SelectCampaignPrompt").GetComponent<Title>();
             _selectMapTitle = content.Find("SelectMapTitle").GetComponent<Title>();
             _mapsScrollView = content.Find("MapsScrollView").gameObject;
             _mapsItemsParent = content.Find("MapsScrollView/Viewport/Content");
             _addMapButton = content.Find("AddMapButton").GetComponent<Button>();
             
             _loadLastEditedMapButton.onClick.AddListener(LoadLastEditedMap);
-            // _addCampaignButton.onClick.AddListener(() => FileOperations.(FileOperationsHelper.GetAddCampaignKey()));
+            _addCampaignButton.onClick.AddListener(AddCampaign);
             // _addMapButton.onClick.AddListener(() => FileOperations.(FileOperationsHelper.GetAddMapKey()));
+        }
+
+        private async void AddCampaign()
+        {
+            string campaignName = await EditorUIManager.Instance.ShowInputFieldDialog(t.Get(Keys.EnterCampaignName), t.Get(Keys.Campaign));; 
         }
 
         private void LoadLastEditedMap()
@@ -96,9 +104,9 @@ namespace Scripts.UI.Components
         {
             _lastEditedMap = PlayerPrefs.GetString(Strings.LastEditedMap, null)?.Split('_');
 
-            if (_lastEditedMap == null) return;
+            if (!IsLastEditedMapValid()) return;
             
-            if (string.IsNullOrEmpty(_lastEditedMap[0]))
+            if (string.IsNullOrEmpty(_lastEditedMap![0]))
             {
                 Logger.LogError($"Last edited map campaign is null or empty, code should never get here if it is so.");
                 return;
@@ -200,6 +208,8 @@ namespace Scripts.UI.Components
 
         private void SetMapScrollView()
         {
+            if (_selectedCampaign == null) return;
+
             foreach (Button button in _mapsItemsParent.GetComponentsInChildren<Button>())
             {
                 button.SetTextColor(Colors.White);
@@ -210,24 +220,56 @@ namespace Scripts.UI.Components
             foreach (MapDescription map in _selectedCampaign.Maps)  
             {
                 GameObject fileItem = ObjectPool.Instance.GetFromPool(fileItemPrefab, _mapsItemsParent.gameObject);
+                fileItem.name = map.MapName;
                 fileItem.GetComponentInChildren<TMP_Text>().text = map.MapName;
                 fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => LoadMap(FileOperationsHelper.GetCampaignMapKey(_selectedCampaign.CampaignName, map.MapName)));
             }
         }
+        
+        /// <summary>
+        /// Resolve if _lastEditedMap has valid values.
+        /// </summary>
+        private bool IsLastEditedMapValid()
+        {
+            if (_lastEditedMap is not {Length: 2}) return false;
+            
+            if (string.IsNullOrEmpty(_lastEditedMap[0])) return false;
+            
+            if (string.IsNullOrEmpty(_lastEditedMap[1])) return false;
+            
+            return true;
+        }
 
         private void SetComponentVisibilities()
         {
-            if (_lastEditedMap is not {Length: 2})
-            {
-                _loadLastEditedMapButton.gameObject.SetActive(false);
-                return;
-            }
+            bool lastEditedMapValid = IsLastEditedMapValid();
+            _loadLastEditedMapButton.gameObject.SetActive(lastEditedMapValid);
             
-            _loadLastEditedMapButton.gameObject.SetActive(true);
+            if (lastEditedMapValid)
+            {
+                _lastEditedMapDescription.SetTitle($"{t.Get(Keys.Campaign)}: {_lastEditedMap[0]} {t.Get(Keys.Map)}: {_lastEditedMap[1]}");
+                _lastEditedMapDescription.SetCollapsed(false);
+            }
+            else
+            {
+                _lastEditedMapDescription.SetCollapsed(true);
+            }
             
             _selectCampaignTitle.gameObject.SetActive(_existingCampaigns != null && _existingCampaigns.Any());
 
-            _addMapButton.gameObject.SetActive(_selectedCampaign != null);
+            bool isCampaignSelected = _selectedCampaign != null;
+            if (!isCampaignSelected)
+            {
+                _selectCampaignPrompt.Show(t.Get(Keys.SelectCampaignPrompt));
+            }
+            else
+            {
+                _selectCampaignPrompt.Hide();
+            }
+            
+            _selectMapTitle.gameObject.SetActive(isCampaignSelected);
+            _mapsScrollView.gameObject.SetActive(isCampaignSelected);
+            _addMapButton.gameObject.SetActive(isCampaignSelected);
             
             cancelButton.gameObject.SetActive(_showCancelButton);
         }

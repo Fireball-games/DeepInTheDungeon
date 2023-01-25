@@ -8,6 +8,7 @@
         public const string AddNewSubscriber = "AddNewSubscriber";
         public const string AddWaypoint = "AddWaypoint";
         public const string AvailablePrefabs = "AvailablePrefabs";
+        public const string Campaign = "Campaign";
         public const string Cancel = "Cancel";
         public const string Close = "Close";
         public const string Columns = "Columns";
@@ -23,6 +24,7 @@
         public const string East = "East";
         public const string EmptyEditorPrompt = "EmptyEditorPrompt";
         public const string EndPoint = "EndPoint";
+        public const string EnterCampaignName = "EnterCampaignName";
         public const string ErrorBuildingPrefab = "ErrorBuildingPref";
         public const string ExistingPrefabs = "ExistingPrefabs";
         public const string Exit = "Exit";
@@ -31,6 +33,7 @@
         public const string Load = "Load";
         public const string LoadingFileFailed = "LoadingFileFailed";
         public const string LoadLastEditedMap = "LoadLastEditedMap";
+        public const string Map = "Map";
         public const string MapSaved = "MapSaved";
         public const string MapSelection = "MapSelection";
         public const string NewMap = "NewMap";
@@ -54,6 +57,7 @@
         public const string SaveFailed = "SaveFailed";
         public const string SaveMap = "SaveMap";
         public const string SaveEditedMapPrompt = "SaveEditedMapPrompt";
+        public const string SelectCampaignPrompt = "SelectCampaignPrompt";
         public const string SelectCampaignToLoad = "SelectCampaignToLoad";
         public const string SelectConfiguration = "SelectConfiguration";
         public const string SelectMap = "SelectMap";

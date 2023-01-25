@@ -27,21 +27,6 @@ namespace Scripts.System.MonoBases
             Cancel
         }
 
-        private void Awake()
-        {
-            if (cancelButton)
-            {
-                cancelButton.onClick.AddListener(OnCancelClicked);
-                cancelText.text = t.Get(Keys.Cancel);
-            }
-
-            if (confirmButton)
-            {
-                confirmButton.onClick.AddListener(OnOKClicked);
-                confirmText.text = t.Get(Keys.Confirm);
-            }
-        }
-
         public async Task<EConfirmResult> Show(string dialogTitle = null, string confirmButtonText = null, string cancelButtonText = null)
         {
             _isClosed = false;
@@ -49,6 +34,20 @@ namespace Scripts.System.MonoBases
             if (!string.IsNullOrEmpty(confirmButtonText) && confirmButton) confirmText.text = confirmButtonText;
             if (!string.IsNullOrEmpty(cancelButtonText) && cancelButton) cancelText.text = cancelButtonText;
             if (title) title.SetTitle(dialogTitle);
+            
+            if (cancelButton)
+            {
+                cancelButton.onClick.RemoveAllListeners();
+                cancelButton.onClick.AddListener(OnCancelClicked);
+                cancelText.text = t.Get(Keys.Cancel);
+            }
+
+            if (confirmButton)
+            {
+                confirmButton.onClick.RemoveAllListeners();
+                confirmButton.onClick.AddListener(OnOKClicked);
+                confirmText.text = t.Get(Keys.Confirm);
+            }
 
             if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
             {

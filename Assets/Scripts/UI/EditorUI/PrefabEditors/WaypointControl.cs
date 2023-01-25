@@ -66,7 +66,7 @@ namespace Scripts.UI.Components
 
             OnSpeedChanged.RemoveAllListeners();
             _speedInput.OnValueChanged.RemoveAllListeners();
-            _speedInput.SetTitleText(t.Get(Keys.SpeedTowardsPoint));
+            _speedInput.SetLabelText(t.Get(Keys.SpeedTowardsPoint));
             _speedInput.SetInputText(speed.ToString(CultureInfo.InvariantCulture));
             _speedInput.OnValueChanged.AddListener(OnSpeedChanged_internal);
             OnSpeedChanged.AddListener(onSpeedChanged);

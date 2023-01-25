@@ -13,6 +13,8 @@ namespace Scripts.UI.Components
             SetActive(true);
             text.text = title;
         }
+        
+        public void Hide() => SetActive(false);
 
         public void SetTitle(string newTitle) => text.text = newTitle;
     }

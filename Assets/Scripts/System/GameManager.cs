@@ -7,6 +7,7 @@ using Scripts.Player;
 using Scripts.ScenesManagement;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
+using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
 
@@ -126,10 +127,14 @@ namespace Scripts.System
             {
                 _startLevelAfterBuildFinishes = false;
                 _gameMode = EGameMode.Editor;
-
+                
                 if (IsPlayingFromEditor)
                 {
-                    FindObjectOfType<MapEditorManager>().OrderMapConstruction(CurrentMap, true);
+                    MapEditorManager.Instance.OrderMapConstruction(CurrentMap, true);
+                }
+                else
+                {
+                    EditorUIManager.Instance.MapSelectionDialog.Show(false);
                 }
                 
                 return;

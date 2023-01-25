@@ -29,15 +29,6 @@ namespace Scripts.UI.EditorUI
         private static GameManager GameManager => GameManager.Instance;
         private static MapEditorManager EditorManager => MapEditorManager.Instance;
         private static EditorUIManager EditorUIManager => EditorUIManager.Instance;
-        
-        private List<Campaign> _existingCampaigns;
-
-        private string[] _existingFiles;
-
-        private void Awake()
-        {
-            _existingCampaigns = new List<Campaign>();
-        }
 
         private void OnEnable()
         {
@@ -71,34 +62,14 @@ namespace Scripts.UI.EditorUI
         
         private async void OnLoadClicked()
         {
-            _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.CampaignDirectoryName);
-            _existingCampaigns.Clear();
-
-            if (_existingFiles != null && _existingFiles.Any())
-            {
-                _existingFiles.ForEach(campaignFile =>
-                {
-                    try
-                    {
-                        Campaign loadedCampaign = ES3.Load<Campaign>(Path.GetFileNameWithoutExtension(campaignFile));
-                        if (loadedCampaign != null)
-                        {
-                            _existingCampaigns.Add(loadedCampaign);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Log($"Error loading Campaign: {e.Message}");
-                    }
-                });
-            }
-
             if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved && await OpenConfirmationDialog() is EConfirmResult.Ok)
             {
                 EditorManager.SaveMap();
             }
             
-            EditorUIManager.MapSelectionDialog.Show( _existingCampaigns, LoadMap);
+            
+
+            EditorUIManager.MapSelectionDialog.Show();
         }
 
         private void OnSaveClicked()

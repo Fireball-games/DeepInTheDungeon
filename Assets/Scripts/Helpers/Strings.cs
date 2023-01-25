@@ -3,6 +3,7 @@
     public static class Strings
     {
         public const string Show = "Show";
+        public const string LastEditedMap = "LastEditedMap";
         public const string LastPlayedCampaign = "LastPlayedCampaign";
         public const string MainCamera = "MainCamera";
         public const string MouseXAxis = "Mouse X";

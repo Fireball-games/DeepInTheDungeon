@@ -2,7 +2,9 @@
 {
     public static class Keys
     {
+        public const string AddCampaign = "AddCampaign";
         public const string AddEndPoint = "AddEndPoint";
+        public const string AddMap = "AddMap";
         public const string AddNewSubscriber = "AddNewSubscriber";
         public const string AddWaypoint = "AddWaypoint";
         public const string AvailablePrefabs = "AvailablePrefabs";
@@ -28,6 +30,7 @@
         public const string IsWalkable = "IsWalkable";
         public const string Load = "Load";
         public const string LoadingFileFailed = "LoadingFileFailed";
+        public const string LoadLastEditedMap = "LoadLastEditedMap";
         public const string MapSaved = "MapSaved";
         public const string MapSelection = "MapSelection";
         public const string NewMap = "NewMap";
@@ -51,7 +54,9 @@
         public const string SaveFailed = "SaveFailed";
         public const string SaveMap = "SaveMap";
         public const string SaveEditedMapPrompt = "SaveEditedMapPrompt";
+        public const string SelectCampaignToLoad = "SelectCampaignToLoad";
         public const string SelectConfiguration = "SelectConfiguration";
+        public const string SelectMap = "SelectMap";
         public const string SelectMapToLoad = "SelectMapToLoad";
         public const string SelectPrefab = "SelectPrefab";
         public const string SelectSubscriber = "SelectSubscriber";

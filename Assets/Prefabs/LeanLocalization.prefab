@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2891086094022299297}
   - component: {fileID: 8436151933741167673}
   m_Layer: 0
-  m_Name: AddNewCampaign
+  m_Name: AddCampaign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -354,7 +354,7 @@ GameObject:
   - component: {fileID: 2228734277820022874}
   - component: {fileID: 8560492052711205731}
   m_Layer: 0
-  m_Name: AddNewMap
+  m_Name: AddMap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1989,7 +1989,7 @@ GameObject:
   - component: {fileID: 2441267805196763363}
   - component: {fileID: 1314226860245890801}
   m_Layer: 0
-  m_Name: SelectCampaign
+  m_Name: SelectCampaignToLoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2025,7 +2025,7 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: Select Campaign
+    Text: Select Campaign to Load
     Object: {fileID: 0}
 --- !u!1 &6316144217492880107
 GameObject:

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Scripts.Helpers;
 using Scripts.Localization;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
@@ -30,6 +32,17 @@ namespace Scripts.Building
         {
             int index = Maps.FindIndex(map => map.MapName == newMapVersion.MapName);
             Maps[index] = newMapVersion;
+        }
+
+        public MapDescription GetMapByName(string mapName)
+        {
+            MapDescription map = Maps.FirstOrDefault(m => m.MapName == mapName);
+            
+            if (map != null) return map;
+            
+            Logger.LogError($"Map with the name: {mapName} not found in campaign: {CampaignName}");
+            return null;
+
         }
     }
 }

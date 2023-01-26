@@ -13,6 +13,7 @@ namespace Scripts.UI.Components
         public string Text => _input.text;
 
         public UnityEvent<string> OnValueChanged { get; } = new();
+        public string PlaceholderText => _placeholder.text;
 
         private void Awake()
         {

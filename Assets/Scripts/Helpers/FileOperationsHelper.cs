@@ -39,7 +39,7 @@ namespace Scripts.Helpers
             return allFiles;
         }
 
-        public static string GetSavePath(string mapName) => Path.Combine(CampaignDirectoryName, $"{mapName}.map");
+        public static string GetSavePath(string campaignName) => Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
 
         /// <summary>
         /// Loads last played campaign or Main Campaign if no level was played yet.

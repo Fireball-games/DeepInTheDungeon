@@ -1,4 +1,7 @@
+using System.Linq;
 using System.Threading.Tasks;
+using Scripts.Building;
+using Scripts.Helpers;
 using Scripts.Localization;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
@@ -28,12 +31,16 @@ namespace Scripts.UI.EditorUI
             mapNameInput.SetLabelText(t.Get(Keys.NewMapName));
         }
 
-        public async Task<EConfirmResult> Show(string dialogTitle, string placeholderMapName)
+        public async Task Show(Campaign parentCampaign)
         {
-            mapNameInput.SetInputText("");
-            mapNameInput.SetPlaceholderText(placeholderMapName);
+            string defaultMapName = Strings.GetDefaultName(
+                t.Get(Keys.NewMapName),
+                parentCampaign.Maps.Select(m => m.MapName));
             
-            return await base.Show(dialogTitle,  t.Get(Keys.CreateMap));
+            mapNameInput.SetInputText("");
+            mapNameInput.SetPlaceholderText(defaultMapName);
+
+            await base.Show(t.Get(Keys.NewMap),  t.Get(Keys.CreateMap));
         }
     }
 }

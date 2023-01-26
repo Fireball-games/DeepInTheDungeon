@@ -9,13 +9,12 @@ using Scripts.MapEditor.Services;
 using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.System.MonoBases;
-using Scripts.UI.Components;
 using Scripts.UI.EditorUI;
 using UnityEngine;
+using static MessageBar;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MonoBases.DialogBase;
-using LayoutType =
-    System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
@@ -33,6 +32,8 @@ namespace Scripts.MapEditor
         [SerializeField] private Camera sceneCamera;
         [SerializeField] private PlayerIconController playerIcon;
         
+        private GameManager GameManager => GameManager.Instance;
+        
         public ELevel WorkLevel { get; private set; }
         public EWorkMode WorkMode { get; private set; }
         public bool MapIsPresented { get; private set; }
@@ -40,7 +41,7 @@ namespace Scripts.MapEditor
         public bool MapIsSaved { get; set; } = true;
         public bool MapIsBeingBuilt { get; private set; }
         public LayoutType EditedLayout { get; private set; }
-        public MapBuilder MapBuilder { get; private set; }
+        public MapBuilder MapBuilder => GameManager.MapBuilder;
         public int CurrentFloor { get; private set; }
         public Dictionary<int, bool> FloorVisibilityMap { get; private set; }
         
@@ -55,8 +56,6 @@ namespace Scripts.MapEditor
             FloorVisibilityMap = new Dictionary<int, bool>();
             sceneCamera ??= Camera.main;
             CameraManager.Instance.SetMainCamera(sceneCamera);
-
-            MapBuilder = GameManager.Instance.MapBuilder;
         }
 
         private void OnEnable()
@@ -68,7 +67,11 @@ namespace Scripts.MapEditor
 
         private void OnDisable()
         {
-            MapBuilder.OnLayoutBuilt.RemoveListener(OnLayoutBuilt);
+            if (MapBuilder)
+            {
+                MapBuilder.OnLayoutBuilt.RemoveListener(OnLayoutBuilt);
+            }
+            
             EditorEvents.OnMapLayoutChanged -= OnMapLayoutChanged;
             EditorEvents.OnPrefabEdited -= OnPrefabEdited;
         }
@@ -101,9 +104,11 @@ namespace Scripts.MapEditor
 
             RefreshFloorVisibilityMap();
 
-            GameManager.Instance.SetCurrentMap(map);
+            GameManager.SetCurrentMap(map);
 
             MapBuilder.BuildMap(map);
+            
+            PlayerPrefs.SetString(Strings.LastEditedMap, FileOperationsHelper.GetCampaignMapKey(GameManager.CurrentCampaign.CampaignName, map.MapName));
 
             EditorEvents.TriggerOnNewMapStartedCreation();
         }
@@ -137,21 +142,21 @@ namespace Scripts.MapEditor
         {
             if (!MapIsPresented)
             {
-                EditorUIManager.Instance.StatusBar.RegisterMessage(t.Get(Keys.NoMapToPlayLoaded), StatusBar.EMessageType.Negative);
+                EditorUIManager.MessageBar.Set(t.Get(Keys.NoMapToPlayLoaded), EMessageType.Negative, automaticDismissDelay: 3f);
                 return;
             }
 
-            MapDescription currentMap = GameManager.Instance.CurrentMap;
+            MapDescription currentMap = GameManager.CurrentMap;
 
             SaveMap();
 
-            GameManager.Instance.IsPlayingFromEditor = true;
+            GameManager.IsPlayingFromEditor = true;
             SceneLoader.Instance.LoadScene(currentMap.SceneName);
         }
 
         public void SaveMap()
         {
-            Campaign currentCampaign = GameManager.Instance.CurrentCampaign;
+            Campaign currentCampaign = GameManager.CurrentCampaign;
 
             string campaignName = currentCampaign.CampaignName;
 
@@ -159,7 +164,7 @@ namespace Scripts.MapEditor
 
             campaignDirectoryPath.CreateDirectoryIfNotExists();
 
-            currentCampaign.ReplaceMap(GameManager.Instance.CurrentMap);
+            currentCampaign.ReplaceMap(GameManager.CurrentMap);
 
             try
             {
@@ -167,12 +172,12 @@ namespace Scripts.MapEditor
             }
             catch (Exception e)
             {
-                EditorUIManager.StatusBar.RegisterMessage(t.Get(Keys.SaveFailed), StatusBar.EMessageType.Negative);
+                EditorUIManager.MessageBar.Set(t.Get(Keys.SaveFailed), EMessageType.Negative, automaticDismissDelay: 3f);
                 Logger.Log($"Saving file failed: {e.Message}");
                 return;
             }
 
-            EditorUIManager.StatusBar.RegisterMessage(t.Get(Keys.MapSaved), StatusBar.EMessageType.Positive);
+            EditorUIManager.MessageBar.Set(t.Get(Keys.MapSaved), EMessageType.Positive, automaticDismissDelay: 1f);
             EditorEvents.TriggerOnPrefabEdited(false);
             MapIsChanged = false;
             MapIsSaved = true;
@@ -197,14 +202,14 @@ namespace Scripts.MapEditor
         {
             EditorMouseService.Instance.ResetCursor();
             MapBuilder.DemolishMap();
-            GameManager.Instance.SetCurrentMap(null);
-            GameManager.Instance.IsPlayingFromEditor = false;
+            GameManager.SetCurrentMap(null);
+            GameManager.IsPlayingFromEditor = false;
             SceneLoader.Instance.LoadMainScene();
         }
 
         private void OnLayoutBuilt()
         {
-            Vector3 startPosition = GameManager.Instance.CurrentMap.StartGridPosition;
+            Vector3 startPosition = GameManager.CurrentMap.StartGridPosition;
 
             if (!MapIsPresented && !_dontChangeCameraAfterLayoutIsBuild)
             {
@@ -216,7 +221,7 @@ namespace Scripts.MapEditor
 
             SetWorkMode(EWorkMode.Build);
 
-            MapDescription map = GameManager.Instance.CurrentMap;
+            MapDescription map = GameManager.CurrentMap;
 
             playerIcon.SetPositionByGrid(map.StartGridPosition);
             playerIcon.SetArrowRotation(map.PlayerRotation);

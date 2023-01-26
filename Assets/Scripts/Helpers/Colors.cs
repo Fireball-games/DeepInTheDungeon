@@ -25,7 +25,8 @@ namespace Scripts.Helpers
         public static Color ButtonIdle => _buttonIdle;
         public static Color ButtonEntered => _buttonEntered;
         public static Color ButtonClicked => _buttonClicked;
-        
+        public static Color Black => Color.black;
+
         private static Color _white;
         private static Color _positive;
         private static Color _negative;

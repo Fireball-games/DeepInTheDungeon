@@ -34,7 +34,7 @@ namespace Scripts.System.MonoBases
                 {
                     name = typeof ( T ).Name
                 };
-                
+
                 instance = obj.AddComponent<T> ();
                 return instance;
             }

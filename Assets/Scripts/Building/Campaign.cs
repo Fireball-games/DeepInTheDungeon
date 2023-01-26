@@ -28,10 +28,18 @@ namespace Scripts.Building
                 : Maps.FirstOrDefault(map => map.MapName == StartMapName);
         }
 
+        /// <summary>
+        /// If map already exists, then replaces that map with the new one
+        /// </summary>
+        /// <param name="newMapVersion"></param>
         public void ReplaceMap(MapDescription newMapVersion)
         {
             int index = Maps.FindIndex(map => map.MapName == newMapVersion.MapName);
-            Maps[index] = newMapVersion;
+            
+            if (index != -1)
+            {
+                Maps[index] = newMapVersion;
+            }
         }
 
         public MapDescription GetMapByName(string mapName)
@@ -43,6 +51,23 @@ namespace Scripts.Building
             Logger.LogError($"Map with the name: {mapName} not found in campaign: {CampaignName}");
             return null;
 
+        }
+
+        /// <summary>
+        /// Adds new map. If map already exists, then replaces that map.
+        /// </summary>
+        /// <param name="newMap"></param>
+        public void AddReplaceMap(MapDescription newMap)
+        {
+            int index = Maps.FindIndex(map => map.MapName == newMap.MapName);
+            if (index == -1)
+            {
+                Maps.Add(newMap);
+            }
+            else
+            {
+                Maps[index] = newMap;
+            }
         }
     }
 }

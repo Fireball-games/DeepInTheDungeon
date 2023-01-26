@@ -6,12 +6,12 @@ namespace Scripts.UI.Components
     public class InputDialog : DialogBase
     {
         private InputField _input;
-        
+
         protected void Awake()
         {
             _input = body.transform.Find("Content/InputField").GetComponent<InputField>();
         }
-        
+
         /// <summary>
         /// Invokes Input text dialog. Upon clicking confirm button, returns entered text or null if cancelled.
         /// </summary>
@@ -25,12 +25,14 @@ namespace Scripts.UI.Components
             title.SetTitle(inputTitle);
 
             _input.SetLabelText(inputLabelText);
-            
+
             _input.SetPlaceholderText(placeholder);
-            
+
             _input.SetInputText(string.IsNullOrEmpty(defaultValue) ? string.Empty : defaultValue);
 
-            return await base.Show(inputTitle) == EConfirmResult.Ok ? _input.Text : null;
+            return await base.Show(inputTitle) == EConfirmResult.Ok
+                ? string.IsNullOrEmpty(_input.Text) ? _input.PlaceholderText : _input.Text
+                : null;
         }
     }
 }

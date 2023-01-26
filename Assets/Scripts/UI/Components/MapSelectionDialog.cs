@@ -7,12 +7,14 @@ using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor;
+using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.UI.EditorUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Scripts.Helpers.Strings;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.Components
@@ -28,10 +30,12 @@ namespace Scripts.UI.Components
         private Title _lastEditedMapDescription;
         
         private Title _selectCampaignTitle;
+        private GameObject _campaignsScrollView;
         private Transform _campaignsParent;
         private Button _addCampaignButton;
         
         private Title _selectCampaignPrompt;
+        private Title _selectMapPrompt;
         private Title _selectMapTitle;
         private GameObject _mapsScrollView;
         private Transform _mapsItemsParent;
@@ -56,10 +60,12 @@ namespace Scripts.UI.Components
             _lastEditedMapDescription = content.Find("LastEditedMapDescription").GetComponent<Title>();
             
             _campaignsParent = content.Find("CampaignsScrollView/Viewport/Content");
+            _campaignsScrollView = content.Find("CampaignsScrollView").gameObject;
             _selectCampaignTitle = content.Find("SelectCampaignTitle").GetComponent<Title>();
             _addCampaignButton = content.Find("AddCampaignButton").GetComponent<Button>();
             
             _selectCampaignPrompt = content.Find("SelectCampaignPrompt").GetComponent<Title>();
+            _selectMapPrompt = content.Find("SelectMapPrompt").GetComponent<Title>();
             _selectMapTitle = content.Find("SelectMapTitle").GetComponent<Title>();
             _mapsScrollView = content.Find("MapsScrollView").gameObject;
             _mapsItemsParent = content.Find("MapsScrollView/Viewport/Content");
@@ -67,12 +73,89 @@ namespace Scripts.UI.Components
             
             _loadLastEditedMapButton.onClick.AddListener(LoadLastEditedMap);
             _addCampaignButton.onClick.AddListener(AddCampaign);
-            // _addMapButton.onClick.AddListener(() => FileOperations.(FileOperationsHelper.GetAddMapKey()));
+            _addMapButton.onClick.AddListener(AddMap);
+        }
+        
+        public async void Show(bool showCancelButton = true)
+        {
+            _showCancelButton = showCancelButton;
+            
+            SetCommonComponents();
+            SetExistingCampaigns();
+            SetCampaignsScrollView();
+            SetMapScrollView();
+            SetLastEditedMap();
+            RedrawComponents();
+            
+            await base.Show(t.Get(Keys.MapSelection));
         }
 
         private async void AddCampaign()
         {
-            string campaignName = await EditorUIManager.Instance.ShowInputFieldDialog(t.Get(Keys.EnterCampaignName), t.Get(Keys.Campaign));; 
+            string defaultCampaignName = GetDefaultName(
+                t.Get(Keys.Campaign),
+                _existingCampaigns.Select(c => c.CampaignName));
+            string campaignName = await EditorUIManager.Instance.ShowInputFieldDialog(t.Get(Keys.EnterCampaignName), defaultCampaignName);
+            
+            if (string.IsNullOrEmpty(campaignName)) return;
+            
+            Campaign campaign = new() {CampaignName = campaignName};
+            
+            _existingCampaigns.Add(campaign);
+            
+            ES3.Save(campaignName, campaign, FileOperationsHelper.GetSavePath(campaignName));
+            
+            _selectedCampaign = campaign;
+            GameManager.Instance.SetCurrentCampaign(campaign);
+            SetCampaignsScrollView();
+            SetScrollViewButtonSelected(campaignName, _campaignsParent);
+            RedrawComponents();
+        }
+        
+        private async void AddMap()
+        {
+            if (_selectedCampaign == null)
+            {
+                Logger.LogWarning("No map selected, can't add map.");
+                return;
+            }
+            
+            NewMapDialog dialog = EditorUIManager.Instance.NewMapDialog;
+            
+            await dialog.Show(_selectedCampaign);
+            
+            int rows = int.Parse(dialog.rowsInput.Text);
+            int columns = int.Parse(dialog.columnsInput.Text);
+            int floors = int.Parse(dialog.floorsInput.Text) + 2;
+            string mapName = dialog.mapNameInput.Text;
+
+            MapDescription newMap = MapBuilder.GenerateDefaultMap(
+                Mathf.Clamp(floors, MapEditorManager.MinFloors, MapEditorManager.MaxFloors),
+                Mathf.Clamp(rows, MapEditorManager.MinRows, MapEditorManager.MaxRows),
+                Mathf.Clamp(columns, MapEditorManager.MinColumns, MapEditorManager.MaxColumns));
+
+            newMap.MapName = string.IsNullOrEmpty(mapName)
+                ? GetDefaultName(
+                    t.Get(Keys.NewMapName),
+                    _selectedCampaign.Maps.Select(m => m.MapName)
+                )
+                : mapName;
+            
+            if (_selectedCampaign.Maps.Any(m => m.MapName == newMap.MapName))
+            {
+                string message = $"{mapName}: {t.Get(Keys.MapAlreadyExists)}";
+                EditorUIManager.Instance.MessageBar.Set(message, MessageBar.EMessageType.Warning, automaticDismissDelay: 3f);
+                return;
+            }
+            
+            _selectedCampaign.AddReplaceMap(newMap);
+            GameManager.Instance.SetCurrentMap(newMap);
+            Manager.SaveMap();
+            SetMapScrollView();
+            RedrawComponents();
+
+            CloseDialog();
+            Manager.OrderMapConstruction(newMap);
         }
 
         private void LoadLastEditedMap()
@@ -86,32 +169,12 @@ namespace Scripts.UI.Components
             Manager.OrderMapConstruction(_selectedCampaign.GetMapByName(_lastEditedMap[1]), true);
         }
 
-        public async void Show(bool showCancelButton = true)
-        {
-            _showCancelButton = showCancelButton;
-            
-            SetCommonComponents();
-            SetExistingCampaigns();
-            SetCampaignsScrollView();
-            SetMapScrollView();
-            SetLastEditedMap();
-            SetComponentVisibilities();
-            
-            await base.Show(t.Get(Keys.MapSelection));
-        }
-
         private void SetLastEditedMap()
         {
-            _lastEditedMap = PlayerPrefs.GetString(Strings.LastEditedMap, null)?.Split('_');
+            _lastEditedMap = PlayerPrefs.GetString(LastEditedMap, null)?.Split('_');
 
             if (!IsLastEditedMapValid()) return;
-            
-            if (string.IsNullOrEmpty(_lastEditedMap![0]))
-            {
-                Logger.LogError($"Last edited map campaign is null or empty, code should never get here if it is so.");
-                return;
-            }
-            
+
             OnCampaignSelected(_existingCampaigns.FirstOrDefault(c => c.CampaignName == _lastEditedMap[0]));
 
             if (_selectedCampaign is not null) return;
@@ -123,18 +186,24 @@ namespace Scripts.UI.Components
         private void OnCampaignSelected(Campaign selectedCampaign)
         {
             _selectedCampaign = selectedCampaign;
+            GameManager.Instance.SetCurrentCampaign(_selectedCampaign);
             SetMapScrollView();
+            RedrawComponents();
         }
 
         private void LoadMap(string mapName)
         {
             if (string.IsNullOrEmpty(mapName)) return;
             
+            CloseDialog();
             Manager.OrderMapConstruction(_selectedCampaign.GetMapByName(mapName), true);
         }
 
         private void SetExistingCampaigns()
         {
+            // no need to create new list if its not empty
+            if (_existingCampaigns.Any()) return;
+            
             _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.CampaignDirectoryName);
             _existingCampaigns.Clear();
 
@@ -144,7 +213,8 @@ namespace Scripts.UI.Components
                 {
                     try
                     {
-                        Campaign loadedCampaign = ES3.Load<Campaign>(Path.GetFileNameWithoutExtension(campaignFile));
+                        string campaignName = Path.GetFileNameWithoutExtension(campaignFile);
+                        Campaign loadedCampaign = ES3.Load<Campaign>(campaignName, FileOperationsHelper.GetSavePath(campaignName));
                         if (loadedCampaign != null)
                         {
                             _existingCampaigns.Add(loadedCampaign);
@@ -152,7 +222,7 @@ namespace Scripts.UI.Components
                     }
                     catch (Exception e)
                     {
-                        Logger.Log($"Error loading Campaign: {e.Message}");
+                        Logger.LogError($"Error loading Campaign: {e.Message}");
                     }
                 });
             }
@@ -192,7 +262,7 @@ namespace Scripts.UI.Components
         {
             foreach (Button button in scrollViewParent.GetComponentsInChildren<Button>())
             {
-                button.SetTextColor(button.name == selectedItemName ? Colors.Positive : Colors.White);
+                button.SetTextColor(button.GetComponentInChildren<TMP_Text>().text == selectedItemName ? Colors.Positive : Colors.White);
             }
         }
 
@@ -222,7 +292,7 @@ namespace Scripts.UI.Components
                 GameObject fileItem = ObjectPool.Instance.GetFromPool(fileItemPrefab, _mapsItemsParent.gameObject);
                 fileItem.name = map.MapName;
                 fileItem.GetComponentInChildren<TMP_Text>().text = map.MapName;
-                fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => LoadMap(FileOperationsHelper.GetCampaignMapKey(_selectedCampaign.CampaignName, map.MapName)));
+                fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => LoadMap(map.MapName));
             }
         }
         
@@ -240,7 +310,7 @@ namespace Scripts.UI.Components
             return true;
         }
 
-        private void SetComponentVisibilities()
+        private void RedrawComponents()
         {
             bool lastEditedMapValid = IsLastEditedMapValid();
             _loadLastEditedMapButton.gameObject.SetActive(lastEditedMapValid);
@@ -255,20 +325,19 @@ namespace Scripts.UI.Components
                 _lastEditedMapDescription.SetCollapsed(true);
             }
             
-            _selectCampaignTitle.gameObject.SetActive(_existingCampaigns != null && _existingCampaigns.Any());
-
-            bool isCampaignSelected = _selectedCampaign != null;
-            if (!isCampaignSelected)
-            {
-                _selectCampaignPrompt.Show(t.Get(Keys.SelectCampaignPrompt));
-            }
-            else
-            {
-                _selectCampaignPrompt.Hide();
-            }
+            _selectCampaignTitle.gameObject.SetActive(_existingCampaigns.Any());
+            _campaignsScrollView.gameObject.SetActive(_existingCampaigns.Any());
             
-            _selectMapTitle.gameObject.SetActive(isCampaignSelected);
-            _mapsScrollView.gameObject.SetActive(isCampaignSelected);
+            bool isCampaignSelected = _selectedCampaign != null;
+
+            _selectCampaignPrompt.Show(!isCampaignSelected ? t.Get(Keys.SelectCampaignPrompt) : null);
+            
+            _selectMapPrompt.Show(isCampaignSelected && !_selectedCampaign.Maps.Any() ? t.Get(Keys.SelectMapPrompt) : null);
+            
+            bool isMapsViewPresentable = isCampaignSelected && _selectedCampaign.Maps.Any();
+            
+            _selectMapTitle.gameObject.SetActive(isMapsViewPresentable);
+            _mapsScrollView.gameObject.SetActive(isMapsViewPresentable);
             _addMapButton.gameObject.SetActive(isCampaignSelected);
             
             cancelButton.gameObject.SetActive(_showCancelButton);

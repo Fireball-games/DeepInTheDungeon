@@ -34,6 +34,7 @@
         public const string LoadingFileFailed = "LoadingFileFailed";
         public const string LoadLastEditedMap = "LoadLastEditedMap";
         public const string Map = "Map";
+        public const string MapAlreadyExists = "MapAlreadyExists";
         public const string MapSaved = "MapSaved";
         public const string MapSelection = "MapSelection";
         public const string NewMap = "NewMap";
@@ -61,6 +62,7 @@
         public const string SelectCampaignToLoad = "SelectCampaignToLoad";
         public const string SelectConfiguration = "SelectConfiguration";
         public const string SelectMap = "SelectMap";
+        public const string SelectMapPrompt = "SelectMapPrompt";
         public const string SelectMapToLoad = "SelectMapToLoad";
         public const string SelectPrefab = "SelectPrefab";
         public const string SelectSubscriber = "SelectSubscriber";

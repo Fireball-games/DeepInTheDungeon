@@ -47,8 +47,11 @@ namespace Scripts.System
             EventsManager.OnStartGameRequested += OnStartGameRequested;
             EventsManager.OnSceneStartedLoading += OnSceneStartedLoading;
             EventsManager.OnSceneFinishedLoading += OnSceneFinishedLoading;
-            
-            mapBuilder.OnLayoutBuilt.AddListener(OnLayoutBuilt);
+
+            if (MapBuilder)
+            {
+                mapBuilder.OnLayoutBuilt.AddListener(OnLayoutBuilt);
+            }
         }
 
         private void OnDisable()
@@ -56,8 +59,11 @@ namespace Scripts.System
             EventsManager.OnStartGameRequested -= OnStartGameRequested;
             EventsManager.OnSceneStartedLoading -= OnSceneStartedLoading;
             EventsManager.OnSceneFinishedLoading -= OnSceneFinishedLoading;
-            
-            mapBuilder.OnLayoutBuilt.RemoveListener(OnLayoutBuilt);
+
+            if (MapBuilder)
+            {
+                mapBuilder.OnLayoutBuilt.RemoveListener(OnLayoutBuilt);
+            }
         }
 
         private void StartBuildingLevel()
@@ -107,6 +113,8 @@ namespace Scripts.System
             player.PlayerMovement.SetPositionAndRotation(_currentMap.StartGridPosition.ToVector3(), CurrentMap.PlayerRotation);
             player.PlayerMovement.SetCamera();
             
+            _currentCampaign.StartMapName = _currentMap.MapName;
+            
             _movementEnabled = true;
             EventsManager.TriggerOnLevelStarted();
         }
@@ -149,6 +157,11 @@ namespace Scripts.System
             }
 
             StartBuildingLevel();
+        }
+        
+        public void SetCurrentCampaign(Campaign campaign)
+        {
+            _currentCampaign = campaign;
         }
 
         public void SetCurrentMap(MapDescription mapDescription)

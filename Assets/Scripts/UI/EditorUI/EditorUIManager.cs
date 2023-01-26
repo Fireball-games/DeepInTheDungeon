@@ -29,14 +29,14 @@ namespace Scripts.UI.EditorUI
         private TilePrefabEditor _tilePrefabEditor;
         private TriggerEditor _triggerEditor;
         private TriggerReceiverEditor _triggerReceiverEditor;
-        private StatusBar _statusBar;
+        private MessageBar _messageBar;
         private CageController _selectedCage;
         private SelectConfigurationWindow _selectConfiguration;
         private Transform _body;
         private Cursor3D _cursor3D;
 
         [NonSerialized] public WallGizmoController WallGizmo;
-        public StatusBar StatusBar => _statusBar;
+        public MessageBar MessageBar => _messageBar;
         public NewMapDialog NewMapDialog => _newMapDialog;
         public DialogBase ConfirmationDialog => _confirmationDialog;
         public MapSelectionDialog MapSelectionDialog => _mapSelectionDialog;
@@ -69,7 +69,7 @@ namespace Scripts.UI.EditorUI
             _tilePrefabEditor = _body.Find("PrefabTileEditor").GetComponent<TilePrefabEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
             _triggerReceiverEditor = _body.Find("TriggerReceiverEditor").GetComponent<TriggerReceiverEditor>();
-            _statusBar = transform.Find("StatusBar").GetComponent<StatusBar>();
+            _messageBar = transform.Find("MessageBar").GetComponent<MessageBar>();
             _selectedCage = _body.Find("SelectedCage").GetComponent<CageController>();
             _selectConfiguration = _body.Find("SelectConfigurationWindow").GetComponent<SelectConfigurationWindow>();
             

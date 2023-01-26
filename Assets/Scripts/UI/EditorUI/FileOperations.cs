@@ -1,19 +1,17 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Scripts.Building;
-using Scripts.Helpers;
-using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.MonoBases;
-using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static MessageBar;
+using static Scripts.Helpers.Strings;
 using static Scripts.System.MonoBases.DialogBase;
 using Logger = Scripts.Helpers.Logger;
 
@@ -41,33 +39,14 @@ namespace Scripts.UI.EditorUI
             newMapButton.onClick.AddListener(OnNewMapClicked);
             newMapButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.NewMap);
         }
-        
-        private static string GetDefaultMapName()
-        {
-            string newMapName = t.Get(Keys.NewMap);
-            
-            IEnumerable<string> fileNames = GameManager.CurrentCampaign.MapsNames;
 
-            fileNames = fileNames.Select(Path.GetFileName).ToArray();
-
-            int number = 1;
-
-            while (fileNames.Contains($"{t.Get(Keys.NewMap)}{number}.map"))
-            {
-                number++;
-            }
-
-            return $"{newMapName}{number}";
-        }
-        
         private async void OnLoadClicked()
         {
             if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved && await OpenConfirmationDialog() is EConfirmResult.Ok)
             {
                 EditorManager.SaveMap();
             }
-            
-            
+
 
             EditorUIManager.MapSelectionDialog.Show();
         }
@@ -80,11 +59,11 @@ namespace Scripts.UI.EditorUI
                 return;
             }
 
-            EditorUIManager.StatusBar.RegisterMessage(
-                    t.Get(Keys.NoChangesToSave),
-                    StatusBar.EMessageType.Warning);
+            EditorUIManager.MessageBar.Set(
+                t.Get(Keys.NoChangesToSave),
+                EMessageType.Warning, automaticDismissDelay: 1f);
         }
-        
+
         private async void OnNewMapClicked()
         {
             if (EditorManager.MapIsBeingBuilt) return;
@@ -94,12 +73,17 @@ namespace Scripts.UI.EditorUI
                 EditorManager.SaveMap();
             }
 
-            if (await EditorUIManager.NewMapDialog.Show(t.Get(Keys.NewMapDialogTitle), GetDefaultMapName()) == EConfirmResult.Ok)
+            string defaultMapName = GetDefaultName(
+                t.Get(Keys.NewMapName),
+                GameManager.CurrentCampaign.Maps.Select(m => m.MapName)
+            );
+
+            if (await EditorUIManager.NewMapDialog.Show(t.Get(Keys.NewMapDialogTitle), defaultMapName) == EConfirmResult.Ok)
             {
                 OnNewMapDialogOK();
             }
         }
-        
+
         private async Task<EConfirmResult> OpenConfirmationDialog() =>
             await EditorUIManager.ConfirmationDialog.Show(
                 t.Get(Keys.SaveEditedMapPrompt),
@@ -120,10 +104,13 @@ namespace Scripts.UI.EditorUI
                 Mathf.Clamp(rows, MapEditorManager.MinRows, MapEditorManager.MaxRows),
                 Mathf.Clamp(columns, MapEditorManager.MinColumns, MapEditorManager.MaxColumns));
 
-            newMap.MapName = string.IsNullOrEmpty(mapName) 
-                ? GetDefaultMapName()
+            newMap.MapName = string.IsNullOrEmpty(mapName)
+                ? GetDefaultName(
+                    t.Get(Keys.NewMapName),
+                    GameManager.CurrentCampaign.Maps.Select(m => m.MapName)
+                )
                 : mapName;
-            
+
             EditorManager.OrderMapConstruction(newMap);
         }
 
@@ -135,7 +122,7 @@ namespace Scripts.UI.EditorUI
         private void LoadMap(string filePath)
         {
             MapDescription loadedMap = null;
-                
+
             try
             {
                 loadedMap = ES3.Load<MapDescription>(Path.GetFileNameWithoutExtension(filePath), filePath);
@@ -147,12 +134,12 @@ namespace Scripts.UI.EditorUI
 
             if (loadedMap == null)
             {
-                EditorUIManager.Instance.StatusBar.RegisterMessage(t.Get(Keys.LoadingFileFailed), StatusBar.EMessageType.Negative);
+                EditorUIManager.MessageBar.Set(t.Get(Keys.LoadingFileFailed), EMessageType.Negative, automaticDismissDelay: 3f);
                 return;
             }
-            
+
             EditorUIManager.MapSelectionDialog.CloseDialog();
-            
+
             EditorManager.OrderMapConstruction(loadedMap, true);
         }
     }

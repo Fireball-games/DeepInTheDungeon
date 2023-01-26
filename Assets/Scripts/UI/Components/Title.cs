@@ -8,10 +8,20 @@ namespace Scripts.UI.Components
     {
         [SerializeField] private TMP_Text text;
 
-        public void Show(string title)
+        public void Show(string title = null)
         {
-            SetActive(true);
-            text.text = title;
+            bool titleIsNullOrEmpty = string.IsNullOrEmpty(title);
+            
+            if (titleIsNullOrEmpty)
+            {
+                SetCollapsed(true);
+            }
+            else
+            {
+                SetActive(true);
+                text.text = title;
+            }
+            
         }
         
         public void Hide() => SetActive(false);

@@ -20,7 +20,7 @@ namespace Scripts.UI.EditorUI
     {
         [SerializeField] private List<UIElementBase> showOnMapLoad;
         [SerializeField] private MapEditorManager manager;
-        private FileOperations _fileOperations;
+        private Transform _upperRightPanel;
         private NewMapDialog _newMapDialog;
         private DialogBase _confirmationDialog;
         private MapSelectionDialog _mapSelectionDialog;
@@ -57,10 +57,11 @@ namespace Scripts.UI.EditorUI
 
             _body = transform.Find("Body");
             
-            _playButton = _body.Find("PlayButton").GetComponent<ImageButton>();
+            _upperRightPanel = _body.Find("UpperRightPanel");
+            _upperRightPanel.gameObject.SetActive(false);
+            _playButton = _upperRightPanel.Find("PlayButton").GetComponent<ImageButton>();
             _playButton.OnClick.AddListener(manager.PlayMap);
-            _mapTitle = _body.Find("MapTitle").GetComponent<Title>();
-            _fileOperations = _body.Find("FileOperations").GetComponent<FileOperations>();
+            _mapTitle = _upperRightPanel.Find("MapTitle").GetComponent<Title>();
             _newMapDialog = transform.Find("NewMapDialog").GetComponent<NewMapDialog>();
             _confirmationDialog = transform.Find("ConfirmationDialog Variant").GetComponent<DialogBase>();
             _mapSelectionDialog = transform.Find("MapSelectionDialog").GetComponent<MapSelectionDialog>();
@@ -89,8 +90,6 @@ namespace Scripts.UI.EditorUI
         {
             EditorEvents.OnNewMapStartedCreation += OnNewMapStartedCreation;
             EditorEvents.OnWorkModeChanged += OnWorkModeChanged;
-
-            _fileOperations.SetActive(true);
         }
 
         private void OnDisable()
@@ -102,6 +101,8 @@ namespace Scripts.UI.EditorUI
         private void OnNewMapStartedCreation()
         {
             _mapTitle.Show(GameManager.Instance.CurrentMap.MapName);
+            
+            _upperRightPanel.gameObject.SetActive(true);
 
             foreach (UIElementBase element in showOnMapLoad)
             {

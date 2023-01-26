@@ -41,6 +41,22 @@ namespace Scripts.Helpers
 
         public static string GetSavePath(string campaignName) => Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
 
+        public static void SaveCampaign(Campaign campaign, Action onSaveFailed = null)
+        {
+            if (campaign == null) return;
+
+            try
+            {
+                ES3.Save(campaign.CampaignName, campaign, GetFullRelativeCampaignPath(campaign.CampaignName));
+                PlayerPrefs.SetString(Strings.LastPlayedCampaign, campaign.CampaignName);
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to save campaign: {campaign.CampaignName}: {e}", Logger.ELogSeverity.Release);
+                onSaveFailed?.Invoke();
+            }
+        }
+
         /// <summary>
         /// Loads last played campaign or Main Campaign if no level was played yet.
         /// </summary>

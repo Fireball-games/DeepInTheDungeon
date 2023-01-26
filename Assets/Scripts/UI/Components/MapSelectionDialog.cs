@@ -165,7 +165,8 @@ namespace Scripts.UI.Components
                 Logger.LogError($"Last edited map record in player prefs is null or empty, code should never get here if it is so.");
                 return;
             }
-
+            
+            CloseDialog();
             Manager.OrderMapConstruction(_selectedCampaign.GetMapByName(_lastEditedMap[1]), true);
         }
 
@@ -177,7 +178,11 @@ namespace Scripts.UI.Components
 
             OnCampaignSelected(_existingCampaigns.FirstOrDefault(c => c.CampaignName == _lastEditedMap[0]));
 
-            if (_selectedCampaign is not null) return;
+            if (_selectedCampaign is not null)
+            {
+                SetScrollViewButtonSelected(_lastEditedMap[1], _mapsItemsParent);
+                return;
+            }
             
             Logger.LogError($"Last edited map campaign is invalid, campaign name: {_lastEditedMap[0]}");
             _loadLastEditedMapButton.gameObject.SetActive(false);
@@ -187,6 +192,7 @@ namespace Scripts.UI.Components
         {
             _selectedCampaign = selectedCampaign;
             GameManager.Instance.SetCurrentCampaign(_selectedCampaign);
+            SetScrollViewButtonSelected(selectedCampaign.CampaignName, _campaignsParent);
             SetMapScrollView();
             RedrawComponents();
         }

@@ -166,7 +166,9 @@ namespace Scripts.System
 
         public void SetCurrentMap(MapDescription mapDescription)
         {
-            mapBuilder.SetLayout(mapDescription?.Layout);
+            _currentCampaign.LastPlayedMap = mapDescription.MapName;
+            FileOperationsHelper.SaveCampaign(_currentCampaign);
+            mapBuilder.SetLayout(mapDescription.Layout);
             _currentMap = mapDescription;
         }
     }

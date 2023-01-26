@@ -14,7 +14,8 @@ using UnityEngine;
 using static MessageBar;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MonoBases.DialogBase;
-using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using LayoutType =
+    System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
@@ -31,9 +32,9 @@ namespace Scripts.MapEditor
         [SerializeField] private float cameraHeight = 10f;
         [SerializeField] private Camera sceneCamera;
         [SerializeField] private PlayerIconController playerIcon;
-        
+
         private GameManager GameManager => GameManager.Instance;
-        
+
         public ELevel WorkLevel { get; private set; }
         public EWorkMode WorkMode { get; private set; }
         public bool MapIsPresented { get; private set; }
@@ -44,7 +45,7 @@ namespace Scripts.MapEditor
         public MapBuilder MapBuilder => GameManager.MapBuilder;
         public int CurrentFloor { get; private set; }
         public Dictionary<int, bool> FloorVisibilityMap { get; private set; }
-        
+
         private static EditorUIManager EditorUIManager => EditorUIManager.Instance;
 
         private bool _dontChangeCameraAfterLayoutIsBuild;
@@ -71,7 +72,7 @@ namespace Scripts.MapEditor
             {
                 MapBuilder.OnLayoutBuilt.RemoveListener(OnLayoutBuilt);
             }
-            
+
             EditorEvents.OnMapLayoutChanged -= OnMapLayoutChanged;
             EditorEvents.OnPrefabEdited -= OnPrefabEdited;
         }
@@ -108,7 +109,8 @@ namespace Scripts.MapEditor
 
             MapBuilder.BuildMap(map);
             
-            PlayerPrefs.SetString(Strings.LastEditedMap, FileOperationsHelper.GetCampaignMapKey(GameManager.CurrentCampaign.CampaignName, map.MapName));
+            PlayerPrefs.SetString(Strings.LastEditedMap,
+                FileOperationsHelper.GetCampaignMapKey(GameManager.CurrentCampaign.CampaignName, map.MapName));
 
             EditorEvents.TriggerOnNewMapStartedCreation();
         }
@@ -132,7 +134,7 @@ namespace Scripts.MapEditor
                     t.Get(Keys.Save),
                     t.Get(Keys.DontSave)) is EConfirmResult.Ok)
             {
-                    SaveMap();
+                SaveMap();
             }
 
             LoadMainSceneClear();
@@ -166,16 +168,9 @@ namespace Scripts.MapEditor
 
             currentCampaign.ReplaceMap(GameManager.CurrentMap);
 
-            try
-            {
-                ES3.Save(campaignName, currentCampaign, FileOperationsHelper.GetSavePath(campaignName));
-            }
-            catch (Exception e)
-            {
-                EditorUIManager.MessageBar.Set(t.Get(Keys.SaveFailed), EMessageType.Negative, automaticDismissDelay: 3f);
-                Logger.Log($"Saving file failed: {e.Message}");
-                return;
-            }
+
+            FileOperationsHelper.SaveCampaign(currentCampaign,
+                () => EditorUIManager.MessageBar.Set(t.Get(Keys.SaveFailed), EMessageType.Negative, automaticDismissDelay: 3f));
 
             EditorUIManager.MessageBar.Set(t.Get(Keys.MapSaved), EMessageType.Positive, automaticDismissDelay: 1f);
             EditorEvents.TriggerOnPrefabEdited(false);

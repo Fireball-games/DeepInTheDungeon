@@ -77,7 +77,7 @@ namespace Scripts.UI.Components
             _addMapButton.onClick.AddListener(AddMap);
         }
 
-        public async Task Show(bool showCancelButton = true)
+        public async Task Show(bool showCancelButton = true, bool isModalClosingDialog = true)
         {
             _showCancelButton = showCancelButton;
             
@@ -88,7 +88,7 @@ namespace Scripts.UI.Components
             SetLastEditedMap();
             RedrawComponents();
             
-            await base.Show(t.Get(Keys.MapSelection));
+            await base.Show(t.Get(Keys.MapSelection), isModalClosingDialog: isModalClosingDialog);
         }
 
         private async void AddCampaign()
@@ -123,7 +123,7 @@ namespace Scripts.UI.Components
             
             NewMapDialog dialog = EditorUIManager.Instance.NewMapDialog;
             
-            if (await dialog.Show(_selectedCampaign) is EConfirmResult.Cancel) return;
+            if (await dialog.Show(_selectedCampaign, false) is EConfirmResult.Cancel) return;
             
             int rows = int.Parse(dialog.rowsInput.Text);
             int columns = int.Parse(dialog.columnsInput.Text);

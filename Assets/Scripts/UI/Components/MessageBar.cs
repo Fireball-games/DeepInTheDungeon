@@ -5,6 +5,7 @@ using System.Linq;
 using Scripts.Helpers;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MessageBar : MonoBehaviour
 {
@@ -12,9 +13,12 @@ public class MessageBar : MonoBehaviour
     [SerializeField] private float delayBeforeNextMessage = 0.5f;
     [SerializeField] private float minimumShowTime = 1f;
 
+    private float _backgroundOriginalAlpha;
+
     public string Text => _message.text;
 
     private TextMeshProUGUI _message;
+    private Transform _background;
     private Queue<MessageItem> _messages;
     private Coroutine _fadeCoroutine;
     private Coroutine _automaticDismissCoroutine;
@@ -35,7 +39,9 @@ public class MessageBar : MonoBehaviour
 
     private void Awake()
     {
-        _message = transform.Find("Message").GetComponent<TextMeshProUGUI>();
+        _background = transform.Find("Background");
+        _backgroundOriginalAlpha = _background.GetComponent<Image>().color.a;
+        _message = _background.Find("Message").GetComponent<TextMeshProUGUI>();
         _messages = new Queue<MessageItem>();
         _delayBeforeNextMessage = new WaitForSecondsRealtime(delayBeforeNextMessage);
 
@@ -133,7 +139,7 @@ public class MessageBar : MonoBehaviour
                 yield return null;
             }
 
-            if (!dequeueAfterFade)
+            if (!dequeueAfterFade || !_messages.Any())
             {
                 DeactivateMessage();
             }
@@ -151,6 +157,13 @@ public class MessageBar : MonoBehaviour
         {
             DequeueMessage();
         }
+    }
+
+    private void SetBackgroundAlpha()
+    {
+        Color color = _background.GetComponent<Image>().color;
+        color.a = _backgroundOriginalAlpha * _message.color.a;
+        _background.GetComponent<Image>().color = color;
     }
 
     private IEnumerator AutomaticDismissCoroutine(float targetMessageStartTime)
@@ -179,14 +192,13 @@ public class MessageBar : MonoBehaviour
 
         _fadeCoroutine = null;
         _currentMessage = _messages.Dequeue();
-        SetMessageTextAlpha(1);
-
-
-        _message.gameObject.SetActive(true);
-
+        _background.gameObject.SetActive(true);
 
         _message.text = _currentMessage.Text;
         _message.color = _colorsByType[_currentMessage.MessageType];
+        
+        SetMessageTextAlpha(1);
+        
         _currentMessageShowTime = Time.time;
 
         if (_currentMessage.AutomaticDismissDelay != null)
@@ -204,6 +216,7 @@ public class MessageBar : MonoBehaviour
 
     private void SetMessageTextAlpha(float value)
     {
+        SetBackgroundAlpha();
         Color messageColor = _message.color;
         messageColor.a = value;
         _message.color = messageColor;
@@ -218,7 +231,7 @@ public class MessageBar : MonoBehaviour
 
         StopAutomaticDismissCoroutine();
 
-        _message.gameObject.SetActive(false);
+        _background.gameObject.SetActive(false);
     }
 
     private void StopAutomaticDismissCoroutine()

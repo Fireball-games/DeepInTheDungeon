@@ -22,14 +22,14 @@ namespace Scripts.UI.EditorUI
         {
             Transform bodyTransform = body.transform;
             
-            _exitButton = bodyTransform.Find("ExitButton").GetComponent<Button>();
-            _exitButton.onClick.AddListener(OnExitClicked);
-            
             _saveButton = bodyTransform.Find("SaveButton").GetComponent<Button>();
             _saveButton.SetTextColor(Colors.Positive);
             _saveButton.onClick.AddListener(OnSaveClicked);
             
-            _addOpenMapButton = bodyTransform.Find("AddOpenMapButton").GetComponent<Button>();            
+            _exitButton = bodyTransform.Find("CommonButtons/ExitButton").GetComponent<Button>();
+            _exitButton.onClick.AddListener(OnExitClicked);
+            
+            _addOpenMapButton = bodyTransform.Find("CommonButtons/AddOpenMapButton").GetComponent<Button>();            
             _addOpenMapButton.onClick.AddListener(OnNewMapClicked);
         }
 
@@ -75,7 +75,7 @@ namespace Scripts.UI.EditorUI
             
             await Manager.CheckToSaveMapChanges();
 
-            await EditorUIManager.MapSelectionDialog.Show();
+            await EditorUIManager.MapSelectionDialog.Show(isModalClosingDialog: true);
         }
 
         private async void OnExitClicked()

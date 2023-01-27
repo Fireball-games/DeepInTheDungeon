@@ -142,7 +142,7 @@ namespace Scripts.System
                 }
                 else
                 {
-                    await EditorUIManager.Instance.MapSelectionDialog.Show(false);
+                    await EditorUIManager.Instance.MapSelectionDialog.Show(false, false);
                 }
                 
                 return;

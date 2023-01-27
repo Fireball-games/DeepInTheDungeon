@@ -20,6 +20,7 @@ namespace Scripts.System.MonoBases
 
         private TaskCompletionSource<EConfirmResult> _taskCompletionSource;
         private bool _isClosed;
+        private bool _isModalClosingDialog;
 
         public enum EConfirmResult
         {
@@ -27,7 +28,10 @@ namespace Scripts.System.MonoBases
             Cancel
         }
 
-        public async Task<EConfirmResult> Show(string dialogTitle = null, string confirmButtonText = null, string cancelButtonText = null)
+        public async Task<EConfirmResult> Show(string dialogTitle = null,
+            string confirmButtonText = null,
+            string cancelButtonText = null,
+            bool isModalClosingDialog = true)
         {
             _isClosed = false;
             bool confirmTextIsNull = string.IsNullOrEmpty(confirmButtonText);
@@ -55,9 +59,12 @@ namespace Scripts.System.MonoBases
             {
                 EditorMouseService.Instance.ResetCursor();
             }
+
+            if (isModalClosingDialog)
+            {
+                Modal.SubscribeToClick(this);
+            }
             
-            EventsManager.OnModalClicked.RemoveAllListeners();
-            EventsManager.OnModalClicked.AddListener(OnCancelClicked);
             Modal.Show();
 
             _taskCompletionSource = new TaskCompletionSource<EConfirmResult>();
@@ -86,6 +93,11 @@ namespace Scripts.System.MonoBases
             
             _isClosed = true;
             _taskCompletionSource.SetResult(result);
+            
+            // if (_isModalClosingDialog)
+            // {
+            //     EventsManager.OnModalClicked.RemoveListener(OnCancelClicked);
+            // }
             
             Modal.Hide();
             

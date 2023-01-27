@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Scripts.EventsManagement;
+using Scripts.System.MonoBases;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +12,12 @@ namespace Scripts.UI
 
         private int openCount;
 
+        private static Stack<DialogBase> _openedQueue;
+
         private void Awake()
         {
             body.onClick.AddListener(OnModalClicked);
+            _openedQueue = new Stack<DialogBase>();
         }
 
         private void OnEnable()
@@ -29,8 +34,15 @@ namespace Scripts.UI
 
         public static void Hide() => EventsManager.TriggerOnModalHideRequested();
         public static void Show() => EventsManager.TriggerOnModalShowRequested();
+        
+        public static void SubscribeToClick(DialogBase subscriber) => _openedQueue.Push(subscriber);
 
-        private void OnModalClicked() => EventsManager.TriggerOnModalClicked();
+        private void OnModalClicked()
+        {
+            if (_openedQueue.Count == 0) return;
+            
+            _openedQueue.Pop().CloseDialog();   
+        }
 
         private void Activate()
         {

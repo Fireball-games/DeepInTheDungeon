@@ -19,7 +19,7 @@ namespace Scripts.UI.EditorUI
         public InputField floorsInput;
         public InputField mapNameInput;
 
-        public async Task<EConfirmResult> Show(Campaign parentCampaign)
+        public async Task<EConfirmResult> Show(Campaign parentCampaign, bool isModalClosingDialog = true)
         {
             string defaultMapName = Strings.GetDefaultName(
                 t.Get(Keys.NewMapName),

@@ -41,7 +41,10 @@ namespace Scripts.UI
 
         private void Deactivate()
         {
-            if (body.IsActive()) openCount -= 1;
+            if (body.IsActive())
+            {
+                openCount -= 1;
+            }
 
             if (openCount > 0) return;
             

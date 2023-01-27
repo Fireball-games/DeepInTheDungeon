@@ -2,7 +2,6 @@
 using System.Linq;
 using Scripts.Helpers;
 using Scripts.Localization;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {

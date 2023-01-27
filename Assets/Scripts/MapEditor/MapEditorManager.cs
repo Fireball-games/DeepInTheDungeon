@@ -87,6 +87,7 @@ namespace Scripts.MapEditor
             MapIsBeingBuilt = true;
             MapIsPresented = mapIsPresented;
             MapIsSaved = markMapAsSaved;
+            MapIsChanged = false;
 
             EditedLayout = MapBuildService.ConvertToLayoutType(map.Layout);
 
@@ -126,17 +127,14 @@ namespace Scripts.MapEditor
             EditorEvents.TriggerOnWorkingLevelChanged(WorkLevel);
         }
 
-        public async void GoToMainMenu()
+        public void LoadMainSceneClear()
         {
-            if (!MapIsSaved && await EditorUIManager.ConfirmationDialog.Show(
-                    t.Get(Keys.SaveEditedMapPrompt),
-                    t.Get(Keys.Save),
-                    t.Get(Keys.DontSave)) is EConfirmResult.Ok)
-            {
-                SaveMap();
-            }
-
-            LoadMainSceneClear();
+            EditorMouseService.Instance.ResetCursor();
+            EditedLayout = null;
+            MapBuilder.DemolishMap();
+            GameManager.SetCurrentMap(null);
+            GameManager.IsPlayingFromEditor = false;
+            SceneLoader.Instance.LoadMainScene();
         }
 
         public void PlayMap()
@@ -157,7 +155,7 @@ namespace Scripts.MapEditor
 
         public async Task CheckToSaveMapChanges()
         {
-            if (MapIsChanged || PrefabIsEdited || !MapIsSaved && await EditorUIManager.ConfirmationDialog.Show(
+            if ((MapIsChanged || PrefabIsEdited || !MapIsSaved) && await EditorUIManager.ConfirmationDialog.Show(
                     t.Get(Keys.SaveEditedMapPrompt),
                     t.Get(Keys.SaveMap),
                     t.Get(Keys.DontSave)
@@ -203,15 +201,6 @@ namespace Scripts.MapEditor
             MapBuilder.SetPrefabsVisibility(FloorVisibilityMap);
 
             EditorEvents.TriggerOnFloorChanged(CurrentFloor);
-        }
-
-        private void LoadMainSceneClear()
-        {
-            EditorMouseService.Instance.ResetCursor();
-            MapBuilder.DemolishMap();
-            GameManager.SetCurrentMap(null);
-            GameManager.IsPlayingFromEditor = false;
-            SceneLoader.Instance.LoadMainScene();
         }
 
         private void OnLayoutBuilt()

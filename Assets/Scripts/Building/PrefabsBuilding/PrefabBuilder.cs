@@ -55,6 +55,8 @@ namespace Scripts.Building.PrefabsBuilding
         /// <returns></returns>
         public bool BuildPrefab(PrefabConfiguration configuration)
         {
+            if (configuration == null) return false;
+            
             MapDescription.PrefabConfigurations ??= new List<PrefabConfiguration>();
 
             if (!MapDescription.PrefabConfigurations.Contains(configuration))

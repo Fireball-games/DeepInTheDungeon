@@ -18,20 +18,13 @@ namespace Scripts.EventsManagement
         // ***********    Triggers    ***********
 
         public static void TriggerOnNewMapStartedCreation() => OnNewMapStartedCreation?.Invoke();
-
         public static void TriggerOnWorkModeChanged(EWorkMode workMode) => OnWorkModeChanged?.Invoke(workMode);
-
         public static void TriggerOnMouseGridPositionChanged(Vector3Int newGridPosition, Vector3Int previousGridPosition) =>
             OnMouseGridPositionChanged?.Invoke(newGridPosition, previousGridPosition);
-
         public static void TriggerOnWorkingLevelChanged(ELevel workingLevel) => OnWorkingLevelChanged?.Invoke(workingLevel);
-
         public static void TriggerOnFloorChanged(int? floor) => OnFloorChanged?.Invoke(floor);
-
         public static void TriggerOnMapLayoutChanged() => OnMapLayoutChanged?.Invoke();
-        
         public static void TriggerOnPrefabEdited(bool isEdited) => OnPrefabEdited?.Invoke(isEdited);
-
         public static void TriggerOnCameraPerspectiveChanged(bool isOrthographic) => OnCameraPerspectiveChanged?.Invoke(isOrthographic);
     }
 }

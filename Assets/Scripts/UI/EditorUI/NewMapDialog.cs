@@ -19,28 +19,31 @@ namespace Scripts.UI.EditorUI
         public InputField floorsInput;
         public InputField mapNameInput;
 
-        private void OnEnable()
-        {
-            rowsInput.SetInputText(rowsCount.ToString());
-            rowsInput.SetLabelText(t.Get(Keys.Rows));
-            columnsInput.SetInputText(columnsCount.ToString());
-            columnsInput.SetLabelText(t.Get(Keys.Columns));
-            floorsInput.SetInputText(floorsCount.ToString());
-            floorsInput.SetLabelText(t.Get(Keys.Floors));
-            mapNameInput.SetPlaceholderText(t.Get(Keys.NewMapNamePrompt));
-            mapNameInput.SetLabelText(t.Get(Keys.NewMapName));
-        }
-
         public async Task<EConfirmResult> Show(Campaign parentCampaign)
         {
             string defaultMapName = Strings.GetDefaultName(
                 t.Get(Keys.NewMapName),
                 parentCampaign.Maps.Select(m => m.MapName));
             
+            InitializeTexts();
             mapNameInput.SetInputText("");
             mapNameInput.SetPlaceholderText(defaultMapName);
 
             return await base.Show(t.Get(Keys.NewMap),  t.Get(Keys.CreateMap));
+        }
+        
+        private void InitializeTexts()
+        {
+            rowsInput.SetInputText(rowsCount.ToString());
+            rowsInput.SetLabelText(t.Get(Keys.Rows));
+            
+            columnsInput.SetInputText(columnsCount.ToString());
+            columnsInput.SetLabelText(t.Get(Keys.Columns));
+            
+            floorsInput.SetInputText(floorsCount.ToString());
+            floorsInput.SetLabelText(t.Get(Keys.Floors));
+            
+            mapNameInput.SetLabelText(t.Get(Keys.NewMapName));
         }
     }
 }

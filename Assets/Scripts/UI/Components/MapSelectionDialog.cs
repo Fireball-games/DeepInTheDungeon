@@ -76,7 +76,7 @@ namespace Scripts.UI.Components
             _addCampaignButton.onClick.AddListener(AddCampaign);
             _addMapButton.onClick.AddListener(AddMap);
         }
-        
+
         public async Task Show(bool showCancelButton = true)
         {
             _showCancelButton = showCancelButton;
@@ -156,7 +156,7 @@ namespace Scripts.UI.Components
             RedrawComponents();
 
             CloseDialog();
-            Manager.OrderMapConstruction(newMap);
+            Manager.OrderMapConstruction(newMap, true);
         }
 
         private void LoadLastEditedMap()

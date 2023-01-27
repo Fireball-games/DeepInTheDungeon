@@ -56,8 +56,11 @@ namespace Scripts.UI.EditorUI
             _exitButton.SetText(t.Get(Keys.Exit));
             _saveButton.SetText(t.Get(Keys.Save));
             _addOpenMapButton.SetText(t.Get(Keys.AddOpenMap));
-            
-            _saveButton.gameObject.SetActive(Manager.MapIsChanged || Manager.PrefabIsEdited);
+
+            if (Manager)
+            {
+                _saveButton.gameObject.SetActive(Manager.MapIsChanged || Manager.PrefabIsEdited);
+            }
         }
 
         private void OnSaveClicked()
@@ -79,7 +82,7 @@ namespace Scripts.UI.EditorUI
         {
             await Manager.CheckToSaveMapChanges();
             
-            Manager.GoToMainMenu();
+            Manager.LoadMainSceneClear();
         }
     }
 }

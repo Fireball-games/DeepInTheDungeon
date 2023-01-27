@@ -113,7 +113,7 @@ namespace Scripts.System
             player.PlayerMovement.SetPositionAndRotation(_currentMap.StartGridPosition.ToVector3(), CurrentMap.PlayerRotation);
             player.PlayerMovement.SetCamera();
             
-            _currentCampaign.StartMapName = _currentMap.MapName;
+            _currentCampaign.LastPlayedMap = _currentMap.MapName;
             
             _movementEnabled = true;
             EventsManager.TriggerOnLevelStarted();
@@ -166,10 +166,13 @@ namespace Scripts.System
 
         public void SetCurrentMap(MapDescription mapDescription)
         {
-            _currentCampaign.LastPlayedMap = mapDescription.MapName;
             FileOperationsHelper.SaveCampaign(_currentCampaign);
-            mapBuilder.SetLayout(mapDescription.Layout);
             _currentMap = mapDescription;
+            
+            if (mapDescription != null)
+            {
+                mapBuilder.SetLayout(mapDescription.Layout);
+            }
         }
     }
 }

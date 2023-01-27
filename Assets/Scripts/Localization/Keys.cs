@@ -6,6 +6,7 @@
         public const string AddEndPoint = "AddEndPoint";
         public const string AddMap = "AddMap";
         public const string AddNewSubscriber = "AddNewSubscriber";
+        public const string AddOpenMap = "AddOpenMap";
         public const string AddWaypoint = "AddWaypoint";
         public const string AvailablePrefabs = "AvailablePrefabs";
         public const string Campaign = "Campaign";

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
@@ -76,7 +77,7 @@ namespace Scripts.UI.Components
             _addMapButton.onClick.AddListener(AddMap);
         }
         
-        public async void Show(bool showCancelButton = true)
+        public async Task Show(bool showCancelButton = true)
         {
             _showCancelButton = showCancelButton;
             
@@ -122,7 +123,7 @@ namespace Scripts.UI.Components
             
             NewMapDialog dialog = EditorUIManager.Instance.NewMapDialog;
             
-            await dialog.Show(_selectedCampaign);
+            if (await dialog.Show(_selectedCampaign) is EConfirmResult.Cancel) return;
             
             int rows = int.Parse(dialog.rowsInput.Text);
             int columns = int.Parse(dialog.columnsInput.Text);

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
+using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
+using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.MonoBases;
@@ -100,7 +103,10 @@ namespace Scripts.UI.EditorUI
 
         private void OnNewMapStartedCreation()
         {
-            _mapTitle.Show(GameManager.Instance.CurrentMap.MapName);
+            string positiveColor = Colors.Positive.ToHtmlStringRGBA();
+            string campaignName = GameManager.Instance.CurrentCampaign.CampaignName;
+            string mapName = GameManager.Instance.CurrentMap.MapName;
+            _mapTitle.Show($"{t.Get(Keys.Campaign)}: <{positiveColor}>{campaignName}</color> {t.Get(Keys.Map)}: <{positiveColor}>{mapName}</color>");
             
             _upperRightPanel.gameObject.SetActive(true);
 

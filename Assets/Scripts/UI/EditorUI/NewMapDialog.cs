@@ -31,7 +31,7 @@ namespace Scripts.UI.EditorUI
             mapNameInput.SetLabelText(t.Get(Keys.NewMapName));
         }
 
-        public async Task Show(Campaign parentCampaign)
+        public async Task<EConfirmResult> Show(Campaign parentCampaign)
         {
             string defaultMapName = Strings.GetDefaultName(
                 t.Get(Keys.NewMapName),
@@ -40,7 +40,7 @@ namespace Scripts.UI.EditorUI
             mapNameInput.SetInputText("");
             mapNameInput.SetPlaceholderText(defaultMapName);
 
-            await base.Show(t.Get(Keys.NewMap),  t.Get(Keys.CreateMap));
+            return await base.Show(t.Get(Keys.NewMap),  t.Get(Keys.CreateMap));
         }
     }
 }

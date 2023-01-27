@@ -127,7 +127,7 @@ namespace Scripts.System
             }
         }
 
-        private void OnSceneFinishedLoading(string sceneName)
+        private async void OnSceneFinishedLoading(string sceneName)
         {
             MapBuilder.DemolishMap();
             
@@ -142,7 +142,7 @@ namespace Scripts.System
                 }
                 else
                 {
-                    EditorUIManager.Instance.MapSelectionDialog.Show(false);
+                    await EditorUIManager.Instance.MapSelectionDialog.Show(false);
                 }
                 
                 return;

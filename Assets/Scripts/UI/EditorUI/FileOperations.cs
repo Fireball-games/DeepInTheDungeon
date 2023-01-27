@@ -1,146 +1,85 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Scripts.Building;
+using Scripts.EventsManagement;
+using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor;
-using Scripts.System;
 using Scripts.System.MonoBases;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static MessageBar;
-using static Scripts.Helpers.Strings;
-using static Scripts.System.MonoBases.DialogBase;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI
 {
     public class FileOperations : UIElementBase
     {
-        [SerializeField] private Button exitButton;
-        [SerializeField] private Button loadButton;
-        [SerializeField] private Button saveButton;
-        [SerializeField] private Button newMapButton;
+        private Button _exitButton;
+        private Button _saveButton;
+        private Button _addOpenMapButton;
 
-        private static GameManager GameManager => GameManager.Instance;
-        private static MapEditorManager EditorManager => MapEditorManager.Instance;
+        private static MapEditorManager Manager => MapEditorManager.Instance;
         private static EditorUIManager EditorUIManager => EditorUIManager.Instance;
+
+        private void Awake()
+        {
+            Transform bodyTransform = body.transform;
+            
+            _exitButton = bodyTransform.Find("ExitButton").GetComponent<Button>();
+            _exitButton.onClick.AddListener(OnExitClicked);
+            
+            _saveButton = bodyTransform.Find("SaveButton").GetComponent<Button>();
+            _saveButton.SetTextColor(Colors.Positive);
+            _saveButton.onClick.AddListener(OnSaveClicked);
+            
+            _addOpenMapButton = bodyTransform.Find("AddOpenMapButton").GetComponent<Button>();            
+            _addOpenMapButton.onClick.AddListener(OnNewMapClicked);
+        }
 
         private void OnEnable()
         {
-            loadButton.onClick.AddListener(OnLoadClicked);
-            loadButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Load);
-            exitButton.onClick.AddListener(OnExitClicked);
-            exitButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Exit);
-            saveButton.onClick.AddListener(OnSaveClicked);
-            saveButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Save);
-            newMapButton.onClick.AddListener(OnNewMapClicked);
-            newMapButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.NewMap);
+            EditorEvents.OnPrefabEdited += OnMapChanged;
+            EditorEvents.OnMapLayoutChanged += OnMapChanged;
+            
+            RedrawButtons();
         }
 
-        private async void OnLoadClicked()
+        private void OnDisable()
         {
-            if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved && await OpenConfirmationDialog() is EConfirmResult.Ok)
-            {
-                EditorManager.SaveMap();
-            }
+            EditorEvents.OnPrefabEdited -= OnMapChanged;
+            EditorEvents.OnMapLayoutChanged -= OnMapChanged;
+        }
 
+        private void OnMapChanged(bool _) => OnMapChanged();
 
-            EditorUIManager.MapSelectionDialog.Show();
+        private void OnMapChanged() => RedrawButtons();
+
+        private void RedrawButtons()
+        {
+            _exitButton.SetText(t.Get(Keys.Exit));
+            _saveButton.SetText(t.Get(Keys.Save));
+            _addOpenMapButton.SetText(t.Get(Keys.AddOpenMap));
+            
+            _saveButton.gameObject.SetActive(Manager.MapIsChanged || Manager.PrefabIsEdited);
         }
 
         private void OnSaveClicked()
         {
-            if (!EditorManager.MapIsSaved)
-            {
-                EditorManager.SaveMap();
-                return;
-            }
-
-            EditorUIManager.MessageBar.Set(
-                t.Get(Keys.NoChangesToSave),
-                EMessageType.Warning, automaticDismissDelay: 1f);
+            Manager.SaveMap();
+            RedrawButtons();
         }
 
         private async void OnNewMapClicked()
         {
-            if (EditorManager.MapIsBeingBuilt) return;
+            if (Manager.MapIsBeingBuilt) return;
+            
+            await Manager.CheckToSaveMapChanges();
 
-            if (EditorManager.MapIsChanged || !EditorManager.MapIsSaved && await OpenConfirmationDialog() == EConfirmResult.Ok)
-            {
-                EditorManager.SaveMap();
-            }
-
-            string defaultMapName = GetDefaultName(
-                t.Get(Keys.NewMapName),
-                GameManager.CurrentCampaign.Maps.Select(m => m.MapName)
-            );
-
-            if (await EditorUIManager.NewMapDialog.Show(t.Get(Keys.NewMapDialogTitle), defaultMapName) == EConfirmResult.Ok)
-            {
-                OnNewMapDialogOK();
-            }
+            await EditorUIManager.MapSelectionDialog.Show();
         }
 
-        private async Task<EConfirmResult> OpenConfirmationDialog() =>
-            await EditorUIManager.ConfirmationDialog.Show(
-                t.Get(Keys.SaveEditedMapPrompt),
-                t.Get(Keys.SaveMap),
-                t.Get(Keys.DontSave)
-            );
-
-        private void OnNewMapDialogOK()
+        private async void OnExitClicked()
         {
-            NewMapDialog dialog = EditorUIManager.Instance.NewMapDialog;
-            int rows = int.Parse(dialog.rowsInput.Text);
-            int columns = int.Parse(dialog.columnsInput.Text);
-            int floors = int.Parse(dialog.floorsInput.Text) + 2;
-            string mapName = dialog.mapNameInput.Text;
-
-            MapDescription newMap = MapBuilder.GenerateDefaultMap(
-                Mathf.Clamp(floors, MapEditorManager.MinFloors, MapEditorManager.MaxFloors),
-                Mathf.Clamp(rows, MapEditorManager.MinRows, MapEditorManager.MaxRows),
-                Mathf.Clamp(columns, MapEditorManager.MinColumns, MapEditorManager.MaxColumns));
-
-            newMap.MapName = string.IsNullOrEmpty(mapName)
-                ? GetDefaultName(
-                    t.Get(Keys.NewMapName),
-                    GameManager.CurrentCampaign.Maps.Select(m => m.MapName)
-                )
-                : mapName;
-
-            EditorManager.OrderMapConstruction(newMap);
-        }
-
-        private void OnExitClicked()
-        {
-            EditorManager.GoToMainMenu();
-        }
-
-        private void LoadMap(string filePath)
-        {
-            MapDescription loadedMap = null;
-
-            try
-            {
-                loadedMap = ES3.Load<MapDescription>(Path.GetFileNameWithoutExtension(filePath), filePath);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError($"Failed to load map \"{filePath}\" : {e.Message}.", Logger.ELogSeverity.Release);
-            }
-
-            if (loadedMap == null)
-            {
-                EditorUIManager.MessageBar.Set(t.Get(Keys.LoadingFileFailed), EMessageType.Negative, automaticDismissDelay: 3f);
-                return;
-            }
-
-            EditorUIManager.MapSelectionDialog.CloseDialog();
-
-            EditorManager.OrderMapConstruction(loadedMap, true);
+            await Manager.CheckToSaveMapChanges();
+            
+            Manager.GoToMainMenu();
         }
     }
 }

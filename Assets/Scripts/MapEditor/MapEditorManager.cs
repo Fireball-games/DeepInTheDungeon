@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -14,9 +14,7 @@ using UnityEngine;
 using static MessageBar;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MonoBases.DialogBase;
-using LayoutType =
-    System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
-using Logger = Scripts.Helpers.Logger;
+using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
 
 namespace Scripts.MapEditor
 {
@@ -39,6 +37,7 @@ namespace Scripts.MapEditor
         public EWorkMode WorkMode { get; private set; }
         public bool MapIsPresented { get; private set; }
         public bool MapIsChanged { get; set; }
+        public bool PrefabIsEdited { get; set; }
         public bool MapIsSaved { get; set; } = true;
         public bool MapIsBeingBuilt { get; private set; }
         public LayoutType EditedLayout { get; private set; }
@@ -156,24 +155,37 @@ namespace Scripts.MapEditor
             SceneLoader.Instance.LoadScene(currentMap.SceneName);
         }
 
-        public void SaveMap()
+        public async Task CheckToSaveMapChanges()
+        {
+            if (MapIsChanged || PrefabIsEdited || !MapIsSaved && await EditorUIManager.ConfirmationDialog.Show(
+                    t.Get(Keys.SaveEditedMapPrompt),
+                    t.Get(Keys.SaveMap),
+                    t.Get(Keys.DontSave)
+                ) == EConfirmResult.Ok)
+            {
+                SaveMap();
+            }
+        }
+
+        public void SaveMap(bool isSilent = false)
         {
             Campaign currentCampaign = GameManager.CurrentCampaign;
-
-            string campaignName = currentCampaign.CampaignName;
 
             string campaignDirectoryPath = FileOperationsHelper.CampaignDirectoryPath;
 
             campaignDirectoryPath.CreateDirectoryIfNotExists();
 
             currentCampaign.ReplaceMap(GameManager.CurrentMap);
-
-
+            
             FileOperationsHelper.SaveCampaign(currentCampaign,
                 () => EditorUIManager.MessageBar.Set(t.Get(Keys.SaveFailed), EMessageType.Negative, automaticDismissDelay: 3f));
 
-            EditorUIManager.MessageBar.Set(t.Get(Keys.MapSaved), EMessageType.Positive, automaticDismissDelay: 1f);
-            EditorEvents.TriggerOnPrefabEdited(false);
+            if (!isSilent)
+            {
+                EditorUIManager.MessageBar.Set(t.Get(Keys.MapSaved), EMessageType.Positive, automaticDismissDelay: 1f);
+                EditorEvents.TriggerOnPrefabEdited(false);
+            }
+            
             MapIsChanged = false;
             MapIsSaved = true;
         }
@@ -227,7 +239,12 @@ namespace Scripts.MapEditor
 
         private void OnPrefabEdited(bool isEdited)
         {
-            MapIsChanged = isEdited;
+            PrefabIsEdited = isEdited;
+            
+            if (!isEdited) return;
+            
+            MapIsChanged = true;
+            MapIsSaved = false;
         }
 
         private void OnMapLayoutChanged()

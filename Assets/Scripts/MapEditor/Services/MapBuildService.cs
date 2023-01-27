@@ -272,8 +272,7 @@ namespace Scripts.MapEditor.Services
                 return;
             }
 
-            Manager.MapIsChanged = true;
-            Manager.MapIsSaved = false;
+            EditorEvents.TriggerOnMapLayoutChanged();
 
             int floor = position.x;
             int row = position.y;

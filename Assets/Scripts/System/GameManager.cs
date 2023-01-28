@@ -10,7 +10,6 @@ using Scripts.System.Pooling;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.System
 {
@@ -23,6 +22,9 @@ namespace Scripts.System
         public PlayerController Player => player;
         public Vector3Int PlayerPosition => Player.transform.position.ToVector3Int();
         public MapBuilder MapBuilder => mapBuilder;
+        /// <summary>
+        /// Current campaign is set only in GameManager and is pointing to either LastEditedCampaign or LastPlayedCampaign from PlayerPrefs. 
+        /// </summary>
         public Campaign CurrentCampaign => _currentCampaign;
         public MapDescription CurrentMap => _currentMap;
         public bool MovementEnabled => _movementEnabled;
@@ -64,25 +66,66 @@ namespace Scripts.System
                 mapBuilder.OnLayoutBuilt.RemoveListener(OnLayoutBuilt);
             }
         }
+        
+        public void ContinueLastPlayedMap()
+        {
+            // TODO: For now, just starts last played map in last played campaign, once applicable, last position in last played campaign will be loaded. 
+            _currentCampaign = FileOperationsHelper.LoadLastPlayedCampaign();
+            _currentMap = _currentCampaign.GetStarterMap();
+            
+            if (_currentCampaign == null || _currentMap == null)
+            {
+                Logger.LogError("Could not load last played campaign.");
+                return;
+            }
+            
+            OnStartGameRequested();
+        }
+
+        public void LoadLastEditedMap()
+        {
+            _currentCampaign = FileOperationsHelper.LoadLastEditedCampaign();
+            _currentMap = _currentCampaign.GetMapByName(PlayerPrefsHelper.LastEditedMap[1]);
+            
+            if (_currentCampaign == null || _currentMap == null)
+            {
+                Logger.LogError("Could not load last edited map.");
+                return;
+            }
+            
+            OnStartGameRequested();
+        }
+        
+        public void SetCurrentCampaign(Campaign campaign)
+        {
+            _currentCampaign = campaign;
+        }
+
+        public void SetCurrentMap(MapDescription mapDescription)
+        {
+            FileOperationsHelper.SaveCampaign(_currentCampaign);
+            _currentMap = mapDescription;
+            
+            if (mapDescription != null)
+            {
+                mapBuilder.SetLayout(mapDescription.Layout);
+            }
+        }
 
         private void StartBuildingLevel()
         {
+            if (_currentCampaign == null)
+            {
+                Logger.LogWarning("No Campaign is set, this should not happen here, ever.");
+                return;
+            }
+            
             _gameMode = EGameMode.Play;
             
             _movementEnabled = false;
 
             _startLevelAfterBuildFinishes = true;
-
-            _currentCampaign ??= FileOperationsHelper.LoadLastPlayedCampaign();
-
-            _currentCampaign ??= MapBuilder.GenerateDefaultCampaign();
-
-            if (_currentCampaign == null)
-            {
-                Logger.LogWarning("No Campaign resolved for loading.");
-                return;
-            }
-
+            
             _currentMap ??= _currentCampaign.GetStarterMap();
 
             PlayerPrefs.SetString(Strings.LastPlayedCampaign, _currentCampaign.CampaignName);
@@ -92,14 +135,7 @@ namespace Scripts.System
 
         private void OnStartGameRequested()
         {
-            string loadSceneName = Scenes.PlayIndoorSceneName;
-            
-            if (_currentMap != null)
-            {
-                loadSceneName = _currentMap.SceneName;
-            }
-            
-            SceneLoader.Instance.LoadScene(loadSceneName);
+            SceneLoader.Instance.LoadScene(_currentMap.SceneName);
         }
 
         private void OnLayoutBuilt()
@@ -156,32 +192,6 @@ namespace Scripts.System
             }
 
             StartBuildingLevel();
-        }
-        
-        public void SetCurrentCampaign(Campaign campaign)
-        {
-            _currentCampaign = campaign;
-        }
-
-        public void SetCurrentMap(MapDescription mapDescription)
-        {
-            FileOperationsHelper.SaveCampaign(_currentCampaign);
-            _currentMap = mapDescription;
-            
-            if (mapDescription != null)
-            {
-                mapBuilder.SetLayout(mapDescription.Layout);
-            }
-        }
-
-        public void ContinueLastPlayedMap()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void LoadLastEditedMap()
-        {
-            throw new NotImplementedException();
         }
     }
 }

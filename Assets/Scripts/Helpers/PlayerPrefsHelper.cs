@@ -48,7 +48,7 @@ namespace Scripts.Helpers
             }
         }
 
-        private static bool IsCampaignMapKeyValid(string[] campaignMapKey)
+        public static bool IsCampaignMapKeyValid(string[] campaignMapKey)
         {
             if (campaignMapKey is not {Length: 2}) return false;
             

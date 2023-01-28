@@ -58,26 +58,23 @@ namespace Scripts.Helpers
         }
 
         /// <summary>
-        /// Loads last played campaign or Main Campaign if no level was played yet.
+        /// Loads last played campaign.
         /// </summary>
         /// <returns>Obtained campaign or null</returns>
         public static Campaign LoadLastPlayedCampaign()
         {
-            string campaignName = PlayerPrefs.GetString(Strings.LastPlayedCampaign, Strings.MainCampaign);
+            string campaignName = PlayerPrefsHelper.LastPlayedCampaign;
 
-            if (string.IsNullOrEmpty(campaignName)) return null;
+            return LoadCampaign(campaignName, out Campaign campaign) ? campaign : null;
+        }
+        
+        public static Campaign LoadLastEditedCampaign()
+        {
+            string[] campaignMapKey = PlayerPrefsHelper.LastEditedMap;
 
-            if (!File.Exists(GetFullCampaignPath(campaignName))) return null;
+            if (!PlayerPrefsHelper.IsCampaignMapKeyValid(campaignMapKey)) return null;
 
-            try
-            {
-                return ES3.Load<Campaign>(campaignName, GetFullRelativeCampaignPath(campaignName));
-            }
-            catch (Exception e)
-            {
-                Logger.Log($"Failed to load campaign from file: {campaignName}: {e}", Logger.ELogSeverity.Release);
-                return null;
-            }
+            return LoadCampaign(campaignMapKey[0], out Campaign campaign) ? campaign : null;
         }
 
         public static bool LoadPrefabs(EPrefabType prefabType, out HashSet<GameObject> loadedPrefabs)
@@ -85,6 +82,26 @@ namespace Scripts.Helpers
             loadedPrefabs = Resources.LoadAll<GameObject>(GetPrefabPathByType(prefabType)).ToHashSet();
 
             return loadedPrefabs != null && loadedPrefabs.Any();
+        }
+        
+        private static bool LoadCampaign(string campaignName, out Campaign campaign)
+        {
+            campaign = null;
+
+            if (string.IsNullOrEmpty(campaignName)) return false;
+
+            if (!File.Exists(GetFullCampaignPath(campaignName))) return false;
+
+            try
+            {
+                campaign = ES3.Load<Campaign>(campaignName, GetFullRelativeCampaignPath(campaignName));
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to load campaign from file: {campaignName}: {e}", Logger.ELogSeverity.Release);
+                return false;
+            }
         }
 
         private static string GetPrefabPathByType(EPrefabType prefabType) => prefabType switch

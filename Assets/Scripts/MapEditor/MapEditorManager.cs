@@ -144,13 +144,11 @@ namespace Scripts.MapEditor
                 EditorUIManager.MessageBar.Set(t.Get(Keys.NoMapToPlayLoaded), EMessageType.Negative, automaticDismissDelay: 3f);
                 return;
             }
-
-            MapDescription currentMap = GameManager.CurrentMap;
-
+            
             SaveMap();
 
             GameManager.IsPlayingFromEditor = true;
-            SceneLoader.Instance.LoadScene(currentMap.SceneName);
+            GameManager.LoadLastEditedMap();
         }
 
         public async Task CheckToSaveMapChanges()

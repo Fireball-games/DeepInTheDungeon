@@ -13,8 +13,8 @@ namespace Scripts.MapEditor.Services
     public class MapBuildService
     {
         private static MapEditorManager Manager => MapEditorManager.Instance;
-        private LayoutType EditedLayout => Manager.EditedLayout;
-        private MapBuilder MapBuilder => Manager.MapBuilder;
+        private static LayoutType EditedLayout => Manager.EditedLayout;
+        private static MapBuilder MapBuilder => Manager.MapBuilder;
         private static EditorMouseService Mouse => EditorMouseService.Instance;
 
         public static LayoutType ConvertToLayoutType(TileDescription[,,] layout)

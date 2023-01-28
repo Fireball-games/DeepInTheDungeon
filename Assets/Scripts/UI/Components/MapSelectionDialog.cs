@@ -105,8 +105,8 @@ namespace Scripts.UI.Components
             
             _existingCampaigns.Add(campaign);
             
-            ES3.Save(campaignName, campaign, FileOperationsHelper.GetSavePath(campaignName));
-            
+            FileOperationsHelper.SaveCampaign(campaign);
+
             _selectedCampaign = campaign;
             GameManager.Instance.SetCurrentCampaign(campaign);
             SetCampaignsScrollView();

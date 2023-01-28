@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Scripts.Building.Tile
 {
-    public class TileDescription
+    public class TileDescription : ICloneable
     {
         public enum ETileDirection
         {
@@ -23,7 +23,7 @@ namespace Scripts.Building.Tile
         {
             TileWalls = new TileWalls();
         }
-        
+
         public WallDescription GetWall(ETileDirection direction) => direction switch
         {
             ETileDirection.Floor => TileWalls.Floor,
@@ -34,7 +34,7 @@ namespace Scripts.Building.Tile
             ETileDirection.West => TileWalls.West,
             _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
         };
-        
+
         public WallDescription GetWall(Vector3Int direction)
         {
             if (direction == GeneralExtensions.WorldDown) return TileWalls.Floor;
@@ -48,7 +48,7 @@ namespace Scripts.Building.Tile
 
         public static TileDescription GetByLayout(int floor, int row, int column, TileDescription[,,] layout)
         {
-            return  new TileDescription
+            return new TileDescription
             {
                 IsForMovement = true,
                 TileWalls = new TileWalls
@@ -67,5 +67,11 @@ namespace Scripts.Building.Tile
         {
             return layout[floor + direction.x, row + direction.y, column + direction.z] == null ? new WallDescription() : null;
         }
+
+        public object Clone() => new TileDescription
+        {
+            TileWalls = (TileWalls) TileWalls.Clone(),
+            IsForMovement = IsForMovement
+        };
     }
 }

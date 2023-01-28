@@ -6,7 +6,7 @@ using static Scripts.Enums;
 
 namespace Scripts.Building.PrefabsSpawning.Configurations
 {
-    public class PrefabConfiguration
+    public class PrefabConfiguration : ICloneable
     {
         public EPrefabType PrefabType;
         public string PrefabName;
@@ -44,11 +44,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             OwnerGuid = ownerGuid;
         }
 
-        protected bool Equals(PrefabConfiguration other)
-        {
-            // return PrefabType == other.PrefabType && PrefabName == other.PrefabName && Equals(TransformData, other.TransformData);
-            return Guid == other.Guid;
-        }
+        private bool Equals(PrefabConfiguration other) => Guid == other.Guid;
 
         public override bool Equals(object obj)
         {
@@ -62,5 +58,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         {
             return HashCode.Combine((int)PrefabType, PrefabName, TransformData);
         }
+
+        public object Clone() => new PrefabConfiguration(this);
     }
 }

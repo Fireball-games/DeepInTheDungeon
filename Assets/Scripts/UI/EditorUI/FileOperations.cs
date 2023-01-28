@@ -80,7 +80,10 @@ namespace Scripts.UI.EditorUI
 
         private async void OnExitClicked()
         {
-            await Manager.CheckToSaveMapChanges();
+            if (await Manager.CheckToSaveMapChanges() == DialogBase.EConfirmResult.Cancel)
+            {
+                Manager.SetCurrentMapToOriginalMap();
+            }
             
             Manager.LoadMainSceneClear();
         }

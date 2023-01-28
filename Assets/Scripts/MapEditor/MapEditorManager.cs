@@ -46,6 +46,7 @@ namespace Scripts.MapEditor
         public Dictionary<int, bool> FloorVisibilityMap { get; private set; }
 
         private static EditorUIManager EditorUIManager => EditorUIManager.Instance;
+        private MapDescription _originalMap;
 
         private bool _mapIsSaved = true;
         private bool _dontChangeCameraAfterLayoutIsBuild;
@@ -90,6 +91,11 @@ namespace Scripts.MapEditor
             _mapIsSaved = markMapAsSaved;
             MapIsChanged = false;
 
+            // Only when build is marked as saved, we can set original map, because we can assume then that map same as in a Campaign 
+            // and on rebuild we don't want to save changes automatically.
+            if (markMapAsSaved)
+                _originalMap = map.ClonedCopy();
+            
             EditedLayout = MapBuildService.ConvertToLayoutType(map.Layout);
 
             if (useStartPosition)
@@ -137,30 +143,45 @@ namespace Scripts.MapEditor
             SceneLoader.Instance.LoadMainScene();
         }
 
-        public void PlayMap()
+        public async void PlayMap()
         {
+            if (await CheckToSaveMapChanges() is EConfirmResult.Cancel)
+            {
+                GameManager.SetCurrentMap(_originalMap);
+            }
+
             if (!MapIsPresented)
             {
                 EditorUIManager.MessageBar.Set(t.Get(Keys.NoMapToPlayLoaded), EMessageType.Negative, automaticDismissDelay: 3f);
                 return;
             }
-            
-            SaveMap();
 
             GameManager.IsPlayingFromEditor = true;
             GameManager.LoadLastEditedMap();
         }
 
-        public async Task CheckToSaveMapChanges()
+        /// <summary>
+        /// Makes check if map is changed and if so, asks user if he wants to save changes. 
+        /// </summary>
+        /// <returns>Ok if is nothing to save or its saved, if user don't want to save, returns Cancel</returns>
+        public async Task<EConfirmResult> CheckToSaveMapChanges()
         {
-            if ((MapIsChanged || PrefabIsEdited || !_mapIsSaved) && await EditorUIManager.ConfirmationDialog.Show(
+            EConfirmResult result = EConfirmResult.Ok;
+            
+            if (MapIsChanged || PrefabIsEdited || !_mapIsSaved) {
+                result = await EditorUIManager.ConfirmationDialog.Show(
                     t.Get(Keys.SaveEditedMapPrompt),
                     t.Get(Keys.SaveMap),
                     t.Get(Keys.DontSave)
-                ) == EConfirmResult.Ok)
-            {
-                SaveMap();
+                );
+
+                if (result is EConfirmResult.Ok)
+                {
+                    SaveMap();
+                }
             }
+            
+            return result;
         }
 
         public void SaveMap(bool isSilent = false)
@@ -172,6 +193,7 @@ namespace Scripts.MapEditor
             campaignDirectoryPath.CreateDirectoryIfNotExists();
 
             currentCampaign.ReplaceMap(GameManager.CurrentMap);
+            _originalMap = GameManager.CurrentMap.ClonedCopy();
             
             FileOperationsHelper.SaveCampaign(currentCampaign,
                 () => EditorUIManager.MessageBar.Set(t.Get(Keys.SaveFailed), EMessageType.Negative, automaticDismissDelay: 3f));
@@ -200,6 +222,8 @@ namespace Scripts.MapEditor
 
             EditorEvents.TriggerOnFloorChanged(CurrentFloor);
         }
+        
+        public void SetCurrentMapToOriginalMap() => GameManager.SetCurrentMap(_originalMap);
 
         private void OnLayoutBuilt()
         {

@@ -103,13 +103,11 @@ namespace Scripts.System
 
         public void SetCurrentMap(MapDescription mapDescription)
         {
-            FileOperationsHelper.SaveCampaign(_currentCampaign);
+            if (mapDescription  == null) return;
+            
             _currentMap = mapDescription;
             
-            if (mapDescription != null)
-            {
-                mapBuilder.SetLayout(mapDescription.Layout);
-            }
+            mapBuilder.SetLayout(mapDescription.Layout);
         }
 
         private void StartBuildingLevel()

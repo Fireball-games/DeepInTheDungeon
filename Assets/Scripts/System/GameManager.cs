@@ -10,6 +10,7 @@ using Scripts.System.Pooling;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.System
 {
@@ -44,7 +45,6 @@ namespace Scripts.System
 
         private void OnEnable()
         {
-            EventsManager.OnStartGameRequested += OnStartGameRequested;
             EventsManager.OnSceneStartedLoading += OnSceneStartedLoading;
             EventsManager.OnSceneFinishedLoading += OnSceneFinishedLoading;
 
@@ -56,7 +56,6 @@ namespace Scripts.System
 
         private void OnDisable()
         {
-            EventsManager.OnStartGameRequested -= OnStartGameRequested;
             EventsManager.OnSceneStartedLoading -= OnSceneStartedLoading;
             EventsManager.OnSceneFinishedLoading -= OnSceneFinishedLoading;
 
@@ -173,6 +172,16 @@ namespace Scripts.System
             {
                 mapBuilder.SetLayout(mapDescription.Layout);
             }
+        }
+
+        public void ContinueLastPlayedMap()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadLastEditedMap()
+        {
+            throw new NotImplementedException();
         }
     }
 }

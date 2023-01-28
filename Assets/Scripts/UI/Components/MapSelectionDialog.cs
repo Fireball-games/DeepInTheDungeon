@@ -15,6 +15,7 @@ using Scripts.UI.EditorUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Scripts.Helpers.PlayerPrefsHelper;
 using static Scripts.Helpers.Strings;
 using Logger = Scripts.Helpers.Logger;
 
@@ -173,7 +174,7 @@ namespace Scripts.UI.Components
 
         private void SetLastEditedMap()
         {
-            _lastEditedMap = PlayerPrefs.GetString(LastEditedMap, null)?.Split('_');
+            _lastEditedMap = PlayerPrefsHelper.LastEditedMap;
 
             if (!IsLastEditedMapValid()) return;
 
@@ -301,20 +302,6 @@ namespace Scripts.UI.Components
                 fileItem.GetComponentInChildren<TMP_Text>().text = map.MapName;
                 fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => LoadMap(map.MapName));
             }
-        }
-        
-        /// <summary>
-        /// Resolve if _lastEditedMap has valid values.
-        /// </summary>
-        private bool IsLastEditedMapValid()
-        {
-            if (_lastEditedMap is not {Length: 2}) return false;
-            
-            if (string.IsNullOrEmpty(_lastEditedMap[0])) return false;
-            
-            if (string.IsNullOrEmpty(_lastEditedMap[1])) return false;
-            
-            return true;
         }
 
         private void RedrawComponents()

@@ -14,9 +14,12 @@
         public const string Close = "Close";
         public const string Columns = "Columns";
         public const string Confirm = "Confirm";
+        public const string ContinueCampaign = "ContinueCampaign";
         public const string Count = "Count";
         public const string CreateMap = "CreateMap";
+        public const string CreateNewCharacter = "CreateNewCharacter";
         public const string CreateOppositePath = "CreateOppositePath";
+        public const string CustomCampaign = "CustomCampaign";
         public const string Default = "Default";
         public const string DefaultCampaignName = "DefaultCampaignName";
         public const string Delete = "Delete";
@@ -29,6 +32,7 @@
         public const string ErrorBuildingPrefab = "ErrorBuildingPref";
         public const string ExistingPrefabs = "ExistingPrefabs";
         public const string Exit = "Exit";
+        public const string ExitGame = "ExitGame";
         public const string Floors = "Floors";
         public const string IsWalkable = "IsWalkable";
         public const string Load = "Load";
@@ -48,6 +52,7 @@
         public const string NoPrefabsAvailable = "NoPrefabsAvailable";
         public const string NothingToEditForConfiguration = "NothingToEditForConfiguration";
         public const string North = "North";
+        public const string OpenMapEditor = "OpenMapEditor";
         public const string Offset = "Offset";
         public const string Point = "Point";
         public const string Position = "Position";
@@ -67,11 +72,13 @@
         public const string SelectMapToLoad = "SelectMapToLoad";
         public const string SelectPrefab = "SelectPrefab";
         public const string SelectSubscriber = "SelectSubscriber";
+        public const string Settings = "Settings";
         public const string South = "South";
         public const string SubscribedReceivers = "SubscribedReceivers";
         public const string SpeedTowardsPoint = "SpeedTowardsPoint";
         public const string StartPoint = "StartPoint";
         public const string StartPosition = "StartPosition";
+        public const string StartNewCampaign = "StartNewCampaign";
         public const string Step = "Step";
         public const string TriggerType = "TriggerType";
         public const string Up = "Up";

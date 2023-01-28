@@ -12,6 +12,7 @@ using Scripts.System.MonoBases;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using static MessageBar;
+using static Scripts.Helpers.PlayerPrefsHelper;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MonoBases.DialogBase;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
@@ -36,9 +37,8 @@ namespace Scripts.MapEditor
         public ELevel WorkLevel { get; private set; }
         public EWorkMode WorkMode { get; private set; }
         public bool MapIsPresented { get; private set; }
-        public bool MapIsChanged { get; set; }
-        public bool PrefabIsEdited { get; set; }
-        public bool MapIsSaved { get; set; } = true;
+        public bool MapIsChanged { get; private set; }
+        public bool PrefabIsEdited { get; private set; }
         public bool MapIsBeingBuilt { get; private set; }
         public LayoutType EditedLayout { get; private set; }
         public MapBuilder MapBuilder => GameManager.MapBuilder;
@@ -47,6 +47,7 @@ namespace Scripts.MapEditor
 
         private static EditorUIManager EditorUIManager => EditorUIManager.Instance;
 
+        private bool _mapIsSaved = true;
         private bool _dontChangeCameraAfterLayoutIsBuild;
 
         protected override void Awake()
@@ -86,7 +87,7 @@ namespace Scripts.MapEditor
 
             MapIsBeingBuilt = true;
             MapIsPresented = mapIsPresented;
-            MapIsSaved = markMapAsSaved;
+            _mapIsSaved = markMapAsSaved;
             MapIsChanged = false;
 
             EditedLayout = MapBuildService.ConvertToLayoutType(map.Layout);
@@ -108,9 +109,8 @@ namespace Scripts.MapEditor
             GameManager.SetCurrentMap(map);
 
             MapBuilder.BuildMap(map);
-            
-            PlayerPrefs.SetString(Strings.LastEditedMap,
-                FileOperationsHelper.GetCampaignMapKey(GameManager.CurrentCampaign.CampaignName, map.MapName));
+
+            LastEditedMap = new[] {GameManager.CurrentCampaign.CampaignName, map.MapName};
 
             EditorEvents.TriggerOnNewMapStartedCreation();
         }
@@ -155,7 +155,7 @@ namespace Scripts.MapEditor
 
         public async Task CheckToSaveMapChanges()
         {
-            if ((MapIsChanged || PrefabIsEdited || !MapIsSaved) && await EditorUIManager.ConfirmationDialog.Show(
+            if ((MapIsChanged || PrefabIsEdited || !_mapIsSaved) && await EditorUIManager.ConfirmationDialog.Show(
                     t.Get(Keys.SaveEditedMapPrompt),
                     t.Get(Keys.SaveMap),
                     t.Get(Keys.DontSave)
@@ -185,7 +185,7 @@ namespace Scripts.MapEditor
             }
             
             MapIsChanged = false;
-            MapIsSaved = true;
+            _mapIsSaved = true;
         }
 
         public void SetFloor(int newFloor)
@@ -233,13 +233,13 @@ namespace Scripts.MapEditor
             if (!isEdited) return;
             
             MapIsChanged = true;
-            MapIsSaved = false;
+            _mapIsSaved = false;
         }
 
         private void OnMapLayoutChanged()
         {
             MapIsChanged = true;
-            MapIsSaved = false;
+            _mapIsSaved = false;
         }
 
         private void RefreshFloorVisibilityMap()

@@ -70,7 +70,7 @@ namespace Scripts.UI.EditorUI
             _mapSelectionDialog = transform.Find("MapSelectionDialog").GetComponent<MapSelectionDialog>();
             _inputDialog = transform.Find("InputDialog").GetComponent<InputDialog>();
             _wallEditor = _body.Find("WallEditor").GetComponent<WallEditor>();
-            _tilePrefabEditor = _body.Find("PrefabTileEditor").GetComponent<TilePrefabEditor>();
+            _tilePrefabEditor = _body.Find("TilePrefabEditor").GetComponent<TilePrefabEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
             _triggerReceiverEditor = _body.Find("TriggerReceiverEditor").GetComponent<TriggerReceiverEditor>();
             _messageBar = transform.Find("MessageBar").GetComponent<MessageBar>();

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Scripts.EventsManagement;
 using Scripts.System.MonoBases;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,59 +9,53 @@ namespace Scripts.UI
     {
         [SerializeField] private Button body;
 
-        private int openCount;
+        private static int openCount;
+        private static GameObject _body;
 
-        private static Stack<DialogBase> _openedQueue;
+        private static Stack<OpenQueueItem> _openedQueue;
 
         private void Awake()
         {
             body.onClick.AddListener(OnModalClicked);
-            _openedQueue = new Stack<DialogBase>();
+            _body = body.gameObject;
+            _openedQueue = new Stack<OpenQueueItem>();
         }
-
-        private void OnEnable()
-        {
-            EventsManager.OnModalShowRequested += Activate;
-            EventsManager.OnModalHideRequested += Deactivate;
-        }
-
-        private void OnDisable()
-        {
-            EventsManager.OnModalShowRequested -= Activate;
-            EventsManager.OnModalHideRequested -= Deactivate;
-        }
-
-        public static void Hide() => EventsManager.TriggerOnModalHideRequested();
-        public static void Show() => EventsManager.TriggerOnModalShowRequested();
         
-        public static void SubscribeToClick(DialogBase subscriber) => _openedQueue.Push(subscriber);
+        public static void Show(DialogBase subscriber, bool closeOnclick = true)
+        {
+            _body.gameObject.SetActive(true);
+
+            _openedQueue.Push(new OpenQueueItem(subscriber, closeOnclick));
+        }
+
+        public static void Hide()
+        {
+            _openedQueue.Pop();
+            
+            if (_openedQueue.Count > 0) return;
+
+            _body.SetActive(false);
+        }
 
         private void OnModalClicked()
         {
-            if (_openedQueue.Count == 0) return;
+            OpenQueueItem item = _openedQueue.Peek();
+
+            if (!item.CloseModalOnClick) return;
             
-            _openedQueue.Pop().CloseDialog();   
+            item.Subscriber.CloseDialog();
         }
+    }
 
-        private void Activate()
+    public class OpenQueueItem
+    {
+        public readonly DialogBase Subscriber;
+        public readonly bool CloseModalOnClick;
+
+        public OpenQueueItem(DialogBase subscriber, bool closeModalOnClick)
         {
-            if(!body.IsActive()) openCount = 0;
-            openCount += 1;
-            SetActive(true);
+            Subscriber = subscriber;
+            CloseModalOnClick = closeModalOnClick;
         }
-
-        private void Deactivate()
-        {
-            if (body.IsActive())
-            {
-                openCount -= 1;
-            }
-
-            if (openCount > 0) return;
-            
-            SetActive(false);
-        }
-
-        private void SetActive(bool isActive) => body.gameObject.SetActive(isActive);
     }
 }

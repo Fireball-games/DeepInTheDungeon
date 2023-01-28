@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Scripts.EventsManagement;
 using Scripts.Localization;
 using Scripts.MapEditor.Services;
 using Scripts.UI;
@@ -60,47 +59,27 @@ namespace Scripts.System.MonoBases
                 EditorMouseService.Instance.ResetCursor();
             }
 
-            if (isModalClosingDialog)
-            {
-                Modal.SubscribeToClick(this);
-            }
-            
-            Modal.Show();
+            Modal.Show(this, isModalClosingDialog);
 
             _taskCompletionSource = new TaskCompletionSource<EConfirmResult>();
             SetActive(true);
             return await _taskCompletionSource.Task;
         }
 
-        private void OnCancelClicked()
-        {
-            OnConfirm(EConfirmResult.Cancel);
-        }
+        private void OnCancelClicked() => CloseDialog();
 
-        private void OnOKClicked()
-        {
-            OnConfirm(EConfirmResult.Ok);
-        }
-        
-        public void CloseDialog()
-        {
-            OnConfirm(EConfirmResult.Cancel);
-        }
+        private void OnOKClicked() => OnConfirm(EConfirmResult.Ok);
 
-        protected void OnConfirm(EConfirmResult result)
+        public void CloseDialog() => OnConfirm(EConfirmResult.Cancel);
+
+        private void OnConfirm(EConfirmResult result)
         {
             if (_isClosed) return;
             
             _isClosed = true;
             _taskCompletionSource.SetResult(result);
             
-            // if (_isModalClosingDialog)
-            // {
-            //     EventsManager.OnModalClicked.RemoveListener(OnCancelClicked);
-            // }
-            
             Modal.Hide();
-            
             SetActive(false);
         }
     }

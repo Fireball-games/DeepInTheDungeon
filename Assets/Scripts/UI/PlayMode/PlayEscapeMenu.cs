@@ -1,8 +1,8 @@
+using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.System.MonoBases;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,10 +18,19 @@ namespace Scripts.UI.PlayMode
         private bool isOpened;
         private bool _isFreeLookOnOnOpen;
 
+        private void Awake()
+        {
+            toMainSceneButton.onClick.AddListener(LeaveToMainScene);
+            toEditorButton.onClick.AddListener(LeaveToEditor);
+        }
+
         private void Update()
         {
-            if (!Input.GetKeyDown(KeyCode.Escape)) return;
-            
+            if (Input.GetKeyDown(KeyCode.Escape)) HandleEscapeKeyPressed();
+        }
+
+        private void HandleEscapeKeyPressed()
+        {
             if (!isOpened)
             {
                 _isFreeLookOnOnOpen = PlayerCameraController.IsLookModeOn;
@@ -39,34 +48,19 @@ namespace Scripts.UI.PlayMode
 
         private async void Show()
         {
-            if (GameManager.Instance.IsPlayingFromEditor)
-            {
-                toEditorButton.gameObject.SetActive(true);
-                toEditorButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.ReturnToEditor);
-                toEditorButton.onClick.AddListener(LeaveToEditor); 
-            }
-            else
-            {
-                toEditorButton.gameObject.SetActive(false);
-            }
-        
-            toMainSceneButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.ReturnToMainScene);
-            toMainSceneButton.onClick.AddListener(LeaveToMainScene);
+            toEditorButton.gameObject.SetActive(GameManager.Instance.IsPlayingFromEditor);
+            toEditorButton.SetText(t.Get(Keys.ReturnToEditor));
+
+            toMainSceneButton.SetText(t.Get(Keys.ReturnToMainScene));
 
             if (await base.Show() is not EConfirmResult.Cancel) return;
-            
+
             PlayerCameraController.IsLookModeOn = _isFreeLookOnOnOpen;
             isOpened = false;
         }
 
-        private void LeaveToMainScene()
-        {
-            SceneLoader.Instance.LoadMainScene();
-        }
+        private void LeaveToMainScene() => SceneLoader.Instance.LoadMainScene();
 
-        private void LeaveToEditor()
-        {
-            SceneLoader.Instance.LoadEditorScene();
-        }
+        private void LeaveToEditor() => SceneLoader.Instance.LoadEditorScene();
     }
 }

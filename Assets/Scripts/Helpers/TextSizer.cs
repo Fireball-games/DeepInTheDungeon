@@ -35,7 +35,7 @@ namespace Scripts.Helpers
         private RectTransform _textRectTransform;
         private RectTransform _selfRectTransform;
 
-        protected virtual float MinX
+        private float MinX
         {
             get
             {
@@ -44,7 +44,7 @@ namespace Scripts.Helpers
             }
         }
 
-        protected virtual float MinY
+        private float MinY
         {
             get
             {
@@ -53,7 +53,7 @@ namespace Scripts.Helpers
             }
         }
 
-        protected virtual float MaxX
+        private float MaxX
         {
             get
             {
@@ -62,7 +62,7 @@ namespace Scripts.Helpers
             }
         }
 
-        protected virtual float MaxY
+        private float MaxY
         {
             get
             {
@@ -71,47 +71,56 @@ namespace Scripts.Helpers
             }
         }
 
-        protected virtual void Update()
+        protected void Update()
         {
-            if (!_isTextNull && (text.text != _lastText || _lastSize != _selfRectTransform.rect.size || _forceRefresh ||
-                                 controlAxes != _lastControlAxes))
+            RecalculateText();
+        }
+        
+        [ExecuteAlways]
+        public void RecalculateText()
+        {
+            if (_isTextNull 
+                || (text.text == _lastText 
+                    && _lastSize == _selfRectTransform.rect.size 
+                    && !_forceRefresh 
+                    && controlAxes == _lastControlAxes)
+               ) return;
+            
+            Vector2 preferredSize = text.GetPreferredValues(MaxX, MaxY);
+            preferredSize.x = Mathf.Clamp(preferredSize.x, MinX, MaxX);
+            preferredSize.y = Mathf.Clamp(preferredSize.y, MinY, MaxY);
+            preferredSize += padding;
+
+            if ((controlAxes & Mode.Horizontal) != 0)
             {
-                var preferredSize = text.GetPreferredValues(MaxX, MaxY);
-                preferredSize.x = Mathf.Clamp(preferredSize.x, MinX, MaxX);
-                preferredSize.y = Mathf.Clamp(preferredSize.y, MinY, MaxY);
-                preferredSize += padding;
-
-                if ((controlAxes & Mode.Horizontal) != 0)
+                _selfRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, preferredSize.x);
+                if (resizeTextObject)
                 {
-                    _selfRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, preferredSize.x);
-                    if (resizeTextObject)
-                    {
-                        _textRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, preferredSize.x);
-                    }
+                    _textRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, preferredSize.x);
                 }
-
-                if ((controlAxes & Mode.Vertical) != 0)
-                {
-                    _selfRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredSize.y);
-                    if (resizeTextObject)
-                    {
-                        _textRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredSize.y);
-                    }
-                }
-
-                _lastText = text.text;
-                _lastSize = _selfRectTransform.rect.size;
-                _lastControlAxes = controlAxes;
-                _forceRefresh = false;
             }
+
+            if ((controlAxes & Mode.Vertical) != 0)
+            {
+                _selfRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredSize.y);
+                if (resizeTextObject)
+                {
+                    _textRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredSize.y);
+                }
+            }
+
+            _lastText = text.text;
+            _lastSize = _selfRectTransform.rect.size;
+            _lastControlAxes = controlAxes;
+            _forceRefresh = false;
         }
 
         // Forces a size recalculation on next Update
-        public virtual void Refresh()
+        private void Refresh()
         {
             _forceRefresh = true;
 
-            _isTextNull = text == null;
+            _isTextNull = !text;
             if (text) _textRectTransform = text.GetComponent<RectTransform>();
             _selfRectTransform = GetComponent<RectTransform>();
         }

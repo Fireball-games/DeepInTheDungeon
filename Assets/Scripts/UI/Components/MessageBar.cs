@@ -14,11 +14,12 @@ public class MessageBar : MonoBehaviour
     [SerializeField] private float minimumShowTime = 1f;
 
     private float _backgroundOriginalAlpha;
+    private TextSizer _textSizer;
 
     public string Text => _message.text;
 
     private TextMeshProUGUI _message;
-    private Transform _background;
+    private Image _background;
     private Queue<MessageItem> _messages;
     private Coroutine _fadeCoroutine;
     private Coroutine _automaticDismissCoroutine;
@@ -39,11 +40,12 @@ public class MessageBar : MonoBehaviour
 
     private void Awake()
     {
-        _background = transform.Find("Background");
+        _background = transform.Find("Background").GetComponent<Image>();
         _backgroundOriginalAlpha = _background.GetComponent<Image>().color.a;
-        _message = _background.Find("Message").GetComponent<TextMeshProUGUI>();
+        _message = _background.transform.Find("Message").GetComponent<TextMeshProUGUI>();
         _messages = new Queue<MessageItem>();
         _delayBeforeNextMessage = new WaitForSecondsRealtime(delayBeforeNextMessage);
+        _textSizer = _message.GetComponent<TextSizer>();
 
         _colorsByType = new Dictionary<EMessageType, Color>
         {
@@ -159,11 +161,11 @@ public class MessageBar : MonoBehaviour
         }
     }
 
-    private void SetBackgroundAlpha()
+    private void SetBackgroundColor()
     {
-        Color color = _background.GetComponent<Image>().color;
+        Color color = _message.color;
         color.a = _backgroundOriginalAlpha * _message.color.a;
-        _background.GetComponent<Image>().color = color;
+        _background.color = color;
     }
 
     private IEnumerator AutomaticDismissCoroutine(float targetMessageStartTime)
@@ -197,6 +199,8 @@ public class MessageBar : MonoBehaviour
         _message.text = _currentMessage.Text;
         _message.color = _colorsByType[_currentMessage.MessageType];
         
+        _textSizer.RecalculateText();
+        
         SetMessageTextAlpha(1);
         
         _currentMessageShowTime = Time.time;
@@ -216,7 +220,7 @@ public class MessageBar : MonoBehaviour
 
     private void SetMessageTextAlpha(float value)
     {
-        SetBackgroundAlpha();
+        SetBackgroundColor();
         Color messageColor = _message.color;
         messageColor.a = value;
         _message.color = messageColor;

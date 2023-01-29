@@ -22,9 +22,16 @@ namespace Scripts.Building
 
         public MapDescription GetStarterMap()
         {
-            return !string.IsNullOrEmpty(LastPlayedMap) 
-                ? Maps.FirstOrDefault(map => map.MapName == LastPlayedMap) 
-                : Maps.FirstOrDefault(map => map.MapName == StartMapName);
+            bool lastPlayedMapObtainable = !string.IsNullOrEmpty(LastPlayedMap) || !string.IsNullOrEmpty(StartMapName);
+
+            if (lastPlayedMapObtainable)
+            {
+                return !string.IsNullOrEmpty(LastPlayedMap)
+                    ? Maps.FirstOrDefault(map => map.MapName == LastPlayedMap)
+                    : Maps.FirstOrDefault(map => map.MapName == StartMapName);
+            }
+
+            return Maps.Count > 0 ? Maps[0] : null;
         }
 
         /// <summary>
@@ -34,7 +41,7 @@ namespace Scripts.Building
         public void ReplaceMap(MapDescription newMapVersion)
         {
             int index = Maps.FindIndex(map => map.MapName == newMapVersion.MapName);
-            
+
             if (index != -1)
             {
                 Maps[index] = newMapVersion;
@@ -44,12 +51,11 @@ namespace Scripts.Building
         public MapDescription GetMapByName(string mapName)
         {
             MapDescription map = Maps.FirstOrDefault(m => m.MapName == mapName);
-            
+
             if (map != null) return map;
-            
+
             Logger.LogError($"Map with the name: {mapName} not found in campaign: {CampaignName}");
             return null;
-
         }
 
         /// <summary>

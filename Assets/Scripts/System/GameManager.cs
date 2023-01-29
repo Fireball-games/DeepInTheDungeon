@@ -148,6 +148,11 @@ namespace Scripts.System
             
             _currentCampaign.LastPlayedMap = _currentMap.MapName;
             
+            if (!IsPlayingFromEditor)
+            {
+                FileOperationsHelper.SaveCampaign(_currentCampaign);
+            }
+            
             _movementEnabled = true;
             EventsManager.TriggerOnLevelStarted();
         }

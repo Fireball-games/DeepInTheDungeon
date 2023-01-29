@@ -15,7 +15,7 @@ namespace Scripts.UI.PlayMode
 
         private static PlayerCameraController PlayerCameraController => PlayerCameraController.Instance;
 
-        private bool isOpened;
+        private bool _isOpened;
         private bool _isFreeLookOnOnOpen;
 
         private void Awake()
@@ -31,18 +31,18 @@ namespace Scripts.UI.PlayMode
 
         private void HandleEscapeKeyPressed()
         {
-            if (!isOpened)
+            if (!_isOpened)
             {
                 _isFreeLookOnOnOpen = PlayerCameraController.IsLookModeOn;
                 PlayerCameraController.IsLookModeOn = false;
                 PlayerCameraController.ResetCamera();
-                isOpened = true;
+                _isOpened = true;
                 Show();
                 return;
             }
 
             PlayerCameraController.IsLookModeOn = _isFreeLookOnOnOpen;
-            isOpened = false;
+            _isOpened = false;
             CloseDialog();
         }
 
@@ -56,7 +56,7 @@ namespace Scripts.UI.PlayMode
             if (await base.Show() is not EConfirmResult.Cancel) return;
 
             PlayerCameraController.IsLookModeOn = _isFreeLookOnOnOpen;
-            isOpened = false;
+            _isOpened = false;
         }
 
         private void LeaveToMainScene() => SceneLoader.Instance.LoadMainScene();

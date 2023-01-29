@@ -1,6 +1,8 @@
 ﻿using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+    using UnityEditor.SceneManagement;
+#endif
 
 namespace Scripts.ScenesManagement
 {
@@ -23,12 +25,16 @@ namespace Scripts.ScenesManagement
 
         private static void LoadScene(string sceneName)
         {
+#if UNITY_EDITOR
             Scene currentScene = EditorSceneManager.GetActiveScene();
 
             if (currentScene.name == sceneName || !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
 
             EditorSceneManager.OpenScene(BuildScenePath(sceneName));
             EditorSceneManager.CloseScene(currentScene, true);
+#else
+            SceneManager.LoadScene(sceneName);
+#endif
         }
 
         private static string BuildScenePath(string sceneName) => $"{ScenesDirectory}/{sceneName}.unity";

@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace Scripts.Helpers
 {
+#if UNITY_EDITOR
     public static class PlayFromTheFirstScene
     {      
         const string playFromFirstMenuStr = "Edit/Always Start From Scene 0 &p";
@@ -63,4 +64,5 @@ namespace Scripts.Helpers
                 Debug.Log(msg); // When there's no scene view opened, we just print a log
         }
     }
+#endif
 }

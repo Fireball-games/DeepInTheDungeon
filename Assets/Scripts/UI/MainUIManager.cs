@@ -62,7 +62,7 @@ namespace Scripts.UI
 
         private void EditorClicked() => SceneLoader.Instance.LoadEditorScene();
 
-        private void ExitGameClicked() => Logger.LogNotImplemented();
+        private void ExitGameClicked() => Application.Quit();
 
         private void OnLevelStarted()
         {

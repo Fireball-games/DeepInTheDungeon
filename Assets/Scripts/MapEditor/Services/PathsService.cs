@@ -151,6 +151,7 @@ namespace Scripts.MapEditor.Services
             List<Vector3> points = new() {configuration.TransformData.Position};
             points.AddRange(configuration.Subscribers
                 .Where(s => !string.IsNullOrEmpty(s))
+                // can't use TriggerService.TriggerReceivers here because it's not initialized yet on first load
                 .Select(s => MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(s))
                 .Select(trc => trc.TransformData.Position.Round(2))
                 .ToList());

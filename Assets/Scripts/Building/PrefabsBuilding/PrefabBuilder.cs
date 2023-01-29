@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.Tile;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
@@ -25,8 +24,6 @@ namespace Scripts.Building.PrefabsBuilding
         private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
         private static MapDescription MapDescription => MapBuilder.MapDescription;
         private static HashSet<GameObject> Prefabs => MapBuilder.Prefabs;
-        private static TileDescription[,,] Layout => MapBuilder.Layout;
-        private static bool IsInEditMode => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
 
         internal IEnumerator BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
         {
@@ -183,11 +180,9 @@ namespace Scripts.Building.PrefabsBuilding
             return result;
         }
 
-        public TC GetConfigurationByGuid<TC>(string guid) where TC : PrefabConfiguration
-        {
-            return MapDescription.PrefabConfigurations.Where(c => c.Guid == guid).FirstOrDefault() as TC;
-        }
-        
+        public TC GetConfigurationByGuid<TC>(string guid) where TC : PrefabConfiguration =>
+            MapDescription.PrefabConfigurations.Where(c => c.Guid == guid).FirstOrDefault() as TC;
+
         public bool GetConfigurationByOwnerGuidAndName<T>(string ownerGuid, string prefabName, out T configuration) where T : PrefabConfiguration
         {
             configuration = MapDescription.PrefabConfigurations

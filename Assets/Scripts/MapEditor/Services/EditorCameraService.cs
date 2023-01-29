@@ -30,6 +30,8 @@ namespace Scripts.MapEditor.Services
         private float FloorYPosition => -Manager.CurrentFloor;
         
         private Vector3 _cameraMoveVector = Vector3.zero;
+        
+        private Sequence _moveSequence;
 
         public PositionRotation GetCameraTransformData() => new(cameraHolder.transform.position, cameraHolder.transform.rotation);
 
@@ -120,9 +122,15 @@ namespace Scripts.MapEditor.Services
 
         public void MoveCameraTo(PositionRotation positionRotation)
         {
-            Sequence sequence = DOTween.Sequence().Append(cameraHolder.DORotate(positionRotation.Rotation.eulerAngles, 0.3f));
-            sequence.Insert(0, cameraHolder.DOMove(positionRotation.Position, 0.5f).SetEase(Ease.OutFlash));
-            sequence.Play();
+            if (_moveSequence != null)
+            {
+                _moveSequence.Kill();
+                _moveSequence = null;
+            }
+            
+            _moveSequence = DOTween.Sequence().Append(cameraHolder.DORotate(positionRotation.Rotation.eulerAngles, 0.3f));
+            _moveSequence.Insert(0, cameraHolder.DOMove(positionRotation.Position, 0.5f).SetEase(Ease.OutFlash));
+            _moveSequence.Play();
         }
 
         private void MoveCameraTo(Vector3 worldPosition, bool smooth = true, bool resetCameraAngle = false)
@@ -131,10 +139,10 @@ namespace Scripts.MapEditor.Services
             {
                 if (resetCameraAngle)
                 {
-                    cameraHolder.DORotate(Vector3.zero, 0.3f).Play();
+                    cameraHolder.DORotate(Vector3.zero, 0.3f).Play().SetAutoKill(true);
                 }
 
-                cameraHolder.DOMove(worldPosition, 0.5f).SetEase(Ease.OutFlash).Play();
+                cameraHolder.DOMove(worldPosition, 0.5f).SetEase(Ease.OutFlash).Play().SetAutoKill(true);
             }
             else
             {
@@ -174,7 +182,7 @@ namespace Scripts.MapEditor.Services
 
             if (smooth)
             {
-                cameraHolder.DOMove(newPosition, 0.5f).SetEase(Ease.OutFlash);
+                cameraHolder.DOMove(newPosition, 0.5f).SetEase(Ease.OutFlash).Play().SetAutoKill(true);
             }
             else
             {

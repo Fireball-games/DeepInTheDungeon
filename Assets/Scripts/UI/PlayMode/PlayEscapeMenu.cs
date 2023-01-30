@@ -10,8 +10,8 @@ namespace Scripts.UI.PlayMode
 {
     public class PlayEscapeMenu : DialogBase
     {
-        [SerializeField] private Button toEditorButton;
-        [SerializeField] private Button toMainSceneButton;
+        private Button _toEditorButton;
+        private Button _toMainSceneButton;
 
         private static PlayerCameraController PlayerCameraController => PlayerCameraController.Instance;
 
@@ -20,8 +20,11 @@ namespace Scripts.UI.PlayMode
 
         private void Awake()
         {
-            toMainSceneButton.onClick.AddListener(LeaveToMainScene);
-            toEditorButton.onClick.AddListener(LeaveToEditor);
+            _toMainSceneButton = body.transform.Find("Background/Content/ToMenuButton").GetComponent<Button>();
+            _toMainSceneButton.onClick.AddListener(LeaveToMainScene);
+            
+            _toEditorButton = body.transform.Find("Background/Content/ToEditorButton").GetComponent<Button>();
+            _toEditorButton.onClick.AddListener(LeaveToEditor);
         }
 
         private void Update()
@@ -48,10 +51,10 @@ namespace Scripts.UI.PlayMode
 
         private async void Show()
         {
-            toEditorButton.gameObject.SetActive(GameManager.Instance.IsPlayingFromEditor);
-            toEditorButton.SetText(t.Get(Keys.ReturnToEditor));
+            _toEditorButton.gameObject.SetActive(GameManager.Instance.IsPlayingFromEditor);
+            _toEditorButton.SetText(t.Get(Keys.ReturnToEditor));
 
-            toMainSceneButton.SetText(t.Get(Keys.ReturnToMainScene));
+            _toMainSceneButton.SetText(t.Get(Keys.ReturnToMainScene));
 
             if (await base.Show() is not EConfirmResult.Cancel) return;
 

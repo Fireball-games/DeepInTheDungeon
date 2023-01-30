@@ -1,3 +1,4 @@
+using Lean.Localization;
 using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
@@ -33,6 +34,11 @@ namespace Scripts.UI
             base.Awake();
 
             AssignComponents();
+        }
+
+        private void Start()
+        {
+            LeanLocalization.SetCurrentLanguageAll("English");
             SetComponents();
         }
 

@@ -2,6 +2,7 @@
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
+using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.Player;
 using Scripts.ScenesManagement;

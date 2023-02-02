@@ -1,4 +1,7 @@
-﻿namespace Scripts.Localization
+﻿using System.Collections.Generic;
+using System.Reflection;
+
+namespace Scripts.Localization
 {
     public static class Keys
     {
@@ -84,5 +87,27 @@
         public const string Up = "Up";
         public const string WaypointEditor = "WaypointEditor";
         public const string West = "West";
+        
+        private static readonly Dictionary<string, string> Tooltips;
+
+        static Keys()
+        {
+            Tooltips = new Dictionary<string, string> { { Default, "Tooltip is missing" } };
+
+            FieldInfo[] fields = typeof(Keys).GetFields(BindingFlags.Public | BindingFlags.Static);
+
+            foreach (FieldInfo field in fields)
+            {
+                if (field.FieldType != typeof(string)) continue;
+                
+                string key = field.Name;
+
+                string value = (string)field.GetValue(null);
+                
+                if (value.Contains("Tooltip/")) Tooltips.Add(key, value);
+            }
+        }
+
+        public static string GetTooltipText(string key) => Tooltips.ContainsKey(key) ? t.Get(Tooltips[key]) : Tooltips[Default];
     }
 }

@@ -5,6 +5,8 @@ namespace Scripts.Helpers
     public class Colors : MonoBehaviour
     {
         [SerializeField] private Color white;
+        [SerializeField] private Color deepBlue;
+        [SerializeField] private Color lightBlue;
         [SerializeField] private Color positive;
         [SerializeField] private Color negative;
         [SerializeField] private Color warning;
@@ -15,28 +17,23 @@ namespace Scripts.Helpers
         [SerializeField] private Color buttonEntered;
         [SerializeField] private Color buttonClicked;
 
-        public static Color White => _white;
-        public static Color Positive => _positive;
-        public static Color Negative => _negative;
-        public static Color Warning => _warning;
-        public static Color Selected => _selected;
-        public static Color Disabled => _disabled;
-        public static Color SelectedOver => _selectedOver;
-        public static Color ButtonIdle => _buttonIdle;
-        public static Color ButtonEntered => _buttonEntered;
-        public static Color ButtonClicked => _buttonClicked;
-        public static Color Black => Color.black;
+        public static Color White { get; private set; }
+        public static Color Positive { get; private set; }
+        public static Color Negative { get; private set; }
+        public static Color Warning { get; private set; }
+        public static Color Selected { get; private set; }
+        public static Color Disabled { get; private set; }
+        public static Color SelectedOver { get; private set; }
+        public static Color ButtonIdle { get; private set; }
+        public static Color ButtonEntered { get; private set; }
+        public static Color ButtonClicked { get; private set; }
 
-        private static Color _white;
-        private static Color _positive;
-        private static Color _negative;
-        private static Color _warning;
-        private static Color _selected;
-        private static Color _disabled;
-        private static Color _selectedOver;
-        private static Color _buttonIdle;
-        private static Color _buttonEntered;
-        private static Color _buttonClicked;
+        public static Color Black => Color.black;
+        public static Color Clear => Color.clear;
+        public static Color DeepBlue { get; private set; }
+        public static Color LightBlue { get; private set; }
+        public static Color Yellow => new Color(1.0f, 1.0f, 0.0f);
+        public static Color Beige => new Color(0.96f, 0.96f, 0.86f);
 
         private void Awake()
         {
@@ -45,16 +42,18 @@ namespace Scripts.Helpers
 
         private void SetColors()
         {
-            _white = white;
-            _positive = positive;
-            _negative = negative;
-            _warning = warning;
-            _selected = selected;
-            _disabled = disabled;
-            _selectedOver = selectedOver;
-            _buttonIdle = buttonIdle;
-            _buttonEntered = buttonEntered;
-            _buttonClicked = buttonClicked;
+            White = white;
+            DeepBlue = deepBlue;
+            LightBlue = lightBlue;
+            Positive = positive;
+            Negative = negative;
+            Warning = warning;
+            Selected = selected;
+            Disabled = disabled;
+            SelectedOver = selectedOver;
+            ButtonIdle = buttonIdle;
+            ButtonEntered = buttonEntered;
+            ButtonClicked = buttonClicked;
         }
 
 #if UNITY_EDITOR

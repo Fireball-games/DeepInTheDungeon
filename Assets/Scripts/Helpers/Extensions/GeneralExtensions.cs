@@ -158,5 +158,10 @@ namespace Scripts.Helpers.Extensions
         {
             return "#" + ColorUtility.ToHtmlStringRGBA(color);
         }
+
+        public static string ToLines(this IEnumerable<string> source)
+        {
+            return string.Join('\n', source);
+        }
     }
 }

@@ -38,6 +38,7 @@ namespace Scripts.UI
 
         private void Start()
         {
+            FindObjectOfType<LeanLocalization>().gameObject.SetActive(true);
             LeanLocalization.SetCurrentLanguageAll("English");
             SetComponents();
         }

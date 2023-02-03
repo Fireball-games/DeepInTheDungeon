@@ -31,11 +31,11 @@ namespace Scripts.UI.Tooltip
         {
             base.Awake();
             
-            _tooltipRect = transform.Find("Body").GetComponent<RectTransform>();
-            _tooltipTransform = _tooltipRect.transform;
-            _tooltipGameObject = _tooltipRect.gameObject;
+            _tooltipTransform = transform;
+            _tooltipGameObject = _tooltipTransform.gameObject;
             
             _titleBackground = transform.Find("Body/Title").GetComponent<Image>();
+            _tooltipRect = _titleBackground.GetComponent<RectTransform>();
             _title = _titleBackground.transform.Find("TitleText").GetComponent<TMP_Text>();
             _descriptionBackground = _titleBackground.transform.Find("Description").GetComponent<Image>();
             _description = _descriptionBackground.transform.Find("DescriptionText").GetComponent<TMP_Text>();
@@ -52,7 +52,8 @@ namespace Scripts.UI.Tooltip
                 return;
             }
             
-            // _tooltipRect.SetAsLastSibling();
+            _tooltipTransform.SetParent(targetTransform);
+            _tooltipTransform.SetAsLastSibling();
 
             settings ??= _defaultSettings;
             
@@ -68,6 +69,7 @@ namespace Scripts.UI.Tooltip
             } 
             
             SetTooltipPosition(targetTransform);
+            _tooltipTransform.localScale = Vector3.one;
             
             _descriptionBackground.gameObject.SetActive(strings.Count() > 1);
             _tooltipGameObject.SetActive(true);
@@ -86,7 +88,7 @@ namespace Scripts.UI.Tooltip
                 targetTransform.rect.height / 2,
                 -_tooltipRect.position.z);
             Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(CameraManager.Instance.mainCamera, resultPosition);
-
+            
             if (screenPoint.x - (_tooltipRect.rect.width / 2) < 0)
             {
                 resultPosition.x += Mathf.Abs(screenPoint.x - (_tooltipRect.rect.width / 2));
@@ -95,7 +97,7 @@ namespace Scripts.UI.Tooltip
             {
                 resultPosition.x -= Mathf.Abs(screenPoint.x + (_tooltipRect.rect.width / 2) - Screen.width);
             }
-
+            
             if (screenPoint.y - (_tooltipRect.rect.height / 2) < 0)
             {
                 resultPosition.y += Mathf.Abs(screenPoint.y - (_tooltipRect.rect.height / 2));

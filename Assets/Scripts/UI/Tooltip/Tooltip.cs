@@ -4,7 +4,6 @@ using System.Linq;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.System;
-using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,43 +14,36 @@ namespace Scripts.UI.Tooltip
     /// <summary>
     /// Manages the Tooltip. Tooltip connectors should call Show() and Hide() on this class.
     /// </summary>
-    public class Tooltip : Singleton<Tooltip>
+    public class Tooltip : MonoBehaviour
     {
-        private static TMP_Text _title;
-        private static Image _titleBackground;
-        private static TMP_Text _description;
-        private static Image _descriptionBackground;
+        private TMP_Text _title;
+        private Image _titleBackground;
+        private TMP_Text _description;
+        private Image _descriptionBackground;
 
-        private static RectTransform _tooltipRect;
-        private static Transform _tooltipTransform;
-        private static GameObject _tooltipGameObject;
-        private static TooltipSettings _defaultSettings;
+        private RectTransform _tooltipRect;
+        private Transform _tooltipTransform;
+        private GameObject _tooltipGameObject;
+        private TooltipSettings _defaultSettings;
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
-            
-            _tooltipTransform = transform;
-            _tooltipGameObject = _tooltipTransform.gameObject;
-            
-            _titleBackground = transform.Find("Body/Title").GetComponent<Image>();
-            _tooltipRect = _titleBackground.GetComponent<RectTransform>();
-            _title = _titleBackground.transform.Find("TitleText").GetComponent<TMP_Text>();
-            _descriptionBackground = _titleBackground.transform.Find("Description").GetComponent<Image>();
-            _description = _descriptionBackground.transform.Find("DescriptionText").GetComponent<TMP_Text>();
+            AssignReferences();
 
             _defaultSettings = new TooltipSettings();
             Hide();
         }
 
-        public static void Show(RectTransform targetTransform, IEnumerable<string> strings, TooltipSettings settings = null)
+        public void Show(RectTransform targetTransform, IEnumerable<string> strings, TooltipSettings settings = null)
         {
             if (strings == null || !strings.Any())
             {
                 Logger.LogWarning("Strings are null or empty.");
                 return;
             }
-            
+
+            if (!_tooltipTransform) AssignReferences();
+
             _tooltipTransform.SetParent(targetTransform);
             _tooltipTransform.SetAsLastSibling();
 
@@ -75,48 +67,62 @@ namespace Scripts.UI.Tooltip
             _tooltipGameObject.SetActive(true);
         }
 
-        public static void Hide()
+        public void Hide()
         {
             _title.text = "";
             _description.text = "";
+            _tooltipTransform.SetParent(null);
             _tooltipGameObject.SetActive(false);
         }
         
-        private static void SetTooltipPosition(RectTransform targetTransform)
+        private void SetTooltipPosition(RectTransform targetTransform)
         {
             Vector3 resultPosition = targetTransform.position - new Vector3(targetTransform.rect.width / 2,
                 targetTransform.rect.height / 2,
                 -_tooltipRect.position.z);
-            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(CameraManager.Instance.mainCamera, resultPosition);
-            
-            if (screenPoint.x - (_tooltipRect.rect.width / 2) < 0)
-            {
-                resultPosition.x += Mathf.Abs(screenPoint.x - (_tooltipRect.rect.width / 2));
-            }
-            else if (screenPoint.x + (_tooltipRect.rect.width / 2) > Screen.width)
-            {
-                resultPosition.x -= Mathf.Abs(screenPoint.x + (_tooltipRect.rect.width / 2) - Screen.width);
-            }
-            
-            if (screenPoint.y - (_tooltipRect.rect.height / 2) < 0)
-            {
-                resultPosition.y += Mathf.Abs(screenPoint.y - (_tooltipRect.rect.height / 2));
-            }
-            else if (screenPoint.y + (_tooltipRect.rect.height / 2) > Screen.height)
-            {
-                resultPosition.y -= Mathf.Abs(screenPoint.y + (_tooltipRect.rect.height / 2) - Screen.height);
-            }
+            // TODO: Fix this, currently, it's not working properly.
+            // Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(CameraManager.Instance.mainCamera, resultPosition);
+            //
+            // if (screenPoint.x - (_tooltipRect.rect.width / 2) < 0)
+            // {
+            //     resultPosition.x += Mathf.Abs(screenPoint.x - (_tooltipRect.rect.width / 2));
+            // }
+            // else if (screenPoint.x + (_tooltipRect.rect.width / 2) > Screen.width)
+            // {
+            //     resultPosition.x -= Mathf.Abs(screenPoint.x + (_tooltipRect.rect.width / 2) - Screen.width);
+            // }
+            //
+            // if (screenPoint.y - (_tooltipRect.rect.height / 2) < 0)
+            // {
+            //     resultPosition.y += Mathf.Abs(screenPoint.y - (_tooltipRect.rect.height / 2));
+            // }
+            // else if (screenPoint.y + (_tooltipRect.rect.height / 2) > Screen.height)
+            // {
+            //     resultPosition.y -= Mathf.Abs(screenPoint.y + (_tooltipRect.rect.height / 2) - Screen.height);
+            // }
 
             _tooltipTransform.position = resultPosition;
+        }
+
+        private void AssignReferences()
+        {
+            _tooltipTransform = transform;
+            _tooltipGameObject = _tooltipTransform.gameObject;
+            
+            _titleBackground = _tooltipTransform.Find("Body/Title").GetComponent<Image>();
+            _tooltipRect = _titleBackground.GetComponent<RectTransform>();
+            _title = _titleBackground.transform.Find("TitleText").GetComponent<TMP_Text>();
+            _descriptionBackground = _titleBackground.transform.Find("Description").GetComponent<Image>();
+            _description = _descriptionBackground.transform.Find("DescriptionText").GetComponent<TMP_Text>();
         }
     }
     
     [Serializable]
     public class TooltipSettings
     {
-        public Color titleTextColor = Colors.Yellow;
-        public Color titleBackgroundColor = Colors.DeepBlue;
-        public Color descriptionTextColor = Colors.Beige;
-        public Color descriptionBackgroundColor = Colors.LightBlue;
+        public Color titleTextColor = Colors.Black;
+        public Color titleBackgroundColor = Colors.Beige;
+        public Color descriptionTextColor = Colors.White;
+        public Color descriptionBackgroundColor = Colors.DeepBlue;
     }
 }

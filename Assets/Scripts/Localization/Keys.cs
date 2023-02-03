@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 
 namespace Scripts.Localization
 {
     public static class Keys
     {
+        private const string TooltipPrefix = "Tooltip/";
+        private const string TooltipDefault = "Tooltip is missing";
+        
         public const string AddCampaign = "AddCampaign";
         public const string AddEndPoint = "AddEndPoint";
         public const string AddMap = "AddMap";
@@ -92,22 +94,26 @@ namespace Scripts.Localization
 
         static Keys()
         {
-            Tooltips = new Dictionary<string, string> { { Default, "Tooltip is missing" } };
-
-            FieldInfo[] fields = typeof(Keys).GetFields(BindingFlags.Public | BindingFlags.Static);
-
-            foreach (FieldInfo field in fields)
-            {
-                if (field.FieldType != typeof(string)) continue;
-                
-                string key = field.Name;
-
-                string value = (string)field.GetValue(null);
-                
-                if (value.Contains("Tooltip/")) Tooltips.Add(key, value);
-            }
+            // Tooltips = new Dictionary<string, string> { { Default, "Tooltip is missing" } };
+            //
+            // FieldInfo[] fields = typeof(Keys).GetFields(BindingFlags.Public | BindingFlags.Static);
+            //
+            // foreach (FieldInfo field in fields)
+            // {
+            //     if (field.FieldType != typeof(string)) continue;
+            //     
+            //     string key = field.Name;
+            //
+            //     string value = (string)field.GetValue(null);
+            //     
+            //     if (value.Contains("Tooltip/")) Tooltips.Add(key, value);
+            // }
         }
 
-        public static string GetTooltipText(string key) => Tooltips.ContainsKey(key) ? t.Get(Tooltips[key]) : Tooltips[Default];
+        public static string GetTooltipText(string key)
+        {
+            string text = t.Get($"{TooltipPrefix}{key}");
+            return string.IsNullOrEmpty(text) ? TooltipDefault : text;
+        }
     }
 }

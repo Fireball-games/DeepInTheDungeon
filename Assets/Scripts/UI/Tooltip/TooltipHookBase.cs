@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,19 +7,27 @@ namespace Scripts.UI.Tooltip
 {
     public abstract class TooltipHookBase : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        private static Tooltip _tooltip;
         private const float DelayBeforeShow = 1f;
-        private RectTransform _rectTransform;
         private float _startTime;
 
         private bool _canShow;
+        protected RectTransform Owner;
 
         protected virtual void Awake()
         {
-            _rectTransform = GetComponent<RectTransform>();
+            Owner = GetComponent<RectTransform>();
+            
+            if (!_tooltip)
+            {
+                _tooltip = FindObjectOfType<Tooltip>();
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (!_tooltip) return;
+            
             _startTime = Time.time;
             _canShow = true;
             StartCoroutine(ShowTooltipCoroutine());
@@ -28,8 +35,10 @@ namespace Scripts.UI.Tooltip
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            if (!_tooltip) return;
+            
             _canShow = false;
-            Tooltip.Hide();
+            _tooltip.Hide();
         }
         
         protected abstract IEnumerable<string> GetTooltipStrings();
@@ -42,7 +51,7 @@ namespace Scripts.UI.Tooltip
                 yield return null;
             }
             
-            Tooltip.Show(_rectTransform, GetTooltipStrings());
+            _tooltip.Show(Owner, GetTooltipStrings());
         }
     }
 }

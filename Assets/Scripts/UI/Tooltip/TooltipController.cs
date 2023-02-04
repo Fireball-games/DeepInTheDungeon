@@ -14,13 +14,14 @@ namespace Scripts.UI.Tooltip
     /// <summary>
     /// Manages the Tooltip. Tooltip connectors should call Show() and Hide() on this class.
     /// </summary>
-    public class Tooltip : MonoBehaviour
+    public class TooltipController : MonoBehaviour
     {
         private TMP_Text _title;
         private Image _titleBackground;
         private TMP_Text _description;
         private Image _descriptionBackground;
 
+        private Transform _homeTransform;
         private RectTransform _tooltipRect;
         private Transform _tooltipTransform;
         private GameObject _tooltipGameObject;
@@ -41,11 +42,6 @@ namespace Scripts.UI.Tooltip
                 Logger.LogWarning("Strings are null or empty.");
                 return;
             }
-
-            if (!_tooltipTransform) AssignReferences();
-
-            _tooltipTransform.SetParent(targetTransform);
-            _tooltipTransform.SetAsLastSibling();
 
             settings ??= _defaultSettings;
             
@@ -71,46 +67,47 @@ namespace Scripts.UI.Tooltip
         {
             _title.text = "";
             _description.text = "";
-            _tooltipTransform.SetParent(null);
+            _tooltipTransform.SetParent(_homeTransform);
             _tooltipGameObject.SetActive(false);
         }
         
         private void SetTooltipPosition(RectTransform targetTransform)
         {
-            Vector3 resultPosition = targetTransform.position - new Vector3(targetTransform.rect.width / 2,
-                targetTransform.rect.height / 2,
-                -_tooltipRect.position.z);
-            // TODO: Fix this, currently, it's not working properly.
-            // Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(CameraManager.Instance.mainCamera, resultPosition);
-            //
-            // if (screenPoint.x - (_tooltipRect.rect.width / 2) < 0)
-            // {
-            //     resultPosition.x += Mathf.Abs(screenPoint.x - (_tooltipRect.rect.width / 2));
-            // }
-            // else if (screenPoint.x + (_tooltipRect.rect.width / 2) > Screen.width)
-            // {
-            //     resultPosition.x -= Mathf.Abs(screenPoint.x + (_tooltipRect.rect.width / 2) - Screen.width);
-            // }
-            //
-            // if (screenPoint.y - (_tooltipRect.rect.height / 2) < 0)
-            // {
-            //     resultPosition.y += Mathf.Abs(screenPoint.y - (_tooltipRect.rect.height / 2));
-            // }
-            // else if (screenPoint.y + (_tooltipRect.rect.height / 2) > Screen.height)
-            // {
-            //     resultPosition.y -= Mathf.Abs(screenPoint.y + (_tooltipRect.rect.height / 2) - Screen.height);
-            // }
+            _tooltipTransform.SetParent(targetTransform);
+            _tooltipTransform.SetAsLastSibling();
+            
+            Vector3 newPos = new(0, -targetTransform.rect.height, -1);
+            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(CameraManager.Instance.mainCamera, newPos);
+            
+            if (screenPoint.x < 0)
+            {
+                newPos.x -= screenPoint.x;
+            }
+            else if (screenPoint.x + _tooltipRect.rect.width > Screen.width)
+            {
+                newPos.x -= (screenPoint.x + _tooltipRect.rect.width - Screen.width);
+            }
+            
+            if (screenPoint.y < 0)
+            {
+                newPos.y -= screenPoint.y;
+            }
+            else if (screenPoint.y + _tooltipRect.rect.height > Screen.height)
+            {
+                newPos.y -= (screenPoint.y + _tooltipRect.rect.height - Screen.height);
+            }
 
-            _tooltipTransform.position = resultPosition;
+            _tooltipRect.anchoredPosition = newPos;
         }
 
         private void AssignReferences()
         {
+            _homeTransform = transform.parent;
             _tooltipTransform = transform;
             _tooltipGameObject = _tooltipTransform.gameObject;
             
             _titleBackground = _tooltipTransform.Find("Body/Title").GetComponent<Image>();
-            _tooltipRect = _titleBackground.GetComponent<RectTransform>();
+            _tooltipRect = _tooltipGameObject.GetComponent<RectTransform>();
             _title = _titleBackground.transform.Find("TitleText").GetComponent<TMP_Text>();
             _descriptionBackground = _titleBackground.transform.Find("Description").GetComponent<Image>();
             _description = _descriptionBackground.transform.Find("DescriptionText").GetComponent<TMP_Text>();

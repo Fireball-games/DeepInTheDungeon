@@ -3,7 +3,7 @@ using Scripts.Localization;
 
 namespace Scripts.UI.Tooltip
 {
-    public class TooltipHook : TooltipHookBase
+    public class TooltipHookSimpleTitle : TooltipHookBase
     {
         private string[] _tooltipStrings;
 
@@ -16,7 +16,7 @@ namespace Scripts.UI.Tooltip
 
         private void Start()
         {
-            _tooltipStrings[0] = Keys.GetTooltipText(Owner.gameObject.name);
+            _tooltipStrings[0] = Keys.GetTooltipText(OwnerTransform.gameObject.name);
         }
 
         protected override IEnumerable<string> GetTooltipStrings() => _tooltipStrings;

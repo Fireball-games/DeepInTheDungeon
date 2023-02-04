@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Scripts.Building.PrefabsSpawning.Configurations;
@@ -12,6 +11,7 @@ using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.Components;
 using Scripts.UI.EditorUI.PrefabEditors;
+using Scripts.UI.Tooltip;
 using UnityEngine;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
@@ -24,28 +24,22 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private List<UIElementBase> showOnMapLoad;
         [SerializeField] private MapEditorManager manager;
         private Transform _upperRightPanel;
-        private NewMapDialog _newMapDialog;
-        private DialogBase _confirmationDialog;
-        private MapSelectionDialog _mapSelectionDialog;
         private InputDialog _inputDialog;
         private WallEditor _wallEditor;
         private TilePrefabEditor _tilePrefabEditor;
         private TriggerEditor _triggerEditor;
         private TriggerReceiverEditor _triggerReceiverEditor;
-        private MessageBar _messageBar;
-        private CageController _selectedCage;
-        private SelectConfigurationWindow _selectConfiguration;
         private Transform _body;
-        private Cursor3D _cursor3D;
 
-        [NonSerialized] public WallGizmoController WallGizmo;
-        public MessageBar MessageBar => _messageBar;
-        public NewMapDialog NewMapDialog => _newMapDialog;
-        public DialogBase ConfirmationDialog => _confirmationDialog;
-        public MapSelectionDialog MapSelectionDialog => _mapSelectionDialog;
-        public Cursor3D Cursor3D => _cursor3D;
-        public CageController SelectedCage => _selectedCage;
-        public SelectConfigurationWindow SelectConfigurationWindow => _selectConfiguration;
+        public WallGizmoController WallGizmo { get; private set; }
+        public MessageBar MessageBar { get; private set; }
+        public NewMapDialog NewMapDialog { get; private set; }
+        public DialogBase ConfirmationDialog { get; private set; }
+        public MapSelectionDialog MapSelectionDialog { get; private set; }
+        public Cursor3D Cursor3D { get; private set; }
+        public CageController SelectedCage { get; private set; }
+        public SelectConfigurationWindow SelectConfigurationWindow { get; private set; }
+        public TooltipController Tooltip { get; private set; }
         public bool isAnyObjectEdited { get; private set; }
 
         private ImageButton _playButton;
@@ -65,20 +59,21 @@ namespace Scripts.UI.EditorUI
             _playButton = _upperRightPanel.Find("PlayButton").GetComponent<ImageButton>();
             _playButton.OnClick.AddListener(manager.PlayMap);
             _mapTitle = _upperRightPanel.Find("MapTitle").GetComponent<Title>();
-            _newMapDialog = transform.Find("NewMapDialog").GetComponent<NewMapDialog>();
-            _confirmationDialog = transform.Find("ConfirmationDialog Variant").GetComponent<DialogBase>();
-            _mapSelectionDialog = transform.Find("MapSelectionDialog").GetComponent<MapSelectionDialog>();
+            NewMapDialog = transform.Find("NewMapDialog").GetComponent<NewMapDialog>();
+            ConfirmationDialog = transform.Find("ConfirmationDialog Variant").GetComponent<DialogBase>();
+            MapSelectionDialog = transform.Find("MapSelectionDialog").GetComponent<MapSelectionDialog>();
             _inputDialog = transform.Find("InputDialog").GetComponent<InputDialog>();
             _wallEditor = _body.Find("WallEditor").GetComponent<WallEditor>();
             _tilePrefabEditor = _body.Find("TilePrefabEditor").GetComponent<TilePrefabEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
             _triggerReceiverEditor = _body.Find("TriggerReceiverEditor").GetComponent<TriggerReceiverEditor>();
-            _messageBar = transform.Find("MessageBar").GetComponent<MessageBar>();
-            _selectedCage = _body.Find("SelectedCage").GetComponent<CageController>();
-            _selectConfiguration = _body.Find("SelectConfigurationWindow").GetComponent<SelectConfigurationWindow>();
+            MessageBar = transform.Find("MessageBar").GetComponent<MessageBar>();
+            Tooltip = transform.Find("Tooltip").GetComponent<TooltipController>();
+            SelectedCage = _body.Find("SelectedCage").GetComponent<CageController>();
+            SelectConfigurationWindow = _body.Find("SelectConfigurationWindow").GetComponent<SelectConfigurationWindow>();
             
             WallGizmo = FindObjectOfType<WallGizmoController>();
-            _cursor3D = FindObjectOfType<Cursor3D>();
+            Cursor3D = FindObjectOfType<Cursor3D>();
             
             _editors = new Dictionary<EWorkMode, IPrefabEditor>
             {

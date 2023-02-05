@@ -98,7 +98,6 @@ namespace Scripts.UI.EditorUI
 
         private void OnNewMapStartedCreation()
         {
-            string positiveColor = Colors.Positive.ToHtmlStringRGBA();
             string campaignName = GameManager.Instance.CurrentCampaign.CampaignName;
             string mapName = GameManager.Instance.CurrentMap.MapName;
             _mapTitle.Show($"{t.Get(Keys.Campaign)}: {campaignName.WrapInColor(Colors.Positive)} {t.Get(Keys.Map)}: {mapName.WrapInColor(Colors.Positive)}");

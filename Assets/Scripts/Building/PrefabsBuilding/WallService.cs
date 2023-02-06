@@ -3,6 +3,7 @@ using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
+using Scripts.MapEditor.Services;
 using UnityEngine;
 using static Scripts.MapEditor.Services.PathsService;
 using Logger = Scripts.Helpers.Logger;
@@ -53,7 +54,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             if (wallConfiguration.HasPath())
             {
-                AddReplaceWaypointPath(wallConfiguration.Guid, wallConfiguration.WayPoints);
+                AddReplaceWaypointPath(wallConfiguration.Guid);
             }
         }
 
@@ -63,7 +64,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             if (!prefabScript) return;
 
-            foreach (WallPrefabBase embeddedWall in newPrefab.GetComponents<WallPrefabBase>())
+            foreach (WallPrefabBase embeddedWall in newPrefab.GetComponentsInChildren<WallPrefabBase>())
             {
                 WallConfiguration configuration;
 
@@ -71,13 +72,14 @@ namespace Scripts.Building.PrefabsBuilding
                 {
                     configuration = AddConfigurationToMap(embeddedWall, prefabScript.Guid);
                     AddToStore(configuration, embeddedWall, newPrefab);
+                    AddReplaceWaypointPath(configuration.Guid);
                 }
                 else
                 {
                     if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.Guid, prefabScript.gameObject.name,
                             out configuration))
                     {
-                        Logger.LogWarning("Failed to find configuration for trigger", logObject: embeddedWall);
+                        Logger.LogWarning("Failed to find configuration for wall", logObject: embeddedWall);
                         continue;
                     }
                 }
@@ -88,7 +90,20 @@ namespace Scripts.Building.PrefabsBuilding
 
         public static void RemoveEmbeddedWalls(GameObject prefabGo)
         {
-            Logger.LogNotImplemented();
+            PrefabBase prefabScript = prefabGo.GetComponent<PrefabBase>();
+
+            if (!prefabScript) return;
+
+            foreach (WallPrefabBase wall in prefabGo.GetComponentsInChildren<WallPrefabBase>())
+            {
+                if (IsInEditMode && wall is WallMovement wallMovement)
+                {
+                    DestroyPath(EPathsType.Waypoint, wallMovement.Guid);
+                }
+                
+                RemoveFromStore(wall.Guid);
+                MapBuilder.RemoveConfiguration(wall.Guid);
+            }
         }
 
         protected override WallConfiguration GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid, bool spawnPrefabOnBuild)

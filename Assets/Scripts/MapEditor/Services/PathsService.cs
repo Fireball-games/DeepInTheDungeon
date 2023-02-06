@@ -102,10 +102,12 @@ namespace Scripts.MapEditor.Services
             }
         }
 
+        public static void AddReplaceWaypointPath(string guid) =>
+            AddReplaceWaypointPath(guid, MapBuilder.GetConfigurationByGuid<WallConfiguration>(guid).WayPoints);
 
-        public static void AddReplaceWaypointPath(string key, List<Waypoint> waypoints, bool highlightAfterBuild = false)
+        public static void AddReplaceWaypointPath(string guid, List<Waypoint> waypoints, bool highlightAfterBuild = false)
         {
-            DestroyPath(EPathsType.Waypoint, key);
+            DestroyPath(EPathsType.Waypoint, guid);
 
             GameObject pathParent = new($"waypointPath_{waypoints[0].position}")
             {
@@ -124,7 +126,7 @@ namespace Scripts.MapEditor.Services
                 drawnWaypoint.transform.parent = pathParent.transform;
             }
 
-            _paths[EPathsType.Waypoint].Add(key, controller);
+            _paths[EPathsType.Waypoint].Add(guid, controller);
 
             BuildLines(controller);
 

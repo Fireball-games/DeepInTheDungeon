@@ -3,17 +3,14 @@ using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
-using Scripts.System;
 using UnityEngine;
 using static Scripts.MapEditor.Services.PathsService;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building.PrefabsBuilding
 {
-    public static class WallService
+    public class WallService : PrefabServiceBase<WallConfiguration, WallPrefabBase>
     {
-        private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
-        private static bool IsInEditMode => GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
-
         public static void ActivateWall(Vector3 tileWorldPosition, TileDescription.ETileDirection wallDirection, bool isActive)
         {
             TileController tile = MapBuilder.GetPhysicalTileByWorldPosition(tileWorldPosition).GetComponent<TileController>();
@@ -58,6 +55,47 @@ namespace Scripts.Building.PrefabsBuilding
             {
                 AddReplaceWaypointPath(wallConfiguration.Guid, wallConfiguration.WayPoints);
             }
+        }
+
+        public void ProcessEmbeddedWalls(GameObject newPrefab)
+        {
+            PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
+
+            if (!prefabScript) return;
+
+            foreach (WallPrefabBase embeddedWall in newPrefab.GetComponents<WallPrefabBase>())
+            {
+                WallConfiguration configuration;
+
+                if (IsInEditMode)
+                {
+                    configuration = AddConfigurationToMap(embeddedWall, prefabScript.Guid);
+                    AddToStore(configuration, embeddedWall, newPrefab);
+                }
+                else
+                {
+                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.Guid, prefabScript.gameObject.name,
+                            out configuration))
+                    {
+                        Logger.LogWarning("Failed to find configuration for trigger", logObject: embeddedWall);
+                        continue;
+                    }
+                }
+
+                embeddedWall.Guid = configuration.Guid;
+            }
+        }
+
+        public static void RemoveEmbeddedWalls(GameObject prefabGo)
+        {
+            Logger.LogNotImplemented();
+        }
+
+        protected override WallConfiguration GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid, bool spawnPrefabOnBuild)
+        {
+            return prefab is not WallPrefabBase wallBase 
+                ? null 
+                : new WallConfiguration(wallBase, ownerGuid, spawnPrefabOnBuild);
         }
     }
 }

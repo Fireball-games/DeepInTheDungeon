@@ -34,6 +34,12 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             OwnerGuid = other.OwnerGuid;
         }
 
+        /// <summary>
+        /// Base constructor for constructing PrefabConfiguration from PrefabBase.
+        /// </summary>
+        /// <param name="prefab"></param>
+        /// <param name="ownerGuid"></param>
+        /// <param name="spawnPrefabOnBuild"></param>
         protected PrefabConfiguration(PrefabBase prefab, string ownerGuid = null, bool spawnPrefabOnBuild = true)
         {
             PrefabName = prefab.name;

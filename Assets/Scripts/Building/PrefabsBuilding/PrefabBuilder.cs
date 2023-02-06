@@ -25,6 +25,13 @@ namespace Scripts.Building.PrefabsBuilding
         private static MapDescription MapDescription => MapBuilder.MapDescription;
         private static HashSet<GameObject> Prefabs => MapBuilder.Prefabs;
 
+        private WallService _wallService;
+
+        public PrefabBuilder()
+        {
+            _wallService = new WallService();
+        }
+
         internal IEnumerator BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
         {
             if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
@@ -67,6 +74,7 @@ namespace Scripts.Building.PrefabsBuilding
 
                 TriggerService.ProcessEmbeddedTriggerReceivers(newPrefab);
                 TriggerService.ProcessEmbeddedTriggers(newPrefab);
+                _wallService.ProcessEmbeddedWalls(newPrefab);
 
                 bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
 
@@ -106,6 +114,7 @@ namespace Scripts.Building.PrefabsBuilding
             TriggerService.Remove(configuration);
 
             TriggerService.RemoveEmbeddedTriggers(prefabGo);
+            WallService.RemoveEmbeddedWalls(prefabGo);
 
             prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
             Transform offsetTransform = prefabGo.GetBody();
@@ -185,6 +194,7 @@ namespace Scripts.Building.PrefabsBuilding
 
         public bool GetConfigurationByOwnerGuidAndName<T>(string ownerGuid, string prefabName, out T configuration) where T : PrefabConfiguration
         {
+            // TODO: Check if we need prefabName, feels redundant
             configuration = MapDescription.PrefabConfigurations
                 .Where(c => c.OwnerGuid == ownerGuid && c.PrefabName == prefabName)
                 .FirstOrDefault() as T;

@@ -1,5 +1,6 @@
 ﻿using System;
 using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
@@ -88,6 +89,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void UpdateEmbeddedPrefabsTransformData()
         {
+            // TriggerReceivers are not PrefabBase so they need special handling.
             foreach (TriggerReceiver receiver in EditedPrefab.GetComponents<TriggerReceiver>())
             {
                 TriggerReceiverConfiguration configuration = MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(receiver.Guid);
@@ -96,6 +98,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             }
             
             UpdatePrefabTransformData<TriggerReceiverConfiguration, Trigger>();
+            UpdatePrefabTransformData<WallConfiguration, WallPrefabBase>();
         }
 
         private void UpdatePrefabTransformData<TConfiguration, TPrefabType>() where TConfiguration : PrefabConfiguration where TPrefabType : PrefabBase

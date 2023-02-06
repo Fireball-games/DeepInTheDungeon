@@ -1,9 +1,10 @@
-﻿using Scripts.ScriptableObjects;
+﻿using System.Collections.Generic;
+using Scripts.ScriptableObjects;
 
 namespace Scripts.Building.PrefabsSpawning.Walls.Identifications
 {
     public interface IMovementWall
     {
-        public WaypointsPreset GetWaypointPreset();
+        public IEnumerable<Waypoint> GetWaypointPreset();
     }
 }

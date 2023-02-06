@@ -2,6 +2,6 @@
 {
     public class WallBasic : WallPrefabBase
     {
-        
+        public float offset;
     }
 }

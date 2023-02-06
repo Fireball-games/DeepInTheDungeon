@@ -232,8 +232,6 @@ namespace Scripts.UI.EditorUI
                 _offsetNumericUpDown.OnValueChanged.AddListener(OnOffsetValueChanged);
             }
 
-            // WallPrefabBase script = PhysicalPrefab.GetComponentInParent<WallPrefabBase>();
-
             if (!EditedPrefab) return;
 
             if (EditedPrefab.presentedInEditor)
@@ -243,21 +241,22 @@ namespace Scripts.UI.EditorUI
 
             if (EditedPrefab is IMovementWall movementScript)
             {
-                if (EditedConfiguration.WayPoints.Count < 2 && movementScript.GetWaypointPreset())
+                IEnumerable<Waypoint> waypoints = movementScript.GetWaypointPreset();
+                if (EditedConfiguration.WayPoints.Count < 2 && waypoints?.Any() == true)
                 {
-                    List<Waypoint> translatedWaypoints = new();
+                    // List<Waypoint> translatedWaypoints = new();
+                    //
+                    // foreach (Waypoint waypoint in waypoints)
+                    // {
+                    //     Waypoint newWaypoint = new()
+                    //     {
+                    //         position = EditedConfiguration.TransformData.Position + waypoint.position,
+                    //         moveSpeedModifier = waypoint.moveSpeedModifier
+                    //     };
+                    //     translatedWaypoints.Add(newWaypoint);
+                    // }
 
-                    foreach (Waypoint waypoint in movementScript.GetWaypointPreset().waypoints)
-                    {
-                        Waypoint newWaypoint = new()
-                        {
-                            position = EditedConfiguration.TransformData.Position + waypoint.position,
-                            moveSpeedModifier = waypoint.moveSpeedModifier
-                        };
-                        translatedWaypoints.Add(newWaypoint);
-                    }
-
-                    EditedConfiguration.WayPoints = translatedWaypoints;
+                    EditedConfiguration.WayPoints = waypoints.ToList();
                 }
                 else if (EditedConfiguration.WayPoints.Count == 0)
                 {

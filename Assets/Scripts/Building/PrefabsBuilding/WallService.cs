@@ -79,7 +79,7 @@ namespace Scripts.Building.PrefabsBuilding
                 if (IsInEditMode)
                 {
                     configuration = AddConfigurationToMap(embeddedWall, prefabScript.Guid);
-                    AddToStore(configuration, embeddedWall, newPrefab);
+                    AddToStore(configuration, embeddedWall, embeddedWall.gameObject);
                     if (configuration.HasPath()) AddReplaceWaypointPath(configuration.Guid);
                 }
                 else

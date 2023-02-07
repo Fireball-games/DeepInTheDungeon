@@ -35,23 +35,23 @@ namespace Scripts.Building.PrefabsBuilding
         /// <param name="newPrefab"></param>
         public override void ProcessEmbeddedPrefabs(GameObject newPrefab)
         {
-            Trigger prefabScript = newPrefab.GetComponent<Trigger>();
+            PrefabBase ownerPrefabScript = newPrefab.GetComponent<PrefabBase>();
 
-            if (!prefabScript) return;
+            if (!ownerPrefabScript) return;
 
-            foreach (Trigger trigger in newPrefab.GetComponentsInChildren<Trigger>().Where(c => c != prefabScript))
+            foreach (Trigger trigger in newPrefab.GetComponentsInChildren<Trigger>().Where(c => c != ownerPrefabScript))
             {
                 TriggerConfiguration configuration;
 
                 if (IsInEditMode)
                 {
-                    configuration = AddConfigurationToMap(trigger, prefabScript.Guid);
-                    AddToStore(configuration, prefabScript, newPrefab);
+                    configuration = AddConfigurationToMap(trigger, ownerPrefabScript.Guid);
+                    AddToStore(configuration, trigger, trigger.gameObject);
                     AddReplaceTriggerPath(configuration);
                 }
                 else
                 {
-                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.Guid, trigger.gameObject.name, out configuration))
+                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(ownerPrefabScript.Guid, trigger.gameObject.name, out configuration))
                     {
                         Logger.LogWarning("Failed to find configuration for trigger", logObject: trigger);
                         continue;

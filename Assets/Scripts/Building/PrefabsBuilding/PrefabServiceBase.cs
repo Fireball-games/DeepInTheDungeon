@@ -8,7 +8,9 @@ using UnityEngine;
 
 namespace Scripts.Building.PrefabsBuilding
 {
-    public abstract class PrefabServiceBase<TC, TPrefab> : IPrefabService<TC> where TC : PrefabConfiguration where TPrefab : PrefabBase
+    public abstract class PrefabServiceBase<TC, TPrefab> : IPrefabService<TC> 
+        where TC : PrefabConfiguration 
+        where TPrefab : PrefabBase
     {
         protected static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
         protected static bool IsInEditMode => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;

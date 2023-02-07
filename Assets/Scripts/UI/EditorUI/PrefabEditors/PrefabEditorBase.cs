@@ -150,12 +150,19 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetExistingList(false);
             SetPrefabList(EditedConfiguration.SpawnPrefabOnBuild, _availablePrefabs!);
 
-            PhysicalPrefab = Service.GetGameObject(EditedConfiguration.Guid);//MapBuilder.GetPrefabByGuid(configuration.Guid);
+            PhysicalPrefab = Service.GetGameObject(EditedConfiguration.Guid);
             
             if (PhysicalPrefab)
             {
-                EditedPrefab = PhysicalPrefab.GetComponent<TPrefab>();
-                PhysicalPrefabBody = PhysicalPrefab.GetBody()?.gameObject;
+                EditedPrefab = !EditedConfiguration.SpawnPrefabOnBuild 
+                    ? PhysicalPrefab.GetComponentsInChildren<TPrefab>()
+                        .FirstOrDefault(p => p.gameObject.name == EditedConfiguration.PrefabName) 
+                    : PhysicalPrefab.GetComponent<TPrefab>();
+
+                if (EditedPrefab)
+                {
+                    PhysicalPrefabBody = EditedPrefab.gameObject.GetBody()?.gameObject;
+                }
             }
 
             VisualizeOtherComponents();

@@ -195,7 +195,8 @@ namespace Scripts.UI.EditorUI
             };
 
             MapBuilder.BuildPrefab(_createdOppositeWall);
-            AddReplaceWaypointPath(_createdOppositeWall.Guid, oppositePoints);
+            HighlightPath(EPathsType.Waypoint, _createdOppositeWall.Guid);
+            // AddReplaceWaypointPath(_createdOppositeWall.Guid, oppositePoints);
             SetEdited();
         }
 
@@ -219,7 +220,7 @@ namespace Scripts.UI.EditorUI
 
             if (EditedConfiguration == null) return;
 
-            if (PhysicalPrefabBody)
+            if (EditedConfiguration.SpawnPrefabOnBuild && PhysicalPrefabBody)
             {
                 _offsetSlider.OnValueChanged.RemoveAllListeners();
                 _offsetSlider.SetCollapsed(false);
@@ -244,21 +245,25 @@ namespace Scripts.UI.EditorUI
 
             if (EditedPrefab is IMovementWall movementScript)
             {
-                IEnumerable<Waypoint> waypoints = movementScript.GetWaypoints();
-                if (EditedConfiguration.WayPoints.Count < 2 && waypoints?.Any() == true)
-                {
-                    EditedConfiguration.WayPoints = waypoints.ToList();
-                }
-                else if (EditedConfiguration.WayPoints.Count == 0)
-                {
-                    EditedConfiguration.WayPoints.Add(
-                        new Waypoint(
-                            EditorMouseService.Instance.LastLeftButtonUpWorldPosition,
-                            0.3f));
-                }
+                // IEnumerable<Waypoint> waypoints = movementScript.GetWaypoints();
+                // if (EditedConfiguration.WayPoints.Count < 2 && waypoints?.Any() == true)
+                // {
+                //     EditedConfiguration.WayPoints = waypoints.ToList();
+                // }
+                // else if (EditedConfiguration.WayPoints.Count == 0)
+                // {
+                //     EditedConfiguration.WayPoints.Add(
+                //         new Waypoint(
+                //             EditorMouseService.Instance.LastLeftButtonUpWorldPosition,
+                //             0.3f));
+                // }
 
-                _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
-                AddReplaceWaypointPath(EditedConfiguration.Guid, EditedConfiguration.WayPoints, true);
+                if (EditedConfiguration.SpawnPrefabOnBuild)
+                {
+                    _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
+                }
+                
+                HighlightPath(EPathsType.Waypoint, EditedConfiguration.Guid);
                 HandleCreateOppositePathButton();
             }
         }

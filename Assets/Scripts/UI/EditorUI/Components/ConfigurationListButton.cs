@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using static IconStore;
+using static Scripts.Enums;
 
 namespace Scripts.UI.EditorUI.Components
 {
@@ -30,8 +31,8 @@ namespace Scripts.UI.EditorUI.Components
             GameObject instancedPrefab = GameManager.Instance.MapBuilder
                 .GetPrefabByGuid(item.SpawnPrefabOnBuild ? item.Guid : item.OwnerGuid);
 
-            if (item.PrefabType is Enums.EPrefabType.Trigger) AddIcon(EIcon.Trigger);
-            if (item.PrefabType is Enums.EPrefabType.TriggerReceiver) AddIcon(EIcon.TriggerReceiver);
+            if (item.PrefabType is EPrefabType.Trigger) AddIcon(EIcon.Trigger);
+            if (item.PrefabType is EPrefabType.TriggerReceiver) AddIcon(EIcon.TriggerReceiver);
             if (!item.SpawnPrefabOnBuild) AddIcon(EIcon.Embedded);
 
             if (instancedPrefab && instancedPrefab.GetBody()) AddIcon(EIcon.Wall);

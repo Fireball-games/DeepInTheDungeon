@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.ScriptableObjects;
@@ -25,11 +25,13 @@ namespace Scripts.Building.PrefabsBuilding
         private static MapDescription MapDescription => MapBuilder.MapDescription;
         private static HashSet<GameObject> Prefabs => MapBuilder.Prefabs;
 
-        private WallService _wallService;
+        private readonly WallService _wallService;
+        private readonly TriggerService _triggerService;
 
         public PrefabBuilder()
         {
             _wallService = new WallService();
+            _triggerService = new TriggerService();
         }
 
         internal IEnumerator BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
@@ -73,7 +75,7 @@ namespace Scripts.Building.PrefabsBuilding
                 GameObject newPrefab = BuildPhysicalPrefab(configuration);
 
                 TriggerService.ProcessEmbeddedTriggerReceivers(newPrefab);
-                TriggerService.ProcessEmbeddedTriggers(newPrefab);
+                _triggerService.ProcessEmbeddedTriggers(newPrefab);
                 _wallService.ProcessEmbeddedWalls(newPrefab);
 
                 bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
@@ -194,7 +196,7 @@ namespace Scripts.Building.PrefabsBuilding
 
         public bool GetConfigurationByOwnerGuidAndName<T>(string ownerGuid, string prefabName, out T configuration) where T : PrefabConfiguration
         {
-            // TODO: Check if we need prefabName, feels redundant
+            // prefab name is to distinguish more than one embedded prefab under same owner
             configuration = MapDescription.PrefabConfigurations
                 .Where(c => c.OwnerGuid == ownerGuid && c.PrefabName == prefabName)
                 .FirstOrDefault() as T;

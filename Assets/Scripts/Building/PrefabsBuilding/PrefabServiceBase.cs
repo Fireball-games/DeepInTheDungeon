@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.Walls;
 using Scripts.EventsManagement;
 using Scripts.System;
 using UnityEngine;

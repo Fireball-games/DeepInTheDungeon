@@ -12,7 +12,7 @@ namespace Scripts.Building.PrefabsSpawning.Walls
     {
         public List<EditorWaypoint> presetWaypoints;
 
-        public IEnumerable<Waypoint> GetWaypointPreset() => presetWaypoints.Select(wp => wp.ToWaypoint());
+        public IEnumerable<Waypoint> GetWaypoints() => presetWaypoints.Select(wp => wp.ToWaypoint());
         
         [Serializable]
         public class EditorWaypoint

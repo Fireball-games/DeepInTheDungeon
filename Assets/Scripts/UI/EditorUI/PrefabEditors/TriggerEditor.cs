@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
@@ -65,9 +66,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override IEnumerable<TriggerConfiguration> GetAvailableConfigurations()
         {
-            return MapBuilder.MapDescription.PrefabConfigurations
-                .Where(c => c.PrefabType == Enums.EPrefabType.Trigger)
-                .Select(c => c as TriggerConfiguration);
+            // return MapBuilder.MapDescription.PrefabConfigurations
+            //     .Where(c => c.PrefabType == Enums.EPrefabType.Trigger)
+            //     .Select(c => c as TriggerConfiguration);
+            return TriggerService.Configurations;
         }
 
         protected override void RemoveAndReopen()

@@ -5,6 +5,6 @@ namespace Scripts.Building.PrefabsSpawning.Walls.Identifications
 {
     public interface IMovementWall
     {
-        public IEnumerable<Waypoint> GetWaypointPreset();
+        public IEnumerable<Waypoint> GetWaypoints();
     }
 }

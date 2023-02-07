@@ -1,4 +1,4 @@
-﻿using Scripts.Building.Walls;
+﻿using Scripts.Building.PrefabsSpawning;
 
 namespace Scripts.UI.EditorUI.Components
 {

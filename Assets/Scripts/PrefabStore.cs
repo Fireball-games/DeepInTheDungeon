@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Scripts.Building.Walls;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Helpers;
 using Scripts.System.Pooling;
 using UnityEngine;

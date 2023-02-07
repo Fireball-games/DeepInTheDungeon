@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
-using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
+using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.Triggers;
 using Scripts.UI.Components;
@@ -81,9 +83,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void Rotate(float angles)
         {
             SetEdited();
+            
             PhysicalPrefabBody.transform.Rotate(Vector3.up, angles);
             EditedConfiguration.TransformData.Rotation = PhysicalPrefabBody.transform.rotation;
-
+            
             UpdateEmbeddedPrefabsTransformData();
         }
 
@@ -103,11 +106,22 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void UpdatePrefabTransformData<TConfiguration, TPrefabType>() where TConfiguration : PrefabConfiguration where TPrefabType : PrefabBase
         {
-            foreach (TPrefabType trigger in EditedPrefab.GetComponentsInChildren<TPrefabType>())
+            foreach (TPrefabType prefab in EditedPrefab.GetComponentsInChildren<TPrefabType>())
             {
-                TConfiguration configuration = MapBuilder.GetConfigurationByGuid<TConfiguration>(trigger.Guid);
-                configuration.TransformData.Position = trigger.transform.position;
-                configuration.TransformData.Rotation = trigger.transform.rotation;
+                TConfiguration configuration = MapBuilder.GetConfigurationByGuid<TConfiguration>(prefab.Guid);
+
+                configuration.TransformData.Position = prefab.transform.position;
+                configuration.TransformData.Rotation = prefab.transform.rotation;
+                
+                if (configuration is WallConfiguration wallConfiguration 
+                    && prefab is WallMovement movementPrefab 
+                    && wallConfiguration.HasPath())
+                {
+                    wallConfiguration.WayPoints = movementPrefab.GetWaypoints().ToList();
+                    PathsService.AddReplaceWaypointPath(wallConfiguration.Guid);
+                }
+                
+                if (configuration is TriggerConfiguration triggerConfiguration) PathsService.AddReplaceTriggerPath(triggerConfiguration);
             }
         }
 

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Scripts.Building.PrefabsBuilding;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
-using Scripts.Building.Walls;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;

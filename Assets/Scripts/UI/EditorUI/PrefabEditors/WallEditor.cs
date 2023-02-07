@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.PrefabsSpawning.Walls.Identifications;
@@ -47,6 +48,8 @@ namespace Scripts.UI.EditorUI
         protected override WallConfiguration CloneConfiguration(WallConfiguration sourceConfiguration) => new(sourceConfiguration);
 
         public override Vector3 GetCursor3DScale() => new(0.15f, 1.1f, 1.1f);
+
+        protected override IEnumerable<WallConfiguration> GetAvailableConfigurations() => WallService.Configurations;
 
         public override void Open()
         {
@@ -241,21 +244,9 @@ namespace Scripts.UI.EditorUI
 
             if (EditedPrefab is IMovementWall movementScript)
             {
-                IEnumerable<Waypoint> waypoints = movementScript.GetWaypointPreset();
+                IEnumerable<Waypoint> waypoints = movementScript.GetWaypoints();
                 if (EditedConfiguration.WayPoints.Count < 2 && waypoints?.Any() == true)
                 {
-                    // List<Waypoint> translatedWaypoints = new();
-                    //
-                    // foreach (Waypoint waypoint in waypoints)
-                    // {
-                    //     Waypoint newWaypoint = new()
-                    //     {
-                    //         position = EditedConfiguration.TransformData.Position + waypoint.position,
-                    //         moveSpeedModifier = waypoint.moveSpeedModifier
-                    //     };
-                    //     translatedWaypoints.Add(newWaypoint);
-                    // }
-
                     EditedConfiguration.WayPoints = waypoints.ToList();
                 }
                 else if (EditedConfiguration.WayPoints.Count == 0)

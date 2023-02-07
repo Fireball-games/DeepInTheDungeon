@@ -1,5 +1,4 @@
 ﻿using System;
-using Scripts.Building.Walls;
 using Scripts.Helpers.Extensions;
 using Scripts.System;
 using static Scripts.Enums;

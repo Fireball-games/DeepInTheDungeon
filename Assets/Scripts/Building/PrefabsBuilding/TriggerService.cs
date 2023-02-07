@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.Walls;
 using Scripts.EventsManagement;
-using Scripts.System;
 using Scripts.Triggers;
 using UnityEngine;
 using static Scripts.MapEditor.Services.PathsService;
@@ -11,20 +10,20 @@ using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building.PrefabsBuilding
 {
-    public static class TriggerService
+    public class TriggerService : PrefabServiceBase<TriggerConfiguration, Trigger>
     {
-        private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
-        private static bool IsInEditor => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
+        protected override TriggerConfiguration GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid, bool spawnPrefabOnBuild)
+        {
+            return new TriggerConfiguration(prefab as Trigger, ownerGuid, spawnPrefabOnBuild);
+        }
 
-        public static readonly Dictionary<string, Trigger> Triggers;
         public static readonly Dictionary<string, TriggerReceiver> TriggerReceivers;
         
         static TriggerService()
         {
-            Triggers = new Dictionary<string, Trigger>();
             TriggerReceivers = new Dictionary<string, TriggerReceiver>();
             
-            EventsManager.OnMapDemolished += () => { Triggers.Clear(); TriggerReceivers.Clear(); };
+            EventsManager.OnMapDemolished += () => { TriggerReceivers.Clear(); };
         }
         
         /// <summary>
@@ -34,9 +33,9 @@ namespace Scripts.Building.PrefabsBuilding
         /// - in editor - creates trigger/triggerReceiver configurations from new prefab and ads those into map prefabConfigurations
         /// </summary>
         /// <param name="newPrefab"></param>
-        internal static void ProcessEmbeddedTriggers(GameObject newPrefab)
+        internal void ProcessEmbeddedTriggers(GameObject newPrefab)
         {
-            PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
+            Trigger prefabScript = newPrefab.GetComponent<Trigger>();
 
             if (!prefabScript) return;
 
@@ -44,11 +43,10 @@ namespace Scripts.Building.PrefabsBuilding
             {
                 TriggerConfiguration configuration;
 
-                if (IsInEditor)
+                if (IsInEditMode)
                 {
-                    Triggers.TryAdd(trigger.Guid, trigger);
-
-                    configuration = AddTriggerConfigurationToMap(trigger, prefabScript.Guid);
+                    configuration = AddConfigurationToMap(trigger, prefabScript.Guid);
+                    AddToStore(configuration, prefabScript, newPrefab);
                     AddReplaceTriggerPath(configuration);
                 }
                 else
@@ -82,7 +80,7 @@ namespace Scripts.Building.PrefabsBuilding
             {
                 TriggerReceiverConfiguration configuration;
 
-                if (IsInEditor)
+                if (IsInEditMode)
                 {
                     TriggerReceivers.TryAdd(receiver.Guid, receiver);
 
@@ -105,21 +103,22 @@ namespace Scripts.Building.PrefabsBuilding
         
         public static void Remove(PrefabConfiguration configuration)
         {
+            RemoveFromStore(configuration.Guid);
             DestroyPath(EPathsType.Trigger, configuration.Guid);
         }
         
-        private static TriggerConfiguration AddTriggerConfigurationToMap(Trigger trigger, string ownerGuid)
-        {
-            if (MapBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, trigger.name, out TriggerConfiguration configuration))
-            {
-                // Logger.Log("Configuration is already present.");
-                return configuration;
-            }
-
-            TriggerConfiguration newConfiguration = new(trigger, ownerGuid, false);
-            MapBuilder.AddReplacePrefabConfiguration(newConfiguration);
-            return newConfiguration;
-        }
+        // private static TriggerConfiguration AddTriggerConfigurationToMap(Trigger trigger, string ownerGuid)
+        // {
+        //     if (MapBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, trigger.name, out TriggerConfiguration configuration))
+        //     {
+        //         // Logger.Log("Configuration is already present.");
+        //         return configuration;
+        //     }
+        //
+        //     TriggerConfiguration newConfiguration = new(trigger, ownerGuid, false);
+        //     MapBuilder.AddReplacePrefabConfiguration(newConfiguration);
+        //     return newConfiguration;
+        // }
 
         private static TriggerReceiverConfiguration AddTriggerReceiverConfigurationToMap(TriggerReceiver triggerReceiver, string ownerGuid)
         {
@@ -152,12 +151,14 @@ namespace Scripts.Building.PrefabsBuilding
                         AddReplaceTriggerPath(triggerConfiguration);
                     }
                 }
-
+                
+                TriggerReceivers.Remove(receiver.Guid);
                 MapBuilder.RemoveConfiguration(receiver.Guid);
             }
 
             foreach (Trigger trigger in prefab.GetComponentsInChildren<Trigger>())
             {
+                RemoveFromStore(trigger.Guid);
                 MapBuilder.RemoveConfiguration(trigger.Guid);
             }
         }
@@ -181,8 +182,9 @@ namespace Scripts.Building.PrefabsBuilding
 
             newPrefab.transform.localRotation = configuration.TransformData.Rotation;
 
-            if (IsInEditor)
+            if (IsInEditMode)
             {
+                AddToStore(triggerConfiguration, script, newPrefab);
                 AddReplaceTriggerPath(triggerConfiguration);
             }
         }

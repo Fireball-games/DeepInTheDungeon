@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Scripts.Building.Walls;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.EventsManagement;
 using Scripts.Player;
 using Scripts.System;

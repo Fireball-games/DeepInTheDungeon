@@ -1,6 +1,5 @@
 ﻿using System;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.Walls;
 using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.UI.EditorUI;

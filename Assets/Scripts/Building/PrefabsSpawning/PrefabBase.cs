@@ -2,7 +2,7 @@
 using UnityEngine;
 using static Scripts.Enums;
 
-namespace Scripts.Building.Walls
+namespace Scripts.Building.PrefabsSpawning
 {
     [SelectionBase]
     public abstract class PrefabBase : MonoBehaviour, IPoolInitializable

@@ -1,5 +1,5 @@
-﻿using Scripts.Building.PrefabsSpawning.Walls.Identifications;
-using Scripts.Building.Walls;
+﻿using Scripts.Building.PrefabsSpawning;
+using Scripts.Building.PrefabsSpawning.Walls.Identifications;
 using Scripts.Helpers.Extensions;
 using Scripts.Triggers;
 using UnityEngine.Events;

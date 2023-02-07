@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.Walls;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
@@ -120,7 +120,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (configuration == null)
             {
-                // Close();
                 return;
             }
 

@@ -1,4 +1,4 @@
-﻿namespace Scripts.Building.Walls
+﻿namespace Scripts.Building.PrefabsSpawning
 {
     public class TilePrefab : PrefabBase
     {

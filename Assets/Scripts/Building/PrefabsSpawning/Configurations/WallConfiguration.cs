@@ -31,7 +31,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
 
             if (wall is IMovementWall movementWall)
             {
-                WayPoints = movementWall.GetWaypointPreset().ToList();
+                WayPoints = movementWall.GetWaypoints().ToList();
             }
         }
 

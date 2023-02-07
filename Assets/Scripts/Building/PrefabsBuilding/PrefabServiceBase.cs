@@ -41,6 +41,7 @@ namespace Scripts.Building.PrefabsBuilding
         }
 
         public GameObject GetGameObject(string guid) => Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.GameObject : null;
+        public TPrefab GetPrefabScript(string guid) => Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.PrefabScript : null;
         public static IEnumerable<TC> Configurations => Store.Values.Select(configuration => configuration.Configuration);
         protected static IEnumerable<TPrefab> PrefabScripts => Store.Values.Select(prefabScript => prefabScript.PrefabScript);
         
@@ -57,9 +58,39 @@ namespace Scripts.Building.PrefabsBuilding
             return newConfiguration;
         }
 
-        public abstract void ProcessEmbeddedPrefabs(GameObject newPrefab);
+        public void ProcessConfigurationOnBuild(PrefabConfiguration configuration, PrefabBase prefabScript, GameObject newPrefab)
+        {
+            if (configuration is not TC prefabConfiguration || prefabScript is not TPrefab script) return;
+            
+            newPrefab.transform.localRotation = configuration.TransformData.Rotation;
+            
+            ProcessConfiguration(prefabConfiguration, script, newPrefab);
+            
+            if (IsInEditMode)
+            {
+                AddToStore(prefabConfiguration, script, newPrefab);
+            }
+        }
 
-        public abstract void RemoveEmbeddedPrefabs(GameObject prefabGo);
+        public void Remove(PrefabConfiguration rawConfiguration)
+        {
+            if (rawConfiguration is not TC configuration) return;
+            
+            RemoveConfiguration(configuration);
+            
+            if (IsInEditMode)
+            {
+                RemoveFromStore(configuration.Guid);
+            }
+        }
+
+        protected abstract void RemoveConfiguration(TC configuration);
+
+        protected abstract void ProcessConfiguration(TC configuration, TPrefab prefabScript, GameObject newPrefab);
+
+        public abstract void ProcessEmbedded(GameObject newPrefab);
+
+        public abstract void RemoveEmbedded(GameObject prefabGo);
 
         public IEnumerable<TC> GetConfigurations() => Configurations;
     }

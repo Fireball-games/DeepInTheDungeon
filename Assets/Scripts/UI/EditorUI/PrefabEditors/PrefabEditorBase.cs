@@ -28,10 +28,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         where TPrefab : PrefabBase
         where TService : IPrefabService<TC>, new()
     {
-        protected GameObject Placeholder;
         protected Transform Content;
-        protected IPrefabService<TC> Service;
 
+        private GameObject _placeholder;
+        private IPrefabService<TC> _service;
         private PrefabList _prefabList;
         private ConfigurationList _existingList;
         private GameObject _mainWindow;
@@ -62,7 +62,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void Awake()
         {
-            Service = new TService();
+            _service = new TService();
             
             AssignComponents();
             InitializeOtherComponents();
@@ -112,7 +112,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetButtons();
 
-            IEnumerable<TC> availableConfigurations = Service.GetConfigurations();//GetAvailableConfigurations();
+            IEnumerable<TC> availableConfigurations = _service.GetConfigurations();//GetAvailableConfigurations();
 
             SetExistingList(true, availableConfigurations);
 
@@ -150,7 +150,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetExistingList(false);
             SetPrefabList(EditedConfiguration.SpawnPrefabOnBuild, _availablePrefabs!);
 
-            PhysicalPrefab = Service.GetGameObject(EditedConfiguration.Guid);
+            PhysicalPrefab = _service.GetGameObject(EditedConfiguration.Guid);
             
             if (PhysicalPrefab)
             {
@@ -179,10 +179,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetupWindow(prefabType);
 
-            Placeholder.transform.position = placeholderTransformData.Position;
-            Placeholder.transform.rotation = placeholderTransformData.Rotation;
-            Placeholder.transform.parent = null;
-            Placeholder.SetActive(true);
+            _placeholder.transform.position = placeholderTransformData.Position;
+            _placeholder.transform.rotation = placeholderTransformData.Rotation;
+            _placeholder.transform.parent = null;
+            _placeholder.SetActive(true);
 
             if (_availablePrefabs == null || !_availablePrefabs.Any())
             {
@@ -234,7 +234,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             if (!MapBuilder.BuildPrefab(EditedConfiguration))
             {
                 SetStatusText(t.Get(Keys.ErrorBuildingPrefab));
-                Placeholder.SetActive(false);
+                _placeholder.SetActive(false);
                 return;
             }
 
@@ -253,12 +253,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetEdited();
             SetButtons();
-            Placeholder.SetActive(false);
+            _placeholder.SetActive(false);
 
             VisualizeOtherComponents();
         }
-
-        protected virtual IEnumerable<TC> GetAvailableConfigurations() => MapBuilder.GetConfigurationsByPrefabClass<TC, TPrefab>();
 
         protected void SetEdited(bool isEdited = true)
         {
@@ -282,7 +280,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetEdited(false);
             _prefabList.DeselectButtons();
 
-            Placeholder.SetActive(false);
+            _placeholder.SetActive(false);
 
             SetButtons();
             VisualizeOtherComponents();
@@ -295,7 +293,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 RemoveChanges();
             }
 
-            Placeholder.SetActive(false);
+            _placeholder.SetActive(false);
 
             Close();
             Open();
@@ -352,9 +350,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _isEditingExistingPrefab = false;
             EditedPrefabType = EPrefabType.Invalid;
 
-            Placeholder.transform.position = Vector3.zero;
-            Placeholder.transform.parent = body.transform;
-            Placeholder.SetActive(false);
+            _placeholder.transform.position = Vector3.zero;
+            _placeholder.transform.parent = body.transform;
+            _placeholder.SetActive(false);
 
             _prefabTitle.SetActive(false);
             SetPrefabList(false);
@@ -464,7 +462,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Transform frame = bodyTransform.GetChild(0).GetChild(0);
             Content = frame.Find("ScrollingContent/Viewport/Content");
             
-            Placeholder = bodyTransform.Find("Placeholder").gameObject;
+            _placeholder = bodyTransform.Find("Placeholder").gameObject;
             _prefabList = bodyTransform.Find("AvailablePrefabs").GetComponent<PrefabList>();
             _existingList = bodyTransform.Find("ExistingPrefabs").GetComponent<ConfigurationList>();
             _prefabTitle = frame.Find("Header/PrefabTitle").GetComponent<Title>();

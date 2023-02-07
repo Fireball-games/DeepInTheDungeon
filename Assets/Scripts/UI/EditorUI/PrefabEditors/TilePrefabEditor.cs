@@ -85,8 +85,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             SetEdited();
             
-            PhysicalPrefabBody.transform.Rotate(Vector3.up, angles);
-            EditedConfiguration.TransformData.Rotation = PhysicalPrefabBody.transform.rotation;
+            PhysicalPrefab.transform.Rotate(Vector3.up, angles);
+            EditedConfiguration.TransformData.Rotation = PhysicalPrefab.transform.rotation;
             
             UpdateEmbeddedPrefabsTransformData();
         }

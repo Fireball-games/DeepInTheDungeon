@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building.PrefabsSpawning.Walls.Identifications;
+using Scripts.Helpers.Extensions;
 using Scripts.ScriptableObjects;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ namespace Scripts.Building.PrefabsSpawning.Walls
             /// </summary>
             public float moveSpeedModifier = 0.3f;
             
-            public Waypoint ToWaypoint() => new(position.position, moveSpeedModifier);
+            public Waypoint ToWaypoint() => new(position.position.Round(2), moveSpeedModifier);
         }
     }
 }

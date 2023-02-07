@@ -21,50 +21,39 @@ namespace Scripts.Building.PrefabsBuilding
                 tile.HideWall(wallDirection);
         }
 
-        public static void Remove(PrefabConfiguration configuration)
+        protected override void RemoveConfiguration(WallConfiguration configuration)
         {
-            if (configuration is WallConfiguration wall)
+            if (configuration.HasPath())
             {
-                RemoveFromStore(configuration.Guid);
-                
-                if (wall.HasPath())
-                {
-                    DestroyPath(EPathsType.Waypoint, wall.Guid);
-                }
+                DestroyPath(EPathsType.Waypoint, configuration.Guid);
             }
         }
 
-        public static void ProcessConfigurationOnBuild(PrefabConfiguration configuration, PrefabBase prefabScript, GameObject newPrefab)
+        protected override void ProcessConfiguration(WallConfiguration configuration, WallPrefabBase prefabScript, GameObject newPrefab)
         {
-            if (configuration is not WallConfiguration wallConfiguration) return;
-            
-            newPrefab.transform.localRotation = configuration.TransformData.Rotation;
-
             Transform physicalPart = newPrefab.GetBody();
 
             if (physicalPart)
             {
                 Vector3 position = physicalPart.localPosition;
-                position.x += wallConfiguration.Offset;
+                position.x += configuration.Offset;
                 physicalPart.localPosition = position;
             }
 
-            if (!IsInEditMode || prefabScript is not WallPrefabBase script) return;
-            
-            AddToStore(wallConfiguration, script, newPrefab);
-            
-            if (script && script.presentedInEditor)
+            if (!IsInEditMode) return;
+
+            if (prefabScript && prefabScript.presentedInEditor)
             {
-                script.presentedInEditor.SetActive(true);
+                prefabScript.presentedInEditor.SetActive(true);
             }
 
-            if (wallConfiguration.HasPath())
+            if (configuration.HasPath())
             {
-                AddReplaceWaypointPath(wallConfiguration.Guid);
+                AddReplaceWaypointPath(configuration.Guid);
             }
         }
 
-        public override void ProcessEmbeddedPrefabs(GameObject newPrefab)
+        public override void ProcessEmbedded(GameObject newPrefab)
         {
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
 
@@ -97,7 +86,7 @@ namespace Scripts.Building.PrefabsBuilding
             }
         }
 
-        public override void RemoveEmbeddedPrefabs(GameObject prefabGo)
+        public override void RemoveEmbedded(GameObject prefabGo)
         {
             PrefabBase prefabScript = prefabGo.GetComponent<PrefabBase>();
 
@@ -109,7 +98,7 @@ namespace Scripts.Building.PrefabsBuilding
                 {
                     DestroyPath(EPathsType.Waypoint, wallMovement.Guid);
                 }
-                
+
                 RemoveFromStore(wall.Guid);
                 MapBuilder.RemoveConfiguration(wall.Guid);
             }
@@ -117,8 +106,8 @@ namespace Scripts.Building.PrefabsBuilding
 
         protected override WallConfiguration GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid, bool spawnPrefabOnBuild)
         {
-            return prefab is not WallPrefabBase wallBase 
-                ? null 
+            return prefab is not WallPrefabBase wallBase
+                ? null
                 : new WallConfiguration(wallBase, ownerGuid, spawnPrefabOnBuild);
         }
     }

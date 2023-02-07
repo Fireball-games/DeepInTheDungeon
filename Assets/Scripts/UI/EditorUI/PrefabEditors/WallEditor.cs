@@ -49,8 +49,6 @@ namespace Scripts.UI.EditorUI
 
         public override Vector3 GetCursor3DScale() => new(0.15f, 1.1f, 1.1f);
 
-        protected override IEnumerable<WallConfiguration> GetAvailableConfigurations() => WallService.Configurations;
-
         public override void Open()
         {
             if(_waypointEditor) _waypointEditor.SetActive(false);

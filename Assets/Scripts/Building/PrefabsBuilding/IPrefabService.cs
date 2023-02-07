@@ -7,8 +7,10 @@ namespace Scripts.Building.PrefabsBuilding
 {
     public interface IPrefabService<TC> where TC : PrefabConfiguration
     {
-        public void ProcessEmbeddedPrefabs(GameObject newPrefab);
-        public void RemoveEmbeddedPrefabs(GameObject prefabGo);
+        public void ProcessConfigurationOnBuild(PrefabConfiguration configuration, PrefabBase prefabScript, GameObject newPrefab);
+        public void Remove(PrefabConfiguration configuration);
+        public void ProcessEmbedded(GameObject newPrefab);
+        public void RemoveEmbedded(GameObject prefabGo);
         public IEnumerable<TC> GetConfigurations();
         public GameObject GetGameObject(string guid);
     }

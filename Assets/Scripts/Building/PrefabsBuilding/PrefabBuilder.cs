@@ -27,11 +27,13 @@ namespace Scripts.Building.PrefabsBuilding
 
         private readonly WallService _wallService;
         private readonly TriggerService _triggerService;
-
+        private readonly TilePrefabService _tilePrefabService;
+        
         public PrefabBuilder()
         {
             _wallService = new WallService();
             _triggerService = new TriggerService();
+            _tilePrefabService = new TilePrefabService();
         }
 
         internal IEnumerator BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
@@ -75,8 +77,8 @@ namespace Scripts.Building.PrefabsBuilding
                 GameObject newPrefab = BuildPhysicalPrefab(configuration);
 
                 TriggerService.ProcessEmbeddedTriggerReceivers(newPrefab);
-                _triggerService.ProcessEmbeddedPrefabs(newPrefab);
-                _wallService.ProcessEmbeddedPrefabs(newPrefab);
+                _triggerService.ProcessEmbedded(newPrefab);
+                _wallService.ProcessEmbedded(newPrefab);
 
                 bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
 
@@ -111,12 +113,12 @@ namespace Scripts.Building.PrefabsBuilding
 
             Prefabs.Remove(prefabGo);
             
-            TilePrefabService.Remove(configuration, prefabGo.GetComponent<PrefabBase>());
-            WallService.Remove(configuration);
-            TriggerService.Remove(configuration);
+            _tilePrefabService.Remove(configuration);
+            _wallService.Remove(configuration);
+            _triggerService.Remove(configuration);
 
-            _triggerService.RemoveEmbeddedPrefabs(prefabGo);
-            _wallService.RemoveEmbeddedPrefabs(prefabGo);
+            _triggerService.RemoveEmbedded(prefabGo);
+            _wallService.RemoveEmbedded(prefabGo);
 
             prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
             Transform offsetTransform = prefabGo.GetBody();
@@ -247,9 +249,9 @@ namespace Scripts.Building.PrefabsBuilding
 
             prefabScript.Guid = configuration.Guid;
 
-            TilePrefabService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
-            WallService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
-            TriggerService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
+            _tilePrefabService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
+            _wallService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
+            _triggerService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
 
             MapBuilder.Prefabs.Add(newPrefab);
 

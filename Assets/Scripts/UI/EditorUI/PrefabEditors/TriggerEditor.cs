@@ -64,14 +64,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override TriggerConfiguration CloneConfiguration(TriggerConfiguration sourceConfiguration) => new(sourceConfiguration);
 
-        protected override IEnumerable<TriggerConfiguration> GetAvailableConfigurations()
-        {
-            // return MapBuilder.MapDescription.PrefabConfigurations
-            //     .Where(c => c.PrefabType == Enums.EPrefabType.Trigger)
-            //     .Select(c => c as TriggerConfiguration);
-            return TriggerService.Configurations;
-        }
-
         protected override void RemoveAndReopen()
         {
             if (IsCurrentConfigurationChanged)

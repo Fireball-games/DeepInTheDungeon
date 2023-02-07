@@ -84,14 +84,27 @@ namespace Scripts.Building.PrefabsBuilding
             }
         }
 
+        public virtual void RemoveAllEmbedded(GameObject prefabGo)
+        {
+            PrefabBase prefabScript = prefabGo.GetComponent<PrefabBase>();
+
+            if (!prefabScript) return;
+
+            foreach (TPrefab embeddedPrefab in prefabGo.GetComponentsInChildren<TPrefab>())
+            {
+                RemoveEmbedded(embeddedPrefab);
+
+                RemoveFromStore(embeddedPrefab.Guid);
+                MapBuilder.RemoveConfiguration(embeddedPrefab.Guid);
+            }
+        }
+        
         protected abstract void RemoveConfiguration(TC configuration);
 
         protected abstract void ProcessConfiguration(TC configuration, TPrefab prefabScript, GameObject newPrefab);
 
         public abstract void ProcessEmbedded(GameObject newPrefab);
-
-        public abstract void RemoveEmbedded(GameObject prefabGo);
-
+        protected abstract void RemoveEmbedded(TPrefab prefabScript);
         public IEnumerable<TC> GetConfigurations() => Configurations;
     }
 }

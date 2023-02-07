@@ -117,8 +117,8 @@ namespace Scripts.Building.PrefabsBuilding
             _wallService.Remove(configuration);
             _triggerService.Remove(configuration);
 
-            _triggerService.RemoveEmbedded(prefabGo);
-            _wallService.RemoveEmbedded(prefabGo);
+            _triggerService.RemoveAllEmbedded(prefabGo);
+            _wallService.RemoveAllEmbedded(prefabGo);
 
             prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
             Transform offsetTransform = prefabGo.GetBody();

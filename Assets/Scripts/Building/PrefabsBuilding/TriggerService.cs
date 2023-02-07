@@ -70,6 +70,11 @@ namespace Scripts.Building.PrefabsBuilding
             }
         }
 
+        protected override void RemoveEmbedded(Trigger prefabScript)
+        {
+            // Not used in triggers because they need special treatment. So whole RemoveAllEmbedded is overridden.
+        }
+
         public static void ProcessEmbeddedTriggerReceivers(GameObject newPrefab)
         {
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
@@ -120,15 +125,14 @@ namespace Scripts.Building.PrefabsBuilding
             return newConfiguration;
         }
 
-        public override void RemoveEmbedded(GameObject prefab)
+        public override void RemoveAllEmbedded(GameObject prefab)
         {
             PrefabBase prefabScript = prefab.GetComponent<PrefabBase>();
 
             if (!prefabScript) return;
 
-            TriggerReceiver[] triggerReceivers = prefab.GetComponents<TriggerReceiver>();
-
-            foreach (TriggerReceiver receiver in triggerReceivers)
+            // Remove trigger receivers
+            foreach (TriggerReceiver receiver in prefab.GetComponents<TriggerReceiver>())
             {
                 foreach (TriggerConfiguration triggerConfiguration in Configurations)
                 {
@@ -143,6 +147,7 @@ namespace Scripts.Building.PrefabsBuilding
                 MapBuilder.RemoveConfiguration(receiver.Guid);
             }
 
+            // Remove triggers
             foreach (Trigger trigger in prefab.GetComponentsInChildren<Trigger>())
             {
                 RemoveFromStore(trigger.Guid);

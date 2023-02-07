@@ -86,21 +86,11 @@ namespace Scripts.Building.PrefabsBuilding
             }
         }
 
-        public override void RemoveEmbedded(GameObject prefabGo)
+        protected override void RemoveEmbedded(WallPrefabBase embeddedWall)
         {
-            PrefabBase prefabScript = prefabGo.GetComponent<PrefabBase>();
-
-            if (!prefabScript) return;
-
-            foreach (WallPrefabBase wall in prefabGo.GetComponentsInChildren<WallPrefabBase>())
+            if (IsInEditMode && embeddedWall is WallMovement wallMovement)
             {
-                if (IsInEditMode && wall is WallMovement wallMovement)
-                {
-                    DestroyPath(EPathsType.Waypoint, wallMovement.Guid);
-                }
-
-                RemoveFromStore(wall.Guid);
-                MapBuilder.RemoveConfiguration(wall.Guid);
+                DestroyPath(EPathsType.Waypoint, wallMovement.Guid);
             }
         }
 

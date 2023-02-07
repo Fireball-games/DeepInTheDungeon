@@ -17,7 +17,7 @@ namespace Scripts.Building.PrefabsBuilding
             Logger.LogNotImplemented();
         }
 
-        public override void RemoveEmbedded(GameObject prefabGo)
+        protected override void RemoveEmbedded(TilePrefab prefabGo)
         {
             Logger.LogNotImplemented();
         }

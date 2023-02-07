@@ -10,7 +10,7 @@ namespace Scripts.Building.PrefabsBuilding
         public void ProcessConfigurationOnBuild(PrefabConfiguration configuration, PrefabBase prefabScript, GameObject newPrefab);
         public void Remove(PrefabConfiguration configuration);
         public void ProcessEmbedded(GameObject newPrefab);
-        public void RemoveEmbedded(GameObject prefabGo);
+        public void RemoveAllEmbedded(GameObject prefabGo);
         public IEnumerable<TC> GetConfigurations();
         public GameObject GetGameObject(string guid);
     }

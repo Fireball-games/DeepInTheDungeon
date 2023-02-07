@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building;
+using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
@@ -22,12 +23,14 @@ using static Scripts.MapEditor.Enums;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
-    public abstract class PrefabEditorBase<TC, TPrefab> : EditorWindowBase, IPrefabEditor
+    public abstract class PrefabEditorBase<TC, TPrefab, TService> : EditorWindowBase, IPrefabEditor
         where TC : PrefabConfiguration
         where TPrefab : PrefabBase
+        where TService : IPrefabService<TC>, new()
     {
         protected GameObject Placeholder;
         protected Transform Content;
+        protected IPrefabService<TC> Service;
 
         private PrefabList _prefabList;
         private ConfigurationList _existingList;
@@ -59,6 +62,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void Awake()
         {
+            Service = new TService();
+            
             AssignComponents();
             InitializeOtherComponents();
 
@@ -107,7 +112,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetButtons();
 
-            IEnumerable<TC> availableConfigurations = GetAvailableConfigurations();
+            IEnumerable<TC> availableConfigurations = Service.GetConfigurations();//GetAvailableConfigurations();
 
             SetExistingList(true, availableConfigurations);
 
@@ -144,8 +149,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetExistingList(false);
             SetPrefabList(EditedConfiguration.SpawnPrefabOnBuild, _availablePrefabs!);
-            
-            PhysicalPrefab = MapBuilder.GetPrefabByGuid(configuration.Guid);
+
+            PhysicalPrefab = Service.GetGameObject(EditedConfiguration.Guid);//MapBuilder.GetPrefabByGuid(configuration.Guid);
             
             if (PhysicalPrefab)
             {

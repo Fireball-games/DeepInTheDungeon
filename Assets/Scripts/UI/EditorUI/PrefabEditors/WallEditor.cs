@@ -24,7 +24,7 @@ namespace Scripts.UI.EditorUI
     /// PrefabEditorBase overload for building walls
     /// TODO: Not sure how to go about replacing move walls with other kind of walls, maybe offer to delete waypoints on RemoveOtherComponents
     /// </summary>
-    public class WallEditor : PrefabEditorBase<WallConfiguration, WallPrefabBase>
+    public class WallEditor : PrefabEditorBase<WallConfiguration, WallPrefabBase, WallService>
     {
         private LabeledSlider _offsetSlider;
         private NumericUpDown _offsetNumericUpDown;

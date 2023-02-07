@@ -75,8 +75,8 @@ namespace Scripts.Building.PrefabsBuilding
                 GameObject newPrefab = BuildPhysicalPrefab(configuration);
 
                 TriggerService.ProcessEmbeddedTriggerReceivers(newPrefab);
-                _triggerService.ProcessEmbeddedTriggers(newPrefab);
-                _wallService.ProcessEmbeddedWalls(newPrefab);
+                _triggerService.ProcessEmbeddedPrefabs(newPrefab);
+                _wallService.ProcessEmbeddedPrefabs(newPrefab);
 
                 bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
 
@@ -115,8 +115,8 @@ namespace Scripts.Building.PrefabsBuilding
             WallService.Remove(configuration);
             TriggerService.Remove(configuration);
 
-            TriggerService.RemoveEmbeddedTriggers(prefabGo);
-            WallService.RemoveEmbeddedWalls(prefabGo);
+            _triggerService.RemoveEmbeddedPrefabs(prefabGo);
+            _wallService.RemoveEmbeddedPrefabs(prefabGo);
 
             prefabGo.transform.rotation = Quaternion.Euler(Vector3.zero);
             Transform offsetTransform = prefabGo.GetBody();

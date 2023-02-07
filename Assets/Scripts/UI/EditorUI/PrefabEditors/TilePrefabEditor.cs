@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
@@ -14,7 +15,7 @@ using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
-    public class TilePrefabEditor : PrefabEditorBase<TilePrefabConfiguration, TilePrefab>
+    public class TilePrefabEditor : PrefabEditorBase<TilePrefabConfiguration, TilePrefab, TilePrefabService>
     {
         [SerializeField] private RotationWidget rotationWidget;
         [SerializeField] private FramedCheckBox isWalkableCheckBox;

@@ -17,7 +17,7 @@ namespace Scripts.Building.PrefabsBuilding
             return new TriggerConfiguration(prefab as Trigger, ownerGuid, spawnPrefabOnBuild);
         }
 
-        public static readonly Dictionary<string, TriggerReceiver> TriggerReceivers;
+        private static readonly Dictionary<string, TriggerReceiver> TriggerReceivers;
         
         static TriggerService()
         {
@@ -33,7 +33,7 @@ namespace Scripts.Building.PrefabsBuilding
         /// - in editor - creates trigger/triggerReceiver configurations from new prefab and ads those into map prefabConfigurations
         /// </summary>
         /// <param name="newPrefab"></param>
-        internal void ProcessEmbeddedTriggers(GameObject newPrefab)
+        public override void ProcessEmbeddedPrefabs(GameObject newPrefab)
         {
             Trigger prefabScript = newPrefab.GetComponent<Trigger>();
 
@@ -106,19 +106,6 @@ namespace Scripts.Building.PrefabsBuilding
             RemoveFromStore(configuration.Guid);
             DestroyPath(EPathsType.Trigger, configuration.Guid);
         }
-        
-        // private static TriggerConfiguration AddTriggerConfigurationToMap(Trigger trigger, string ownerGuid)
-        // {
-        //     if (MapBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, trigger.name, out TriggerConfiguration configuration))
-        //     {
-        //         // Logger.Log("Configuration is already present.");
-        //         return configuration;
-        //     }
-        //
-        //     TriggerConfiguration newConfiguration = new(trigger, ownerGuid, false);
-        //     MapBuilder.AddReplacePrefabConfiguration(newConfiguration);
-        //     return newConfiguration;
-        // }
 
         private static TriggerReceiverConfiguration AddTriggerReceiverConfigurationToMap(TriggerReceiver triggerReceiver, string ownerGuid)
         {
@@ -133,7 +120,7 @@ namespace Scripts.Building.PrefabsBuilding
             return newConfiguration;
         }
         
-        internal static void RemoveEmbeddedTriggers(GameObject prefab)
+        public override void RemoveEmbeddedPrefabs(GameObject prefab)
         {
             PrefabBase prefabScript = prefab.GetComponent<PrefabBase>();
 

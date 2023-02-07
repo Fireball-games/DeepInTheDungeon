@@ -16,7 +16,7 @@ using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
-    public class TriggerEditor : PrefabEditorBase<TriggerConfiguration, Trigger>
+    public class TriggerEditor : PrefabEditorBase<TriggerConfiguration, Trigger, TriggerService>
     {
         private Vector3Control _positionControl;
         private NumericUpDown _startPositionUpDown;

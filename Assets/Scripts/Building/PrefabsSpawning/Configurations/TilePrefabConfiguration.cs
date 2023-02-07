@@ -12,5 +12,10 @@
         {
             IsWalkable = configuration.IsWalkable;
         }
+        
+        public TilePrefabConfiguration(TilePrefab configuration, string ownerGuid, bool spawnPrefabOnBuild) : base(configuration, ownerGuid, spawnPrefabOnBuild)
+        {
+            IsWalkable = configuration.isWalkable;
+        }
     }
 }

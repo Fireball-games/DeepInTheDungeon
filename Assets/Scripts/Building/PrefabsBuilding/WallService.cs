@@ -64,7 +64,7 @@ namespace Scripts.Building.PrefabsBuilding
             }
         }
 
-        public void ProcessEmbeddedWalls(GameObject newPrefab)
+        public override void ProcessEmbeddedPrefabs(GameObject newPrefab)
         {
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
 
@@ -97,7 +97,7 @@ namespace Scripts.Building.PrefabsBuilding
             }
         }
 
-        public static void RemoveEmbeddedWalls(GameObject prefabGo)
+        public override void RemoveEmbeddedPrefabs(GameObject prefabGo)
         {
             PrefabBase prefabScript = prefabGo.GetComponent<PrefabBase>();
 

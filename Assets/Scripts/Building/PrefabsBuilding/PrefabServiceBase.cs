@@ -8,12 +8,12 @@ using UnityEngine;
 
 namespace Scripts.Building.PrefabsBuilding
 {
-    public abstract class PrefabServiceBase<TC, TPrefab> where TC : PrefabConfiguration where TPrefab : PrefabBase
+    public abstract class PrefabServiceBase<TC, TPrefab> : IPrefabService<TC> where TC : PrefabConfiguration where TPrefab : PrefabBase
     {
         protected static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
         protected static bool IsInEditMode => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
-        
-        public static Dictionary<string, PrefabStoreItem<TC, TPrefab>> Store;
+
+        private static readonly Dictionary<string, PrefabStoreItem<TC, TPrefab>> Store;
         
         static PrefabServiceBase()
         {
@@ -23,24 +23,24 @@ namespace Scripts.Building.PrefabsBuilding
         }
         
         protected abstract TC GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid, bool spawnPrefabOnBuild);
-        
-        public static void AddToStore(TC configuration, TPrefab prefabScript, GameObject prefab)
+
+        protected static void AddToStore(TC configuration, TPrefab prefabScript, GameObject prefab)
         {
             if (!IsInEditMode) return;
             
             Store.TryAdd(configuration.Guid, new PrefabStoreItem<TC, TPrefab>(configuration, prefabScript, prefab));
         }
 
-        public static void RemoveFromStore(string guid)
+        protected static void RemoveFromStore(string guid)
         {
             if (!IsInEditMode) return;
             
             Store.Remove(guid);
         }
 
-        public static TC GetConfiguration(string guid) => Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.Configuration : null;
+        public GameObject GetGameObject(string guid) => Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.GameObject : null;
         public static IEnumerable<TC> Configurations => Store.Values.Select(configuration => configuration.Configuration);
-        public static IEnumerable<TPrefab> PrefabScripts => Store.Values.Select(prefabScript => prefabScript.PrefabScript);
+        protected static IEnumerable<TPrefab> PrefabScripts => Store.Values.Select(prefabScript => prefabScript.PrefabScript);
         
         protected TC AddConfigurationToMap(TPrefab prefab, string ownerGuid)
         {
@@ -54,5 +54,11 @@ namespace Scripts.Building.PrefabsBuilding
             MapBuilder.AddReplacePrefabConfiguration(newConfiguration);
             return newConfiguration;
         }
+
+        public abstract void ProcessEmbeddedPrefabs(GameObject newPrefab);
+
+        public abstract void RemoveEmbeddedPrefabs(GameObject prefabGo);
+
+        public IEnumerable<TC> GetConfigurations() => Configurations;
     }
 }

@@ -1,26 +1,26 @@
-﻿using System.Collections.Generic;
-using Scripts.Building.PrefabsSpawning;
+﻿using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
-using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
-using Scripts.System;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building.PrefabsBuilding
 {
-    public static class TilePrefabService
+    public class TilePrefabService : PrefabServiceBase<TilePrefabConfiguration, TilePrefab>
     {
-        private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
-        private static bool IsInEditMode => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
+        protected override TilePrefabConfiguration GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid, bool spawnPrefabOnBuild) 
+            => new(prefab as TilePrefab, ownerGuid, spawnPrefabOnBuild);
 
-        public static readonly Dictionary<string, TilePrefab> TilePrefabs;
-
-        static TilePrefabService()
+        public override void ProcessEmbeddedPrefabs(GameObject newPrefab)
         {
-            TilePrefabs = new Dictionary<string, TilePrefab>();
-            EventsManager.OnMapDemolished += () => TilePrefabs.Clear();
+            Logger.LogNotImplemented();
+        }
+
+        public override void RemoveEmbeddedPrefabs(GameObject prefabGo)
+        {
+            Logger.LogNotImplemented();
         }
 
         public static void ProcessConfigurationOnBuild(PrefabConfiguration configuration, PrefabBase prefabScript, GameObject newPrefab)
@@ -29,7 +29,7 @@ namespace Scripts.Building.PrefabsBuilding
             
             newPrefab.GetBody().rotation = configuration.TransformData.Rotation;
 
-            TilePrefabs.TryAdd(configuration.Guid, script);
+            AddToStore(tileConfiguration, script, newPrefab);
 
             // IsWalkable is set in Layout in post-build to prevent race condition with building tiles, so here only on prefab
             script.isWalkable = tileConfiguration.IsWalkable;
@@ -45,26 +45,24 @@ namespace Scripts.Building.PrefabsBuilding
         public static void Remove(PrefabConfiguration configuration, PrefabBase prefabScript)
         {
             if (configuration is not TilePrefabConfiguration || prefabScript is not TilePrefab script) return;
-
-            if (TilePrefabs.ContainsKey(configuration.Guid)) TilePrefabs.Remove(configuration.Guid);
             
             MapBuilder.SetTileForMovement(prefabScript.transform.position, true);
 
-            if (IsInEditMode)
-            {
-                if (prefabScript)
-                {
-                    TileController prefabTile = MapBuilder.GetPhysicalTileByWorldPosition(prefabScript.transform.position)
-                        .GetComponent<TileController>();
-                    if (script.disableFloor) prefabTile.ShowWall(ETileDirection.Floor);
-                    if (script.disableCeiling) prefabTile.ShowWall(ETileDirection.Ceiling);
-                }
-            }
+            if (!IsInEditMode) return;
+            
+            RemoveFromStore(configuration.Guid);
+
+            if (!prefabScript) return;
+            
+            TileController prefabTile = MapBuilder.GetPhysicalTileByWorldPosition(prefabScript.transform.position)
+                .GetComponent<TileController>();
+            if (script.disableFloor) prefabTile.ShowWall(ETileDirection.Floor);
+            if (script.disableCeiling) prefabTile.ShowWall(ETileDirection.Ceiling);
         }
 
         public static void ProcessPostBuild()
         {
-            foreach (TilePrefab tilePrefab in TilePrefabs.Values)
+            foreach (TilePrefab tilePrefab in PrefabScripts)
             {
                 Vector3 worldPosition = tilePrefab.transform.position;
                 

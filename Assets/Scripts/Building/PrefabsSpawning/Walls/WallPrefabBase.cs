@@ -9,8 +9,6 @@ namespace Scripts.Building.PrefabsSpawning.Walls
 {
     public abstract class WallPrefabBase : PrefabBase
     {
-        public GameObject presentedInEditor;
-
         private static MapEditorManager Manager => MapEditorManager.Instance;
         
         private Cursor3D _cursor3D;

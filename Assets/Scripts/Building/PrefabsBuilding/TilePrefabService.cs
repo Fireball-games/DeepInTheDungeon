@@ -1,5 +1,6 @@
 ﻿using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
@@ -12,7 +13,7 @@ namespace Scripts.Building.PrefabsBuilding
         protected override TilePrefabConfiguration GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid, bool spawnPrefabOnBuild) 
             => new(prefab as TilePrefab, ownerGuid, spawnPrefabOnBuild);
 
-        public override void ProcessEmbedded(GameObject newPrefab)
+        protected override void ProcessEmbedded(TilePrefabConfiguration configuration, TilePrefab newPrefab)
         {
             Logger.LogNotImplemented();
         }

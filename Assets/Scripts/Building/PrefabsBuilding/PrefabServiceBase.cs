@@ -26,7 +26,7 @@ namespace Scripts.Building.PrefabsBuilding
         
         protected abstract TC GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid, bool spawnPrefabOnBuild);
 
-        protected static void AddToStore(TC configuration, TPrefab prefabScript, GameObject prefab)
+        private static void AddToStore(TC configuration, TPrefab prefabScript, GameObject prefab)
         {
             if (!IsInEditMode) return;
             
@@ -41,11 +41,11 @@ namespace Scripts.Building.PrefabsBuilding
         }
 
         public GameObject GetGameObject(string guid) => Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.GameObject : null;
-        public TPrefab GetPrefabScript(string guid) => Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.PrefabScript : null;
-        public static IEnumerable<TC> Configurations => Store.Values.Select(configuration => configuration.Configuration);
+        protected TPrefab GetPrefabScript(string guid) => Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.PrefabScript : null;
+        protected static IEnumerable<TC> Configurations => Store.Values.Select(configuration => configuration.Configuration);
         protected static IEnumerable<TPrefab> PrefabScripts => Store.Values.Select(prefabScript => prefabScript.PrefabScript);
-        
-        protected TC AddConfigurationToMap(TPrefab prefab, string ownerGuid)
+
+        private TC AddConfigurationToMap(TPrefab prefab, string ownerGuid)
         {
             if (MapBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, prefab.gameObject.name, out TriggerConfiguration configuration))
             {
@@ -65,10 +65,45 @@ namespace Scripts.Building.PrefabsBuilding
             newPrefab.transform.localRotation = configuration.TransformData.Rotation;
             
             ProcessConfiguration(prefabConfiguration, script, newPrefab);
-            
+
             if (IsInEditMode)
             {
                 AddToStore(prefabConfiguration, script, newPrefab);
+            }
+        }
+        
+        public void ProcessAllEmbedded(GameObject newPrefab)
+        {
+            PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
+
+            if (!prefabScript) return;
+            
+            foreach (TPrefab embeddedPrefab in newPrefab.GetComponentsInChildren<TPrefab>())
+            {
+                TC configuration;
+                // We dont want to process only embedded walls, not owners
+                if (prefabScript.Guid == embeddedPrefab.Guid) continue;
+
+                if (IsInEditMode)
+                {
+                    configuration = AddConfigurationToMap(embeddedPrefab, prefabScript.Guid);
+                    AddToStore(configuration, embeddedPrefab, embeddedPrefab.gameObject);
+                }
+                else
+                {
+                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.Guid, embeddedPrefab.gameObject.name,
+                            out configuration))
+                    {
+                        Helpers.Logger.LogWarning($"Failed to find configuration for {embeddedPrefab.gameObject.name}.", logObject: embeddedPrefab);
+                        continue;
+                    }
+                    
+                    ProcessEmbeddedForPlayMode(configuration, embeddedPrefab);
+                }
+                if (prefabScript.presentedInEditor) prefabScript.presentedInEditor.SetActive(IsInEditMode);
+                embeddedPrefab.Guid = configuration.Guid;
+                
+                ProcessEmbedded(configuration, embeddedPrefab);
             }
         }
 
@@ -86,10 +121,6 @@ namespace Scripts.Building.PrefabsBuilding
 
         public virtual void RemoveAllEmbedded(GameObject prefabGo)
         {
-            PrefabBase prefabScript = prefabGo.GetComponent<PrefabBase>();
-
-            if (!prefabScript) return;
-
             foreach (TPrefab embeddedPrefab in prefabGo.GetComponentsInChildren<TPrefab>())
             {
                 RemoveEmbedded(embeddedPrefab);
@@ -100,10 +131,25 @@ namespace Scripts.Building.PrefabsBuilding
         }
         
         protected abstract void RemoveConfiguration(TC configuration);
-
         protected abstract void ProcessConfiguration(TC configuration, TPrefab prefabScript, GameObject newPrefab);
+        /// <summary>
+        /// This method runs on build non-embedded prefab for every embedded prefab of given type in the script.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="prefabScript"></param>
+        protected abstract void ProcessEmbedded(TC configuration, TPrefab prefabScript);
 
-        public abstract void ProcessEmbedded(GameObject newPrefab);
+        /// <summary>
+        /// Optional method to process embedded prefab when needed to set stuff for play mode directly on the prefab.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="prefabScript"></param>
+        protected virtual void ProcessEmbeddedForPlayMode(TC configuration, TPrefab prefabScript) { }
+
+        /// <summary>
+        /// This method runs on Remove for every embedded prefab of given type on the object.
+        /// </summary>
+        /// <param name="prefabScript"></param>
         protected abstract void RemoveEmbedded(TPrefab prefabScript);
         public IEnumerable<TC> GetConfigurations() => Configurations;
     }

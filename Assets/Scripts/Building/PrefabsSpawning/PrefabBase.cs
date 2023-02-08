@@ -11,6 +11,7 @@ namespace Scripts.Building.PrefabsSpawning
         public string DisplayName => $"{gameObject.name}_{transform.position}";
 
         [SerializeField] private string guid;
+        public GameObject presentedInEditor;
 
         public string Guid
         {

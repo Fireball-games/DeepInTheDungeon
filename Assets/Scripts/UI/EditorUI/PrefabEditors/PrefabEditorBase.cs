@@ -243,7 +243,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (!EditedConfiguration.SpawnPrefabOnBuild) SetPrefabList(false);
 
-            PhysicalPrefab = MapBuilder.GetPrefabByGuid(EditedConfiguration.Guid);
+            PhysicalPrefab = _service.GetGameObject(EditedConfiguration.Guid);
 
             if (PhysicalPrefab)
             {

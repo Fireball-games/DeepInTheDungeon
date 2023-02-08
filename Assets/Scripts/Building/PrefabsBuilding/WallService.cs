@@ -11,9 +11,11 @@ namespace Scripts.Building.PrefabsBuilding
 {
     public class WallService : PrefabServiceBase<WallConfiguration, WallPrefabBase>
     {
-        public static void ActivateWall(Vector3 tileWorldPosition, TileDescription.ETileDirection wallDirection, bool isActive)
+        public static void ActivateWall(Vector3 tileWorldPosition, TileDescription.ETileDirection wallDirection,
+            bool isActive)
         {
-            TileController tile = MapBuilder.GetPhysicalTileByWorldPosition(tileWorldPosition).GetComponent<TileController>();
+            TileController tile = MapBuilder.GetPhysicalTileByWorldPosition(tileWorldPosition)
+                .GetComponent<TileController>();
 
             if (isActive)
                 tile.ShowWall(wallDirection);
@@ -29,7 +31,8 @@ namespace Scripts.Building.PrefabsBuilding
             }
         }
 
-        protected override void ProcessConfiguration(WallConfiguration configuration, WallPrefabBase prefabScript, GameObject newPrefab)
+        protected override void ProcessConfiguration(WallConfiguration configuration, WallPrefabBase prefabScript,
+            GameObject newPrefab)
         {
             Transform physicalPart = newPrefab.GetBody();
 
@@ -52,37 +55,12 @@ namespace Scripts.Building.PrefabsBuilding
                 AddReplaceWaypointPath(configuration.Guid);
             }
         }
-
-        public override void ProcessEmbedded(GameObject newPrefab)
+        
+        protected override void ProcessEmbedded(WallConfiguration configuration, WallPrefabBase prefabScript)
         {
-            PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
-
-            if (!prefabScript) return;
-
-            foreach (WallPrefabBase embeddedWall in newPrefab.GetComponentsInChildren<WallPrefabBase>())
+            if (IsInEditMode && configuration.HasPath())
             {
-                WallConfiguration configuration;
-                // We dont want to process only embedded walls, not owners
-                if (prefabScript.Guid == embeddedWall.Guid) continue;
-
-                if (IsInEditMode)
-                {
-                    configuration = AddConfigurationToMap(embeddedWall, prefabScript.Guid);
-                    AddToStore(configuration, embeddedWall, embeddedWall.gameObject);
-                    if (configuration.HasPath()) AddReplaceWaypointPath(configuration.Guid);
-                }
-                else
-                {
-                    if (!MapBuilder.GetConfigurationByOwnerGuidAndName(prefabScript.Guid, embeddedWall.gameObject.name,
-                            out configuration))
-                    {
-                        Logger.LogWarning("Failed to find configuration for wall", logObject: embeddedWall);
-                        continue;
-                    }
-                }
-
-                if (embeddedWall.presentedInEditor) embeddedWall.presentedInEditor.SetActive(IsInEditMode);
-                embeddedWall.Guid = configuration.Guid;
+                AddReplaceWaypointPath(configuration.Guid);
             }
         }
 
@@ -94,7 +72,8 @@ namespace Scripts.Building.PrefabsBuilding
             }
         }
 
-        protected override WallConfiguration GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid, bool spawnPrefabOnBuild)
+        protected override WallConfiguration GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid,
+            bool spawnPrefabOnBuild)
         {
             return prefab is not WallPrefabBase wallBase
                 ? null

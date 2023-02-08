@@ -243,25 +243,26 @@ namespace Scripts.UI.EditorUI
 
             if (EditedPrefab is IMovementWall movementScript)
             {
-                // IEnumerable<Waypoint> waypoints = movementScript.GetWaypoints();
-                // if (EditedConfiguration.WayPoints.Count < 2 && waypoints?.Any() == true)
-                // {
-                //     EditedConfiguration.WayPoints = waypoints.ToList();
-                // }
-                // else if (EditedConfiguration.WayPoints.Count == 0)
-                // {
-                //     EditedConfiguration.WayPoints.Add(
-                //         new Waypoint(
-                //             EditorMouseService.Instance.LastLeftButtonUpWorldPosition,
-                //             0.3f));
-                // }
+                IEnumerable<Waypoint> waypoints = movementScript.GetWaypoints();
+                
+                if (EditedConfiguration.WayPoints.Count < 2 && waypoints?.Any() == true)
+                {
+                    EditedConfiguration.WayPoints = waypoints.ToList();
+                }
+                else if (EditedConfiguration.WayPoints.Count == 0)
+                {
+                    EditedConfiguration.WayPoints.Add(
+                        new Waypoint(
+                            EditorMouseService.Instance.LastLeftButtonUpWorldPosition,
+                            0.3f));
+                }
 
                 if (EditedConfiguration.SpawnPrefabOnBuild)
                 {
                     _waypointEditor.SetActive(true, EditedConfiguration.WayPoints, OnPathChanged);
                 }
                 
-                HighlightPath(EPathsType.Waypoint, EditedConfiguration.Guid);
+                AddReplaceWaypointPath(EditedConfiguration.Guid, EditedConfiguration.WayPoints, true);
                 HandleCreateOppositePathButton();
             }
         }

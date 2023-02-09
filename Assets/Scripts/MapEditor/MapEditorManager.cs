@@ -100,7 +100,7 @@ namespace Scripts.MapEditor
 
             if (useStartPosition)
             {
-                CurrentFloor = map.StartGridPosition.x;
+                CurrentFloor = map.EditorStartPosition.x;
             }
 
             if (floorsCountChange == ELevel.Upper)
@@ -227,7 +227,7 @@ namespace Scripts.MapEditor
 
         private void OnLayoutBuilt()
         {
-            Vector3 startPosition = GameManager.CurrentMap.StartGridPosition;
+            Vector3 startPosition = GameManager.CurrentMap.EditorStartPosition;
 
             if (!MapIsPresented && !_dontChangeCameraAfterLayoutIsBuild)
             {
@@ -241,8 +241,8 @@ namespace Scripts.MapEditor
 
             MapDescription map = GameManager.CurrentMap;
 
-            playerIcon.SetPositionByGrid(map.StartGridPosition);
-            playerIcon.SetArrowRotation(map.PlayerRotation);
+            playerIcon.SetPositionByGrid(map.EditorStartPosition);
+            playerIcon.SetArrowRotation(map.EditorPlayerStartRotation);
             playerIcon.SetActive(true);
 
             EditorCameraService.Instance.ResetCamera();

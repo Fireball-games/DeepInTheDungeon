@@ -157,7 +157,7 @@ namespace Scripts.Building
             return new MapDescription
             {
                 Layout = layout,
-                StartGridPosition = center,
+                EditorStartPosition = center,
             };
         }
 

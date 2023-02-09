@@ -306,10 +306,10 @@ namespace Scripts.MapEditor.Services
             TileDescription[,,] newLayout = ConvertEditedLayoutToArray();
             newMap.Layout = newLayout;
 
-            newMap.StartGridPosition = new Vector3Int(
-                newMap.StartGridPosition.x + floorAdjustment,
-                newMap.StartGridPosition.y + rowAdjustment,
-                newMap.StartGridPosition.z + columnAdjustment);
+            newMap.EditorStartPosition = new Vector3Int(
+                newMap.EditorStartPosition.x + floorAdjustment,
+                newMap.EditorStartPosition.y + rowAdjustment,
+                newMap.EditorStartPosition.z + columnAdjustment);
 
             GameManager.Instance.SetCurrentMap(newMap);
 

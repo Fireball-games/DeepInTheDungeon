@@ -8,6 +8,7 @@ namespace Scripts.Building
         public string name;
         public Vector3 location;
         public Vector3 playerRotation;
+        public bool movesOnStart;
         public Vector3 startMovement;
 
         public object Clone() => new EntryPoint
@@ -15,6 +16,7 @@ namespace Scripts.Building
             name = name,
             location = location,
             playerRotation = playerRotation,
+            movesOnStart = movesOnStart,
             startMovement = startMovement,
         };
     }

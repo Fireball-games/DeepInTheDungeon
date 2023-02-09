@@ -97,7 +97,7 @@ namespace Scripts.Helpers.Extensions
                 {
                     for (int k = 0; k < source.GetLength(2); k++)
                     {
-                        clonedArray[i, j, k] = (T)source[i, j, k].Clone();
+                        clonedArray[i, j, k] = source[i,j,k] == null ? default : (T)source[i, j, k].Clone();
                     }
                 }
             }

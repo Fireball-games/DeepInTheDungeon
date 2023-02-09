@@ -15,8 +15,8 @@ namespace Scripts.Building
         /// <summary>
         /// Position according to Layout array
         /// </summary>
-        public Vector3Int StartGridPosition;
-        public Quaternion PlayerRotation;
+        public Vector3Int EditorStartPosition;
+        public Quaternion EditorPlayerStartRotation;
         public string SceneName;
         public TileDescription[,,] Layout;
         public List<PrefabConfiguration> PrefabConfigurations;
@@ -24,8 +24,8 @@ namespace Scripts.Building
 
         public MapDescription()
         {
-            StartGridPosition = Vector3Int.zero;
-            PlayerRotation = Quaternion.identity;
+            EditorStartPosition = Vector3Int.zero;
+            EditorPlayerStartRotation = Quaternion.identity;
             SceneName = Scenes.PlayIndoorSceneName;
             PrefabConfigurations = new List<PrefabConfiguration>();
             EntryPoints = new List<EntryPoint>();
@@ -35,8 +35,8 @@ namespace Scripts.Building
 
         public object Clone() => new MapDescription
         {
-            StartGridPosition = StartGridPosition,
-            PlayerRotation = PlayerRotation,
+            EditorStartPosition = EditorStartPosition,
+            EditorPlayerStartRotation = EditorPlayerStartRotation,
             SceneName = SceneName,
             MapName = MapName,
             Layout = GeneralExtensions.Clone(Layout),

@@ -144,7 +144,7 @@ namespace Scripts.System
             player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
             player.transform.parent = null;
-            player.PlayerMovement.SetPositionAndRotation(_currentMap.StartGridPosition.ToVector3(), CurrentMap.PlayerRotation);
+            player.PlayerMovement.SetPositionAndRotation(_currentMap.EditorStartPosition.ToVector3(), CurrentMap.EditorPlayerStartRotation);
             player.PlayerMovement.SetCamera();
             
             _currentCampaign.LastPlayedMap = _currentMap.MapName;

@@ -82,8 +82,34 @@ namespace Scripts.Helpers.Extensions
             return null;
         }
 
+        /// <summary>
+        /// Creates a deep copy of the 3D array.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T[,,] Clone<T>(this T[,,] source) where T : ICloneable
+        {
+            T[,,] clonedArray = new T[source.GetLength(0), source.GetLength(1), source.GetLength(2)];
+            for (int i = 0; i < source.GetLength(0); i++)
+            {
+                for (int j = 0; j < source.GetLength(1); j++)
+                {
+                    for (int k = 0; k < source.GetLength(2); k++)
+                    {
+                        clonedArray[i, j, k] = (T)source[i, j, k].Clone();
+                    }
+                }
+            }
+            
+            return clonedArray;
+        }
+
         public static bool HasIndex<T>(this List<List<List<T>>> source, Vector3Int gridPosition)
             => source.HasIndex(gridPosition.x, gridPosition.y, gridPosition.z);
+        
+        public static List<T> Clone<T>(this IEnumerable<T> source) where T : ICloneable =>
+            source.Select(element => (T) element.Clone()).ToList();
 
         public static bool HasIndex<T>(this List<List<T>> source, int row, int column)
         {

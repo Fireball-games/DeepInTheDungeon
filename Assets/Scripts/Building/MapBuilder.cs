@@ -139,7 +139,6 @@ namespace Scripts.Building
             Campaign defaultCampaign = new()
             {
                 StartMapName = defaultMap.MapName,
-                LastPlayedMap = defaultMap.MapName,
                 Maps = new List<MapDescription> { defaultMap },
             };
             

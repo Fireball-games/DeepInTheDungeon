@@ -57,7 +57,7 @@ namespace Scripts.UI
 
         private void NewCampaignClicked() => Logger.LogNotImplemented();
 
-        private void ContinueCampaignClicked() => GameManager.ContinueLastPlayedMap();
+        private void ContinueCampaignClicked() => GameManager.ContinueFromSave();
 
         private void CustomCampaignClicked() => Logger.LogNotImplemented();
 

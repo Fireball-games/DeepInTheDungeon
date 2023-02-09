@@ -2,7 +2,6 @@
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
-using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.Player;
 using Scripts.ScenesManagement;
@@ -24,7 +23,7 @@ namespace Scripts.System
         public Vector3Int PlayerPosition => Player.transform.position.ToVector3Int();
         public MapBuilder MapBuilder => mapBuilder;
         /// <summary>
-        /// Current campaign is set only in GameManager and is pointing to either LastEditedCampaign or LastPlayedCampaign from PlayerPrefs. 
+        /// Current campaign is set only in GameManager and is pointing to LastEditedCampaign, StartRooms, SelectedCampaign or Loaded campaign. 
         /// </summary>
         public Campaign CurrentCampaign => _currentCampaign;
         public MapDescription CurrentMap => _currentMap;
@@ -34,10 +33,12 @@ namespace Scripts.System
 
         private Campaign _currentCampaign;
         private MapDescription _currentMap;
+        private EntryPoint _currentEntryPoint;
         private bool _movementEnabled;
         private EGameMode _gameMode = EGameMode.Play;
 
         private bool _startLevelAfterBuildFinishes;
+        private bool _isPlayingFromSavedGame;
 
         public enum EGameMode
         {
@@ -57,6 +58,13 @@ namespace Scripts.System
             }
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            _currentEntryPoint = new EntryPoint();
+        }
+
         private void OnDisable()
         {
             EventsManager.OnSceneStartedLoading -= OnSceneStartedLoading;
@@ -68,11 +76,14 @@ namespace Scripts.System
             }
         }
         
-        public void ContinueLastPlayedMap()
+        public void ContinueFromSave()
         {
-            // TODO: For now, just starts last played map in last played campaign, once applicable, last position in last played campaign will be loaded. 
+            // TODO: Gets data from saved position. 
             _currentCampaign = FileOperationsHelper.LoadLastPlayedCampaign();
             _currentMap = _currentCampaign.GetStarterMap();
+            // TODO: Once save positions work, get data from there
+            _currentEntryPoint.playerLocation = _currentMap.EditorStartPosition;
+            _currentEntryPoint.playerRotation = _currentMap.EditorPlayerStartRotation;
             
             if (_currentCampaign == null || _currentMap == null)
             {
@@ -93,6 +104,9 @@ namespace Scripts.System
                 Logger.LogError("Could not load last edited map.");
                 return;
             }
+            
+            _currentEntryPoint.playerLocation = _currentMap.EditorStartPosition;
+            _currentEntryPoint.playerRotation = _currentMap.EditorPlayerStartRotation;
             
             OnStartGameRequested();
         }
@@ -144,16 +158,9 @@ namespace Scripts.System
             player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
             player.transform.parent = null;
-            player.PlayerMovement.SetPositionAndRotation(_currentMap.EditorStartPosition.ToVector3(), CurrentMap.EditorPlayerStartRotation);
+            player.PlayerMovement.SetPositionAndRotation(_currentEntryPoint.playerLocation, _currentEntryPoint.playerRotation);
             player.PlayerMovement.SetCamera();
-            
-            _currentCampaign.LastPlayedMap = _currentMap.MapName;
-            
-            if (!IsPlayingFromEditor)
-            {
-                FileOperationsHelper.SaveCampaign(_currentCampaign);
-            }
-            
+
             _movementEnabled = true;
             EventsManager.TriggerOnLevelStarted();
         }

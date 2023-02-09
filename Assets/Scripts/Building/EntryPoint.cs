@@ -6,18 +6,16 @@ namespace Scripts.Building
     public class EntryPoint : ICloneable
     {
         public string name;
-        public Vector3 location;
-        public Vector3 playerRotation;
-        public bool movesOnStart;
-        public Vector3 startMovement;
+        public Vector3 playerLocation;
+        public Quaternion playerRotation;
+        public bool isMovingForwardOnStart;
 
         public object Clone() => new EntryPoint
         {
             name = name,
-            location = location,
+            playerLocation = playerLocation,
             playerRotation = playerRotation,
-            movesOnStart = movesOnStart,
-            startMovement = startMovement,
+            isMovingForwardOnStart = isMovingForwardOnStart,
         };
     }
 }

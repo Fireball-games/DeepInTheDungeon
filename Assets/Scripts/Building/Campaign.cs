@@ -9,7 +9,6 @@ namespace Scripts.Building
     {
         public string CampaignName;
         public string StartMapName;
-        public string LastPlayedMap;
         public List<MapDescription> Maps;
 
         public Campaign()
@@ -22,16 +21,11 @@ namespace Scripts.Building
 
         public MapDescription GetStarterMap()
         {
-            bool lastPlayedMapObtainable = !string.IsNullOrEmpty(LastPlayedMap) || !string.IsNullOrEmpty(StartMapName);
-
-            if (lastPlayedMapObtainable)
-            {
-                return !string.IsNullOrEmpty(LastPlayedMap)
-                    ? Maps.FirstOrDefault(map => map.MapName == LastPlayedMap)
-                    : Maps.FirstOrDefault(map => map.MapName == StartMapName);
-            }
-
-            return Maps.Count > 0 ? Maps[0] : null;
+            MapDescription map = Maps.FirstOrDefault(m => m.MapName == StartMapName);
+            if (map != null) return map;
+            
+            Logger.LogWarning($"Start map not set or not found in campaign: {CampaignName}");
+            return Maps[0];
         }
 
         /// <summary>

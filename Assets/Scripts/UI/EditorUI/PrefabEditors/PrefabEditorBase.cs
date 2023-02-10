@@ -28,6 +28,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         where TPrefab : PrefabBase
         where TService : IPrefabService<TC>, new()
     {
+        [Tooltip("Means that this editor handles just one kind of prefab of that type. Like EntryPoints, for example.")]
+        [SerializeField] private bool isSingleInstanceEditor;
+        
         protected Transform Content;
 
         private GameObject _placeholder;
@@ -112,7 +115,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetButtons();
 
-            IEnumerable<TC> availableConfigurations = _service.GetConfigurations();//GetAvailableConfigurations();
+            IEnumerable<TC> availableConfigurations = _service.GetConfigurations();
 
             SetExistingList(true, availableConfigurations);
 
@@ -148,7 +151,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetTitle(configuration.PrefabName);
 
             SetExistingList(false);
-            SetPrefabList(EditedConfiguration.SpawnPrefabOnBuild, _availablePrefabs!);
+            
+            if (!isSingleInstanceEditor)
+            {
+                SetPrefabList(EditedConfiguration.SpawnPrefabOnBuild, _availablePrefabs!);
+            }
 
             PhysicalPrefab = _service.GetGameObject(EditedConfiguration.Guid);
             
@@ -201,7 +208,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             VisualizeOtherComponents();
             SetExistingList(false);
-            SetPrefabList(true, _availablePrefabs);
+            
+            if (!isSingleInstanceEditor)
+            {
+                SetPrefabList(true, _availablePrefabs);
+            }
         }
 
         /// <summary>
@@ -241,7 +252,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle.SetActive(true);
             _prefabTitle.SetTitle(EditedConfiguration.PrefabName);
 
-            if (!EditedConfiguration.SpawnPrefabOnBuild) SetPrefabList(false);
+            if (!EditedConfiguration.SpawnPrefabOnBuild) 
+                SetPrefabList(false);
 
             PhysicalPrefab = _service.GetGameObject(EditedConfiguration.Guid);
 
@@ -402,12 +414,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _mainWindow.SetActive(true);
             SetStatusText();
 
-            _closeButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Close);
-            _cancelButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Cancel);
-
-            _saveButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Save);
-
-            _deleteButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.Delete);
+            _closeButton.SetText(t.Get(Keys.Close));
+            _cancelButton.SetText(t.Get(Keys.Cancel));
+            _saveButton.SetText(t.Get(Keys.Save));
+            _deleteButton.SetText(t.Get(Keys.Delete));
 
             SetButtons();
 

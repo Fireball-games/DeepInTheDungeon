@@ -1,0 +1,2983 @@
+{
+	"Deep In The Dungeon" : {
+		"__type" : "Scripts.Building.Campaign,Assembly-CSharp",
+		"value" : {
+			"CampaignName" : "Deep In The Dungeon",
+			"StartMapName" : null,
+			"LastPlayedMap" : "Level2",
+			"Maps" : [
+				{
+					"MapName": "Level1",
+					"EditorStartPosition": {
+						"x": 2,
+						"y": 5,
+						"z": 5
+					},
+					"EditorPlayerStartRotation": {
+						"x": 0,
+						"y": 0,
+						"z": 0,
+						"w": 1
+					},
+					"SceneName": "PlayIndoor",
+					"Layout": [
+						[
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							]
+						],
+						[
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							]
+						],
+						[
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							]
+						],
+						[
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							]
+						],
+						[
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							]
+						]
+					],
+					"PrefabConfigurations": [
+
+					]
+				},
+				{
+					"MapName": "Level2",
+					"EditorStartPosition": {
+						"x": 2,
+						"y": 5,
+						"z": 5
+					},
+					"EditorPlayerStartRotation": {
+						"x": 0,
+						"y": 0,
+						"z": 0,
+						"w": 1
+					},
+					"SceneName": "PlayIndoor",
+					"Layout": [
+						[
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							]
+						],
+						[
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": false
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							]
+						],
+						[
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": false
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": false
+								},
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": false
+								},
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							]
+						],
+						[
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": true
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								{
+									"TileWalls": {
+										"Floor": {
+											"MeshInfo": null
+										},
+										"Ceiling": {
+											"MeshInfo": null
+										},
+										"North": {
+											"MeshInfo": null
+										},
+										"East": {
+											"MeshInfo": null
+										},
+										"South": {
+											"MeshInfo": null
+										},
+										"West": {
+											"MeshInfo": null
+										}
+									},
+									"IsForMovement": false
+								},
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							]
+						],
+						[
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							],
+							[
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null,
+								null
+							]
+						]
+					],
+					"PrefabConfigurations": [
+						{
+							"__type": "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable": false,
+							"PrefabType": 8,
+							"PrefabName": "FlameBlazier",
+							"TransformData": {
+								"Position": {
+									"x": 4,
+									"y": -1,
+									"z": 3
+								},
+								"Rotation": {
+									"x": 0,
+									"y": 0,
+									"z": 0,
+									"w": 1
+								}
+							},
+							"Guid": "338fd9cf-c4e1-4466-98d3-68b4fef69c8b",
+							"SpawnPrefabOnBuild": true,
+							"OwnerGuid": null
+						},
+						{
+							"__type": "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable": false,
+							"PrefabType": 8,
+							"PrefabName": "FlameBlazier",
+							"TransformData": {
+								"Position": {
+									"x": 5,
+									"y": -2,
+									"z": 3
+								},
+								"Rotation": {
+									"x": 0,
+									"y": 0,
+									"z": 0,
+									"w": 1
+								}
+							},
+							"Guid": "f0d091ca-4a21-4f12-b6e2-e05a9225185d",
+							"SpawnPrefabOnBuild": true,
+							"OwnerGuid": null
+						},
+						{
+							"__type": "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable": false,
+							"PrefabType": 8,
+							"PrefabName": "FlameBlazier",
+							"TransformData": {
+								"Position": {
+									"x": 9,
+									"y": -3,
+									"z": 5
+								},
+								"Rotation": {
+									"x": 0,
+									"y": 0,
+									"z": 0,
+									"w": 1
+								}
+							},
+							"Guid": "417824bc-85e3-4add-b64c-8a7580c74250",
+							"SpawnPrefabOnBuild": true,
+							"OwnerGuid": null
+						},
+						{
+							"__type": "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable": false,
+							"PrefabType": 8,
+							"PrefabName": "FlameBlazier",
+							"TransformData": {
+								"Position": {
+									"x": 10,
+									"y": -2,
+									"z": 13
+								},
+								"Rotation": {
+									"x": 0,
+									"y": 0,
+									"z": 0,
+									"w": 1
+								}
+							},
+							"Guid": "03aea6a3-b1ab-4139-8efe-58ac3f891dfc",
+							"SpawnPrefabOnBuild": true,
+							"OwnerGuid": null
+						},
+						{
+							"__type": "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable": false,
+							"PrefabType": 8,
+							"PrefabName": "FlameBlazier",
+							"TransformData": {
+								"Position": {
+									"x": 5,
+									"y": -2,
+									"z": 14
+								},
+								"Rotation": {
+									"x": 0,
+									"y": 0,
+									"z": 0,
+									"w": 1
+								}
+							},
+							"Guid": "6755d891-cc02-4b34-a739-e6e2b6cceac0",
+							"SpawnPrefabOnBuild": true,
+							"OwnerGuid": null
+						}
+					]
+				}
+			]
+		}
+	}
+}

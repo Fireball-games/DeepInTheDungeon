@@ -15,10 +15,11 @@ namespace Scripts.UI.EditorUI
         private ImageButton _buildModeButton;
         private BuildModeExpandedOptions _buildModeOptions;
         private ImageButton _selectModeButton;
+        private ExtendedOptionsBase _selectModeOptions;
         private ImageButton _wallModeButton;
         private ImageButton _prefabTileModeButton;
         private ImageButton _triggerModeButton;
-        private TriggerModeExpandedOptions _triggerModeOptions;
+        private ExtendedOptionsBase _triggerModeOptions;
 
         private static MapEditorManager Manager => MapEditorManager.Instance;
         private Dictionary<ImageButton, EWorkMode[]> _workModesMap;
@@ -29,15 +30,16 @@ namespace Scripts.UI.EditorUI
             _buildModeButton = content.Find("BuildModeButton").GetComponent<ImageButton>();
             _buildModeOptions = _buildModeButton.transform.Find("BuildModeExpandedOptions").GetComponent<BuildModeExpandedOptions>();
             _selectModeButton = content.Find("SelectModeButton").GetComponent<ImageButton>();
+            _selectModeOptions = _selectModeButton.transform.Find("SelectModeExpandedOptions").GetComponent<ExtendedOptionsBase>();
             _wallModeButton = content.Find("WallModeButton").GetComponent<ImageButton>();
             _prefabTileModeButton = content.Find("PrefabTileModeButton").GetComponent<ImageButton>();
             _triggerModeButton = content.Find("TriggerModeButton").GetComponent<ImageButton>();
-            _triggerModeOptions = _triggerModeButton.transform.Find("TriggerModeExpandedOptions").GetComponent<TriggerModeExpandedOptions>();
+            _triggerModeOptions = _triggerModeButton.transform.Find("TriggerModeExpandedOptions").GetComponent<ExtendedOptionsBase>();
             
             _workModesMap = new()
             {
                 {_buildModeButton, new[] { EWorkMode.Build }},
-                {_selectModeButton, new[] { EWorkMode.Select }},
+                {_selectModeButton, new[] { EWorkMode.SetWalls, EWorkMode.EditEntryPoints }},
                 {_wallModeButton, new[] { EWorkMode.Walls }},
                 {_prefabTileModeButton, new[] { EWorkMode.PrefabTiles}},
                 {_triggerModeButton, new[] { EWorkMode.Triggers, EWorkMode.TriggerReceivers}},
@@ -96,10 +98,17 @@ namespace Scripts.UI.EditorUI
                 {
                     record.Key.SetSelected(true);
 
-                    if (newWorkMode is EWorkMode.Triggers or EWorkMode.TriggerReceivers)
+                    // if (newWorkMode is EWorkMode.Triggers or EWorkMode.TriggerReceivers)
+                    if (_workModesMap[_triggerModeButton].Contains(newWorkMode))
                     {
                         _triggerModeOptions.SetActive(true);
                         _triggerModeOptions.SetSelected(newWorkMode);
+                    }
+                    
+                    if (_workModesMap[_selectModeButton].Contains(newWorkMode))
+                    {
+                        _selectModeOptions.SetActive(true);
+                        _selectModeOptions.SetSelected(newWorkMode);
                     }
                     
                     continue;

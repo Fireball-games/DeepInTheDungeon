@@ -5,15 +5,19 @@ using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
+using UnityEngine;
 using static Scripts.MapEditor.Enums;
 
 namespace Scripts.UI.EditorUI
 {
-    public abstract class ExtendedOptionsBase : UIElementBase
+    public class ExtendedOptionsBase : UIElementBase
     {
-        protected Dictionary<EWorkMode, ImageButton> buttonsMap;
+        [SerializeField] private EWorkMode DefaultWorkMode;
+        [SerializeField] private List<ButtonSetup> buttons;
         public EWorkMode LastSelectedMode { get; set; }
-        protected EWorkMode DefaultWorkMode;
+
+        
+        private Dictionary<EWorkMode, ImageButton> buttonsMap;
         
         /// <summary>
         /// Example of awake Method:
@@ -30,7 +34,8 @@ namespace Scripts.UI.EditorUI
         /// </summary>
         protected virtual void Awake()
         {
-            LastSelectedMode = EWorkMode.Triggers;
+            buttons.ForEach(button => AddButtonToMap(button.button, button.workMode));
+            LastSelectedMode = DefaultWorkMode;
         }
 
         private void OnEnable()
@@ -47,9 +52,8 @@ namespace Scripts.UI.EditorUI
             EditorEvents.OnPrefabEdited -= OnPrefabEdited;
         }
 
-        protected void AddButtonToMap(ref ImageButton button, string buttonName, EWorkMode workMode)
+        protected void AddButtonToMap(ImageButton button, EWorkMode workMode)
         {
-            button = body.transform.Find(GetObjectNameFromVariableName(buttonName)).GetComponent<ImageButton>();
             buttonsMap ??= new Dictionary<EWorkMode, ImageButton>();
             buttonsMap.Add(workMode, button);
         }
@@ -90,6 +94,13 @@ namespace Scripts.UI.EditorUI
             string modifiedString = input.Substring(1);
             modifiedString = char.ToUpper(modifiedString[0]) + modifiedString.Substring(1);
             return modifiedString;
+        }
+        
+        [Serializable]
+        public class ButtonSetup
+        {
+            public ImageButton button;
+            public EWorkMode workMode;
         }
     }
 }

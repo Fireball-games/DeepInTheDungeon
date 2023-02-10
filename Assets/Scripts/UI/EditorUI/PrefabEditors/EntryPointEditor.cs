@@ -4,6 +4,7 @@ using System.Linq;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.Helpers;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
@@ -21,17 +22,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void VisualizeOtherComponents()
         {
-            throw new NotImplementedException();
+            Logger.LogNotImplemented();
         }
 
         protected override void InitializeOtherComponents()
         {
-            throw new NotImplementedException();
+            Logger.LogNotImplemented();
         }
 
         protected override void RemoveOtherComponents()
         {
-            throw new NotImplementedException();
+            Logger.LogNotImplemented();
         }
     }
 }

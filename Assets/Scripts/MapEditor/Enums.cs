@@ -14,6 +14,8 @@
             Enemies = 7,
             Triggers = 8,
             TriggerReceivers = 9,
+            SetWalls = 10,
+            EditEntryPoints = 11,
         }
 
         public enum ELevel

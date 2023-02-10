@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
@@ -33,6 +34,14 @@ namespace Scripts.MapEditor.Services
 
         private WallPrefabBase _lastEnteredWall;
         private GameObject _lastPrefabOnPosition;
+
+        private List<EWorkMode> _workModesForSimpleNullTileDetection = new()
+        {
+            EWorkMode.PrefabTiles,
+            EWorkMode.EditEntryPoints,
+            EWorkMode.SetWalls,
+            EWorkMode.Walls,
+        };
 
         protected override void Awake()
         {
@@ -250,25 +259,31 @@ namespace Scripts.MapEditor.Services
             bool isNullTile = layout.ByGridV3Int(newGridPosition) == null;
 
             ResolveBuildModePosition(isNullTile, newGridPosition, layout);
-            ResolveWallModePosition(isNullTile);
-            ResolvePrefabTileModePosition(isNullTile);
+            ResolveCommonSimpleModePosition(isNullTile);
 
             SetCursorByType(GridPositionType);
         }
 
-        private void ResolveWallModePosition(bool isNullTile)
+        private void ResolveCommonSimpleModePosition(bool isNullTile)
         {
-            if (Manager.WorkMode != EWorkMode.Walls) return;
+            if (!_workModesForSimpleNullTileDetection.Contains(Manager.WorkMode)) return;
 
             GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
         }
-
-        private void ResolvePrefabTileModePosition(bool isNullTile)
-        {
-            if (Manager.WorkMode != EWorkMode.PrefabTiles) return;
-
-            GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
-        }
+        
+        // private void ResolveWallModePosition(bool isNullTile)
+        // {
+        //     if (Manager.WorkMode != EWorkMode.Walls) return;
+        //
+        //     GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
+        // }
+        //
+        // private void ResolvePrefabTileModePosition(bool isNullTile)
+        // {
+        //     if (Manager.WorkMode != EWorkMode.PrefabTiles) return;
+        //
+        //     GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
+        // }
 
         internal void SetCursorToCameraMovement() => SetCursor(ECursorType.Move);
 

@@ -17,6 +17,7 @@ namespace Scripts.Helpers
         public const string ItemsDirectoryName = "Items";
         public const string PrefabsDirectoryName = "TilePrefabs";
         public const string TriggersDirectoryName = "Triggers";
+        public const string ServicesDirectoryName = "ServicePrefabs";
         
         public static string CampaignDirectoryPath => Path.Combine(PersistentPath, CampaignDirectoryName);
         private const string CampaignFileExtension = ".bytes";
@@ -115,6 +116,7 @@ namespace Scripts.Helpers
             EPrefabType.Prop => PropsDirectoryName,
             EPrefabType.Item => ItemsDirectoryName,
             EPrefabType.Trigger => TriggersDirectoryName,
+            EPrefabType.Service => ServicesDirectoryName,
             _ => throw new ArgumentOutOfRangeException(nameof(prefabType), prefabType, null)
         };
 

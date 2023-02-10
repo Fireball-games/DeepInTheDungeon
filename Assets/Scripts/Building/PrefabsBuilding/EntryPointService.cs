@@ -7,11 +7,6 @@ namespace Scripts.Building.PrefabsBuilding
 {
     public class EntryPointService : PrefabServiceBase<EntryPointConfiguration, EntryPointPrefab>
     {
-        public EntryPointService()
-        {
-            IsEditorOnly = true;    
-        }
-        
         protected override EntryPointConfiguration GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid,
             bool spawnPrefabOnBuild) => new((EntryPointPrefab) prefab, ownerGuid, spawnPrefabOnBuild);
 
@@ -23,6 +18,8 @@ namespace Scripts.Building.PrefabsBuilding
         protected override void ProcessConfiguration(EntryPointConfiguration configuration,
             EntryPointPrefab prefabScript, GameObject newPrefab)
         {
+            if (!IsInEditMode) return;
+            
             Transform body = newPrefab.transform.Find("Body");
             body.localRotation = configuration.LookDirection;
         }

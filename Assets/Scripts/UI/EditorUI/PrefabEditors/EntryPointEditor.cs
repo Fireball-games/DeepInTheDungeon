@@ -1,23 +1,23 @@
-﻿using Scripts.Building.PrefabsBuilding;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.MapEditor.Services;
-using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
     public class EntryPointEditor : PrefabEditorBase<EntryPointConfiguration, EntryPointPrefab, EntryPointService>
     {
-        protected override EntryPointConfiguration GetNewConfiguration(string prefabName)
-        {
-            throw new NotImplementedException();
-        }
+        
+        
+        protected override IEnumerable<EntryPointConfiguration> GetExistingConfigurations() 
+            => MapBuilder.MapDescription.EntryPoints.Select(ep => ep.ToConfiguration());
 
-        protected override EntryPointConfiguration CloneConfiguration(EntryPointConfiguration sourceConfiguration)
-        {
-            throw new NotImplementedException();
-        }
+        protected override EntryPointConfiguration GetNewConfiguration(string prefabName) => new();
+
+        protected override EntryPointConfiguration CloneConfiguration(EntryPointConfiguration sourceConfiguration) =>
+            new(sourceConfiguration);
 
         protected override void VisualizeOtherComponents()
         {

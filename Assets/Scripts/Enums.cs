@@ -15,7 +15,10 @@
             PrefabTile = 8,
             Trigger = 9,
             TriggerReceiver = 10,
-            StartPoint = 11,
+            /// <summary>
+            /// Service prefabs, not really fitting to separate category, like EntryPoint, for example.
+            /// </summary>
+            Service = 11,
         }
         
         public enum ETriggerType

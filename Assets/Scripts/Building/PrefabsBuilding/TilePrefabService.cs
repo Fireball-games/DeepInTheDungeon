@@ -1,6 +1,5 @@
 ﻿using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using UnityEngine;
 using static Scripts.Building.Tile.TileDescription;
@@ -29,8 +28,7 @@ namespace Scripts.Building.PrefabsBuilding
             script.isWalkable = configuration.IsWalkable;
             
             // To update map when spawning new tile prefab.
-            // if (!IsInEditMode) return;
-            
+
             if (script.disableFloor) WallService.ActivateWall(script.transform.position, ETileDirection.Floor, false);
             if (script.disableCeiling) WallService.ActivateWall(script.transform.position, ETileDirection.Ceiling, false);
         }

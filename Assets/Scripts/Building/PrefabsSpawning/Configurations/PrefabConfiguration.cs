@@ -12,7 +12,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         public PositionRotation TransformData;
         public string Guid;
         public bool SpawnPrefabOnBuild = true;
-        public string DisplayName => $"{PrefabName} {TransformData.Position}"; 
+        public virtual string DisplayName => $"{PrefabName} {TransformData.Position}"; 
         
         /// <summary>
         /// Guid of the owner for embedded prefabs like Triggers

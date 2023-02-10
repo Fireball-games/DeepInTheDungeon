@@ -7,6 +7,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         public bool IsMovingForwardOnStart;
         public string EntryPointName;
         public Quaternion LookDirection;
+        public override string DisplayName { get; }
 
         public EntryPointConfiguration()
         {
@@ -17,13 +18,12 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             IsMovingForwardOnStart = configuration.IsMovingForwardOnStart;
             EntryPointName = configuration.EntryPointName;
             LookDirection = configuration.LookDirection;
+            DisplayName = configuration.EntryPointName;
         }
         
-        public EntryPointConfiguration(EntryPointPrefab prefabScript, string ownerGuid, bool spawnPrefabOnBuild) : base(prefabScript, ownerGuid, spawnPrefabOnBuild)
+        public EntryPointConfiguration(EntryPointPrefab prefabScript, string ownerGuid, bool spawnPrefabOnBuild)
         {
-            IsMovingForwardOnStart = prefabScript.isMovingForwardOnStart;
-            EntryPointName = prefabScript.entryPointName;
-            LookDirection = prefabScript.lookDirection;
+            // Not valid really. EntryPoints are editor only and not physical prefabs in Play mode. 
         }
     }
 }

@@ -1,4 +1,7 @@
 ﻿using System;
+using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.System;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Scripts.Building
@@ -16,6 +19,14 @@ namespace Scripts.Building
             playerLocation = playerLocation,
             playerRotation = playerRotation,
             isMovingForwardOnStart = isMovingForwardOnStart,
+        };
+        
+        public EntryPointConfiguration ToConfiguration() => new()
+        {
+            EntryPointName = name,
+            TransformData = new PositionRotation(playerLocation, quaternion.identity),
+            LookDirection = playerRotation,
+            IsMovingForwardOnStart = isMovingForwardOnStart,
         };
     }
 }

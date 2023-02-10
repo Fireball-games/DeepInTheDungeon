@@ -115,12 +115,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetButtons();
 
-            IEnumerable<TC> availableConfigurations = _service.GetConfigurations();
+            IEnumerable<TC> existingConfigurations = GetExistingConfigurations();
 
-            SetExistingList(true, availableConfigurations);
+            SetExistingList(true, existingConfigurations);
 
             SetActive(true);
         }
+        
+        protected virtual IEnumerable<TC> GetExistingConfigurations() => _service.GetConfigurations();
 
         public virtual void Open(TC configuration)
         {

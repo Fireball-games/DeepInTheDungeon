@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace Scripts.UI.Components
 {
-    public class RotationWidget : UIElementBase
+    public class RotationWidget : ConfigurableElement
     {
         private TMP_Text _label;
         private ImageButton _leftRotateButton;
@@ -29,6 +29,21 @@ namespace Scripts.UI.Components
             _leftRotateButton.OnClick.AddListener(onRotateLeft);
             _rightRotateButton.OnClick.RemoveAllListeners();
             _rightRotateButton.OnClick.AddListener(onRotateRight);
+        }
+
+        public override void SetValue(object value)
+        {
+            // nothing needs to happen
+        }
+
+        public override void SetLabel(object text)
+        {
+            if (text is string label) _label.text = label;
+        }
+
+        public override void SetOnValueChanged(UnityAction<object> onValueChanged)
+        {
+            
         }
     }
 }

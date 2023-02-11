@@ -1,11 +1,12 @@
 using System;
 using Scripts.System.MonoBases;
 using TMPro;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Scripts.UI.Components
 {
-    public class FramedCheckBox : UIElementBase
+    public class FramedCheckBox : ConfigurableElement
     {
         public event Action<bool> OnValueChanged; 
 
@@ -38,7 +39,10 @@ namespace Scripts.UI.Components
             SetToggle(isOn);
         }
         
-        public void SetLabel(string text) => _label.text = text ?? "";
+        public void SetLabel(string text)
+        {
+            _label.text = text ?? "";
+        }
 
         public void SetToggle(bool isOn)
         {
@@ -50,6 +54,24 @@ namespace Scripts.UI.Components
         private void OnValueChanged_internal(bool value)
         {
             OnValueChanged?.Invoke(value);
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is bool isOn)
+                SetToggle(isOn);
+        }
+
+        public override void SetLabel(object text)
+        {
+            if (text is string label)
+                SetLabel(label);
+        }
+
+        public override void SetOnValueChanged(UnityAction<object> onValueChanged)
+        {
+            if (onValueChanged == null) return;
+            OnValueChanged += value => onValueChanged.Invoke(value);
         }
     }
 }

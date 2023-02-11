@@ -27,14 +27,14 @@ namespace Scripts.UI.EditorUI
 
         private void OnEnable()
         {
-            buttonsMap.Values.ForEach(b => b.OnClickWithSender += OnClick);
+            buttonsMap?.Values.ForEach(b => b.OnClickWithSender += OnClick);
             EditorEvents.OnWorkModeChanged += SetSelected;
             EditorEvents.OnPrefabEdited += OnPrefabEdited;
         }
         
         private void OnDisable()
         {
-            buttonsMap.Values.ForEach(b => b.OnClickWithSender -= OnClick);
+            buttonsMap?.Values.ForEach(b => b.OnClickWithSender -= OnClick);
             EditorEvents.OnWorkModeChanged -= SetSelected;
             EditorEvents.OnPrefabEdited -= OnPrefabEdited;
         }

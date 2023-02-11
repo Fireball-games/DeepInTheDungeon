@@ -6,15 +6,19 @@ using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Localization;
 using Scripts.System;
+using Scripts.UI.Components;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
     public class EntryPointEditor : PrefabEditorBase<EntryPointConfiguration, EntryPointPrefab, EntryPointService>
     {
-        private readonly Vector3 _defaultRotation = new(0, -90, 0);
+        [ConfigurableProperty(nameof(EntryPointConfiguration.IsMovingForwardOnStart), Keys.MoveOnEnter , nameof(OnIsMovingForwardOnStartChanged))]
+        private FramedCheckBox _isMovingForwardOnStartCheckBox;
+        
+        [ConfigurableProperty(nameof(EntryPointConfiguration.EntryPointName), Keys.EnterName, nameof(OnEntryPointNameChanged))]
+        private InputField _nameInputField;
         
         protected override IEnumerable<EntryPointConfiguration> GetExistingConfigurations() 
             => MapBuilder.MapDescription.EntryPoints.Select(ep => ep.ToConfiguration());
@@ -35,19 +39,24 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected override EntryPointConfiguration CloneConfiguration(EntryPointConfiguration sourceConfiguration) =>
             new(sourceConfiguration);
 
-        protected override void VisualizeOtherComponents()
-        {
-            Logger.LogNotImplemented();
-        }
-
         protected override void InitializeOtherComponents()
         {
-            Logger.LogNotImplemented();
+            // Delete once generic editor is implemented.
         }
 
         protected override void RemoveOtherComponents()
         {
-            Logger.LogNotImplemented();
+            // Nothing to do.
+        }
+        
+        private void OnIsMovingForwardOnStartChanged(bool isMovingForwardOnStart)
+        {
+            Logger.Log($"Eureka! Received value is {isMovingForwardOnStart}");
+        }
+        
+        private void OnEntryPointNameChanged(string entryPointName)
+        {
+            Logger.Log($"Eureka! Received value is {entryPointName}");
         }
     }
 }

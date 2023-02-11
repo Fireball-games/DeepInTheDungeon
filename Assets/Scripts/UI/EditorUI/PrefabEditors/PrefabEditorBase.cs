@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using NaughtyAttributes;
 using Scripts.Building;
 using Scripts.Building.PrefabsBuilding;
@@ -18,9 +20,12 @@ using Scripts.UI.EditorUI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
+using InputField = Scripts.UI.Components.InputField;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
@@ -68,6 +73,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private TC _originalConfiguration;
         private HashSet<TPrefab> _availablePrefabs;
         private bool _isEditingExistingPrefab;
+        
+        // Configurables prefabs
+        private FramedCheckBox _framedCheckBoxPrefab;
 
         protected bool CanOpen => !IsCurrentConfigurationChanged;
         protected bool IsPrefabFinderActive => _existingList.IsActive;
@@ -84,6 +92,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _deleteButton.onClick.AddListener(Delete);
             _cancelButton.onClick.AddListener(RemoveChanges);
             _prefabsFinderButton.OnClick.AddListener(Open);
+            
+            ManageConfigurableComponents();
         }
 
         private void OnEnable()
@@ -99,7 +109,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected abstract TC GetNewConfiguration(string prefabName);
         protected abstract TC CloneConfiguration(TC sourceConfiguration);
-        protected abstract void VisualizeOtherComponents();
         protected abstract void InitializeOtherComponents();
 
         /// <summary>
@@ -283,6 +292,25 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _placeholder.SetActive(false);
 
             VisualizeOtherComponents();
+        }
+
+        protected virtual void VisualizeOtherComponents()
+        {
+            _otherComponents.Keys.ForEach(c =>
+            {
+                ConfigurablePropertyAttribute attribute = _otherComponents[c];
+                if (EditedConfiguration == null || !EditedConfiguration.SpawnPrefabOnBuild && attribute.IsAvailableForEmbedded)
+                {
+                    c.SetCollapsed(true);
+                    return;
+                }
+                
+                if (EditedConfiguration.SpawnPrefabOnBuild && attribute.IsAvailableForEmbedded)
+                {
+                    c.SetActive(true);
+                    c.SetValue(GetFieldValue(attribute.ConfigurationFieldName));
+                }
+            });
         }
 
         protected void SetEdited(bool isEdited = true)
@@ -527,6 +555,103 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _deleteButton.SetTextColor(Colors.Negative);
             _closeButton = buttons.Find("CloseButton").GetComponent<Button>();
         }
+
+        private readonly Dictionary<ConfigurableElement, ConfigurablePropertyAttribute> _otherComponents = new();
+        private void ManageConfigurableComponents()
+        {
+            PrefabStore.LoadComponents();
+            // IEnumerable<ConfigurablePropertyAttribute> configurables = 
+            //     AttributeGatherer.GetAllAttributes<ConfigurablePropertyAttribute>(GetType(), BindingFlags.Instance | BindingFlags.NonPublic);
+            
+            InitializeConfigurableComponents(BindingFlags.Instance | BindingFlags.NonPublic);
+        }
+
+        private void InitializeConfigurableComponents(BindingFlags flags)
+        {
+            IEnumerable<ConfigurablePropertyAttribute> attributes = Enumerable.Empty<ConfigurablePropertyAttribute>();
+            FieldInfo[] fields = GetType().GetFields(flags);
+            
+            foreach (var field in fields)
+            {
+                ConfigurablePropertyAttribute attribute = null;
+                if (Attribute.IsDefined(field, typeof(ConfigurablePropertyAttribute)))
+                {
+                    attribute = field.GetCustomAttribute<ConfigurablePropertyAttribute>();
+                }
+
+                if (attribute is null) continue;
+
+                Type componentType = field.FieldType;
+
+                SetConfigurableComponent(field, attribute, componentType);
+            }
+                // SetCheckboxConfigurableComponent(field, attribute);
+                // SetInputConfigurableComponent(field, attribute);
+        }
+
+        /// <summary>
+        /// usage: <code> checkBox.SetToggle(GetFieldValue&lt;bool&gt;(attribute.ConfigurationFieldName)); </code>
+        /// </summary>
+        /// <param name="attributeConfigurationFieldName"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private object GetFieldValue(string attributeConfigurationFieldName)
+        {
+            FieldInfo fieldInfo = EditedConfiguration.GetType().GetField(attributeConfigurationFieldName, BindingFlags.Instance | BindingFlags.Public);
+            return fieldInfo == null ? default : fieldInfo.GetValue(EditedConfiguration);
+        }
+
+        private void SetConfigurableComponent(FieldInfo field, ConfigurablePropertyAttribute attribute, Type componentType)
+        {
+            if (field.FieldType == componentType)
+            {
+                Logger.Log("Found component");
+            
+                ConfigurableElement uiComponent = PrefabStore.CloneUIComponent(componentType);
+            
+                uiComponent.transform.SetParent(Content);
+                uiComponent.SetCollapsed(true);
+                uiComponent.SetLabel(attribute.LabelText);
+                uiComponent.SetOnValueChanged(value =>
+                {
+                    SetEdited();
+                
+                    MethodInfo methodInfo = GetType().GetMethod(attribute.ConfigurationPropertySetterMethod, BindingFlags.Instance | BindingFlags.NonPublic);
+                    if (methodInfo != null)
+                    {
+                        methodInfo.Invoke(this, new object[] {value});
+                    }
+                });
+            
+                _otherComponents.Add(uiComponent, attribute);
+            }
+        }
+
+        // private void SetInputConfigurableComponent(FieldInfo field, ConfigurablePropertyAttribute attribute)
+        // {
+        //     if (field.FieldType == typeof(InputField))
+        //     {
+        //         Logger.Log("Found input");
+        //             
+        //         InputField input = PrefabStore.CloneUIComponent<InputField>();
+        //             
+        //         input.transform.SetParent(Content);
+        //         input.SetCollapsed(true);
+        //         input.SetLabel(attribute.LabelText);
+        //         input.OnValueChanged.AddListener( value =>
+        //         {
+        //             SetEdited();
+        //                 
+        //             MethodInfo methodInfo = GetType().GetMethod(attribute.ConfigurationPropertySetterMethod, BindingFlags.Instance | BindingFlags.NonPublic);
+        //             if (methodInfo != null)
+        //             {
+        //                 methodInfo.Invoke(this, new object[] {value});
+        //             }
+        //         });
+        //             
+        //         _otherComponents.Add(input, attribute);
+        //     }
+        // }
 
 #if UNITY_EDITOR
         private void OnValidate()

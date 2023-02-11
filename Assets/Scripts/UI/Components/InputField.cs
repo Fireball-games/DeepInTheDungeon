@@ -1,10 +1,11 @@
 using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine.Events;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.UI.Components
 {
-    public class InputField : UIElementBase
+    public class InputField : ConfigurableElement
     {
         private TMP_InputField _input;
         private TMP_Text _label;
@@ -61,6 +62,24 @@ namespace Scripts.UI.Components
             _placeholder = _input.transform.Find("Text Area/Placeholder").GetComponent<TMP_Text>();
             
             _input.onValueChanged.AddListener(OnValueChanged_internal);
+        }
+
+        public override void SetValue(object value)
+        {
+            if (value is string text)
+                SetInputText(text);
+        }
+
+        public override void SetLabel(object text)
+        {
+            if (text is string labelText)
+                SetLabelText(labelText);
+        }
+
+        public override void SetOnValueChanged(UnityAction<object> onValueChanged)
+        {
+            OnValueChanged.RemoveAllListeners();
+            OnValueChanged.AddListener(onValueChanged.Invoke);
         }
     }
 }

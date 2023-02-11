@@ -1,10 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening.Core;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Helpers;
+using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
+using Scripts.UI.Components;
+using TMPro.SpriteAssetUtilities;
 using UnityEngine;
 using static Scripts.Enums;
+using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts
 {
@@ -19,6 +26,8 @@ namespace Scripts
             EPrefabType.WallBetween, EPrefabType.WallForMovement, EPrefabType.WallOnWall, EPrefabType.Trigger,
             EPrefabType.Service,
         };
+        
+        private static HashSet<UIElementBase> _uiComponents = new();
 
         static PrefabStore()
         {
@@ -46,6 +55,20 @@ namespace Scripts
         
         public static TP GetPrefabByName<TP>(string prefabName) where TP : PrefabBase 
             => !PrefabMap.TryGetValue(prefabName, out GameObject foundPrefab) ? null : foundPrefab.GetComponent<TP>();
+        
+        public static ConfigurableElement CloneUIComponent(Type prefabType) 
+        {
+            ConfigurableElement component = _uiComponents.OfType<ConfigurableElement>().FirstOrDefault(o => o.GetType() == prefabType);
+            
+            if (component == null)
+            {
+                Logger.LogWarning("Requested UI component found in store.");
+                return component;
+            }
+            
+            component = ObjectPool.Instance.GetFromPool(component.gameObject, null).GetComponent<ConfigurableElement>();
+            return component;
+        }
 
         private static void LoadAllPrefabs()
         {
@@ -64,6 +87,14 @@ namespace Scripts
             
                 StoreMap[prefabType] = loadedPrefabs;
             }
+        }
+
+        public static void LoadComponents()
+        {
+            _uiComponents = Resources.LoadAll<UIElementBase>("Components").ToHashSet();
+            // FramedCheckBox checkBox = Resources.Load<FramedCheckBox>("Components/FramedCheckBox");
+            // InputField inputField = Resources.Load<InputField>("Components/InputField");
+            // if (checkBox) _uiComponents.Add(checkBox);
         }
     }
 }

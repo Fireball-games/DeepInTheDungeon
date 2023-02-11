@@ -34,12 +34,14 @@ namespace Scripts.Localization
         public const string EmptyEditorPrompt = "EmptyEditorPrompt";
         public const string EndPoint = "EndPoint";
         public const string EnterCampaignName = "EnterCampaignName";
+        public const string EnterName = "EnterName";
         public const string ErrorBuildingPrefab = "ErrorBuildingPref";
         public const string ExistingPrefabs = "ExistingPrefabs";
         public const string Exit = "Exit";
         public const string ExitGame = "ExitGame";
         public const string Floors = "Floors";
         public const string IsWalkable = "IsWalkable";
+        public const string InvalidNumberOfPrefabsFound = "InvalidNumberOfPrefabsFound";
         public const string Load = "Load";
         public const string LoadingFileFailed = "LoadingFileFailed";
         public const string LoadLastEditedMap = "LoadLastEditedMap";

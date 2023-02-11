@@ -34,7 +34,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         
         [ShowIf(nameof(isSingleTypeEditor))]
         [Tooltip("Type for single type editors")]
-        [SerializeField] private EPrefabType singleType;
+        [SerializeField] private EPrefabType singledType;
         
         [EnableIf(nameof(isSingleTypeEditor))]
         [Tooltip("Means that this editor handles just one instance of its type. Like EditorStartPoint, for example.")]
@@ -126,7 +126,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             IEnumerable<TC> existingConfigurations = GetExistingConfigurations();
 
-            SetExistingList(true, existingConfigurations);
+            if (!isSingleInstanceEditor) SetExistingList(true, existingConfigurations);
+            
+            //TODO: here will be SetPrefab call for existing prefab for single instance editors, if existing, opens it, if not prepares for placing the one.
 
             SetActive(true);
         }
@@ -195,7 +197,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _isEditingExistingPrefab = false;
             EditedConfiguration = null;
 
-            SetupWindow(prefabType);
+            SetupWindow(isSingleTypeEditor ? singledType : prefabType);
 
             _placeholder.transform.position = placeholderTransformData.Position;
             _placeholder.transform.rotation = placeholderTransformData.Rotation;
@@ -215,15 +217,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             EditedPrefabType = prefabType;
 
-            SetStatusText(t.Get(Keys.SelectPrefab));
 
             VisualizeOtherComponents();
-            SetExistingList(false);
             
-            if (!isSingleInstanceEditor)
-            {
-                SetPrefabList(true, _availablePrefabs);
-            }
+            if (!isSingleInstanceEditor) SetExistingList(false);
+            
+            if (!isSingleTypeEditor) SetPrefabList(true, _availablePrefabs);
+            
+            if (isSingleTypeEditor) 
+                SetPrefab(_availablePrefabs.First().name);
+            else
+                SetStatusText(t.Get(Keys.SelectPrefab));
         }
 
         /// <summary>
@@ -346,7 +350,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 MapBuilder.RemovePrefab(EditedConfiguration);
                 EditedConfiguration = null;
                 EditedPrefab = null;
-                _prefabList.DeselectButtons();
+                
+                if (!isSingleTypeEditor)
+                {
+                    _prefabList.DeselectButtons();
+                }
             }
 
             SetEdited(false);
@@ -401,6 +409,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _deleteButton.gameObject.SetActive(_isEditingExistingPrefab && EditedConfiguration is {SpawnPrefabOnBuild: true});
             _saveButton.gameObject.SetActive(IsCurrentConfigurationChanged);
             _closeButton.SetTextColor(IsCurrentConfigurationChanged ? Colors.Negative : Colors.White);
+            _closeButton.gameObject.SetActive(!isSingleTypeEditor);
             _prefabsFinderButton.SetInteractable(!IsCurrentConfigurationChanged);
         }
 
@@ -432,10 +441,29 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetButtons();
 
-            _availablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
-                .Select(prefab => prefab.GetComponent<TPrefab>())
-                .Where(prefab => prefab.prefabType == prefabType)
-                .ToHashSet();
+            if (isSingleTypeEditor)
+            {
+                _availablePrefabs = PrefabStore.GetPrefabsOfType(EPrefabType.Service)?
+                    .Select(prefab => prefab.GetComponent<TPrefab>()).ToHashSet();
+                
+                if (_availablePrefabs == null)
+                {
+                    SetStatusText(t.Get(Keys.NoPrefabsAvailable));
+                    return;
+                }
+
+                if (_availablePrefabs.Count > 1)
+                {
+                    EditorUIManager.Instance.MessageBar.Set(t.Get(Keys.InvalidNumberOfPrefabsFound), MessageBar.EMessageType.Negative);
+                }
+            }
+            else
+            {
+                _availablePrefabs = PrefabStore.GetPrefabsOfType(prefabType)?
+                    .Select(prefab => prefab.GetComponent<TPrefab>())
+                    .Where(prefab => prefab.prefabType == prefabType)
+                    .ToHashSet();
+            }
         }
 
         private void Close(EWorkMode _)

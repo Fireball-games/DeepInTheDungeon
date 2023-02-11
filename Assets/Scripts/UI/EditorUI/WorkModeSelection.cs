@@ -15,11 +15,11 @@ namespace Scripts.UI.EditorUI
         private ImageButton _buildModeButton;
         private BuildModeExpandedOptions _buildModeOptions;
         private ImageButton _selectModeButton;
-        private ExtendedOptionsBase _selectModeOptions;
+        private ExpandedOptionsBase _selectModeOptions;
         private ImageButton _wallModeButton;
         private ImageButton _prefabTileModeButton;
         private ImageButton _triggerModeButton;
-        private ExtendedOptionsBase _triggerModeOptions;
+        private ExpandedOptionsBase _triggerModeOptions;
 
         private static MapEditorManager Manager => MapEditorManager.Instance;
         private Dictionary<ImageButton, EWorkMode[]> _workModesMap;
@@ -30,11 +30,11 @@ namespace Scripts.UI.EditorUI
             _buildModeButton = content.Find("BuildModeButton").GetComponent<ImageButton>();
             _buildModeOptions = _buildModeButton.transform.Find("BuildModeExpandedOptions").GetComponent<BuildModeExpandedOptions>();
             _selectModeButton = content.Find("SelectModeButton").GetComponent<ImageButton>();
-            _selectModeOptions = _selectModeButton.transform.Find("SelectModeExpandedOptions").GetComponent<ExtendedOptionsBase>();
+            _selectModeOptions = _selectModeButton.transform.Find("SelectModeExpandedOptions").GetComponent<ExpandedOptionsBase>();
             _wallModeButton = content.Find("WallModeButton").GetComponent<ImageButton>();
             _prefabTileModeButton = content.Find("PrefabTileModeButton").GetComponent<ImageButton>();
             _triggerModeButton = content.Find("TriggerModeButton").GetComponent<ImageButton>();
-            _triggerModeOptions = _triggerModeButton.transform.Find("TriggerModeExpandedOptions").GetComponent<ExtendedOptionsBase>();
+            _triggerModeOptions = _triggerModeButton.transform.Find("TriggerModeExpandedOptions").GetComponent<ExpandedOptionsBase>();
             
             _workModesMap = new()
             {
@@ -53,9 +53,15 @@ namespace Scripts.UI.EditorUI
             _buildModeButton.OnClickWithSender += WorkModeButtonClicked;
             _buildModeButton.OnSelected += ActivateBuildModeOptions;
             _buildModeButton.OnDeselected += DeactivateBuildModeOptions;
+            
             _selectModeButton.OnClickWithSender += WorkModeButtonClicked;
+            _selectModeButton.OnSelected += ActivateSelectModeOptions;
+            _selectModeButton.OnDeselected += DeactivateSelectModeOptions;
+            
             _wallModeButton.OnClickWithSender += WorkModeButtonClicked;
+            
             _prefabTileModeButton.OnClickWithSender += WorkModeButtonClicked;
+            
             _triggerModeButton.OnClickWithSender += TriggerWorkModeClicked;
             _triggerModeButton.OnSelected += ActivateTriggerModeOptions;
             _triggerModeButton.OnDeselected += DeactivateTriggerModeOptions;
@@ -68,8 +74,15 @@ namespace Scripts.UI.EditorUI
             _buildModeButton.OnClickWithSender -= WorkModeButtonClicked;
             _buildModeButton.OnSelected -= ActivateBuildModeOptions;
             _buildModeButton.OnDeselected -= DeactivateBuildModeOptions;
+            
+            _selectModeButton.OnClickWithSender -= WorkModeButtonClicked;
+            _selectModeButton.OnSelected -= ActivateSelectModeOptions;
+            _selectModeButton.OnDeselected -= DeactivateSelectModeOptions;
+            
             _wallModeButton.OnClickWithSender -= WorkModeButtonClicked;
+            
             _prefabTileModeButton.OnClickWithSender -= WorkModeButtonClicked;
+            
             _triggerModeButton.OnClickWithSender -= TriggerWorkModeClicked;
             _triggerModeButton.OnSelected -= ActivateTriggerModeOptions;
             _triggerModeButton.OnDeselected -= DeactivateTriggerModeOptions;
@@ -86,9 +99,16 @@ namespace Scripts.UI.EditorUI
             _triggerModeOptions.SetActive(true);
             _triggerModeOptions.SetSelected(Manager.WorkMode);
         }
+        
+        private void ActivateSelectModeOptions()
+        {
+            _selectModeOptions.SetActive(true);
+            _selectModeOptions.SetSelected(Manager.WorkMode);
+        }
 
         private void DeactivateBuildModeOptions() => _buildModeOptions.SetActive(false);
         private void DeactivateTriggerModeOptions() => _triggerModeOptions.SetActive(false);
+        private void DeactivateSelectModeOptions() => _selectModeOptions.SetActive(false);
 
         private void OnWorkModeChanged(EWorkMode newWorkMode)
         {
@@ -97,8 +117,7 @@ namespace Scripts.UI.EditorUI
                 if (record.Value.Contains(newWorkMode))
                 {
                     record.Key.SetSelected(true);
-
-                    // if (newWorkMode is EWorkMode.Triggers or EWorkMode.TriggerReceivers)
+                    
                     if (_workModesMap[_triggerModeButton].Contains(newWorkMode))
                     {
                         _triggerModeOptions.SetActive(true);
@@ -128,11 +147,19 @@ namespace Scripts.UI.EditorUI
             ImageButton button = sender as ImageButton;
 
             if (!button) return;
-
-            int modeIndex = button == _triggerModeButton
-                ? _triggerModeOptions.LastSelectedMode == EWorkMode.Triggers ? 0 : 1
-                : 0;
             
+            int modeIndex = 0;
+            
+            
+            if (button == _selectModeButton)
+            {
+                modeIndex = _selectModeOptions.LastSelectedMode == EWorkMode.SetWalls ? 0 : 1;
+            }
+            else if (button == _triggerModeButton)
+            {
+                modeIndex = _triggerModeOptions.LastSelectedMode == EWorkMode.Triggers ? 0 : 1;
+            }
+
             Manager.SetWorkMode(_workModesMap[button][modeIndex]);
         }
 
@@ -143,6 +170,15 @@ namespace Scripts.UI.EditorUI
             if (!button) return;
             
             Manager.SetWorkMode(_triggerModeOptions.LastSelectedMode);
+        }
+        
+        public void SelectWorkModeClicked(MonoBehaviour sender)
+        {
+            ImageButton button = sender as ImageButton;
+
+            if (!button) return;
+            
+            Manager.SetWorkMode(_selectModeOptions.LastSelectedMode);
         }
     }
 }

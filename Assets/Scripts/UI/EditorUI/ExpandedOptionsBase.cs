@@ -10,29 +10,16 @@ using static Scripts.MapEditor.Enums;
 
 namespace Scripts.UI.EditorUI
 {
-    public class ExtendedOptionsBase : UIElementBase
+    public class ExpandedOptionsBase : UIElementBase
     {
         [SerializeField] private EWorkMode DefaultWorkMode;
         [SerializeField] private List<ButtonSetup> buttons;
-        public EWorkMode LastSelectedMode { get; set; }
+        public EWorkMode LastSelectedMode { get; private set; }
 
         
         private Dictionary<EWorkMode, ImageButton> buttonsMap;
         
-        /// <summary>
-        /// Example of awake Method:
-        /// <code>
-        /// private void Awake()
-        /// {
-        ///     DefaultWorkMode = EWorkMode.Triggers;
-        ///     AddButton(_editTriggerButton, EWorkMode.Triggers);
-        ///     AddButton(_editTriggerReceiverButton, EWorkMode.TriggerReceivers);
-        ///
-        ///     base.Awake();
-        /// }
-        /// </code>
-        /// </summary>
-        protected virtual void Awake()
+        public void Awake()
         {
             buttons.ForEach(button => AddButtonToMap(button.button, button.workMode));
             LastSelectedMode = DefaultWorkMode;
@@ -52,7 +39,7 @@ namespace Scripts.UI.EditorUI
             EditorEvents.OnPrefabEdited -= OnPrefabEdited;
         }
 
-        protected void AddButtonToMap(ImageButton button, EWorkMode workMode)
+        private void AddButtonToMap(ImageButton button, EWorkMode workMode)
         {
             buttonsMap ??= new Dictionary<EWorkMode, ImageButton>();
             buttonsMap.Add(workMode, button);
@@ -83,19 +70,7 @@ namespace Scripts.UI.EditorUI
                 }
             }
         }
-        
-        string GetObjectNameFromVariableName(string input)
-        {
-            if (string.IsNullOrEmpty(input) || input.Length < 2)
-            {
-                return input;
-            }
 
-            string modifiedString = input.Substring(1);
-            modifiedString = char.ToUpper(modifiedString[0]) + modifiedString.Substring(1);
-            return modifiedString;
-        }
-        
         [Serializable]
         public class ButtonSetup
         {

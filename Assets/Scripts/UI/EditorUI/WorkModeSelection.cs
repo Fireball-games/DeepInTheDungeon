@@ -39,7 +39,7 @@ namespace Scripts.UI.EditorUI
             _workModesMap = new()
             {
                 {_buildModeButton, new[] { EWorkMode.Build }},
-                {_selectModeButton, new[] { EWorkMode.SetWalls, EWorkMode.EditEntryPoints }},
+                {_selectModeButton, new[] { EWorkMode.SetWalls, EWorkMode.EditEntryPoints, EWorkMode.EditEditorStart }},
                 {_wallModeButton, new[] { EWorkMode.Walls }},
                 {_prefabTileModeButton, new[] { EWorkMode.PrefabTiles}},
                 {_triggerModeButton, new[] { EWorkMode.Triggers, EWorkMode.TriggerReceivers}},
@@ -62,7 +62,7 @@ namespace Scripts.UI.EditorUI
             
             _prefabTileModeButton.OnClickWithSender += WorkModeButtonClicked;
             
-            _triggerModeButton.OnClickWithSender += TriggerWorkModeClicked;
+            _triggerModeButton.OnClickWithSender += WorkModeButtonClicked;
             _triggerModeButton.OnSelected += ActivateTriggerModeOptions;
             _triggerModeButton.OnDeselected += DeactivateTriggerModeOptions;
         }
@@ -153,7 +153,8 @@ namespace Scripts.UI.EditorUI
             
             if (button == _selectModeButton)
             {
-                modeIndex = _selectModeOptions.LastSelectedMode == EWorkMode.SetWalls ? 0 : 1;
+                modeIndex = _workModesMap[_selectModeButton].ToList().IndexOf(_selectModeOptions.LastSelectedMode);
+                // modeIndex = _selectModeOptions.LastSelectedMode == EWorkMode.SetWalls ? 0 : 1;
             }
             else if (button == _triggerModeButton)
             {

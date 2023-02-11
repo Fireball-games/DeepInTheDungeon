@@ -16,6 +16,7 @@
             TriggerReceivers = 9,
             SetWalls = 10,
             EditEntryPoints = 11,
+            EditEditorStart = 12,
         }
 
         public enum ELevel

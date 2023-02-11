@@ -200,6 +200,13 @@ namespace Scripts.MapEditor.Services
                 case EWorkMode.EditEntryPoints:
                     OpenEditorForTiledPrefab<EntryPointPrefab>(mouseButtonUpped, EPrefabType.Service);
                     break;
+                case EWorkMode.EditEditorStart:
+                    if (mouseButtonUpped == 0 && GridPositionType == EGridPositionType.None)
+                    {
+                        UIManager.OpenEditorWindow(EPrefabType.Service,
+                        new PositionRotation(MouseGridPosition.ToWorldPositionV3Int(), Quaternion.identity));
+                    }
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

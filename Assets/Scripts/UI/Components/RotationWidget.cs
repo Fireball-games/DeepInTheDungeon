@@ -13,16 +13,15 @@ namespace Scripts.UI.Components
 
         private void Awake()
         {
-            Transform bodyTransform = body.transform;
-            _label = bodyTransform.Find("Label").GetComponent<TMP_Text>();
-            _leftRotateButton = bodyTransform.Find("RotateLeft").GetComponent<ImageButton>();
-            _rightRotateButton = bodyTransform.Find("RotateRight").GetComponent<ImageButton>();
+            AssignComponents();
         }
 
         public void SetUp(string label, UnityAction onRotateLeft, UnityAction onRotateRight)
         {
             SetActive(true);
         
+            if(!_leftRotateButton) AssignComponents();
+            
             if (_label) _label.text = label ?? "";
             _leftRotateButton.OnClick.RemoveAllListeners();
             _leftRotateButton.OnClick.AddListener(onRotateLeft);
@@ -46,6 +45,14 @@ namespace Scripts.UI.Components
             _leftRotateButton.OnClick.AddListener(() => onValueChanged.Invoke(-1)); // -1 is the rotation direction
             _rightRotateButton.OnClick.RemoveAllListeners();
             _rightRotateButton.OnClick.AddListener(() => onValueChanged.Invoke(1)); // 1 is the rotation direction
+        }
+
+        private void AssignComponents()
+        {
+            Transform bodyTransform = body.transform;
+            _label = bodyTransform.Find("Label").GetComponent<TMP_Text>();
+            _leftRotateButton = bodyTransform.Find("RotateLeft").GetComponent<ImageButton>();
+            _rightRotateButton = bodyTransform.Find("RotateRight").GetComponent<ImageButton>();
         }
     }
 }

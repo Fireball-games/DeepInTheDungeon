@@ -31,7 +31,7 @@ namespace Scripts.MapEditor
 
         [SerializeField] private float cameraHeight = 10f;
         [SerializeField] private Camera sceneCamera;
-        [SerializeField] private PlayerIconController playerIcon;
+        [SerializeField] private EditorStartIndicator playerIcon;
 
         private GameManager GameManager => GameManager.Instance;
 

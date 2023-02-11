@@ -23,7 +23,6 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
@@ -73,7 +72,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private bool _isEditingExistingPrefab;
         
         // Configurables prefabs
-        private FramedCheckBox _framedCheckBoxPrefab;
+        private readonly Dictionary<ConfigurableElement, ConfigurablePropertyAttribute> _configurableComponents = new();
 
         protected bool CanOpen => !IsCurrentConfigurationChanged;
         protected bool IsPrefabFinderActive => _existingList.IsActive;
@@ -294,9 +293,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected virtual void VisualizeOtherComponents()
         {
-            _otherComponents.Keys.ForEach(c =>
+            _configurableComponents.Keys.ForEach(c =>
             {
-                ConfigurablePropertyAttribute attribute = _otherComponents[c];
+                ConfigurablePropertyAttribute attribute = _configurableComponents[c];
                 if (EditedConfiguration == null || !EditedConfiguration.SpawnPrefabOnBuild && attribute.IsAvailableForEmbedded)
                 {
                     c.SetCollapsed(true);
@@ -557,14 +556,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _deleteButton.SetTextColor(Colors.Negative);
             _closeButton = buttons.Find("CloseButton").GetComponent<Button>();
         }
-
-        private readonly Dictionary<ConfigurableElement, ConfigurablePropertyAttribute> _otherComponents = new();
         private void ManageConfigurableComponents()
         {
-            PrefabStore.LoadComponents();
-            // IEnumerable<ConfigurablePropertyAttribute> configurables = 
-            //     AttributeGatherer.GetAllAttributes<ConfigurablePropertyAttribute>(GetType(), BindingFlags.Instance | BindingFlags.NonPublic);
-            
+            PrefabStore.LoadConfigurableComponents();
+
             InitializeConfigurableComponents(BindingFlags.Instance | BindingFlags.NonPublic);
         }
 
@@ -586,12 +581,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
                 SetConfigurableComponent(field, attribute, componentType);
             }
-                // SetCheckboxConfigurableComponent(field, attribute);
-                // SetInputConfigurableComponent(field, attribute);
         }
 
         /// <summary>
-        /// usage: <code> checkBox.SetToggle(GetFieldValue&lt;bool&gt;(attribute.ConfigurationFieldName)); </code>
+        /// Gets value of the field based on the name of the field.
         /// </summary>
         /// <param name="attributeConfigurationFieldName"></param>
         /// <returns></returns>
@@ -603,55 +596,26 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void SetConfigurableComponent(FieldInfo field, ConfigurablePropertyAttribute attribute, Type componentType)
         {
-            if (field.FieldType == componentType)
+            if (field.FieldType != componentType) return;
+            
+            ConfigurableElement uiComponent = PrefabStore.CloneUIComponent(componentType);
+            
+            uiComponent.transform.SetParent(Content);
+            uiComponent.SetCollapsed(true);
+            uiComponent.SetLabel(t.Get(attribute.LabelText));
+            uiComponent.SetOnValueChanged(value =>
             {
-                Logger.Log("Found component");
-            
-                ConfigurableElement uiComponent = PrefabStore.CloneUIComponent(componentType);
-            
-                uiComponent.transform.SetParent(Content);
-                uiComponent.SetCollapsed(true);
-                uiComponent.SetLabel(t.Get(attribute.LabelText));
-                uiComponent.SetOnValueChanged(value =>
-                {
-                    SetEdited();
+                SetEdited();
                 
-                    MethodInfo methodInfo = GetType().GetMethod(attribute.ConfigurationPropertySetterMethod, BindingFlags.Instance | BindingFlags.NonPublic);
-                    if (methodInfo != null)
-                    {
-                        methodInfo.Invoke(this, new[] {value});
-                    }
-                });
+                MethodInfo methodInfo = GetType().GetMethod(attribute.ConfigurationPropertySetterMethod, BindingFlags.Instance | BindingFlags.NonPublic);
+                if (methodInfo != null)
+                {
+                    methodInfo.Invoke(this, new[] {value});
+                }
+            });
             
-                _otherComponents.Add(uiComponent, attribute);
-            }
+            _configurableComponents.Add(uiComponent, attribute);
         }
-
-        // private void SetInputConfigurableComponent(FieldInfo field, ConfigurablePropertyAttribute attribute)
-        // {
-        //     if (field.FieldType == typeof(InputField))
-        //     {
-        //         Logger.Log("Found input");
-        //             
-        //         InputField input = PrefabStore.CloneUIComponent<InputField>();
-        //             
-        //         input.transform.SetParent(Content);
-        //         input.SetCollapsed(true);
-        //         input.SetLabel(attribute.LabelText);
-        //         input.OnValueChanged.AddListener( value =>
-        //         {
-        //             SetEdited();
-        //                 
-        //             MethodInfo methodInfo = GetType().GetMethod(attribute.ConfigurationPropertySetterMethod, BindingFlags.Instance | BindingFlags.NonPublic);
-        //             if (methodInfo != null)
-        //             {
-        //                 methodInfo.Invoke(this, new object[] {value});
-        //             }
-        //         });
-        //             
-        //         _otherComponents.Add(input, attribute);
-        //     }
-        // }
 
 #if UNITY_EDITOR
         private void OnValidate()

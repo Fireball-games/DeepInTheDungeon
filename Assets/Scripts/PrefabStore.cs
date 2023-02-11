@@ -89,12 +89,7 @@ namespace Scripts
             }
         }
 
-        public static void LoadComponents()
-        {
-            _uiComponents = Resources.LoadAll<UIElementBase>("Components").ToHashSet();
-            // FramedCheckBox checkBox = Resources.Load<FramedCheckBox>("Components/FramedCheckBox");
-            // InputField inputField = Resources.Load<InputField>("Components/InputField");
-            // if (checkBox) _uiComponents.Add(checkBox);
-        }
+        public static void LoadConfigurableComponents() 
+            => _uiComponents = Resources.LoadAll<UIElementBase>("ConfigurableComponents").ToHashSet();
     }
 }

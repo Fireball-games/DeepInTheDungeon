@@ -13,6 +13,18 @@ namespace Scripts.Building
         public Quaternion playerRotation;
         public bool isMovingForwardOnStart;
 
+        public EntryPoint()
+        {
+        }
+
+        public EntryPoint(EntryPointConfiguration entryPointConfiguration)
+        {
+            name = entryPointConfiguration.EntryPointName;
+            playerLocation = entryPointConfiguration.TransformData.Position;
+            playerRotation = entryPointConfiguration.LookDirection;
+            isMovingForwardOnStart = entryPointConfiguration.IsMovingForwardOnStart;
+        }
+
         public object Clone() => new EntryPoint
         {
             name = name,

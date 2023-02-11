@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Scripts.Building;
+using Scripts.Building.PrefabsBuilding;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
@@ -191,7 +192,7 @@ namespace Scripts.MapEditor
             string campaignDirectoryPath = FileOperationsHelper.CampaignDirectoryPath;
 
             campaignDirectoryPath.CreateDirectoryIfNotExists();
-
+            GameManager.CurrentMap.EntryPoints = EntryPointService.ConvertEntryPointConfigurationsToEntryPoints();
             currentCampaign.ReplaceMap(GameManager.CurrentMap);
             _originalMap = GameManager.CurrentMap.ClonedCopy();
             

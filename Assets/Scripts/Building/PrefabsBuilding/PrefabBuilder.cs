@@ -28,12 +28,14 @@ namespace Scripts.Building.PrefabsBuilding
         private readonly WallService _wallService;
         private readonly TriggerService _triggerService;
         private readonly TilePrefabService _tilePrefabService;
+        private readonly EntryPointService _entryPointService;
         
         public PrefabBuilder()
         {
             _wallService = new WallService();
             _triggerService = new TriggerService();
             _tilePrefabService = new TilePrefabService();
+            _entryPointService = new EntryPointService();
         }
 
         internal IEnumerator BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
@@ -116,6 +118,7 @@ namespace Scripts.Building.PrefabsBuilding
             _tilePrefabService.Remove(configuration);
             _wallService.Remove(configuration);
             _triggerService.Remove(configuration);
+            _entryPointService.Remove(configuration);
 
             _triggerService.RemoveAllEmbedded(prefabGo);
             _wallService.RemoveAllEmbedded(prefabGo);
@@ -252,6 +255,7 @@ namespace Scripts.Building.PrefabsBuilding
             _tilePrefabService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
             _wallService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
             _triggerService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
+            _entryPointService.ProcessConfigurationOnBuild(configuration, prefabScript, newPrefab);
 
             MapBuilder.Prefabs.Add(newPrefab);
 

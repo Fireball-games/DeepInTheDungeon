@@ -1,4 +1,6 @@
-﻿using Scripts.Building.PrefabsSpawning;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
@@ -18,7 +20,11 @@ namespace Scripts.Building.PrefabsBuilding
         protected override void ProcessConfiguration(EntryPointConfiguration configuration,
             EntryPointPrefab prefabScript, GameObject newPrefab)
         {
-            if (!IsInEditMode) return;
+            if (!IsInEditMode)
+            {
+                newPrefab.SetActive(false);
+                return;
+            }
             
             Transform body = newPrefab.transform.Find("Body");
             body.localRotation = configuration.LookDirection;
@@ -33,5 +39,8 @@ namespace Scripts.Building.PrefabsBuilding
         {
             Logger.LogNotImplemented();
         }
+
+        public static List<EntryPoint> ConvertEntryPointConfigurationsToEntryPoints() 
+            => Configurations.Select(c => new EntryPoint(c)).ToList();
     }
 }

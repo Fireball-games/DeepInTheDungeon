@@ -20,11 +20,9 @@ using Scripts.UI.EditorUI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
-using InputField = Scripts.UI.Components.InputField;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
@@ -308,7 +306,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 if (EditedConfiguration.SpawnPrefabOnBuild && attribute.IsAvailableForEmbedded)
                 {
                     c.SetActive(true);
-                    c.SetValue(GetFieldValue(attribute.ConfigurationFieldName));
+                    
+                    if (attribute.SetValueFromConfiguration)
+                    {
+                        c.SetValue(GetFieldValue(attribute.ConfigurationFieldName));
+                    }
                 }
             });
         }
@@ -568,7 +570,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void InitializeConfigurableComponents(BindingFlags flags)
         {
-            IEnumerable<ConfigurablePropertyAttribute> attributes = Enumerable.Empty<ConfigurablePropertyAttribute>();
             FieldInfo[] fields = GetType().GetFields(flags);
             
             foreach (var field in fields)
@@ -593,7 +594,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         /// usage: <code> checkBox.SetToggle(GetFieldValue&lt;bool&gt;(attribute.ConfigurationFieldName)); </code>
         /// </summary>
         /// <param name="attributeConfigurationFieldName"></param>
-        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         private object GetFieldValue(string attributeConfigurationFieldName)
         {
@@ -611,7 +611,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             
                 uiComponent.transform.SetParent(Content);
                 uiComponent.SetCollapsed(true);
-                uiComponent.SetLabel(attribute.LabelText);
+                uiComponent.SetLabel(t.Get(attribute.LabelText));
                 uiComponent.SetOnValueChanged(value =>
                 {
                     SetEdited();
@@ -619,7 +619,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                     MethodInfo methodInfo = GetType().GetMethod(attribute.ConfigurationPropertySetterMethod, BindingFlags.Instance | BindingFlags.NonPublic);
                     if (methodInfo != null)
                     {
-                        methodInfo.Invoke(this, new object[] {value});
+                        methodInfo.Invoke(this, new[] {value});
                     }
                 });
             

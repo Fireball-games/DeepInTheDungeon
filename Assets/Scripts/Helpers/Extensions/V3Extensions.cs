@@ -9,6 +9,9 @@ namespace Scripts.Helpers.Extensions
     {
         public static readonly Dictionary<Vector3, Quaternion> WallDirectionRotationMap;
         public static readonly Dictionary<Vector3, Vector3> DirectionRotationMap;
+        
+        public static readonly Vector3 Positive90InY= new(0, 90f, 0);
+        public static readonly Vector3 Negative90InY = new(0, -90f, 0);
 
         static V3Extensions()
         {

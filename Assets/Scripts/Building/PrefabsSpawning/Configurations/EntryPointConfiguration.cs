@@ -7,7 +7,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         public bool IsMovingForwardOnStart;
         public string EntryPointName;
         public Quaternion LookDirection;
-        public override string DisplayName { get; }
+        public override string DisplayName => EntryPointName;
 
         public EntryPointConfiguration()
         {
@@ -18,7 +18,6 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             IsMovingForwardOnStart = configuration.IsMovingForwardOnStart;
             EntryPointName = configuration.EntryPointName;
             LookDirection = configuration.LookDirection;
-            DisplayName = configuration.EntryPointName;
         }
         
         public EntryPointConfiguration(EntryPointPrefab prefabScript, string ownerGuid, bool spawnPrefabOnBuild)

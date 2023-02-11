@@ -193,6 +193,16 @@ namespace Scripts.UI.EditorUI
                     _tilePrefabEditor.Open(configuration as TilePrefabConfiguration);
                     OpenedEditor = _tilePrefabEditor;
                     break;
+                case EPrefabType.Trigger:
+                case EPrefabType.TriggerReceiver:
+                case EPrefabType.Service:
+                    if (WorkMode is EWorkMode.EditEntryPoints)
+                    {
+                        _entryPointEditor.Open(configuration as EntryPointConfiguration);
+                        OpenedEditor = _entryPointEditor;
+                    }
+                    break;
+                case EPrefabType.EntryPoint:
                 default:
                     Logger.LogWarning($"Not implemented editor for type {configuration.PrefabType}.");
                     break;

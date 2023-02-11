@@ -1,4 +1,3 @@
-using System;
 using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine;
@@ -43,7 +42,10 @@ namespace Scripts.UI.Components
 
         public override void SetOnValueChanged(UnityAction<object> onValueChanged)
         {
-            
+            _leftRotateButton.OnClick.RemoveAllListeners();
+            _leftRotateButton.OnClick.AddListener(() => onValueChanged.Invoke(-1)); // -1 is the rotation direction
+            _rightRotateButton.OnClick.RemoveAllListeners();
+            _rightRotateButton.OnClick.AddListener(() => onValueChanged.Invoke(1)); // 1 is the rotation direction
         }
     }
 }

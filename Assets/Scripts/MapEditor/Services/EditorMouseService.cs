@@ -212,7 +212,7 @@ namespace Scripts.MapEditor.Services
                 if (_lastPrefabOnPosition && _lastPrefabOnPosition.GetComponent<TPrefab>())
                 {
                     UIManager.OpenEditorWindow(Manager.MapBuilder.GetPrefabConfigurationByTransformData(
-                        new PositionRotation(_lastPrefabOnPosition.transform.position, _lastPrefabOnPosition.GetBody().rotation)
+                        new PositionRotation(_lastPrefabOnPosition.transform.position, _lastPrefabOnPosition.transform.rotation)
                     ));
                 }
                 else if (!_lastPrefabOnPosition)

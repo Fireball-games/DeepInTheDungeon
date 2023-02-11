@@ -26,19 +26,25 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         /// Some Components are too complex to set in general manner, in that case, component is assumed to be present and used.
         /// </summary>
         public readonly bool UseLocalPrefabInstance;
+        /// <summary>
+        /// Some components dont need value to work, you set this fact with this bool.
+        /// </summary>
+        public readonly bool SetValueFromConfiguration;
         
         public ConfigurablePropertyAttribute(
             string configurationFieldName,
             string labelText,
             string configurationPropertySetterMethod,
             bool isAvailableForEmbedded = true,
-            bool useLocalPrefabInstance = false)
+            bool useLocalPrefabInstance = false,
+            bool setValueFromConfiguration = true)
         {
             ConfigurationFieldName = configurationFieldName;
             LabelText = labelText;
             ConfigurationPropertySetterMethod = configurationPropertySetterMethod;
             IsAvailableForEmbedded = isAvailableForEmbedded;
             UseLocalPrefabInstance = useLocalPrefabInstance;
+            SetValueFromConfiguration = setValueFromConfiguration;
         }
         
     }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -25,6 +26,7 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private MapEditorManager manager;
         private Transform _upperRightPanel;
         private InputDialog _inputDialog;
+        private EntryPointEditor _entryPointEditor;
         private WallEditor _wallEditor;
         private TilePrefabEditor _tilePrefabEditor;
         private TriggerEditor _triggerEditor;
@@ -40,7 +42,9 @@ namespace Scripts.UI.EditorUI
         public CageController SelectedCage { get; private set; }
         public SelectConfigurationWindow SelectConfigurationWindow { get; private set; }
         public TooltipController Tooltip { get; private set; }
-        public bool isAnyObjectEdited { get; private set; }
+        public EWorkMode WorkMode { get; private set; }
+        public bool IsAnyObjectEdited { get; private set; }
+        
 
         private ImageButton _playButton;
         private Title _mapTitle;
@@ -63,6 +67,7 @@ namespace Scripts.UI.EditorUI
             ConfirmationDialog = transform.Find("ConfirmationDialog Variant").GetComponent<DialogBase>();
             MapSelectionDialog = transform.Find("MapSelectionDialog").GetComponent<MapSelectionDialog>();
             _inputDialog = transform.Find("InputDialog").GetComponent<InputDialog>();
+            _entryPointEditor = _body.Find("EntryPointEditor").GetComponent<EntryPointEditor>();
             _wallEditor = _body.Find("WallEditor").GetComponent<WallEditor>();
             _tilePrefabEditor = _body.Find("TilePrefabEditor").GetComponent<TilePrefabEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
@@ -77,6 +82,7 @@ namespace Scripts.UI.EditorUI
             
             _editors = new Dictionary<EWorkMode, IPrefabEditor>
             {
+                {EWorkMode.EditEntryPoints, _entryPointEditor},
                 {EWorkMode.Walls, _wallEditor},
                 {EWorkMode.PrefabTiles, _tilePrefabEditor},
                 {EWorkMode.Triggers, _triggerEditor},
@@ -112,7 +118,8 @@ namespace Scripts.UI.EditorUI
 
         private void OnWorkModeChanged(EWorkMode workMode)
         {
-            isAnyObjectEdited = false;
+            WorkMode = workMode;
+            IsAnyObjectEdited = false;
             CloseEditorWindow();
             
             if (_editors.TryGetValue(workMode, out IPrefabEditor editor))
@@ -148,6 +155,14 @@ namespace Scripts.UI.EditorUI
                 case EPrefabType.Trigger:
                     _triggerEditor.Open(prefabType, placeholderTransformData);
                     OpenedEditor = _triggerEditor;
+                    break;
+                case EPrefabType.TriggerReceiver:
+                case EPrefabType.Service:
+                    if (WorkMode is EWorkMode.EditEntryPoints)
+                    {
+                        _entryPointEditor.Open(EPrefabType.Service, placeholderTransformData);
+                        OpenedEditor = _entryPointEditor;
+                    }
                     break;
                 default:
                     Logger.LogWarning($"Not implemented editor for type {prefabType}.");
@@ -186,15 +201,15 @@ namespace Scripts.UI.EditorUI
 
         public void SetAnyObjectEdited(bool isEditing)
         {
-            if (isAnyObjectEdited == isEditing) return;
+            if (IsAnyObjectEdited == isEditing) return;
             
-            isAnyObjectEdited = isEditing;
+            IsAnyObjectEdited = isEditing;
             EditorEvents.TriggerOnPrefabEdited(isEditing);
         }
 
         private void CloseEditorWindow()
         {
-            isAnyObjectEdited = false;
+            IsAnyObjectEdited = false;
 
             OpenedEditor?.CloseWithRemovingChanges();
 

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.Tile;
 using Scripts.EventsManagement;
@@ -9,6 +11,7 @@ using Scripts.System.MonoBases;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MouseCursorManager;
 
@@ -112,7 +115,7 @@ namespace Scripts.MapEditor.Services
 
         public void RefreshMousePosition(bool invalidateLastPosition = false)
         {
-            if (!Manager.MapIsPresented || UIManager.isAnyObjectEdited) return;
+            if (!Manager.MapIsPresented || UIManager.IsAnyObjectEdited) return;
 
             SetGridPosition(invalidateLastPosition);
         }
@@ -126,7 +129,7 @@ namespace Scripts.MapEditor.Services
 
         private void CheckMouseOverWall()
         {
-            if (Manager.WorkMode != EWorkMode.Walls || EditorUIManager.Instance.isAnyObjectEdited) return;
+            if (Manager.WorkMode != EWorkMode.Walls || EditorUIManager.Instance.IsAnyObjectEdited) return;
 
             if (LayersManager.CheckRayHit(LayersManager.WallMaskName, out GameObject hitWall))
             {
@@ -183,33 +186,46 @@ namespace Scripts.MapEditor.Services
 
                     break;
                 case EWorkMode.PrefabTiles:
-                    if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
-                    {
-                        if (_lastPrefabOnPosition)
-                        {
-                            UIManager.OpenEditorWindow(Manager.MapBuilder.GetPrefabConfigurationByTransformData(
-                                new PositionRotation(_lastPrefabOnPosition.transform.position, _lastPrefabOnPosition.GetBody().rotation)
-                            ));
-                        }
-                        else
-                        {
-                            UIManager.OpenEditorWindow(Scripts.Enums.EPrefabType.PrefabTile,
-                                new PositionRotation(MouseGridPosition.ToWorldPositionV3Int(), Quaternion.identity));
-                        }
-                    }
-
+                    OpenEditorForTiledPrefab<TilePrefab>(mouseButtonUpped, EPrefabType.PrefabTile);
                     break;
                 case EWorkMode.Prefabs:
                 case EWorkMode.Items:
                 case EWorkMode.Enemies:
                 case EWorkMode.Triggers:
                     break;
+                case EWorkMode.TriggerReceivers:
+                    break;
+                case EWorkMode.SetWalls:
+                    break;
+                case EWorkMode.EditEntryPoints:
+                    OpenEditorForTiledPrefab<EntryPointPrefab>(mouseButtonUpped, EPrefabType.Service);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void OpenEditorForTiledPrefab<TPrefab>(int mouseButtonUpped, EPrefabType ePrefabType) where TPrefab : PrefabBase
+        {
+            if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
+            {
+                if (_lastPrefabOnPosition && _lastPrefabOnPosition.GetComponent<TPrefab>())
+                {
+                    UIManager.OpenEditorWindow(Manager.MapBuilder.GetPrefabConfigurationByTransformData(
+                        new PositionRotation(_lastPrefabOnPosition.transform.position, _lastPrefabOnPosition.GetBody().rotation)
+                    ));
+                }
+                else if (!_lastPrefabOnPosition)
+                {
+                    UIManager.OpenEditorWindow(ePrefabType,
+                        new PositionRotation(MouseGridPosition.ToWorldPositionV3Int(), Quaternion.identity));
+                }
             }
         }
 
         private void SetGridPosition(bool invalidateLastPosition = false)
         {
-            if (IsManipulatingCameraPosition || UIManager.isAnyObjectEdited) return;
+            if (IsManipulatingCameraPosition || UIManager.IsAnyObjectEdited) return;
 
             if (!GetMousePlanePosition(out Vector3 worldPosition)) return;
 
@@ -270,20 +286,6 @@ namespace Scripts.MapEditor.Services
 
             GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
         }
-        
-        // private void ResolveWallModePosition(bool isNullTile)
-        // {
-        //     if (Manager.WorkMode != EWorkMode.Walls) return;
-        //
-        //     GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
-        // }
-        //
-        // private void ResolvePrefabTileModePosition(bool isNullTile)
-        // {
-        //     if (Manager.WorkMode != EWorkMode.PrefabTiles) return;
-        //
-        //     GridPositionType = isNullTile ? EGridPositionType.NullTile : EGridPositionType.EditableTile;
-        // }
 
         internal void SetCursorToCameraMovement() => SetCursor(ECursorType.Move);
 
@@ -372,27 +374,12 @@ namespace Scripts.MapEditor.Services
 
             if (Manager.WorkMode == EWorkMode.PrefabTiles)
             {
-                if (type == EGridPositionType.NullTile)
-                {
-                    _lastPrefabOnPosition = null;
-                    cursor3D.Hide();
-                    SetCursor(ECursorType.Default);
-                    return;
-                }
-
-                GameObject prefabOnPosition = Manager.MapBuilder.GetPrefabByGridPosition(MouseGridPosition);
-                if (prefabOnPosition)
-                {
-                    _lastPrefabOnPosition = prefabOnPosition;
-                    SetCursor(ECursorType.Edit);
-                }
-                else
-                {
-                    _lastPrefabOnPosition = null;
-                    SetCursor(ECursorType.Add);
-                }
-
-                Show3DCursor(MouseGridPosition);
+                SetCursorForTiledPrefabType<TilePrefab>(type);
+            }
+            
+            if (Manager.WorkMode == EWorkMode.EditEntryPoints)
+            {
+                SetCursorForTiledPrefabType<EntryPointPrefab>(type);
             }
 
             if (Manager.WorkMode == EWorkMode.Build)
@@ -434,9 +421,40 @@ namespace Scripts.MapEditor.Services
             }
         }
 
+        private void SetCursorForTiledPrefabType<TPrefab>(EGridPositionType type) where TPrefab : PrefabBase
+        {
+            GameObject prefabOnPosition = Manager.MapBuilder.GetPrefabByGridPosition(MouseGridPosition);
+            bool isDesiredPrefab = prefabOnPosition && prefabOnPosition.GetComponent<TPrefab>();
+            
+            if (type == EGridPositionType.NullTile || prefabOnPosition && !isDesiredPrefab)
+            {
+                _lastPrefabOnPosition = null;
+                cursor3D.Hide();
+                SetCursor(ECursorType.Default);
+                return;
+            }
+
+            if (prefabOnPosition)
+            {
+                _lastPrefabOnPosition = prefabOnPosition;
+                    
+                if (isDesiredPrefab)
+                {
+                    SetCursor(ECursorType.Edit);
+                    Show3DCursor(MouseGridPosition);
+                }
+            }
+            else
+            {
+                _lastPrefabOnPosition = null;
+                SetCursor(ECursorType.Add);
+                Show3DCursor(MouseGridPosition);
+            }
+        }
+
         private void Show3DCursor(Vector3Int position, bool withCopyBellow = false, bool withCopyAbove = false)
         {
-            if (UIManager.isAnyObjectEdited)
+            if (UIManager.IsAnyObjectEdited)
             {
                 cursor3D.Hide();
                 return;

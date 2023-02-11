@@ -128,7 +128,7 @@ namespace Scripts.MapEditor
         {
             if (!EditorUIManager.Instance) return;
             
-            if (!EditorUIManager.Instance.isAnyObjectEdited && LayersManager.CheckRayHit(LayersManager.WallGizmoMaskName, out GameObject hitGizmo))
+            if (!EditorUIManager.Instance.IsAnyObjectEdited && LayersManager.CheckRayHit(LayersManager.WallGizmoMaskName, out GameObject hitGizmo))
             {
                 ETileDirection direction = hitGizmo.GetComponent<WallGizmo>().direction;
 
@@ -208,7 +208,7 @@ namespace Scripts.MapEditor
         {
             wall.SetActive(false);
 
-            if (!EditorUIManager.Instance.isAnyObjectEdited
+            if (!EditorUIManager.Instance.IsAnyObjectEdited
                 && Manager.EditedLayout.HasIndex(currentGridPosition)
                 && Manager.EditedLayout.ByGridV3Int(currentGridPosition) != null)
             {

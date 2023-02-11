@@ -34,6 +34,7 @@
             EditableTileAbove = 4,
             NullTileBellow = 5,
             EditableTileBellow = 6,
+            OccupiedTile = 7,
         }
     }
 }

@@ -857,26 +857,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 0.6627451
-      objectReference: {fileID: 0}
-    - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 0.6627451
-      objectReference: {fileID: 0}
-    - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 0.6784314
-      objectReference: {fileID: 0}
     - target: {fileID: 6328801447179413717, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1264,7 +1244,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 4007428063050672679}
-  isSingleInstanceEditor: 1
+  isSingleTypeEditor: 1
+  singleType: 12
+  isSingleInstanceEditor: 0
 --- !u!1 &4007428063050672679 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3799294447354124338, guid: 864804fe332ca104d9a1967e76773334,

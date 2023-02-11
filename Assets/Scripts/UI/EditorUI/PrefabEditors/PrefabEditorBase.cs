@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NaughtyAttributes;
 using Scripts.Building;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning;
@@ -28,7 +29,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         where TPrefab : PrefabBase
         where TService : IPrefabService<TC>, new()
     {
-        [Tooltip("Means that this editor handles just one kind of prefab of that type. Like EntryPoints, for example.")]
+        [Tooltip("Means that this editor handles just one type of the prefab. Like EntryPoints, for example.")]
+        [SerializeField] private bool isSingleTypeEditor;
+        
+        [ShowIf(nameof(isSingleTypeEditor))]
+        [Tooltip("Type for single type editors")]
+        [SerializeField] private EPrefabType singleType;
+        
+        [EnableIf(nameof(isSingleTypeEditor))]
+        [Tooltip("Means that this editor handles just one instance of its type. Like EditorStartPoint, for example.")]
         [SerializeField] private bool isSingleInstanceEditor;
         
         protected Transform Content;
@@ -105,7 +114,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         /// </summary>
         public virtual void Open()
         {
-            _mainWindow.SetActive(false);
+            _mainWindow.SetActive(isSingleInstanceEditor || isSingleTypeEditor);
             _prefabList.Close();
             _existingList.Close();
             _prefabTitle.SetActive(false);
@@ -490,5 +499,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _deleteButton.SetTextColor(Colors.Negative);
             _closeButton = buttons.Find("CloseButton").GetComponent<Button>();
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (!isSingleTypeEditor) isSingleInstanceEditor = false;
+        }
+#endif
     }
 }

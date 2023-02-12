@@ -2,6 +2,7 @@
 using System.Linq;
 using Scripts.Helpers;
 using Scripts.Localization;
+using Scripts.System;
 
 namespace Scripts.Building
 {
@@ -9,6 +10,7 @@ namespace Scripts.Building
     {
         public string CampaignName;
         public string StartMapName;
+        public string CampaignStartEntryPointName;
         public List<MapDescription> Maps;
 
         public Campaign()
@@ -26,6 +28,21 @@ namespace Scripts.Building
             
             Logger.LogWarning($"Start map not set or not found in campaign: {CampaignName}");
             return Maps[0];
+        }
+        
+        public EntryPoint GetStarterEntryPoint()
+        {
+            MapDescription map = GetStarterMap();
+            EntryPoint entryPoint = map.EntryPoints.FirstOrDefault(ep => ep.name == CampaignStartEntryPointName);
+            if (entryPoint != null) return entryPoint;
+            
+            Logger.LogWarning($"Start entry point not set or not found in campaign: {CampaignName}, using first in the list.");
+            
+            if (map.EntryPoints.Count != 0) return map.EntryPoints[0];
+            
+            Logger.LogError($"No entry points found in map: {map.MapName}");
+            
+            return null;
         }
 
         /// <summary>

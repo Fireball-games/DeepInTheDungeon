@@ -1,4 +1,5 @@
 ﻿using Scripts.Building;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
@@ -17,6 +18,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private CageController SelectedCursor => EditorUIManager.Instance.SelectedCage;
         private RotationWidget _rotationWidget;
         private ImageButton _searchButton;
+        
+        private static MapEditorManager Manager => MapEditorManager.Instance;
+        private static EditorCameraService CameraService => EditorCameraService.Instance;
         
         private Vector3 _originalPosition;
         private Quaternion _originalRotation;
@@ -60,9 +64,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             _editorStartIndicator.SetPositionByWorld(_originalPosition);
             _editorStartIndicator.SetArrowRotation(_originalRotation);
+            SetActive(false);
         }
 
-        public void MoveCameraToPrefab(Vector3 worldPosition) => EditorCameraService.Instance.MoveCameraToPrefab(worldPosition);
+        public void MoveCameraToPrefab(Vector3 worldPosition) => CameraService.MoveCameraToPrefab(worldPosition);
 
         public Vector3 GetCursor3DScale() => Vector3.one;
         
@@ -74,8 +79,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void SetEdited(bool isEdited)
         {
-            
             _startPositionChanged = isEdited;
+            
+            EditorUIManager.Instance.SetAnyObjectEdited(isEdited);
+            EditorEvents.TriggerOnPrefabEdited(isEdited);
+            
             SetButtons();
         }
         
@@ -99,31 +107,33 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void Save()
         {
             MapDescription currentMap = GameManager.Instance.CurrentMap;
+            _originalPosition = _indicatorTransform.position;
+            _originalRotation = _indicatorTransform.rotation;
             _editorStartIndicator.SetPositionInMapAndWorld(_editorStartIndicator.transform.position);
             currentMap.EditorPlayerStartRotation = _editorStartIndicator.GetPlayerMapRotation();
-            MapEditorManager.Instance.SaveMap();
+            Manager.SaveMap();
             SetEdited(false);
             SelectedCursor.Hide();
         }
         
         private void OnSearchButtonMouseExit()
         {
-            MapEditorManager.Instance.SetFloor(_originalFloorForNavigation);
-            EditorCameraService.Instance.MoveCameraTo(_navigationPositionRotation);
+            Manager.SetFloor(_originalFloorForNavigation);
+            CameraService.MoveCameraTo(_navigationPositionRotation);
         }
 
         private void OnSearchButtonMouseEnter()
         {
-            _originalFloorForNavigation = MapEditorManager.Instance.CurrentFloor;
-            _navigationPositionRotation = EditorCameraService.Instance.GetCameraTransformData();
-            EditorCameraService.Instance.MoveCameraToPrefab(_indicatorTransform.position);
+            _originalFloorForNavigation = Manager.CurrentFloor;
+            _navigationPositionRotation = CameraService.GetCameraTransformData();
+            CameraService.MoveCameraToPrefab(_indicatorTransform.position);
         }
 
         private void OnSearchButtonClicked()
         {
-            _originalFloorForNavigation = MapEditorManager.Instance.CurrentFloor;
-            _navigationPositionRotation = EditorCameraService.Instance.GetCameraTransformData();
-            EditorCameraService.Instance.MoveCameraTo(_navigationPositionRotation);
+            _originalFloorForNavigation = Manager.CurrentFloor;
+            _navigationPositionRotation = CameraService.GetCameraTransformData();
+            CameraService.MoveCameraTo(_navigationPositionRotation);
         }
 
         private void AssignComponents()

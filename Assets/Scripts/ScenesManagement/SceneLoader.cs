@@ -1,7 +1,10 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Scripts.EventsManagement;
 using Scripts.System.MonoBases;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Logger = Scripts.Helpers.Logger;
 
@@ -14,6 +17,11 @@ namespace Scripts.ScenesManagement
             StartCoroutine(LoadSceneAsync(sceneName));
         }
         
+        public async Task LoadMainMenuScene(bool fadeIn = true, UnityAction onFadeFinished = null)
+        {
+            await LoadSceneAsync(Scenes.MainSceneName, fadeIn, onFadeFinished);
+        }
+
         public void LoadMainScene()
         {
             StartCoroutine(LoadSceneAsync(Scenes.MainSceneName));
@@ -22,6 +30,34 @@ namespace Scripts.ScenesManagement
         public void LoadEditorScene()
         {
             StartCoroutine(LoadSceneAsync(Scenes.EditorSceneName));
+        }
+        
+        private static async Task<bool> LoadSceneAsync(string sceneName, bool fadeIn = true, UnityAction onLoadFinished = null)
+        {
+            if (fadeIn)
+            {
+                await ScreenFader.FadeIn(0.5f);
+            }
+
+            if (!Scenes.IsValidSceneName(sceneName))
+            {
+                Logger.LogWarning("Invalid scene name");
+                return false;
+            }
+
+            EventsManager.TriggerOnSceneStartedLoading();
+
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+            while (!asyncLoad.isDone)
+            {
+                await Task.Yield();
+            }
+
+            ScreenFader.FadeOut(0.5f);
+            EventsManager.TriggerOnSceneFinishedLoading(sceneName);
+
+            return true;
         }
 
         private static IEnumerator LoadSceneAsync(string sceneName)

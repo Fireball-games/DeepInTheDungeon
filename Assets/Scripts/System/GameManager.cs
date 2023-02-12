@@ -10,6 +10,7 @@ using Scripts.System.Pooling;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.System
 {
@@ -203,6 +204,11 @@ namespace Scripts.System
             }
 
             StartBuildingLevel();
+        }
+
+        public void StartGame()
+        {
+            Logger.Log("Starting game.");
         }
     }
 }

@@ -31,9 +31,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             nameof(OnLookDirectionChanged),
             setValueFromConfiguration: false)]
         private RotationWidget _;
-        
-        protected override IEnumerable<EntryPointConfiguration> GetExistingConfigurations() 
-            => MapBuilder.MapDescription.EntryPoints.Select(ep => ep.ToConfiguration());
 
         protected override EntryPointConfiguration GetNewConfiguration(string prefabName) => new()
         {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -27,6 +26,7 @@ namespace Scripts.UI.EditorUI
         private Transform _upperRightPanel;
         private InputDialog _inputDialog;
         private EntryPointEditor _entryPointEditor;
+        private EditorStartPointEditor _editorStartPointEditor;
         private WallEditor _wallEditor;
         private TilePrefabEditor _tilePrefabEditor;
         private TriggerEditor _triggerEditor;
@@ -68,6 +68,7 @@ namespace Scripts.UI.EditorUI
             MapSelectionDialog = transform.Find("MapSelectionDialog").GetComponent<MapSelectionDialog>();
             _inputDialog = transform.Find("InputDialog").GetComponent<InputDialog>();
             _entryPointEditor = _body.Find("EntryPointEditor").GetComponent<EntryPointEditor>();
+            _editorStartPointEditor = _body.Find("EditorStartPointEditor").GetComponent<EditorStartPointEditor>();
             _wallEditor = _body.Find("WallEditor").GetComponent<WallEditor>();
             _tilePrefabEditor = _body.Find("TilePrefabEditor").GetComponent<TilePrefabEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
@@ -83,6 +84,7 @@ namespace Scripts.UI.EditorUI
             _editors = new Dictionary<EWorkMode, IPrefabEditor>
             {
                 {EWorkMode.EditEntryPoints, _entryPointEditor},
+                {EWorkMode.EditEditorStart, _editorStartPointEditor},
                 {EWorkMode.Walls, _wallEditor},
                 {EWorkMode.PrefabTiles, _tilePrefabEditor},
                 {EWorkMode.Triggers, _triggerEditor},
@@ -162,6 +164,11 @@ namespace Scripts.UI.EditorUI
                     {
                         _entryPointEditor.Open(EPrefabType.Service, placeholderTransformData);
                         OpenedEditor = _entryPointEditor;
+                    }
+                    if (WorkMode is EWorkMode.EditEditorStart)
+                    {
+                        _editorStartPointEditor.Open(placeholderTransformData);
+                        OpenedEditor = _editorStartPointEditor;
                     }
                     break;
                 default:

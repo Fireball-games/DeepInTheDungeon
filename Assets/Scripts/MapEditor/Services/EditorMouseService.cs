@@ -38,12 +38,13 @@ namespace Scripts.MapEditor.Services
         private WallPrefabBase _lastEnteredWall;
         private GameObject _lastPrefabOnPosition;
 
-        private List<EWorkMode> _workModesForSimpleNullTileDetection = new()
+        private readonly List<EWorkMode> _workModesForSimpleNullTileDetection = new()
         {
             EWorkMode.PrefabTiles,
             EWorkMode.EditEntryPoints,
             EWorkMode.SetWalls,
             EWorkMode.Walls,
+            EWorkMode.EditEditorStart,
         };
 
         protected override void Awake()
@@ -201,7 +202,7 @@ namespace Scripts.MapEditor.Services
                     OpenEditorForTiledPrefab<EntryPointPrefab>(mouseButtonUpped, EPrefabType.Service);
                     break;
                 case EWorkMode.EditEditorStart:
-                    if (mouseButtonUpped == 0 && GridPositionType == EGridPositionType.None)
+                    if (mouseButtonUpped == 0 && GridPositionType == EGridPositionType.EditableTile)
                     {
                         UIManager.OpenEditorWindow(EPrefabType.Service,
                         new PositionRotation(MouseGridPosition.ToWorldPositionV3Int(), Quaternion.identity));
@@ -388,6 +389,19 @@ namespace Scripts.MapEditor.Services
             {
                 SetCursorForTiledPrefabType<EntryPointPrefab>(type);
             }
+            
+            if (Manager.WorkMode == EWorkMode.EditEditorStart)
+            {
+                if (GridPositionType == EGridPositionType.NullTile)
+                {
+                    SetDefaultCursor();
+                }
+                else
+                {
+                    Show3DCursor(MouseGridPosition);
+                    SetCursor(ECursorType.Move);
+                }
+            }
 
             if (Manager.WorkMode == EWorkMode.Build)
             {
@@ -459,7 +473,7 @@ namespace Scripts.MapEditor.Services
             }
         }
 
-        private void Show3DCursor(Vector3Int position, bool withCopyBellow = false, bool withCopyAbove = false)
+        private void Show3DCursor(Vector3Int gridPosition, bool withCopyBellow = false, bool withCopyAbove = false)
         {
             if (UIManager.IsAnyObjectEdited)
             {
@@ -467,7 +481,7 @@ namespace Scripts.MapEditor.Services
                 return;
             }
             
-            cursor3D.ShowAt(position, withCopyAbove, withCopyBellow);
+            cursor3D.ShowAt(gridPosition, withCopyAbove, withCopyBellow);
         }
     }
 }

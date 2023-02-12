@@ -31,6 +31,7 @@ namespace Scripts.Localization
         public const string DontSave = "DontSave";
         public const string Down = "Down";
         public const string East = "East";
+        public const string EditorStartPoint = "EditorStartPoint";
         public const string EmptyEditorPrompt = "EmptyEditorPrompt";
         public const string EndPoint = "EndPoint";
         public const string EnterCampaignName = "EnterCampaignName";

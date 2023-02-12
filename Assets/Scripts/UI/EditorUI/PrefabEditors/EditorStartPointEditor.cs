@@ -16,6 +16,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
     {
         private CageController SelectedCursor => EditorUIManager.Instance.SelectedCage;
         private RotationWidget _rotationWidget;
+        private ImageButton _searchButton;
         
         private Vector3 _originalPosition;
         private Quaternion _originalRotation;
@@ -28,6 +29,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private Button _cancelButton;
         
         private bool _startPositionChanged;
+        private int _originalFloorForNavigation;
+        private PositionRotation _navigationPositionRotation;
 
         private void Awake()
         {
@@ -71,6 +74,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void SetEdited(bool isEdited)
         {
+            
             _startPositionChanged = isEdited;
             SetButtons();
         }
@@ -101,6 +105,26 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SetEdited(false);
             SelectedCursor.Hide();
         }
+        
+        private void OnSearchButtonMouseExit()
+        {
+            MapEditorManager.Instance.SetFloor(_originalFloorForNavigation);
+            EditorCameraService.Instance.MoveCameraTo(_navigationPositionRotation);
+        }
+
+        private void OnSearchButtonMouseEnter()
+        {
+            _originalFloorForNavigation = MapEditorManager.Instance.CurrentFloor;
+            _navigationPositionRotation = EditorCameraService.Instance.GetCameraTransformData();
+            EditorCameraService.Instance.MoveCameraToPrefab(_indicatorTransform.position);
+        }
+
+        private void OnSearchButtonClicked()
+        {
+            _originalFloorForNavigation = MapEditorManager.Instance.CurrentFloor;
+            _navigationPositionRotation = EditorCameraService.Instance.GetCameraTransformData();
+            EditorCameraService.Instance.MoveCameraTo(_navigationPositionRotation);
+        }
 
         private void AssignComponents()
         {
@@ -113,12 +137,20 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Transform frame = body.transform.Find("Background/Frame");
             _title = frame.Find("Header/PrefabTitle").GetComponent<Title>();
             _title.SetTitle(t.Get(Keys.EditorStartPoint));
+            
             _saveButton = frame.Find("Buttons/SaveButton").GetComponent<Button>();
             _saveButton.SetTextColor(Colors.Positive);
             _saveButton.onClick.AddListener(Save);
+            
             _cancelButton = frame.Find("Buttons/CancelButton").GetComponent<Button>();
             _cancelButton.SetTextColor(Colors.Warning);
             _cancelButton.onClick.AddListener(RemoveChanges);
+            
+            _searchButton = frame.Find("Header/SearchButton").GetComponent<ImageButton>();
+            _searchButton.OnClick.AddListener(OnSearchButtonClicked);
+            _searchButton.OnMouseEnter.AddListener(OnSearchButtonMouseEnter);
+            _searchButton.OnMouseExit.AddListener(OnSearchButtonMouseExit);
+            
         }
     }
 }

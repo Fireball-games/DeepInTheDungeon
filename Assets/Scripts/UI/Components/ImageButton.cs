@@ -31,6 +31,8 @@ namespace Scripts.UI.Components
         
         public event Action<ImageButton> OnClickWithSender;
         public UnityEvent OnClick { get; } = new();
+        public UnityEvent OnMouseEnter { get; } = new();
+        public UnityEvent OnMouseExit { get; } = new();
         public event Action OnSelected;
         public event Action OnDeselected;
 
@@ -65,8 +67,8 @@ namespace Scripts.UI.Components
         private void OnEnable()
         {
             _mouseClickOverlay.OnClick += OnClick_Internal;
-            _mouseClickOverlay.OnMouseEnter += OnMouseEnter;
-            _mouseClickOverlay.OnMouseLeave += OnMouseExit;
+            _mouseClickOverlay.OnMouseEnter += OnMouseEnter_internal;
+            _mouseClickOverlay.OnMouseLeave += OnMouseExit_internal;
 
             SetBackgroundColor();
         }
@@ -79,8 +81,8 @@ namespace Scripts.UI.Components
             StopAllCoroutines();
             
             _mouseClickOverlay.OnClick -= OnClick_Internal;
-            _mouseClickOverlay.OnMouseEnter -= OnMouseEnter;
-            _mouseClickOverlay.OnMouseLeave -= OnMouseExit;
+            _mouseClickOverlay.OnMouseEnter -= OnMouseEnter_internal;
+            _mouseClickOverlay.OnMouseLeave -= OnMouseExit_internal;
         }
 
         public void SetInteractable(bool isInteractable) => IsInteractable = isInteractable;
@@ -111,22 +113,26 @@ namespace Scripts.UI.Components
             }
         }
 
-        private void OnMouseEnter()
+        private void OnMouseEnter_internal()
         {
             _isMouseEntered = true;
             
             if (!IsInteractable) return;
             
             SetBackgroundColor();
+            
+            OnMouseEnter.Invoke();
         }
 
-        private void OnMouseExit()
+        private void OnMouseExit_internal()
         {
             _isMouseEntered = false;
 
             if (!IsInteractable) return;
             
             SetBackgroundColor();
+            
+            OnMouseExit.Invoke();
         }
 
         private IEnumerator ClickedCoroutine()

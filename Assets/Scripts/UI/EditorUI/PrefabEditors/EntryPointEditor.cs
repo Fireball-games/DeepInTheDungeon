@@ -50,7 +50,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         protected override void InitializeOtherComponents()
         {
-            // Delete once generic editor is implemented.
+            // Nothing to do.
         }
 
         protected override void VisualizeOtherComponents()

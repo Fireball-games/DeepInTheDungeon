@@ -218,11 +218,33 @@ namespace Scripts.System
             Logger.Log("Starting game.");
             _currentCampaign = FileOperationsHelper.LoadStartRoomsCampaign();
             
+            bool startedMapBoolFailed = false;
+            
+            if (_currentCampaign == null)
+            {
+                startedMapBoolFailed = true;
+                Logger.LogError("Could not load start rooms campaign.");
+                _currentCampaign = MapBuilder.GenerateFallbackStartRoomsCampaign();
+            }
+            
             //TODO: Here will be logic determining which start room to load depending on player progress. Its StarterMap for now.
             
             _currentMap = _currentCampaign.GetStarterMap();
-            _currentEntryPoint = _currentMap.EntryPoints[0];
-            
+            if (_currentMap.EntryPoints.Count > 0)
+            {
+                _currentEntryPoint = _currentMap.EntryPoints[0];
+            }
+            else if (startedMapBoolFailed)
+            {
+                Logger.LogError("Could not load entry point.");
+                _currentEntryPoint = new EntryPoint
+                {
+                    isMovingForwardOnStart = false,
+                    playerGridPosition = _currentMap.EditorStartPosition,
+                    playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y
+                };
+            }
+
             if (_currentCampaign == null || _currentMap == null)
             {
                 Logger.LogError("Could not load last played campaign.");

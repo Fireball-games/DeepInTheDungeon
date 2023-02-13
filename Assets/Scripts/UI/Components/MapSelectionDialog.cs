@@ -131,7 +131,7 @@ namespace Scripts.UI.Components
             int floors = int.Parse(dialog.floorsInput.Text) + 2;
             string mapName = dialog.mapNameInput.Text;
 
-            MapDescription newMap = MapBuilder.GenerateDefaultMap(
+            MapDescription newMap = MapBuilder.GenerateFallbackStartRoomsMap(
                 Mathf.Clamp(floors, MapEditorManager.MinFloors, MapEditorManager.MaxFloors),
                 Mathf.Clamp(rows, MapEditorManager.MinRows, MapEditorManager.MaxRows),
                 Mathf.Clamp(columns, MapEditorManager.MinColumns, MapEditorManager.MaxColumns));

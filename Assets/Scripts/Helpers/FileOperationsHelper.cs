@@ -90,7 +90,7 @@ namespace Scripts.Helpers
             return loadedPrefabs != null && loadedPrefabs.Any();
         }
         
-        private static bool LoadCampaign(string campaignName, out Campaign campaign)
+        public static bool LoadCampaign(string campaignName, out Campaign campaign)
         {
             campaign = null;
 

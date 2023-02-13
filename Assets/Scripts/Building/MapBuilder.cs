@@ -8,14 +8,13 @@ using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
+using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.System.Pooling;
 using UnityEngine;
 using UnityEngine.Events;
 using static Scripts.Enums;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
-using Logger = Scripts.Helpers.Logger;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
@@ -132,12 +131,13 @@ namespace Scripts.Building
             }
         }
         
-        public Campaign GenerateDefaultCampaign()
+        public Campaign GenerateFallbackStartRoomsCampaign()
         {
-            MapDescription defaultMap = GenerateDefaultMap(3, 5, 5);
+            MapDescription defaultMap = GenerateFallbackStartRoomsMap(3, 5, 5);
             
             Campaign defaultCampaign = new()
             {
+                CampaignName = Strings.StartRoomsCampaignName,
                 StartMapName = defaultMap.MapName,
                 Maps = new List<MapDescription> { defaultMap },
             };
@@ -145,7 +145,7 @@ namespace Scripts.Building
             return defaultCampaign;
         }
 
-        public static MapDescription GenerateDefaultMap(int floors, int rows, int columns)
+        public static MapDescription GenerateFallbackStartRoomsMap(int floors, int rows, int columns)
         {
             TileDescription[,,] layout = new TileDescription[floors, rows, columns];
 
@@ -157,6 +157,9 @@ namespace Scripts.Building
             {
                 Layout = layout,
                 EditorStartPosition = center,
+                EditorPlayerStartRotation = Quaternion.identity,
+                SceneName = Scenes.MainSceneName,
+                MapName = Strings.CampaignStartMapName,
             };
         }
 

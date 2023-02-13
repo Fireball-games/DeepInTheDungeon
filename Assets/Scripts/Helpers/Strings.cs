@@ -15,7 +15,8 @@ namespace Scripts.Helpers
         public const string MainCampaign = "DeepInTheDungeon";
         public const string StartRoomsCampaignName = "StartRooms";
         public const string Untagged = "Untagged";
-        
+        public const string CampaignStartMapName = "CampaignStart";
+
         public static string GetDefaultName(string baseString, IEnumerable<string> existingNames)
         {
             int number = 1;

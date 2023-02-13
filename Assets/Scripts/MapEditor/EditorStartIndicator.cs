@@ -33,7 +33,7 @@ namespace Scripts.MapEditor
         /// <param name="y"></param>
         public void SetArrowRotationYDelta(float y) => arrow.transform.localRotation *= Quaternion.AngleAxis(y, Vector3.up);
 
-        private void SetArrowRotation(Vector3 rotation) => arrow.transform.localRotation = Quaternion.Euler(new Vector3(0f, rotation.y +90, 0f));
+        private void SetArrowRotation(Vector3 rotation) => arrow.transform.localRotation = Quaternion.Euler(new Vector3(0f, rotation.y + 90, 0f));
 
         public void SetActive(bool isActive) => body.SetActive(isActive);
 

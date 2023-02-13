@@ -7,11 +7,11 @@ namespace Scripts.System
 {
     public class GameStarter : MonoBehaviour
     {
-        private IEnumerator Start()
+        private async void Start()
         {
-            yield return new WaitForSeconds(1);
-
-            await SceneLoader.Instance.LoadMainMenuScene(false, () => GameManager.Instance.StartGame());
+            await Task.Delay(1000);
+            
+            GameManager.Instance.StartGame();
         }
     }
 }

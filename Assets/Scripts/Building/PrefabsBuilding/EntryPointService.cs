@@ -27,7 +27,7 @@ namespace Scripts.Building.PrefabsBuilding
             }
             
             Transform body = newPrefab.transform.Find("Body");
-            body.localRotation = configuration.LookDirection;
+            body.localRotation = Quaternion.Euler(0f, configuration.PlayerRotationY, 0f);
         }
 
         protected override void ProcessEmbedded(EntryPointConfiguration configuration, EntryPointPrefab prefabScript)

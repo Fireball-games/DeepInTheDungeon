@@ -10,7 +10,6 @@ using Scripts.System.Pooling;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.System
 {
@@ -83,8 +82,8 @@ namespace Scripts.System
             _currentCampaign = FileOperationsHelper.LoadLastPlayedCampaign();
             _currentMap = _currentCampaign.GetStarterMap();
             // TODO: Once save positions work, get data from there
-            _currentEntryPoint.playerLocation = _currentMap.EditorStartPosition;
-            _currentEntryPoint.playerRotation = _currentMap.EditorPlayerStartRotation;
+            _currentEntryPoint.playerGridPosition = _currentMap.EditorStartPosition;
+            _currentEntryPoint.playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y;
             
             if (_currentCampaign == null || _currentMap == null)
             {
@@ -106,8 +105,8 @@ namespace Scripts.System
                 return;
             }
             
-            _currentEntryPoint.playerLocation = _currentMap.EditorStartPosition;
-            _currentEntryPoint.playerRotation = _currentMap.EditorPlayerStartRotation;
+            _currentEntryPoint.playerGridPosition = _currentMap.EditorStartPosition;
+            _currentEntryPoint.playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y;
             
             OnStartGameRequested();
         }
@@ -159,10 +158,19 @@ namespace Scripts.System
             player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
             player.transform.parent = null;
-            player.PlayerMovement.SetPositionAndRotation(_currentEntryPoint.playerLocation, _currentEntryPoint.playerRotation);
+            player.PlayerMovement.SetPositionAndRotation(
+                _currentEntryPoint.playerGridPosition,
+                Quaternion.Euler(0f, _currentEntryPoint.playerRotationY, 0f));
             player.PlayerMovement.SetCamera();
-
+            
             _movementEnabled = true;
+            ScreenFader.FadeOut(0.5f);
+            
+            if (_currentEntryPoint.isMovingForwardOnStart)
+            {
+                player.PlayerMovement.MoveForward();
+            }
+            
             EventsManager.TriggerOnLevelStarted();
         }
 
@@ -200,7 +208,6 @@ namespace Scripts.System
                 IsPlayingFromEditor = false;
                 CameraManager.Instance.SetMainCamera();
                 _gameMode = EGameMode.MainMenu;
-                return;
             }
 
             StartBuildingLevel();
@@ -209,6 +216,20 @@ namespace Scripts.System
         public void StartGame()
         {
             Logger.Log("Starting game.");
+            _currentCampaign = FileOperationsHelper.LoadStartRoomsCampaign();
+            
+            //TODO: Here will be logic determining which start room to load depending on player progress. Its StarterMap for now.
+            
+            _currentMap = _currentCampaign.GetStarterMap();
+            _currentEntryPoint = _currentMap.EntryPoints[0];
+            
+            if (_currentCampaign == null || _currentMap == null)
+            {
+                Logger.LogError("Could not load last played campaign.");
+                return;
+            }
+            
+            OnStartGameRequested();
         }
     }
 }

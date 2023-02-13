@@ -57,6 +57,11 @@ namespace Scripts.Helpers
                 onSaveFailed?.Invoke();
             }
         }
+        
+        public static Campaign LoadStartRoomsCampaign()
+        {
+            return LoadCampaign(Strings.StartRoomsCampaignName, out Campaign campaign) ? campaign : null;
+        }
 
         /// <summary>
         /// Loads last played campaign.

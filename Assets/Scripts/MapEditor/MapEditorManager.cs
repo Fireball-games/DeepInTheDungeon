@@ -17,6 +17,7 @@ using static Scripts.Helpers.PlayerPrefsHelper;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MonoBases.DialogBase;
 using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor
 {
@@ -85,6 +86,12 @@ namespace Scripts.MapEditor
             bool useStartPosition = true,
             ELevel floorsCountChange = ELevel.Equal)
         {
+            if (map == null)
+            {
+                Logger.LogError("Map is null, can't build the map");
+                return;
+            }
+            
             if (MapIsBeingBuilt) return;
 
             MapIsBeingBuilt = true;

@@ -27,7 +27,12 @@ namespace Scripts.Building
             if (map != null) return map;
             
             Logger.LogWarning($"Start map not set or not found in campaign: {CampaignName}");
-            return Maps[0];
+            
+            if (Maps.Count != 0) return Maps[0];
+            
+            Logger.LogError($"No maps found in campaign: {CampaignName}");
+
+            return null;
         }
         
         public EntryPoint GetStarterEntryPoint()

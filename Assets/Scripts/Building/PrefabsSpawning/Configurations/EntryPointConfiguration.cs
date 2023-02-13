@@ -1,12 +1,10 @@
-﻿using UnityEngine;
-
-namespace Scripts.Building.PrefabsSpawning.Configurations
+﻿namespace Scripts.Building.PrefabsSpawning.Configurations
 {
     public class EntryPointConfiguration : PrefabConfiguration
     {
         public bool IsMovingForwardOnStart;
         public string EntryPointName;
-        public Quaternion LookDirection;
+        public int PlayerRotationY;
         public override string DisplayName => EntryPointName;
 
         public EntryPointConfiguration()
@@ -17,7 +15,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         {
             IsMovingForwardOnStart = configuration.IsMovingForwardOnStart;
             EntryPointName = configuration.EntryPointName;
-            LookDirection = configuration.LookDirection;
+            PlayerRotationY = configuration.PlayerRotationY;
         }
         
         public EntryPointConfiguration(EntryPointPrefab prefabScript, string ownerGuid, bool spawnPrefabOnBuild)

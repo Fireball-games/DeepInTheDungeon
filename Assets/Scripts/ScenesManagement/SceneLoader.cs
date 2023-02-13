@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Scripts.EventsManagement;
 using Scripts.System.MonoBases;
@@ -17,9 +16,9 @@ namespace Scripts.ScenesManagement
             StartCoroutine(LoadSceneAsync(sceneName));
         }
         
-        public async Task LoadMainMenuScene(bool fadeIn = true, UnityAction onFadeFinished = null)
+        public async Task LoadMainMenuScene(bool fadeIn = true, UnityAction onSceneLoaded = null)
         {
-            await LoadSceneAsync(Scenes.MainSceneName, fadeIn, onFadeFinished);
+            await LoadSceneAsync(Scenes.MainSceneName, fadeIn, onSceneLoaded);
         }
 
         public void LoadMainScene()
@@ -54,9 +53,8 @@ namespace Scripts.ScenesManagement
                 await Task.Yield();
             }
 
-            ScreenFader.FadeOut(0.5f);
             EventsManager.TriggerOnSceneFinishedLoading(sceneName);
-
+            onLoadFinished?.Invoke();
             return true;
         }
 

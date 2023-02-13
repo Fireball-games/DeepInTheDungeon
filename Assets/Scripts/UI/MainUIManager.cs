@@ -73,7 +73,7 @@ namespace Scripts.UI
 
         private void OnLevelStarted()
         {
-            _hud ??= FindObjectOfType<HUDController>(true).gameObject;
+            _hud ??= FindObjectOfType<HUDController>(true)?.gameObject;
 
             if (!_hud) return;
             

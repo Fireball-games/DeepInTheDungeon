@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
@@ -26,7 +24,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private InputField _nameInputField;
         
         [ConfigurableProperty(
-            nameof(EntryPointConfiguration.LookDirection),
+            nameof(EntryPointConfiguration.PlayerRotationY),
             Keys.Rotate,
             nameof(OnLookDirectionChanged),
             setValueFromConfiguration: false)]
@@ -42,7 +40,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             IsMovingForwardOnStart = true,
             EntryPointName = t.Get(Keys.EnterName),
-            LookDirection = Quaternion.identity,
+            PlayerRotationY = 0,
         };
 
         protected override EntryPointConfiguration CloneConfiguration(EntryPointConfiguration sourceConfiguration) =>
@@ -59,7 +57,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (PhysicalPrefabBody && EditedConfiguration != null)
             {
-                PhysicalPrefabBody.transform.rotation = EditedConfiguration.LookDirection;
+                PhysicalPrefabBody.transform.rotation = Quaternion.Euler(0f, EditedConfiguration.PlayerRotationY, 0f);
             }
         }
 
@@ -78,11 +76,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             EditedConfiguration.EntryPointName = entryPointName;
         }
         
-        private void OnLookDirectionChanged(int lookDirection)
+        private void OnLookDirectionChanged(int rotateDirection)
         {
-            float currentRotationY = EditedConfiguration.LookDirection.eulerAngles.y;
-            EditedConfiguration.LookDirection = Quaternion.Euler(0, currentRotationY + (lookDirection > 0 ? 90 : -90), 0);
-            PhysicalPrefabBody.transform.rotation = EditedConfiguration.LookDirection;
+            PhysicalPrefabBody.transform.rotation *= Quaternion.Euler(0f, rotateDirection * 90, 0f);
+            EditedConfiguration.PlayerRotationY = (int)PhysicalPrefabBody.transform.rotation.eulerAngles.y;
         }
     }
 }

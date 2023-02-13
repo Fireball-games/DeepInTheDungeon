@@ -10,6 +10,9 @@ namespace Scripts.ScenesManagement
     {
 #if UNITY_EDITOR
         private const string ScenesDirectory = "Assets/Scenes";
+        
+        [MenuItem("Scenes/Starter Scene", false)]
+        private static void ShowStarterScene() => LoadScene(Scenes.StartSceneName);
 
         [MenuItem("Scenes/Main Scene", false)]
         private static void ShowMainScene() => LoadScene(Scenes.MainSceneName);

@@ -1,3 +1,4 @@
+using System;
 using Lean.Localization;
 using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
@@ -16,6 +17,9 @@ namespace Scripts.UI
     public class MainUIManager : SingletonNotPersisting<MainUIManager>
     {
         public GameObject body;
+        private Modal _modal;
+        private MainEscapeMenu _mainEscapeMenu;
+        
         private Button _newCampaignButton;
         private Button _continueCampaignButton;
         private Button _customCampaignButton;
@@ -103,7 +107,10 @@ namespace Scripts.UI
 
         private void AssignComponents()
         {
-            Transform playButtons = body.transform.Find("MainMenu/Frame/PlayButtons");
+            _modal = body.transform.Find("Modal").GetComponent<Modal>();
+            _mainEscapeMenu = body.transform.Find("MainMenu").GetComponent<MainEscapeMenu>();
+            
+            Transform playButtons = body.transform.Find("MainMenu/Body/Frame/PlayButtons");
             _newCampaignButton = playButtons.Find("NewCampaignButton").GetComponent<Button>();
             _newCampaignButton.onClick.AddListener(NewCampaignClicked);
             _continueCampaignButton = playButtons.Find("ContinueCampaignButton").GetComponent<Button>();
@@ -113,7 +120,7 @@ namespace Scripts.UI
             _lastEditedMapButton = playButtons.Find("LastEditedMapButton").GetComponent<Button>();
             _lastEditedMapButton.onClick.AddListener(LastEditedMapClicked);
             
-            Transform systemButtons = body.transform.Find("MainMenu/Frame/SystemButtons");
+            Transform systemButtons = body.transform.Find("MainMenu/Body/Frame/SystemButtons");
             _createNewCharacterButton = systemButtons.Find("CreateNewCharacterButton").GetComponent<Button>();
             _createNewCharacterButton.onClick.AddListener(CreateNewCharacterClicked);
             _settingsButton = systemButtons.Find("SettingsButton").GetComponent<Button>();

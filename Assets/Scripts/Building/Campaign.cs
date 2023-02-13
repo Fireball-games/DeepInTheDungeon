@@ -2,7 +2,6 @@
 using System.Linq;
 using Scripts.Helpers;
 using Scripts.Localization;
-using Scripts.System;
 
 namespace Scripts.Building
 {
@@ -89,6 +88,11 @@ namespace Scripts.Building
             {
                 Maps[index] = newMap;
             }
+        }
+
+        public bool HasMapWithName(string mapName)
+        {
+            return Maps.Any(map => map.MapName == mapName);
         }
     }
 }

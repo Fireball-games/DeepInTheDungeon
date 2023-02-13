@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Threading.Tasks;
-using Scripts.ScenesManagement;
+﻿using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Scripts.System
@@ -11,7 +9,7 @@ namespace Scripts.System
         {
             await Task.Delay(1000);
             
-            GameManager.Instance.StartGame();
+            GameManager.Instance.StartMainScene();
         }
     }
 }

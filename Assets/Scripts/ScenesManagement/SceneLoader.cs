@@ -11,24 +11,14 @@ namespace Scripts.ScenesManagement
 {
     public class SceneLoader : Singleton<SceneLoader>
     {
-        public void LoadScene(string sceneName)
+        public async void LoadScene(string sceneName)
         {
-            StartCoroutine(LoadSceneAsync(sceneName));
-        }
-        
-        public async Task LoadMainMenuScene(bool fadeIn = true, UnityAction onSceneLoaded = null)
-        {
-            await LoadSceneAsync(Scenes.MainSceneName, fadeIn, onSceneLoaded);
+            await LoadSceneAsync(sceneName);
         }
 
-        public void LoadMainScene()
+        public async void LoadEditorScene()
         {
-            StartCoroutine(LoadSceneAsync(Scenes.MainSceneName));
-        }
-
-        public void LoadEditorScene()
-        {
-            StartCoroutine(LoadSceneAsync(Scenes.EditorSceneName));
+           await LoadSceneAsync(Scenes.EditorSceneName);
         }
         
         private static async Task<bool> LoadSceneAsync(string sceneName, bool fadeIn = true, UnityAction onLoadFinished = null)
@@ -56,28 +46,6 @@ namespace Scripts.ScenesManagement
             EventsManager.TriggerOnSceneFinishedLoading(sceneName);
             onLoadFinished?.Invoke();
             return true;
-        }
-
-        private static IEnumerator LoadSceneAsync(string sceneName)
-        {
-            EventsManager.TriggerOnSceneStartedLoading();
-            
-            if (!Scenes.IsValidSceneName(sceneName))
-            {
-                Logger.LogWarning("Invalid scene name");
-                yield break;
-            }
-
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-            while (!asyncLoad.isDone)
-            {
-                yield return null;
-            }
-
-            yield return null;
-            
-            EventsManager.TriggerOnSceneFinishedLoading(sceneName);            
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Scripts.Building;
+﻿using System.Threading.Tasks;
+using Scripts.Building;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
@@ -7,6 +8,7 @@ using Scripts.Player;
 using Scripts.ScenesManagement;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
+using Scripts.UI;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
@@ -42,7 +44,7 @@ namespace Scripts.System
 
         public enum EGameMode
         {
-            MainMenu = 0,
+            MainScene = 0,
             Play = 1,
             Editor = 2,
         }
@@ -84,6 +86,7 @@ namespace Scripts.System
             // TODO: Once save positions work, get data from there
             _currentEntryPoint.playerGridPosition = _currentMap.EditorStartPosition;
             _currentEntryPoint.playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y;
+            _currentEntryPoint.isMovingForwardOnStart = false;
             
             if (_currentCampaign == null || _currentMap == null)
             {
@@ -97,16 +100,27 @@ namespace Scripts.System
         public void LoadLastEditedMap()
         {
             _currentCampaign = FileOperationsHelper.LoadLastEditedCampaign();
-            _currentMap = _currentCampaign.GetMapByName(PlayerPrefsHelper.LastEditedMap[1]);
             
-            if (_currentCampaign == null || _currentMap == null)
+            if (_currentCampaign != null && _currentCampaign.HasMapWithName(PlayerPrefsHelper.LastEditedMap[1]))
             {
+                _currentMap = _currentCampaign.GetMapByName(PlayerPrefsHelper.LastEditedMap[1]);
+            }
+            else
+            {
+                PlayerPrefsHelper.RemoveLastEditedMap();
+                
+                if (MainUIManager.Instance)
+                {
+                    MainUIManager.Instance.RefreshButtons();
+                }
+                
                 Logger.LogError("Could not load last edited map.");
                 return;
             }
-            
+
             _currentEntryPoint.playerGridPosition = _currentMap.EditorStartPosition;
             _currentEntryPoint.playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y;
+            _currentEntryPoint.isMovingForwardOnStart = false;
             
             OnStartGameRequested();
         }
@@ -151,7 +165,7 @@ namespace Scripts.System
             SceneLoader.Instance.LoadScene(_currentMap.SceneName);
         }
 
-        private void OnLayoutBuilt()
+        private async void OnLayoutBuilt()
         {
             if (!_startLevelAfterBuildFinishes) return;
             
@@ -165,6 +179,8 @@ namespace Scripts.System
             
             _movementEnabled = true;
             ScreenFader.FadeOut(0.5f);
+
+            await Task.Delay(200);
             
             if (_currentEntryPoint.isMovingForwardOnStart)
             {
@@ -182,7 +198,7 @@ namespace Scripts.System
             }
         }
 
-        private async void OnSceneFinishedLoading(string sceneName)
+        private void OnSceneFinishedLoading(string sceneName)
         {
             MapBuilder.DemolishMap();
             
@@ -191,13 +207,15 @@ namespace Scripts.System
                 _startLevelAfterBuildFinishes = false;
                 _gameMode = EGameMode.Editor;
                 
+                ScreenFader.FadeOut(0.5f);
+                
                 if (IsPlayingFromEditor)
                 {
                     MapEditorManager.Instance.OrderMapConstruction(CurrentMap, true);
                 }
                 else
                 {
-                    await EditorUIManager.Instance.MapSelectionDialog.Show(false, false);
+                    EditorUIManager.Instance.ShowEditorUI();
                 }
                 
                 return;
@@ -206,14 +224,13 @@ namespace Scripts.System
             if (sceneName is Scenes.MainSceneName)
             {
                 IsPlayingFromEditor = false;
-                CameraManager.Instance.SetMainCamera();
-                _gameMode = EGameMode.MainMenu;
+                _gameMode = EGameMode.MainScene;
             }
 
             StartBuildingLevel();
         }
 
-        public void StartGame()
+        public void StartMainScene()
         {
             Logger.Log("Starting game.");
             _currentCampaign = FileOperationsHelper.LoadStartRoomsCampaign();

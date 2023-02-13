@@ -75,5 +75,11 @@ namespace Scripts.Helpers
         public static string GetCampaignMapKey(string campaignName, string mapName) => $"{campaignName}_{mapName}";
         
         public static string GetCampaignMapKey(string[] campaignMapKey) => GetCampaignMapKey(campaignMapKey[0], campaignMapKey[1]);
+
+        public static void RemoveLastEditedMap()
+        {
+            PlayerPrefs.DeleteKey(Strings.LastEditedMap);
+            _lastEditedMap = null;
+        }
     }
 }

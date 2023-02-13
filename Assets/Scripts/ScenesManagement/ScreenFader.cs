@@ -39,10 +39,14 @@ namespace Scripts.ScenesManagement
             await tcs.Task;
         }
         
-        public static void FadeOut(float duration)
+        public static void FadeOut(float duration, UnityAction onFadeOutFinished = null)
         {
             _faderImage.color = new Color(0, 0, 0, 1);
-            _faderImage.DOColor(new Color(0,0,0,0), duration).Play().OnComplete(() => _gameObject.SetActive(false));
+            _faderImage.DOColor(new Color(0,0,0,0), duration).Play().OnComplete(() =>
+            {
+                _gameObject.SetActive(false);
+                onFadeOutFinished?.Invoke();
+            });
         }
         
         private void OnFadeFinished_internal()

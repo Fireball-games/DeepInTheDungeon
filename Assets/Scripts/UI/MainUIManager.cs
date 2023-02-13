@@ -58,6 +58,8 @@ namespace Scripts.UI
             EventsManager.OnLevelStarted -= OnLevelStarted;
             EventsManager.OnSceneFinishedLoading -= OnSceneFinishedLoading;
         }
+        
+        public void RefreshButtons() => SetComponents();
 
         private void NewCampaignClicked() => Logger.LogNotImplemented();
 

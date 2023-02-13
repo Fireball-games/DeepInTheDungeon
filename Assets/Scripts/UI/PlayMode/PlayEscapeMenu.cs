@@ -11,6 +11,8 @@ namespace Scripts.UI.PlayMode
     {
         private Button _toEditorButton;
         private Button _toMainSceneButton;
+        
+        private static GameManager GameManager => GameManager.Instance;
 
         private void Awake()
         {
@@ -23,13 +25,13 @@ namespace Scripts.UI.PlayMode
 
         protected override void SetContentOnShow()
         {
-            _toEditorButton.gameObject.SetActive(GameManager.Instance.IsPlayingFromEditor);
+            _toEditorButton.gameObject.SetActive(GameManager.IsPlayingFromEditor);
             _toEditorButton.SetText(t.Get(Keys.ReturnToEditor));
 
             _toMainSceneButton.SetText(t.Get(Keys.ReturnToMainScene));
         }
 
-        private void LeaveToMainScene() => SceneLoader.Instance.LoadMainScene();
+        private void LeaveToMainScene() => GameManager.StartMainScene();
 
         private void LeaveToEditor() => SceneLoader.Instance.LoadEditorScene();
     }

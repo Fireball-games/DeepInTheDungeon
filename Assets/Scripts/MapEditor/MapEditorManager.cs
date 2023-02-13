@@ -7,7 +7,6 @@ using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor.Services;
-using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.EditorUI;
@@ -148,7 +147,7 @@ namespace Scripts.MapEditor
             MapBuilder.DemolishMap();
             GameManager.SetCurrentMap(null);
             GameManager.IsPlayingFromEditor = false;
-            SceneLoader.Instance.LoadMainScene();
+            GameManager.StartMainScene();
         }
 
         public async void PlayMap()

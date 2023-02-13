@@ -237,5 +237,10 @@ namespace Scripts.UI.EditorUI
         {
             return await _inputDialog.Show(title, placeholder, "");
         }
+
+        public async void ShowEditorUI()
+        {
+            await MapSelectionDialog.Show(false, false);
+        }
     }
 }

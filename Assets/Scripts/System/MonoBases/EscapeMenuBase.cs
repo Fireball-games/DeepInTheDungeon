@@ -5,6 +5,7 @@ namespace Scripts.System.MonoBases
 {
     public abstract class EscapeMenuBase : DialogBase
     {
+        protected bool VisibleModal = true;
         private static PlayerCameraController PlayerCameraController => PlayerCameraController.Instance;
         
         private bool _isOpened;
@@ -25,7 +26,7 @@ namespace Scripts.System.MonoBases
                 PlayerCameraController.IsLookModeOn = false;
                 PlayerCameraController.ResetCamera();
                 _isOpened = true;
-                Show();
+                Show(VisibleModal);
                 return;
             }
 
@@ -34,11 +35,11 @@ namespace Scripts.System.MonoBases
             CloseDialog();
         }
         
-        private async void Show()
+        private async void Show(bool visibleModal)
         {
             SetContentOnShow();
 
-            if (await base.Show() is not EConfirmResult.Cancel) return;
+            if (await base.Show(showVisibleModal: visibleModal) is not EConfirmResult.Cancel) return;
 
             PlayerCameraController.IsLookModeOn = _isFreeLookOnOnOpen;
             _isOpened = false;

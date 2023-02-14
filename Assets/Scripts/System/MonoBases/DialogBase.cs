@@ -30,7 +30,8 @@ namespace Scripts.System.MonoBases
         public async Task<EConfirmResult> Show(string dialogTitle = null,
             string confirmButtonText = null,
             string cancelButtonText = null,
-            bool isModalClosingDialog = true)
+            bool isModalClosingDialog = true,
+            bool showVisibleModal = true)
         {
             _isClosed = false;
             bool confirmTextIsNull = string.IsNullOrEmpty(confirmButtonText);
@@ -59,7 +60,7 @@ namespace Scripts.System.MonoBases
                 EditorMouseService.Instance.ResetCursor();
             }
 
-            Modal.Show(this, isModalClosingDialog);
+            Modal.Show(this, isModalClosingDialog, showVisibleModal);
 
             _taskCompletionSource = new TaskCompletionSource<EConfirmResult>();
             SetActive(true);

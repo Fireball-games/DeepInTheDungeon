@@ -12,6 +12,7 @@ using Scripts.UI;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.System
 {
@@ -265,12 +266,12 @@ namespace Scripts.System
                 Quaternion.Euler(0f, _currentEntryPoint.playerRotationY, 0f));
             player.PlayerMovement.SetCamera();
             
+            // To allow playing StartRooms from Editor
             _movementEnabled = true;
 
-            // To allow playing StartRooms from Editor
             if (SceneLoader.IsInMainScene && !IsPlayingFromEditor)
             {
-                SetControlsForMainScene();
+                _movementEnabled = false;
             }
 
             ScreenFader.FadeOut(0.5f);
@@ -279,10 +280,22 @@ namespace Scripts.System
             
             if (_currentEntryPoint.isMovingForwardOnStart)
             {
+                if (SceneLoader.IsInMainScene && !IsPlayingFromEditor)
+                {
+                    PlayerMovement.OnStartResting.AddListener(OnEntryMovementFinished);
+                    _movementEnabled = false;
+                }
+                
                 player.PlayerMovement.MoveForward(true);
             }
             
             EventsManager.TriggerOnLevelStarted();
+        }
+
+        private void OnEntryMovementFinished()
+        {
+            SetControlsForMainScene();
+            PlayerMovement.OnStartResting.RemoveListener(OnEntryMovementFinished);
         }
 
         private void SetControlsForMainScene()

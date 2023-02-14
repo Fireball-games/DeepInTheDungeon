@@ -59,13 +59,21 @@ namespace Scripts.UI
 
         private void CustomCampaignClicked() => Logger.LogNotImplemented();
 
-        private void LastEditedMapClicked() => GameManager.LoadLastEditedMap();
+        private void LastEditedMapClicked()
+        {
+            body.SetActive(false);
+            GameManager.LoadLastEditedMap();
+        }
 
         private void CreateNewCharacterClicked() => Logger.LogNotImplemented();
 
         private void SettingsClicked() => Logger.LogNotImplemented();
 
-        private void EditorClicked() => SceneLoader.Instance.LoadEditorScene();
+        private void EditorClicked()
+        {
+            body.SetActive(false);
+            SceneLoader.Instance.LoadEditorScene();
+        }
 
         private void ExitGameClicked() => Application.Quit();
 

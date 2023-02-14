@@ -31,7 +31,7 @@ namespace Scripts.UI
             _openedQueue = new Stack<OpenQueueItem>();
         }
         
-        public static void Show(DialogBase subscriber, bool closeOnclick = true)
+        public static void Show(DialogBase subscriber, bool closeOnclick = true, bool showVisibleModal = true)
         {
             _body.SetActive(true);
 
@@ -40,7 +40,11 @@ namespace Scripts.UI
             if (!_background || _background.transform.localScale.x != 0) return;
             
             _background.transform.localScale = Vector3.zero;
-            _background.transform.DOScale(BackgroundMaxScale, AnimationDuration).Play();
+            
+            if (showVisibleModal)
+            {
+                _background.transform.DOScale(BackgroundMaxScale, AnimationDuration).Play();
+            }
         }
 
         public static void Hide()

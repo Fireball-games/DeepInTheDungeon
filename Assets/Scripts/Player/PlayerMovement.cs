@@ -13,6 +13,7 @@ using Scripts.MapEditor.Services;
 using Scripts.ScriptableObjects;
 using Scripts.System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Scripts.Player
 {
@@ -39,7 +40,26 @@ namespace Scripts.Player
 
         private bool _isStartPositionSet;
         private bool _isBashingIntoWall;
+        
         private bool _atRest = true;
+        
+        public static UnityEvent OnStartResting = new();
+
+        public bool AtRest
+        {
+            get => _atRest;
+            private set
+            {
+                if (value == _atRest) return;
+                
+                _atRest = value;
+                
+                if (_atRest)
+                {
+                    OnStartResting.Invoke();
+                }
+            }
+        }
 
         private float _defaultMoveSpeed;
         private float _defaultRotationSpeed;
@@ -72,7 +92,7 @@ namespace Scripts.Player
 
         private void SetMovement(Action movementSetter, bool isProgrammed)
         {
-            if (!_isStartPositionSet || !isProgrammed && !GameManager.Instance.MovementEnabled || !_atRest) return;
+            if (!_isStartPositionSet || !isProgrammed && !GameManager.Instance.MovementEnabled || !AtRest) return;
 
             _targetPosition = _targetPosition.ToVector3Int();
             _prevTargetPosition = _prevTargetPosition.ToVector3Int();
@@ -82,7 +102,7 @@ namespace Scripts.Player
 
             if (IsTargetPositionValid() && !_waypoints.Any())
             {
-                _atRest = false;
+                AtRest = false;
 
                 _prevTargetPosition = _targetPosition;
                 StartCoroutine(PerformMovementCoroutine());
@@ -91,7 +111,7 @@ namespace Scripts.Player
 
             if (_waypoints.Any())
             {
-                _atRest = false;
+                AtRest = false;
                 
                 StartCoroutine(PerformWaypointMovementCoroutine());
                 return;
@@ -99,7 +119,7 @@ namespace Scripts.Player
 
             if (!_isBashingIntoWall && (_targetPosition != _prevTargetPosition))
             {
-                _atRest = false;
+                AtRest = false;
                 StartCoroutine(BashIntoWallCoroutine());
                 return;
             }
@@ -255,7 +275,7 @@ namespace Scripts.Player
                 yield return GroundCheckCoroutine();
             }
 
-            _atRest = isRestingOnFinish;
+            AtRest = isRestingOnFinish;
             if (isRestingOnFinish)
             {
                 transform.position = transform.position.ToVector3Int();
@@ -280,7 +300,7 @@ namespace Scripts.Player
         {
             while (!GroundCheck())
             {
-                _atRest = false;
+                AtRest = false;
 
                 Vector3 targetPosition = transform.position + Vector3.down;
 
@@ -296,7 +316,7 @@ namespace Scripts.Player
                 yield return null;
             }
 
-            if (setAtRestAtTheEnd) _atRest = true;
+            if (setAtRestAtTheEnd) AtRest = true;
         }
 
         private IEnumerator BashIntoWallCoroutine()
@@ -331,7 +351,7 @@ namespace Scripts.Player
 
             SetPositionAndRotation(newPosition, Quaternion.Euler(_targetRotation));
             _isBashingIntoWall = false;
-            _atRest = true;
+            AtRest = true;
         }
 
         private bool IsTargetPositionValid()

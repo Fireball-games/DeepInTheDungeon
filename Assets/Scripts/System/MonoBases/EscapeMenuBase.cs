@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Scripts.Player;
+using UnityEngine;
 
 namespace Scripts.System.MonoBases
 {
     public abstract class EscapeMenuBase : DialogBase
     {
-        protected static PlayerCameraController PlayerCameraController => PlayerCameraController.Instance;
+        private static PlayerCameraController PlayerCameraController => PlayerCameraController.Instance;
         
         private bool _isOpened;
         private bool _isFreeLookOnOnOpen;

@@ -78,6 +78,65 @@ namespace Scripts.System
             }
         }
         
+        public void SetCurrentCampaign(Campaign campaign)
+        {
+            _currentCampaign = campaign;
+        }
+
+        public void SetCurrentMap(MapDescription mapDescription)
+        {
+            if (mapDescription  == null) return;
+            
+            _currentMap = mapDescription;
+            
+            mapBuilder.SetLayout(mapDescription.Layout);
+        }
+        
+        public void StartMainScene(bool fadeIn = true)
+        {
+            _currentCampaign = FileOperationsHelper.LoadStartRoomsCampaign();
+            
+            bool startedMapBoolFailed = false;
+            
+            if (_currentCampaign == null)
+            {
+                startedMapBoolFailed = true;
+                Logger.LogError("Could not load start rooms campaign.");
+                _currentCampaign = MapBuilder.GenerateFallbackStartRoomsCampaign();
+            }
+            
+            //TODO: Here will be logic determining which start room to load depending on player progress. Its StarterMap for now.
+            
+            _currentMap = _currentCampaign.GetStarterMap();
+            if (_currentMap.EntryPoints.Count > 0)
+            {
+                _currentEntryPoint = _currentMap.EntryPoints[0];
+            }
+            else if (startedMapBoolFailed)
+            {
+                Logger.LogError("Could not load entry point.");
+                _currentEntryPoint = new EntryPoint
+                {
+                    isMovingForwardOnStart = false,
+                    playerGridPosition = _currentMap.EditorStartPosition,
+                    playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y
+                };
+            }
+
+            if (_currentCampaign == null || _currentMap == null)
+            {
+                Logger.LogError("Could not load last played campaign.");
+                return;
+            }
+            
+            OnStartGameRequested(fadeIn);
+        }
+
+        public void StartMainCampaign()
+        {
+            Logger.LogNotImplemented();
+        }
+        
         public void ContinueFromSave()
         {
             // TODO: Gets data from saved position. 
@@ -124,72 +183,12 @@ namespace Scripts.System
             
             OnStartGameRequested();
         }
-        
-        public void SetCurrentCampaign(Campaign campaign)
-        {
-            _currentCampaign = campaign;
-        }
-
-        public void SetCurrentMap(MapDescription mapDescription)
-        {
-            if (mapDescription  == null) return;
-            
-            _currentMap = mapDescription;
-            
-            mapBuilder.SetLayout(mapDescription.Layout);
-        }
-
-        private void StartBuildingLevel()
-        {
-            if (_currentCampaign == null)
-            {
-                Logger.LogWarning("No Campaign is set, this should not happen here, ever.");
-                return;
-            }
-            
-            _gameMode = EGameMode.Play;
-            
-            _movementEnabled = false;
-
-            _startLevelAfterBuildFinishes = true;
-            
-            _currentMap ??= _currentCampaign.GetStarterMap();
-
-            PlayerPrefs.SetString(Strings.LastPlayedCampaign, _currentCampaign.CampaignName);
-            
-            mapBuilder.BuildMap(_currentMap);
-        }
 
         private void OnStartGameRequested(bool fadeIn = true)
         {
             SceneLoader.Instance.LoadScene(_currentMap.SceneName, fadeIn);
         }
-
-        private async void OnLayoutBuilt()
-        {
-            if (!_startLevelAfterBuildFinishes) return;
-            
-            player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
-                .GetComponent<PlayerController>();
-            player.transform.parent = null;
-            player.PlayerMovement.SetPositionAndRotation(
-                _currentEntryPoint.playerGridPosition,
-                Quaternion.Euler(0f, _currentEntryPoint.playerRotationY, 0f));
-            player.PlayerMovement.SetCamera();
-            
-            _movementEnabled = true;
-            ScreenFader.FadeOut(0.5f);
-
-            await Task.Delay(200);
-            
-            if (_currentEntryPoint.isMovingForwardOnStart)
-            {
-                player.PlayerMovement.MoveForward();
-            }
-            
-            EventsManager.TriggerOnLevelStarted();
-        }
-
+        
         private void OnSceneStartedLoading()
         {
             if (Player)
@@ -223,52 +222,81 @@ namespace Scripts.System
 
             if (sceneName is Scenes.MainSceneName)
             {
-                IsPlayingFromEditor = false;
-                _gameMode = EGameMode.MainScene;
+                // IsPlayingFromEditor = false;
+                if (!IsPlayingFromEditor)
+                {
+                    _gameMode = EGameMode.MainScene;
+                }
             }
 
             StartBuildingLevel();
         }
-
-        public void StartMainScene(bool fadeIn = true)
+        
+        private void StartBuildingLevel()
         {
-            Logger.Log("Starting game.");
-            _currentCampaign = FileOperationsHelper.LoadStartRoomsCampaign();
-            
-            bool startedMapBoolFailed = false;
-            
             if (_currentCampaign == null)
             {
-                startedMapBoolFailed = true;
-                Logger.LogError("Could not load start rooms campaign.");
-                _currentCampaign = MapBuilder.GenerateFallbackStartRoomsCampaign();
-            }
-            
-            //TODO: Here will be logic determining which start room to load depending on player progress. Its StarterMap for now.
-            
-            _currentMap = _currentCampaign.GetStarterMap();
-            if (_currentMap.EntryPoints.Count > 0)
-            {
-                _currentEntryPoint = _currentMap.EntryPoints[0];
-            }
-            else if (startedMapBoolFailed)
-            {
-                Logger.LogError("Could not load entry point.");
-                _currentEntryPoint = new EntryPoint
-                {
-                    isMovingForwardOnStart = false,
-                    playerGridPosition = _currentMap.EditorStartPosition,
-                    playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y
-                };
-            }
-
-            if (_currentCampaign == null || _currentMap == null)
-            {
-                Logger.LogError("Could not load last played campaign.");
+                Logger.LogWarning("No Campaign is set, this should not happen here, ever.");
                 return;
             }
             
-            OnStartGameRequested(fadeIn);
+            _gameMode = EGameMode.Play;
+            
+            _movementEnabled = false;
+
+            _startLevelAfterBuildFinishes = true;
+            
+            _currentMap ??= _currentCampaign.GetStarterMap();
+
+            PlayerPrefs.SetString(Strings.LastPlayedCampaign, _currentCampaign.CampaignName);
+            
+            mapBuilder.BuildMap(_currentMap);
+        }
+
+        private async void OnLayoutBuilt()
+        {
+            if (!_startLevelAfterBuildFinishes) return;
+            
+            player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
+                .GetComponent<PlayerController>();
+            player.transform.parent = null;
+            player.PlayerMovement.SetPositionAndRotation(
+                _currentEntryPoint.playerGridPosition,
+                Quaternion.Euler(0f, _currentEntryPoint.playerRotationY, 0f));
+            player.PlayerMovement.SetCamera();
+            
+            _movementEnabled = true;
+
+            // To allow playing StartRooms from Editor
+            if (SceneLoader.IsInMainScene && !IsPlayingFromEditor)
+            {
+                SetControlsForMainScene();
+            }
+
+            ScreenFader.FadeOut(0.5f);
+
+            await Task.Delay(200);
+            
+            if (_currentEntryPoint.isMovingForwardOnStart)
+            {
+                player.PlayerMovement.MoveForward(true);
+            }
+            
+            EventsManager.TriggerOnLevelStarted();
+        }
+
+        private void SetControlsForMainScene()
+        {
+            _movementEnabled = false;
+            PlayerCameraController.Instance.IsLookModeOn = true;
+            PlayerCameraController.Instance.SetRotationLimits(new RotationSettings
+            {
+                MinXRotation = -60f,
+                MaxXRotation = 60f,
+                MinYRotation = -85f,
+                MaxYRotation = 85f
+            });
+            MainUIManager.Instance.ShowCrossHair(true);
         }
     }
 }

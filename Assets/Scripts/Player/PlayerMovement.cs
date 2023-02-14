@@ -63,16 +63,16 @@ namespace Scripts.Player
             StartCoroutine(GroundCheckCoroutine(true));
         }
 
-        public void RotateLeft() => SetMovement(() => _targetRotation -= Vector3.up * 90f);
-        public void RotateRight() => SetMovement(() => _targetRotation += Vector3.up * 90f);
-        public void MoveForward() => SetMovement(() => _targetPosition += transform.forward);
-        public void MoveBackwards() => SetMovement(() => _targetPosition -= transform.forward);
-        public void MoveLeft() => SetMovement(() => _targetPosition -= transform.right);
-        public void MoveRight() => SetMovement(() => _targetPosition += transform.right);
+        public void RotateLeft(bool isProgrammed = false) => SetMovement(() => _targetRotation -= Vector3.up * 90f, isProgrammed);
+        public void RotateRight(bool isProgrammed = false) => SetMovement(() => _targetRotation += Vector3.up * 90f, isProgrammed);
+        public void MoveForward(bool isProgrammed = false) => SetMovement(() => _targetPosition += transform.forward, isProgrammed);
+        public void MoveBackwards(bool isProgrammed = false) => SetMovement(() => _targetPosition -= transform.forward, isProgrammed);
+        public void MoveLeft(bool isProgrammed = false) => SetMovement(() => _targetPosition -= transform.right, isProgrammed);
+        public void MoveRight(bool isProgrammed = false) => SetMovement(() => _targetPosition += transform.right, isProgrammed);
 
-        private void SetMovement(Action movementSetter)
+        private void SetMovement(Action movementSetter, bool isProgrammed)
         {
-            if (!_isStartPositionSet || !GameManager.Instance.MovementEnabled || !_atRest) return;
+            if (!_isStartPositionSet || !isProgrammed && !GameManager.Instance.MovementEnabled || !_atRest) return;
 
             _targetPosition = _targetPosition.ToVector3Int();
             _prevTargetPosition = _prevTargetPosition.ToVector3Int();

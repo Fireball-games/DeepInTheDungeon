@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Scripts.Helpers.Attributes;
+using Scripts.Helpers.Extensions;
 using UnityEngine;
 
 namespace Scripts.Helpers
@@ -99,7 +100,7 @@ namespace Scripts.Helpers
         {
             if (_severityLevel <= ELogSeverity.Debug)
             {
-                Debug.LogWarning(ResolveMessage(callerFilePath, callerMemberName, "NOT IMPLEMENTED YET"), logObject);
+                Debug.LogWarning(ResolveMessage(callerFilePath, callerMemberName, "NOT IMPLEMENTED YET".WrapInColor(Colors.LightBlue)), logObject);
             }
         }
 

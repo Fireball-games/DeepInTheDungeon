@@ -31,7 +31,11 @@ namespace Scripts.UI.PlayMode
             _toMainSceneButton.SetText(t.Get(Keys.ReturnToMainScene));
         }
 
-        private void LeaveToMainScene() => GameManager.StartMainScene();
+        private void LeaveToMainScene()
+        {
+            GameManager.IsPlayingFromEditor = false;
+            GameManager.StartMainScene();
+        }
 
         private void LeaveToEditor() => SceneLoader.Instance.LoadEditorScene();
     }

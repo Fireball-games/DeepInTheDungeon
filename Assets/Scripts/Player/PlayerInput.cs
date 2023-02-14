@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Scripts.System;
+using UnityEngine;
 
 namespace Scripts.Player
 {
@@ -29,7 +30,7 @@ namespace Scripts.Player
 
         private void Update()
         {
-            if (!PlayerCamera) return;
+            if (!PlayerCamera || !GameManager.Instance.MovementEnabled) return;
             
             PlayerCamera.isLeaning = Input.GetKey(toggleLeaningMode);
 

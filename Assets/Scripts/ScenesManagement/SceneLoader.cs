@@ -11,6 +11,10 @@ namespace Scripts.ScenesManagement
 {
     public class SceneLoader : Singleton<SceneLoader>
     {
+        private static string _currentSceneName;
+        
+        public static bool IsInMainScene => _currentSceneName == Scenes.MainSceneName;
+        
         public async void LoadScene(string sceneName, bool fadeIn)
         {
             await LoadSceneAsync(sceneName, fadeIn);
@@ -43,6 +47,7 @@ namespace Scripts.ScenesManagement
                 await Task.Yield();
             }
 
+            _currentSceneName = sceneName;
             EventsManager.TriggerOnSceneFinishedLoading(sceneName);
             onLoadFinished?.Invoke();
             return true;

@@ -1,4 +1,3 @@
-using System;
 using Lean.Localization;
 using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
@@ -6,6 +5,7 @@ using Scripts.Localization;
 using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.System.MonoBases;
+using Scripts.UI.Components;
 using Scripts.UI.PlayMode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +19,7 @@ namespace Scripts.UI
         public GameObject body;
         private Modal _modal;
         private MainEscapeMenu _mainEscapeMenu;
+        private ImageUIElement _crossHair;
         
         private Button _newCampaignButton;
         private Button _continueCampaignButton;
@@ -60,6 +61,8 @@ namespace Scripts.UI
         }
         
         public void RefreshButtons() => SetComponents();
+        
+        public void ShowCrossHair(bool show) => _crossHair.SetActive(show);
 
         private void NewCampaignClicked() => Logger.LogNotImplemented();
 
@@ -111,6 +114,7 @@ namespace Scripts.UI
         {
             _modal = body.transform.Find("Modal").GetComponent<Modal>();
             _mainEscapeMenu = body.transform.Find("MainMenu").GetComponent<MainEscapeMenu>();
+            _crossHair = body.transform.Find("CrossHair").GetComponent<ImageUIElement>();
             
             Transform playButtons = body.transform.Find("MainMenu/Body/Frame/PlayButtons");
             _newCampaignButton = playButtons.Find("NewCampaignButton").GetComponent<Button>();

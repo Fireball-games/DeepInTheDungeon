@@ -32,8 +32,9 @@ namespace Scripts.Helpers
         public static Color Clear => Color.clear;
         public static Color DeepBlue { get; private set; }
         public static Color LightBlue { get; private set; }
-        public static Color Yellow => new Color(1.0f, 1.0f, 0.0f);
-        public static Color Beige => new Color(0.96f, 0.96f, 0.86f);
+        public static Color Yellow { get; } = new(1.0f, 1.0f, 0.0f);
+        public static Color Beige { get; } = new(0.96f, 0.96f, 0.86f);
+        public static Color FullTransparentBlack { get; } = new(0, 0, 0, 0);
 
         private void Awake()
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Scripts.EventsManagement;
+using Scripts.ScenesManagement;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using UnityEngine;
@@ -35,7 +36,10 @@ namespace Scripts.UI.PlayMode
 
         private void Start()
         {
-            hideOnStart.ForEach(e => e.SetActive(false));
+            if (!SceneLoader.IsInMainScene)
+            {
+                hideOnStart.ForEach(e => e.SetActive(false));
+            }
         }
     }
 }

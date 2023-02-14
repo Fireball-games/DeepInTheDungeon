@@ -7,9 +7,9 @@ namespace Scripts.System
     {
         private async void Start()
         {
-            await Task.Delay(1000);
+            await Task.Delay(200);
             
-            GameManager.Instance.StartMainScene();
+            GameManager.Instance.StartMainScene(false);
         }
     }
 }

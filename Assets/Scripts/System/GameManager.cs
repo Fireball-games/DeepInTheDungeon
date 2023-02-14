@@ -160,9 +160,9 @@ namespace Scripts.System
             mapBuilder.BuildMap(_currentMap);
         }
 
-        private void OnStartGameRequested()
+        private void OnStartGameRequested(bool fadeIn = true)
         {
-            SceneLoader.Instance.LoadScene(_currentMap.SceneName);
+            SceneLoader.Instance.LoadScene(_currentMap.SceneName, fadeIn);
         }
 
         private async void OnLayoutBuilt()
@@ -230,7 +230,7 @@ namespace Scripts.System
             StartBuildingLevel();
         }
 
-        public void StartMainScene()
+        public void StartMainScene(bool fadeIn = true)
         {
             Logger.Log("Starting game.");
             _currentCampaign = FileOperationsHelper.LoadStartRoomsCampaign();
@@ -268,7 +268,7 @@ namespace Scripts.System
                 return;
             }
             
-            OnStartGameRequested();
+            OnStartGameRequested(fadeIn);
         }
     }
 }

@@ -11,9 +11,9 @@ namespace Scripts.ScenesManagement
 {
     public class SceneLoader : Singleton<SceneLoader>
     {
-        public async void LoadScene(string sceneName)
+        public async void LoadScene(string sceneName, bool fadeIn)
         {
-            await LoadSceneAsync(sceneName);
+            await LoadSceneAsync(sceneName, fadeIn);
         }
 
         public async void LoadEditorScene()

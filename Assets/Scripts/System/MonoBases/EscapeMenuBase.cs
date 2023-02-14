@@ -6,6 +6,9 @@ namespace Scripts.System.MonoBases
     public abstract class EscapeMenuBase : DialogBase
     {
         protected bool VisibleModal = true;
+        protected bool CancelOnModalClick = true;
+        protected bool CancelOnEscape = true;
+        
         private static PlayerCameraController PlayerCameraController => PlayerCameraController.Instance;
         
         private bool _isOpened;
@@ -20,6 +23,8 @@ namespace Scripts.System.MonoBases
         
         private void HandleEscapeKeyPressed()
         {
+            if (_isOpened && !CancelOnEscape) return;
+            
             if (!_isOpened)
             {
                 _isFreeLookOnOnOpen = PlayerCameraController.IsLookModeOn;
@@ -39,7 +44,7 @@ namespace Scripts.System.MonoBases
         {
             SetContentOnShow();
 
-            if (await base.Show(showVisibleModal: visibleModal) is not EConfirmResult.Cancel) return;
+            if (await base.Show(isModalClosingDialog: CancelOnModalClick, showVisibleModal: visibleModal) is not EConfirmResult.Cancel) return;
 
             PlayerCameraController.IsLookModeOn = _isFreeLookOnOnOpen;
             _isOpened = false;

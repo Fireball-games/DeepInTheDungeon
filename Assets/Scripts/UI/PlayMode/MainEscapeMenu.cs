@@ -7,6 +7,8 @@ namespace Scripts.UI.PlayMode
         private void Awake()
         {
             VisibleModal = false;
+            CancelOnModalClick = false;
+            CancelOnEscape = false;
         }
 
         protected override void SetContentOnShow()

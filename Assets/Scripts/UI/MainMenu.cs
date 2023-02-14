@@ -32,7 +32,6 @@ namespace Scripts.UI
 
         private void Start()
         {
-            
             SetComponents();
         }
 
@@ -46,13 +45,15 @@ namespace Scripts.UI
             EventsManager.OnLevelStarted -= OnLevelStarted;
         }
         
+        public void RefreshButtons() => SetComponents();
+        
+        public void SetActive(bool active) => body.SetActive(active);
+        
         private void OnLevelStarted()
         {
             SetComponents();
         }
-        
-        public void RefreshButtons() => SetComponents();
-        
+
         private void NewCampaignClicked() => Logger.LogNotImplemented();
 
         private void ContinueCampaignClicked() => GameManager.ContinueFromSave();

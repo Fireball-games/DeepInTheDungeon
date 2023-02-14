@@ -12,7 +12,6 @@ using Scripts.UI;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.System
 {
@@ -301,15 +300,17 @@ namespace Scripts.System
         private void SetControlsForMainScene()
         {
             _movementEnabled = false;
-            PlayerCameraController.Instance.IsLookModeOn = true;
-            PlayerCameraController.Instance.SetRotationLimits(new RotationSettings
-            {
-                MinXRotation = -60f,
-                MaxXRotation = 60f,
-                MinYRotation = -85f,
-                MaxYRotation = 85f
-            });
-            MainUIManager.Instance.ShowCrossHair(true);
+            // TODO: once there menu to click on in the scene (world canvas or physical menu), allow crossHair (maybe not, test it) and the rest
+            // PlayerCameraController.Instance.IsLookModeOn = true;
+            // PlayerCameraController.Instance.SetRotationLimits(new RotationSettings
+            // {
+            //     MinXRotation = -60f,
+            //     MaxXRotation = 60f,
+            //     MinYRotation = -85f,
+            //     MaxYRotation = 85f
+            // });
+            // MainUIManager.Instance.ShowCrossHair(true);
+            MainUIManager.Instance.ShowMainMenu(true);
         }
     }
 }

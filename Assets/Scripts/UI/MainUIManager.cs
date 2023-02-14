@@ -32,6 +32,11 @@ namespace Scripts.UI
         {
             EventsManager.OnLevelStarted -= OnLevelStarted;
         }
+        
+        public void ShowMainMenu(bool show)
+        {
+            _mainMenus.ForEach(menu => menu.SetActive(show));
+        }
 
         public void ShowCrossHair(bool show) => _crossHair.SetActive(show);
         

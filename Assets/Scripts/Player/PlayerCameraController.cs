@@ -1,7 +1,6 @@
 using DG.Tweening;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
-using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.PlayMode;
@@ -28,7 +27,6 @@ namespace Scripts.Player
         [SerializeField] private float maxLeanXRotation = 50f;
     
         private Quaternion originalRotation;
-        private RotationSettings _defaultRotationSettings;
         private float currentZRotation;
         private float currentXRotation;
 
@@ -71,19 +69,6 @@ namespace Scripts.Player
             originalRotation = Quaternion.Euler(Vector3.zero);
             _cameraArm = transform.Find("CameraArm");
             _cameraHolder = _cameraArm.Find("MainCamera");
-            
-            _defaultRotationSettings = new RotationSettings
-            {
-                MinXRotation = minXRotation,
-                MaxXRotation = maxXRotation,
-                MinYRotation = minYRotation,
-                MaxYRotation = maxYRotation,
-            };
-        }
-
-        private void OnEnable()
-        {
-            // EventsManager.OnLevelStarted += OnLevelStarted;
         }
 
         private void Update()
@@ -124,11 +109,6 @@ namespace Scripts.Player
             }
         }
 
-        private void OnDisable()
-        {
-            // EventsManager.OnLevelStarted -= OnLevelStarted;
-        }
-
         public void ResetCamera()
         {
             if (!_cameraAtRest) return;
@@ -142,17 +122,6 @@ namespace Scripts.Player
             maxXRotation = rotationSettings.MaxXRotation;
             minYRotation = rotationSettings.MinYRotation;
             maxYRotation = rotationSettings.MaxYRotation;
-        }
-
-        private void OnLevelStarted()
-        {
-            if (SceneLoader.IsInMainScene) return;
-            
-            IsLookModeOn = false;
-            minXRotation = _defaultRotationSettings.MinXRotation;
-            maxXRotation = _defaultRotationSettings.MaxXRotation;
-            minYRotation = _defaultRotationSettings.MinYRotation;
-            maxYRotation = _defaultRotationSettings.MaxYRotation;
         }
 
         private void ResetCameraHolder()

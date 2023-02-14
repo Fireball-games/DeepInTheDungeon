@@ -170,7 +170,7 @@ namespace Scripts.System
                 
                 if (MainUIManager.Instance)
                 {
-                    MainUIManager.Instance.RefreshButtons();
+                    MainUIManager.Instance.RefreshMainMenuButtons();
                 }
                 
                 Logger.LogError("Could not load last edited map.");

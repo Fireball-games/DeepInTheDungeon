@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Lean.Localization;
 using UnityEngine;
 
 namespace Scripts.System
@@ -7,6 +8,9 @@ namespace Scripts.System
     {
         private async void Start()
         {
+            FindObjectOfType<LeanLocalization>().gameObject.SetActive(true);
+            LeanLocalization.SetCurrentLanguageAll("English");
+            
             await Task.Delay(200);
             
             GameManager.Instance.StartMainScene(false);

@@ -301,16 +301,16 @@ namespace Scripts.System
         {
             _movementEnabled = false;
             // TODO: once there menu to click on in the scene (world canvas or physical menu), allow crossHair (maybe not, test it) and the rest
-            // PlayerCameraController.Instance.IsLookModeOn = true;
-            // PlayerCameraController.Instance.SetRotationLimits(new RotationSettings
-            // {
-            //     MinXRotation = -60f,
-            //     MaxXRotation = 60f,
-            //     MinYRotation = -85f,
-            //     MaxYRotation = 85f
-            // });
-            // MainUIManager.Instance.ShowCrossHair(true);
-            MainUIManager.Instance.ShowMainMenu(true);
+            PlayerCameraController.Instance.IsLookModeOn = true;
+            PlayerCameraController.Instance.SetRotationLimits(new RotationSettings
+            {
+                MinXRotation = -60f,
+                MaxXRotation = 60f,
+                MinYRotation = -85f,
+                MaxYRotation = 85f
+            });
+            MainUIManager.Instance.ShowCrossHair(true);
+            // MainUIManager.Instance.ShowMainMenu(true);
         }
     }
 }

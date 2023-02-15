@@ -14,6 +14,11 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         /// </summary>
         public int Count;
         public int StartPosition;
+        
+        //MapTraversalTriggerProperties
+        public string TargetMap;
+        public string TargetMapEntrance;
+        public float Delay;
 
         public TriggerConfiguration()
         {
@@ -25,6 +30,10 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             TriggerType = configuration.TriggerType;
             Count = configuration.Count;
             StartPosition = configuration.StartPosition;
+            
+            TargetMap = configuration.TargetMap;
+            TargetMapEntrance = configuration.TargetMapEntrance;
+            Delay = configuration.Delay;
         }
 
         public TriggerConfiguration(Trigger trigger, string ownerGuid = null, bool spawnPrefabOnBuild = true) : base(trigger, ownerGuid, spawnPrefabOnBuild)
@@ -36,6 +45,13 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             if (trigger is IPositionsTrigger positionsTrigger)
             {
                 StartPosition = positionsTrigger.GetStartPosition();
+            }
+            
+            if (trigger is MapTraversalTrigger mapTraversalTrigger)
+            {
+                TargetMap = mapTraversalTrigger.targetMapName;
+                TargetMapEntrance = mapTraversalTrigger.targetMapEntryPoint;
+                Delay = mapTraversalTrigger.delay;
             }
             
             TransformData.Position = trigger.transform.position.Round(2);

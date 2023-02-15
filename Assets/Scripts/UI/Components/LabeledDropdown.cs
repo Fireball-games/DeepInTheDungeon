@@ -31,6 +31,25 @@ namespace Scripts.UI.Components
             _dropdown = body.transform.Find("Dropdown").GetComponent<TMP_Dropdown>();
             _dropdown.onValueChanged.AddListener(OnValueChanged_Internal);
         }
+        
+        public void Set(string labelText, IEnumerable<string> options, int selectedValue, UnityAction<int> onValueChanged)
+        {
+            _label.text = string.IsNullOrEmpty(labelText) ? "<missing>" : labelText;
+
+            OnValueChanged.RemoveAllListeners();
+
+            _options = options.ToList();
+
+            if (_options == null || !_options.Any()) return;
+
+            SetOptions(_options);
+
+            _contentType = EContentType.Strings;
+
+            _dropdown.value = selectedValue;
+
+            OnValueChanged.AddListener(onValueChanged);
+        }
 
         public void Set<T>(string labelText, T selectedValue, UnityAction<int> onValueChanged)
         {
@@ -63,7 +82,9 @@ namespace Scripts.UI.Components
 
         private void OnValueChanged_Internal(int value)
         {
-            OnValueChanged.Invoke(_contentType is EContentType.Enum ? (int) Enum.Parse(_enumType, _dropdown.options[value].text) : value);
+            OnValueChanged.Invoke(_contentType is EContentType.Enum 
+                ? (int) Enum.Parse(_enumType, _dropdown.options[value].text) 
+                : value);
         }
     }
 }

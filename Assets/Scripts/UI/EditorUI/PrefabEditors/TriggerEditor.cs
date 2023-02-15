@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Helpers.Extensions;
@@ -22,6 +23,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private NumericUpDown _startPositionUpDown;
         private LabeledDropdown _triggerTypeDropdown;
         private NumericUpDown _triggerCountUpDown;
+        
+        private LabeledDropdown _startMapDropdown;
+        private LabeledDropdown _entryPointDropdown;
+        private NumericUpDown _exitDelayUpDown;
+        
         private EditableConfigurationList _receiverList;
 
         private Vector3 _prefabWallCenterPosition;
@@ -183,6 +189,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _triggerCountUpDown.OnValueChanged.AddListener(OnTriggerCountChanged);
 
             _receiverList = Content.Find("ReceiverList").GetComponent<EditableConfigurationList>();
+            
+            _startMapDropdown = Content.Find("StartMapDropdown").GetComponent<LabeledDropdown>();
+            _entryPointDropdown = Content.Find("EntryPointDropdown").GetComponent<LabeledDropdown>();
+            _exitDelayUpDown = Content.Find("ExitDelayUpDown").GetComponent<NumericUpDown>();
         }
 
         protected override void VisualizeOtherComponents()
@@ -192,6 +202,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _triggerTypeDropdown.SetCollapsed(true);
             _triggerCountUpDown.SetCollapsed(true);
             _receiverList.SetCollapsed(true);
+            _startMapDropdown.SetCollapsed(true);
+            _entryPointDropdown.SetCollapsed(true);
+            _exitDelayUpDown.SetCollapsed(true);
 
             if (EditedConfiguration is null) return;
 
@@ -225,6 +238,28 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _startPositionUpDown.maximum = positionsTrigger.GetSteps().Count - 1;
                 _startPositionUpDown.Value = positionsTrigger.GetStartPosition();
                 _startPositionUpDown.SetCollapsed(false);
+            }
+            
+            if (EditedPrefab is MapTraversalTrigger mapTraversalTrigger)
+            {
+                Campaign currentCampaign = GameManager.Instance.CurrentCampaign;
+                List<string> mapsNames = currentCampaign.MapsNames.ToList();
+                
+                _startMapDropdown.Set($"{t.Get(Keys.StartMap)}:",
+                    mapsNames,
+                    mapsNames.IndexOf(mapTraversalTrigger.targetMapName),
+                    OnStartMapChanged);
+                _startMapDropdown.SetCollapsed(false);
+
+                _entryPointDropdown.Set($"{t.Get(Keys.EntryPoint)}:",
+                    currentCampaign.GetMapByName(mapTraversalTrigger.targetMapName).EntryPointsNames.ToList(),
+                    mapTraversalTrigger.targetMapEntryPoint,
+                    OnEntryPointChanged);
+                _entryPointDropdown.SetCollapsed(false);
+
+                _exitDelayUpDown.Label.text = $"{t.Get(Keys.ExitDelay)}:";
+                _exitDelayUpDown.Value = mapTraversalTrigger.delay;
+                _exitDelayUpDown.SetCollapsed(false);
             }
 
             _triggerTypeDropdown.Set($"{t.Get(Keys.TriggerType)}:",

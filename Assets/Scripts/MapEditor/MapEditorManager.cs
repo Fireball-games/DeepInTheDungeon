@@ -205,14 +205,15 @@ namespace Scripts.MapEditor
             FileOperationsHelper.SaveCampaign(currentCampaign,
                 () => EditorUIManager.MessageBar.Set(t.Get(Keys.SaveFailed), EMessageType.Negative, automaticDismissDelay: 3f));
 
+            MapIsChanged = false;
+            _mapIsSaved = true;
+            PrefabIsEdited = false;
+            
             if (!isSilent)
             {
                 EditorUIManager.MessageBar.Set(t.Get(Keys.MapSaved), EMessageType.Positive, automaticDismissDelay: 1f);
-                EditorEvents.TriggerOnPrefabEdited(false);
+                EditorEvents.TriggerOnMapSaved();
             }
-            
-            MapIsChanged = false;
-            _mapIsSaved = true;
         }
 
         public void SetFloor(int newFloor)

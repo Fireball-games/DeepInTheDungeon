@@ -2,6 +2,7 @@
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
+using Scripts.Player;
 using Scripts.ScenesManagement;
 using Scripts.System;
 using UnityEngine;
@@ -62,7 +63,7 @@ namespace Scripts.UI
 
         private void LastEditedMapClicked()
         {
-            body.SetActive(false);
+            OnSceneChangingButtonClicked();
             GameManager.LoadLastEditedMap();
         }
 
@@ -72,11 +73,17 @@ namespace Scripts.UI
 
         private void EditorClicked()
         {
-            body.SetActive(false);
+            OnSceneChangingButtonClicked();
             SceneLoader.Instance.LoadEditorScene();
         }
 
         private void ExitGameClicked() => Application.Quit();
+        
+        private void OnSceneChangingButtonClicked()
+        {
+            body.SetActive(false);
+            PlayerCameraController.Instance.IsLookModeOn = false;
+        }
 
         private void SetComponents()
         {

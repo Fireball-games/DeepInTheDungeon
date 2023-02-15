@@ -21,6 +21,12 @@ namespace Scripts.System.MonoBases
         
         protected abstract void SetContentOnShow();
         
+        /// <summary>
+        /// Optional method to override, sets behaviour when closing the dialog.
+        /// </summary>
+        protected virtual void SetContentOnClose()
+        {}
+        
         private void HandleEscapeKeyPressed()
         {
             if (_isOpened && !CancelOnEscape) return;
@@ -37,6 +43,7 @@ namespace Scripts.System.MonoBases
 
             PlayerCameraController.IsLookModeOn = _isFreeLookOnOnOpen;
             _isOpened = false;
+            SetContentOnClose();
             CloseDialog();
         }
         

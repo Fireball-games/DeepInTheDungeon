@@ -4,6 +4,7 @@ using Scripts.EventsManagement;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
+using Scripts.UI.PlayMode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,12 +47,13 @@ namespace Scripts.UI
 
         private void OnLevelStarted()
         {
-            MainMenuTile mainMenuTile = FindObjectOfType<MainMenuTile>();
+            MainMenuCarrier mainMenuCarrier = FindObjectOfType<MainMenuCarrier>();
 
-            if (!mainMenuTile) return;
+            if (!mainMenuCarrier) return;
             
-            mainMenuTile.mainMenuCanvas.worldCamera = CameraManager.Instance.mainCamera;
-            _mainMenus.Add(mainMenuTile.mainMenu);
+            mainMenuCarrier.mainMenuCanvas.worldCamera = CameraManager.Instance.mainCamera;
+            mainMenuCarrier.mainMenu.SetActive(true);
+            _mainMenus.Add(mainMenuCarrier.mainMenu);
         }
         
         private void AssignComponents()
@@ -65,6 +67,8 @@ namespace Scripts.UI
             {
                 _mainMenuOnUI,
             };
+
+            GetComponentInChildren<MainEscapeMenu>().SetGraphicRaycaster(_graphicRaycaster);
         }
 
         public void GraphicRaycasterEnabled(bool isEnabled)

@@ -37,6 +37,7 @@ namespace Scripts.UI.EditorUI
         {
             EditorEvents.OnPrefabEdited += OnMapChanged;
             EditorEvents.OnMapLayoutChanged += OnMapChanged;
+            EditorEvents.OnMapSaved += OnMapChanged;
             
             RedrawButtons();
         }
@@ -45,6 +46,7 @@ namespace Scripts.UI.EditorUI
         {
             EditorEvents.OnPrefabEdited -= OnMapChanged;
             EditorEvents.OnMapLayoutChanged -= OnMapChanged;
+            EditorEvents.OnMapSaved -= OnMapChanged;
         }
 
         private void OnMapChanged(bool _) => OnMapChanged();

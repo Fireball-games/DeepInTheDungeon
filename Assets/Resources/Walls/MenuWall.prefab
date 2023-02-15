@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5251382233828062818}
   - component: {fileID: 4597167397290032743}
+  - component: {fileID: 5343503296189182964}
   m_Layer: 0
   m_Name: MenuWall
   m_TagString: Untagged
@@ -49,6 +50,20 @@ MonoBehaviour:
   guid: 
   presentedInEditor: {fileID: 0}
   offset: 0
+--- !u!114 &5343503296189182964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942970174223977401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d980e49292e04e6b8a62116a292e9c13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuCanvas: {fileID: 2997510600858239089}
+  mainMenu: {fileID: 6436011117683769329}
 --- !u!1 &6166904642255519407
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,3 +821,21 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1442247669789694685}
   m_PrefabAsset: {fileID: 0}
+--- !u!223 &2997510600858239089 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 4439045787026758316, guid: 0d60801a82a2de24eb1c91f9d3d4f531,
+    type: 3}
+  m_PrefabInstance: {fileID: 1442247669789694685}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6436011117683769329 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5571703286134891820, guid: 0d60801a82a2de24eb1c91f9d3d4f531,
+    type: 3}
+  m_PrefabInstance: {fileID: 1442247669789694685}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa3a9ac7a144b0da287721226f78192, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Scripts.Building;
 using Scripts.EventsManagement;
@@ -6,6 +5,7 @@ using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Scripts.UI
 {
@@ -15,6 +15,8 @@ namespace Scripts.UI
         private ImageUIElement _crossHair;
 
         private List<MainMenu> _mainMenus;
+        private MainMenu _mainMenuOnUI;
+        private GraphicRaycaster _graphicRaycaster;
 
         protected override void Awake()
         {
@@ -54,12 +56,20 @@ namespace Scripts.UI
         
         private void AssignComponents()
         {
+            _graphicRaycaster = GetComponent<GraphicRaycaster>();
+            
             _crossHair = body.Find("CrossHair").GetComponent<ImageUIElement>();
+            _mainMenuOnUI = body.Find("MainEscapeMenu/MainMenu").GetComponent<MainMenu>();
             
             _mainMenus = new List<MainMenu>
             {
-                body.Find("MainEscapeMenu/MainMenu").GetComponent<MainMenu>(),
+                _mainMenuOnUI,
             };
+        }
+
+        public void GraphicRaycasterEnabled(bool isEnabled)
+        {
+            _graphicRaycaster.enabled = isEnabled;
         }
     }
 }

@@ -311,6 +311,7 @@ namespace Scripts.System
             });
             MainUIManager.Instance.ShowCrossHair(true);
             // MainUIManager.Instance.ShowMainMenu(true);
+            MainUIManager.Instance.GraphicRaycasterEnabled(false);
         }
     }
 }

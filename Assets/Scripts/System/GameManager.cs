@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Scripts.Building;
+using Scripts.Building.PrefabsBuilding;
+using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
@@ -53,6 +55,7 @@ namespace Scripts.System
         {
             EventsManager.OnSceneStartedLoading += OnSceneStartedLoading;
             EventsManager.OnSceneFinishedLoading += OnSceneFinishedLoading;
+            EventsManager.OnMapTraversalTriggered += OnMapTraversalTriggered;
 
             if (MapBuilder)
             {
@@ -71,13 +74,14 @@ namespace Scripts.System
         {
             EventsManager.OnSceneStartedLoading -= OnSceneStartedLoading;
             EventsManager.OnSceneFinishedLoading -= OnSceneFinishedLoading;
+            EventsManager.OnMapTraversalTriggered -= OnMapTraversalTriggered;
 
             if (MapBuilder)
             {
                 mapBuilder.OnLayoutBuilt.RemoveListener(OnLayoutBuilt);
             }
         }
-        
+
         public void SetCurrentCampaign(Campaign campaign)
         {
             _currentCampaign = campaign;
@@ -158,22 +162,8 @@ namespace Scripts.System
 
         public void LoadLastEditedMap()
         {
-            _currentCampaign = FileOperationsHelper.LoadLastEditedCampaign();
-            
-            if (_currentCampaign != null && _currentCampaign.HasMapWithName(PlayerPrefsHelper.LastEditedMap[1]))
+            if (!FileOperationsHelper.GetLastEditedCampaignAndMap(out _currentCampaign, out _currentMap))
             {
-                _currentMap = _currentCampaign.GetMapByName(PlayerPrefsHelper.LastEditedMap[1]);
-            }
-            else
-            {
-                PlayerPrefsHelper.RemoveLastEditedMap();
-                
-                if (MainUIManager.Instance)
-                {
-                    MainUIManager.Instance.RefreshMainMenuButtons();
-                }
-                
-                Logger.LogError("Could not load last edited map.");
                 return;
             }
 
@@ -183,6 +173,43 @@ namespace Scripts.System
             
             OnStartGameRequested();
         }
+
+        private async void OnMapTraversalTriggered(string exitConfigurationGuid)
+        {
+            if (CurrentMap == null) return;
+            
+            TriggerConfiguration mapTraversal = TriggerService.GetConfiguration(exitConfigurationGuid);
+            
+            if (mapTraversal == null)
+            {
+                Logger.LogWarning($"Could not find exit point trigger configuration with guid {exitConfigurationGuid}.");
+                return;
+            }
+            // Storing so if getting the data fails, game can continue.
+            MapDescription mapDescription = _currentCampaign.GetMapByName(mapTraversal.TargetMapName);
+            
+            if (mapDescription == null)
+            {
+                Logger.LogWarning($"Could not find map with name {mapTraversal.TargetMapName}.");
+                return;
+            }
+            
+            EntryPoint entryPoint = mapDescription.GetEntryPointByName(mapTraversal.TargetMapEntranceName);
+            
+            if (entryPoint == null)
+            {
+                Logger.LogWarning($"Could not find entry point with name {mapTraversal.TargetMapName} or {mapTraversal.TargetMapEntranceName}.");
+                return;
+            }
+            
+            _currentMap = mapDescription;
+            _currentEntryPoint = entryPoint;
+            
+            await Task.Delay((int)mapTraversal.ExitDelay * 1000);
+            
+            OnStartGameRequested();
+        }
+        
 
         private void OnStartGameRequested(bool fadeIn = true)
         {
@@ -300,7 +327,6 @@ namespace Scripts.System
         private void SetControlsForMainScene()
         {
             _movementEnabled = false;
-            // TODO: once there menu to click on in the scene (world canvas or physical menu), allow crossHair (maybe not, test it) and the rest
             PlayerCameraController.Instance.IsLookModeOn = true;
             PlayerCameraController.Instance.SetRotationLimits(new RotationSettings
             {
@@ -310,7 +336,6 @@ namespace Scripts.System
                 MaxYRotation = 85f
             });
             MainUIManager.Instance.ShowCrossHair(true);
-            // MainUIManager.Instance.ShowMainMenu(true);
             MainUIManager.Instance.GraphicRaycasterEnabled(false);
         }
     }

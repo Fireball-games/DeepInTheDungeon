@@ -1,3 +1,5 @@
+using Scripts.Building;
+using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.ScenesManagement;
@@ -37,6 +39,19 @@ namespace Scripts.UI.PlayMode
             GameManager.StartMainScene();
         }
 
-        private void LeaveToEditor() => SceneLoader.Instance.LoadEditorScene();
+        private void LeaveToEditor()
+        {
+            if (FileOperationsHelper.GetLastEditedCampaignAndMap(out Campaign campaign, out MapDescription map))
+            {
+                GameManager.SetCurrentCampaign(campaign);
+                GameManager.SetCurrentMap(map);
+            }
+            else
+            {
+                Logger.LogWarning("Failed to get data for last edited map.");
+            }
+            
+            SceneLoader.Instance.LoadEditorScene();
+        }
     }
 }

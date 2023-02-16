@@ -30,20 +30,25 @@ namespace Scripts.Building.PrefabsBuilding
             Store.TryAdd(configuration.Guid, new PrefabStoreItem<TC, TPrefab>(configuration, prefabScript, prefab));
 
         protected static void RemoveFromStore(string guid) => Store.Remove(guid);
+        
+        protected static IEnumerable<TC> Configurations =>
+            Store.Values.Select(configuration => configuration.Configuration);
+        
+        public IEnumerable<TC> GetConfigurations() => Configurations;
 
-        public GameObject GetGameObject(string guid) =>
-            Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.GameObject : null;
+        public static TC GetConfiguration(string guid) =>
+            Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.Configuration : null;
 
         protected TPrefab GetPrefabScript(string guid) => Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item)
             ? item.PrefabScript
             : null;
 
-        protected static IEnumerable<TC> Configurations =>
-            Store.Values.Select(configuration => configuration.Configuration);
-
         protected static IEnumerable<TPrefab> PrefabScripts =>
             Store.Values.Select(prefabScript => prefabScript.PrefabScript);
 
+        public GameObject GetGameObject(string guid) =>
+            Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.GameObject : null;
+        
         private TC AddConfigurationToMap(TPrefab prefab, string ownerGuid)
         {
             if (MapBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, prefab.gameObject.name,
@@ -165,7 +170,5 @@ namespace Scripts.Building.PrefabsBuilding
         /// </summary>
         /// <param name="prefabScript"></param>
         protected abstract void RemoveEmbedded(TPrefab prefabScript);
-
-        public IEnumerable<TC> GetConfigurations() => Configurations;
     }
 }

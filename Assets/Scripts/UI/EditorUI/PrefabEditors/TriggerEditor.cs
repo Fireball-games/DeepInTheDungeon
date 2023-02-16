@@ -265,7 +265,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 Campaign currentCampaign = GameManager.CurrentCampaign;
                 List<string> mapsNames = currentCampaign.MapsNames.ToList();
-                
+
+                if (string.IsNullOrEmpty(EditedConfiguration.TargetMapName))
+                {
+                    SetEdited();
+                    EditedConfiguration.TargetMapName = mapsNames.FirstOrDefault();
+                }
+
                 _targetMapDropdown.Set($"{t.Get(Keys.TargetMap)}:",
                     mapsNames,
                     mapsNames.IndexOf(EditedConfiguration.TargetMapName),
@@ -273,6 +279,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _targetMapDropdown.SetCollapsed(false);
                 
                 MapDescription targetMap = currentCampaign.GetMapByName(EditedConfiguration.TargetMapName);
+
+                if (string.IsNullOrEmpty(EditedConfiguration.TargetMapEntranceName))
+                    OnEntryPointChanged(targetMap?.EntryPointsNames.FirstOrDefault());
                 
                 _entryPointDropdown.Set($"{t.Get(Keys.EntryPoint)}:",
                     currentCampaign.GetMapByName(EditedConfiguration.TargetMapName)?.EntryPointsNames ?? new List<string>(),

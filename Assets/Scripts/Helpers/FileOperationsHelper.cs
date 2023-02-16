@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Scripts.Building;
+using Scripts.UI;
 using UnityEngine;
 using static Scripts.Enums;
 
@@ -72,6 +73,32 @@ namespace Scripts.Helpers
             string campaignName = PlayerPrefsHelper.LastPlayedCampaign;
 
             return LoadCampaign(campaignName, out Campaign campaign) ? campaign : null;
+        }
+        
+        public static bool GetLastEditedCampaignAndMap(out Campaign campaign, out MapDescription map)
+        {
+            campaign = null;
+            map = null;
+
+            campaign = LoadLastEditedCampaign();
+            
+            if (campaign != null && campaign.HasMapWithName(PlayerPrefsHelper.LastEditedMap[1]))
+            {
+                map = campaign.GetMapByName(PlayerPrefsHelper.LastEditedMap[1]);
+            }
+            else
+            {
+                PlayerPrefsHelper.RemoveLastEditedMap();
+                
+                if (MainUIManager.Instance)
+                {
+                    MainUIManager.Instance.RefreshMainMenuButtons();
+                }
+                
+                Logger.LogError("Could not load last edited map.");
+            }
+            
+            return map != null;
         }
         
         public static Campaign LoadLastEditedCampaign()

@@ -6,6 +6,7 @@ using Scripts.Building.Tile;
 using Scripts.Helpers.Extensions;
 using Scripts.ScenesManagement;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building
 {
@@ -36,6 +37,16 @@ namespace Scripts.Building
         public MapDescription ClonedCopy() => (MapDescription) Clone();
 
         public IEnumerable<string> EntryPointsNames => EntryPoints.Select(e => e.name);
+        
+        public EntryPoint GetEntryPointByName(string entryPointName)
+        {
+            EntryPoint entryPoint = EntryPoints.FirstOrDefault(ep => ep.name == entryPointName);
+            if (entryPoint != null) return entryPoint;
+            
+            Logger.LogWarning($"Entry point not found in map: {MapName}, entry point name: {entryPointName}");
+            
+            return null;
+        }
 
         public IEnumerable<TriggerConfiguration> CollectMapTraversalTriggers()
             => PrefabConfigurations.OfType<TriggerConfiguration>().Where(c => !string.IsNullOrEmpty(c.TargetMapName));

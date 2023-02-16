@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 5877925938852622575}
   - component: {fileID: 6419497625794665406}
   - component: {fileID: 1403465756387052375}
+  - component: {fileID: 1273071890031281848}
   m_Layer: 0
   m_Name: Exit Trigger
   m_TagString: Untagged
@@ -153,6 +154,19 @@ MonoBehaviour:
   allowedLayers:
     serializedVersion: 2
     m_Bits: 8192
+--- !u!65 &1273071890031281848
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6727447126904343009}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7699843267837961704
 GameObject:
   m_ObjectHideFlags: 0

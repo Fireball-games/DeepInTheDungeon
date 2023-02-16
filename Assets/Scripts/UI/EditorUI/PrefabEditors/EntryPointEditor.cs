@@ -18,7 +18,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private FramedCheckBox _isMovingForwardOnStartCheckBox;
         
         [ConfigurableProperty(
-            nameof(EntryPointConfiguration.EntryPointName),
+            nameof(EntryPointConfiguration.Name),
             Keys.EnterName,
             nameof(OnEntryPointNameChanged))]
         private InputField _nameInputField;
@@ -39,7 +39,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SpawnPrefabOnBuild = true,
 
             IsMovingForwardOnStart = true,
-            EntryPointName = t.Get(Keys.EnterName),
+            Name = t.Get(Keys.NoNameSet),
             PlayerRotationY = 0,
         };
 
@@ -73,7 +73,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         
         private void OnEntryPointNameChanged(string entryPointName)
         {
-            EditedConfiguration.EntryPointName = entryPointName;
+            EditedConfiguration.Name = entryPointName;
         }
         
         private void OnLookDirectionChanged(int rotateDirection)

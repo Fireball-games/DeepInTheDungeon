@@ -17,7 +17,7 @@ namespace Scripts.Helpers
         public const string Untagged = "Untagged";
         public const string CampaignStartMapName = "CampaignStart";
 
-        public static string GetDefaultName(string baseString, IEnumerable<string> existingNames)
+        public static string IncrementName(this string baseString, IEnumerable<string> existingNames)
         {
             int number = 1;
             string name = baseString;

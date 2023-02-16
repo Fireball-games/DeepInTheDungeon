@@ -56,8 +56,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private ImageButton _prefabsFinderButton;
         private Title _prefabTitle;
         private TMP_Text _statusText;
+        
         private EditorUIManager Manager => EditorUIManager.Instance;
 
+        protected GameManager GameManager => GameManager.Instance;
         protected CageController SelectedCage => Manager.SelectedCage;
         protected MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
         protected TC EditedConfiguration;

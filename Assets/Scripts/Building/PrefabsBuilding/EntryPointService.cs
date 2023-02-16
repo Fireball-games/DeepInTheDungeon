@@ -2,6 +2,7 @@
 using System.Linq;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.System;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
 
@@ -12,9 +13,13 @@ namespace Scripts.Building.PrefabsBuilding
         protected override EntryPointConfiguration GetConfigurationFromPrefab(PrefabBase prefab, string ownerGuid,
             bool spawnPrefabOnBuild) => new((EntryPointPrefab) prefab, ownerGuid, spawnPrefabOnBuild);
 
-        protected override void RemoveConfiguration(EntryPointConfiguration configuration)
+        protected override void RemoveConfiguration(EntryPointConfiguration entryPoint)
         {
-            // Nothing special is needed here.
+            List<TriggerConfiguration> traversalTriggers = GameManager.Instance.CurrentCampaign.CollectMapTraversalTriggers();
+            foreach (TriggerConfiguration trigger in traversalTriggers.Where(trigger => trigger.TargetMapEntranceName == entryPoint.Name))
+            {
+                trigger.TargetMapEntranceName = null;
+            }
         }
 
         protected override void ProcessConfiguration(EntryPointConfiguration configuration,

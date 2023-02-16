@@ -36,9 +36,11 @@ namespace Scripts.Localization
         public const string EndPoint = "EndPoint";
         public const string EnterCampaignName = "EnterCampaignName";
         public const string EnterName = "EnterName";
+        public const string EntryPoint = "EntryPoint";
         public const string ErrorBuildingPrefab = "ErrorBuildingPref";
         public const string ExistingPrefabs = "ExistingPrefabs";
         public const string Exit = "Exit";
+        public const string ExitDelay = "ExitDelay";
         public const string ExitGame = "ExitGame";
         public const string Floors = "Floors";
         public const string IsWalkable = "IsWalkable";
@@ -58,6 +60,7 @@ namespace Scripts.Localization
         public const string NoChangesToSave = "NoChangesToSave";
         public const string NoFilesToShow = "NoFilesToShow";
         public const string NoMapToPlayLoaded = "NoMapToPlayLoaded";
+        public const string NoNameSet = "NoNameSet";
         public const string NoPrefabsAvailable = "NoPrefabsAvailable";
         public const string NothingToEditForConfiguration = "NothingToEditForConfiguration";
         public const string North = "North";
@@ -89,6 +92,7 @@ namespace Scripts.Localization
         public const string StartPosition = "StartPosition";
         public const string StartNewCampaign = "StartNewCampaign";
         public const string Step = "Step";
+        public const string TargetMap = "TargetMap";
         public const string TriggerType = "TriggerType";
         public const string Up = "Up";
         public const string WaypointEditor = "WaypointEditor";

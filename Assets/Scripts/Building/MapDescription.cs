@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
 using Scripts.Helpers.Extensions;
@@ -16,6 +17,7 @@ namespace Scripts.Building
         /// Position according to Layout array
         /// </summary>
         public Vector3Int EditorStartPosition;
+
         public Quaternion EditorPlayerStartRotation;
         public string SceneName;
         public TileDescription[,,] Layout;
@@ -32,6 +34,11 @@ namespace Scripts.Building
         }
 
         public MapDescription ClonedCopy() => (MapDescription) Clone();
+
+        public IEnumerable<string> EntryPointsNames => EntryPoints.Select(e => e.name);
+
+        public IEnumerable<TriggerConfiguration> CollectMapTraversalTriggers()
+            => PrefabConfigurations.OfType<TriggerConfiguration>().Where(c => !string.IsNullOrEmpty(c.TargetMapName));
 
         public object Clone() => new MapDescription
         {

@@ -24,7 +24,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private LabeledDropdown _triggerTypeDropdown;
         private NumericUpDown _triggerCountUpDown;
         
-        private LabeledDropdown _startMapDropdown;
+        private LabeledDropdown _targetMapDropdown;
         private LabeledDropdown _entryPointDropdown;
         private NumericUpDown _exitDelayUpDown;
         
@@ -169,6 +169,25 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             positionTrigger!.SetStartPosition(position);
             positionTrigger!.SetPosition();
         }
+        
+        private void OnTargetMapChanged(string targetMap)
+        {
+            SetEdited();
+            EditedConfiguration.TargetMapName = targetMap;
+            VisualizeOtherComponents();
+        }
+        
+        private void OnEntryPointChanged(string entryPointName)
+        {
+            SetEdited();
+            EditedConfiguration.TargetMapEntranceName = entryPointName;
+        }
+        
+        private void OnExitDelayChanged(float exitDelay)
+        {
+            SetEdited();
+            EditedConfiguration.ExitDelay = exitDelay;
+        }
 
         private void RedrawPath()
         {
@@ -190,7 +209,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _receiverList = Content.Find("ReceiverList").GetComponent<EditableConfigurationList>();
             
-            _startMapDropdown = Content.Find("StartMapDropdown").GetComponent<LabeledDropdown>();
+            _targetMapDropdown = Content.Find("TargetMapDropdown").GetComponent<LabeledDropdown>();
             _entryPointDropdown = Content.Find("EntryPointDropdown").GetComponent<LabeledDropdown>();
             _exitDelayUpDown = Content.Find("ExitDelayUpDown").GetComponent<NumericUpDown>();
         }
@@ -202,7 +221,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _triggerTypeDropdown.SetCollapsed(true);
             _triggerCountUpDown.SetCollapsed(true);
             _receiverList.SetCollapsed(true);
-            _startMapDropdown.SetCollapsed(true);
+            _targetMapDropdown.SetCollapsed(true);
             _entryPointDropdown.SetCollapsed(true);
             _exitDelayUpDown.SetCollapsed(true);
 
@@ -232,7 +251,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _positionControl.SetCollapsed(false);
             }
 
-            if (EditedPrefab is IPositionsTrigger positionsTrigger)
+            bool isMapTraversalTrigger = EditedPrefab is MapTraversalTrigger;
+            
+            if (!isMapTraversalTrigger && EditedPrefab is IPositionsTrigger positionsTrigger)
             {
                 _startPositionUpDown.Label.text = t.Get(Keys.StartPosition);
                 _startPositionUpDown.maximum = positionsTrigger.GetSteps().Count - 1;
@@ -240,47 +261,53 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _startPositionUpDown.SetCollapsed(false);
             }
             
-            if (EditedPrefab is MapTraversalTrigger mapTraversalTrigger)
+            if (isMapTraversalTrigger)
             {
-                Campaign currentCampaign = GameManager.Instance.CurrentCampaign;
+                Campaign currentCampaign = GameManager.CurrentCampaign;
                 List<string> mapsNames = currentCampaign.MapsNames.ToList();
                 
-                _startMapDropdown.Set($"{t.Get(Keys.StartMap)}:",
+                _targetMapDropdown.Set($"{t.Get(Keys.TargetMap)}:",
                     mapsNames,
-                    mapsNames.IndexOf(mapTraversalTrigger.targetMapName),
-                    OnStartMapChanged);
-                _startMapDropdown.SetCollapsed(false);
-
+                    mapsNames.IndexOf(EditedConfiguration.TargetMapName),
+                    OnTargetMapChanged);
+                _targetMapDropdown.SetCollapsed(false);
+                
+                MapDescription targetMap = currentCampaign.GetMapByName(EditedConfiguration.TargetMapName);
+                
                 _entryPointDropdown.Set($"{t.Get(Keys.EntryPoint)}:",
-                    currentCampaign.GetMapByName(mapTraversalTrigger.targetMapName).EntryPointsNames.ToList(),
-                    mapTraversalTrigger.targetMapEntryPoint,
+                    currentCampaign.GetMapByName(EditedConfiguration.TargetMapName)?.EntryPointsNames ?? new List<string>(),
+                    targetMap == null ? 0 : targetMap.EntryPointsNames.ToList().IndexOf(EditedConfiguration.TargetMapEntranceName),
                     OnEntryPointChanged);
                 _entryPointDropdown.SetCollapsed(false);
-
+                
                 _exitDelayUpDown.Label.text = $"{t.Get(Keys.ExitDelay)}:";
-                _exitDelayUpDown.Value = mapTraversalTrigger.delay;
+                _exitDelayUpDown.OnValueChanged.RemoveAllListeners();
+                _exitDelayUpDown.Value = EditedConfiguration.ExitDelay;
+                _exitDelayUpDown.OnValueChanged.AddListener(OnExitDelayChanged);
                 _exitDelayUpDown.SetCollapsed(false);
             }
 
-            _triggerTypeDropdown.Set($"{t.Get(Keys.TriggerType)}:",
-                EditedConfiguration.TriggerType,
-                OnTriggerTypeChanged);
-            _triggerTypeDropdown.SetCollapsed(false);
-
-            if (EditedConfiguration.TriggerType is Enums.ETriggerType.Multiple)
+            if (!isMapTraversalTrigger)
             {
-                _triggerCountUpDown.Value = EditedConfiguration.Count;
-                _triggerCountUpDown.Label.text = $"{t.Get(Keys.Count)} :";
-                _triggerCountUpDown.SetCollapsed(false);
+                _triggerTypeDropdown.Set($"{t.Get(Keys.TriggerType)}:",
+                    EditedConfiguration.TriggerType,
+                    OnTriggerTypeChanged);
+                _triggerTypeDropdown.SetCollapsed(false);
+                
+                if (EditedConfiguration.TriggerType is Enums.ETriggerType.Multiple)
+                {
+                    _triggerCountUpDown.Value = EditedConfiguration.Count;
+                    _triggerCountUpDown.Label.text = $"{t.Get(Keys.Count)} :";
+                    _triggerCountUpDown.SetCollapsed(false);
+                }
+
+                IEnumerable<TriggerReceiverConfiguration> subscribers =
+                    EditedConfiguration.Subscribers.Select(s => MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(s));
+
+                _receiverList.Set(t.Get(Keys.SubscribedReceivers), subscribers, OnReceiverListChanged);
+                _receiverList.SetCollapsed(false);
+                RedrawPath();
             }
-
-            IEnumerable<TriggerReceiverConfiguration> subscribers =
-                EditedConfiguration.Subscribers.Select(s => MapBuilder.GetConfigurationByGuid<TriggerReceiverConfiguration>(s));
-
-            _receiverList.Set(t.Get(Keys.SubscribedReceivers), subscribers, OnReceiverListChanged);
-            _receiverList.SetCollapsed(false);
-            
-            RedrawPath();
         }
 
         private string ExtractReceiverGuid(PrefabConfiguration configuration)

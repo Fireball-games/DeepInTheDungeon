@@ -17,7 +17,8 @@ namespace Scripts.UI.Components
         private EContentType _contentType;
         private Type _enumType;
 
-        private UnityEvent<int> OnValueChanged { get; } = new();
+        private UnityEvent<int> OnIntValueChanged { get; } = new();
+        private UnityEvent<string> OnStringValueChanged { get; } = new();
 
         private enum EContentType
         {
@@ -30,13 +31,16 @@ namespace Scripts.UI.Components
             _label = body.transform.Find("Label").GetComponent<TMP_Text>();
             _dropdown = body.transform.Find("Dropdown").GetComponent<TMP_Dropdown>();
             _dropdown.onValueChanged.AddListener(OnValueChanged_Internal);
+            
+            _options = new List<string>();
+            SetOptions(_options);
         }
         
-        public void Set(string labelText, IEnumerable<string> options, int selectedValue, UnityAction<int> onValueChanged)
+        public void Set(string labelText, IEnumerable<string> options, int selectedValue, UnityAction<string> onValueChanged)
         {
             _label.text = string.IsNullOrEmpty(labelText) ? "<missing>" : labelText;
 
-            OnValueChanged.RemoveAllListeners();
+            OnStringValueChanged.RemoveAllListeners();
 
             _options = options.ToList();
 
@@ -48,14 +52,14 @@ namespace Scripts.UI.Components
 
             _dropdown.value = selectedValue;
 
-            OnValueChanged.AddListener(onValueChanged);
+            OnStringValueChanged.AddListener(onValueChanged);
         }
 
         public void Set<T>(string labelText, T selectedValue, UnityAction<int> onValueChanged)
         {
             _label.text = string.IsNullOrEmpty(labelText) ? "<missing>" : labelText;
 
-            OnValueChanged.RemoveAllListeners();
+            OnIntValueChanged.RemoveAllListeners();
 
             if (typeof(T).IsEnum)
             {
@@ -71,7 +75,7 @@ namespace Scripts.UI.Components
 
             _dropdown.value = _options.IndexOf(selectedValue.ToString());
 
-            OnValueChanged.AddListener(onValueChanged);
+            OnIntValueChanged.AddListener(onValueChanged);
         }
 
         private void SetOptions(IEnumerable<string> items)
@@ -79,12 +83,28 @@ namespace Scripts.UI.Components
             _dropdown.options.Clear();
             items.ForEach(o => _dropdown.options.Add(new TMP_Dropdown.OptionData(o)));
         }
+        
+        public void OnValueChanged(int value)
+        {
+            OnIntValueChanged.Invoke(value);
+        }
+
+        public void OnValueChanged(string value)
+        {
+            OnStringValueChanged.Invoke(value);
+        }
 
         private void OnValueChanged_Internal(int value)
         {
-            OnValueChanged.Invoke(_contentType is EContentType.Enum 
-                ? (int) Enum.Parse(_enumType, _dropdown.options[value].text) 
-                : value);
+            switch (_contentType)
+            {
+                case EContentType.Strings:
+                    OnValueChanged(_dropdown.options[value].text);
+                    break;
+                case EContentType.Enum:
+                    OnValueChanged((int) Enum.Parse(_enumType, _dropdown.options[value].text));
+                    break;
+            }
         }
     }
 }

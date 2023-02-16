@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Helpers;
 using Scripts.Localization;
 
@@ -69,7 +70,7 @@ namespace Scripts.Building
 
             if (map != null) return map;
 
-            Logger.LogError($"Map with the name: {mapName} not found in campaign: {CampaignName}");
+            Logger.LogWarning($"Map with the name: {mapName} not found in campaign: {CampaignName}");
             return null;
         }
 
@@ -93,6 +94,17 @@ namespace Scripts.Building
         public bool HasMapWithName(string mapName)
         {
             return Maps.Any(map => map.MapName == mapName);
+        }
+
+        public List<TriggerConfiguration> CollectMapTraversalTriggers()
+        {
+            List<TriggerConfiguration> triggers = new();
+            foreach (MapDescription map in Maps)
+            {
+                triggers.AddRange(map.CollectMapTraversalTriggers());
+            }
+
+            return triggers;
         }
     }
 }

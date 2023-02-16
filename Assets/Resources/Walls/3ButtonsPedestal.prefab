@@ -49,6 +49,7 @@ MonoBehaviour:
   prefabType: 3
   guid: 
   presentedInEditor: {fileID: 0}
+  offset: 0
 --- !u!65 &1736645619705982285
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -277,7 +278,7 @@ PrefabInstance:
     - target: {fileID: 2194976748896874665, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
         type: 3}
       propertyPath: m_Name
-      value: GateButton (2)
+      value: Pedestal Button Right
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f, type: 3}
@@ -352,7 +353,7 @@ PrefabInstance:
     - target: {fileID: 2194976748896874665, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
         type: 3}
       propertyPath: m_Name
-      value: GateButton (1)
+      value: Pedestal Button Middle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f, type: 3}
@@ -427,7 +428,7 @@ PrefabInstance:
     - target: {fileID: 2194976748896874665, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f,
         type: 3}
       propertyPath: m_Name
-      value: GateButton
+      value: Pedestal Button Left
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07e2cbb43f6e50f4b850cfff8e2b9e1f, type: 3}

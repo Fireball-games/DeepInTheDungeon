@@ -21,9 +21,7 @@ namespace Scripts.UI.EditorUI
 
         public async Task<EConfirmResult> Show(Campaign parentCampaign, bool isModalClosingDialog = true)
         {
-            string defaultMapName = Strings.GetDefaultName(
-                t.Get(Keys.NewMapName),
-                parentCampaign.Maps.Select(m => m.MapName));
+            string defaultMapName = t.Get(Keys.NewMapName).IncrementName(parentCampaign.Maps.Select(m => m.MapName));
             
             InitializeTexts();
             mapNameInput.SetInputText("");

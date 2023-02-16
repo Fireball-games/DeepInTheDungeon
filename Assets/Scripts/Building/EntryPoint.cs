@@ -18,7 +18,7 @@ namespace Scripts.Building
 
         public EntryPoint(EntryPointConfiguration entryPointConfiguration)
         {
-            name = entryPointConfiguration.EntryPointName;
+            name = entryPointConfiguration.Name;
             playerGridPosition = entryPointConfiguration.TransformData.Position.ToGridPosition();
             playerRotationY = entryPointConfiguration.PlayerRotationY;
             isMovingForwardOnStart = entryPointConfiguration.IsMovingForwardOnStart;

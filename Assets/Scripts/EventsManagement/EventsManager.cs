@@ -13,7 +13,7 @@ namespace Scripts.EventsManagement
         public static event Action<Vector3> OnPlayerPositionChanged;
         public static event Action<Trigger> OnTriggerNext;
         public static event Action OnMapDemolished;
-        public static event Action<string, string, float> OnMapTraversalTriggered;
+        public static event Action<string> OnMapTraversalTriggered;
 
         // ***********    Triggers    ***********
 
@@ -24,6 +24,6 @@ namespace Scripts.EventsManagement
         public static void TriggerOnPlayerPositionChanged(Vector3 newPosition) => OnPlayerPositionChanged?.Invoke(newPosition);
         public static void TriggerOnTriggerNext(Trigger source ) => OnTriggerNext?.Invoke(source);
         public static void TriggerOnMapDemolished() => OnMapDemolished?.Invoke();
-        public static void TriggerOnMapTraversalTriggered(string targetMap, string targetMapEntrance, float delay) => OnMapTraversalTriggered?.Invoke(targetMap, targetMapEntrance, delay);
+        public static void TriggerOnMapTraversalTriggered(string guid) => OnMapTraversalTriggered?.Invoke(guid);
     }
 }

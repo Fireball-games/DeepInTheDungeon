@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b618fbc4218afb04888743a551b0b8cc, type: 3}
-  m_Color: {r: 0.3962264, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.9670751, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -84,6 +84,75 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &6727447126904343009
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5877925938852622575}
+  - component: {fileID: 6419497625794665406}
+  - component: {fileID: 1403465756387052375}
+  m_Layer: 0
+  m_Name: Exit Trigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5877925938852622575
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6727447126904343009}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3597594453782148377}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6419497625794665406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6727447126904343009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbb6b359dfae4d4dbbc6e1b40cb9d002, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabType: 9
+  guid: 
+  presentedInEditor: {fileID: 0}
+  triggerType: 1
+  count: 1
+  mustBeOnSameTile: 1
+  atRest: 1
+  presetSubscribers: []
+  subscribers: []
+--- !u!114 &1403465756387052375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6727447126904343009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c79f67a300545d491e98412a8c2efa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowedLayers:
+    serializedVersion: 2
+    m_Bits: 8192
 --- !u!1 &7699843267837961704
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,8 +214,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3597594453782148377}
-  - component: {fileID: 5123174651488403310}
-  - component: {fileID: 8087821198819779812}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -165,49 +232,11 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5877925938852622575}
   m_Father: {fileID: 4129946615452051100}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5123174651488403310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8218596289636234579}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c79f67a300545d491e98412a8c2efa8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allowedLayers:
-    serializedVersion: 2
-    m_Bits: 8192
---- !u!114 &8087821198819779812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8218596289636234579}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbb6b359dfae4d4dbbc6e1b40cb9d002, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabType: 9
-  guid: 
-  presentedInEditor: {fileID: 0}
-  triggerType: 1
-  count: 1
-  mustBeOnSameTile: 1
-  atRest: 1
-  presetSubscribers: []
-  subscribers: []
-  targetMap: 
-  targetMapEntrance: 
-  delay: 0
 --- !u!1 &8390249207388212700
 GameObject:
   m_ObjectHideFlags: 0

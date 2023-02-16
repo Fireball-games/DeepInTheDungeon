@@ -93,9 +93,9 @@ namespace Scripts.UI.Components
 
         private async void AddCampaign()
         {
-            string defaultCampaignName = GetDefaultName(
-                t.Get(Keys.Campaign),
+            string defaultCampaignName = t.Get(Keys.Campaign).IncrementName(
                 _existingCampaigns.Select(c => c.CampaignName));
+            
             string campaignName = await EditorUIManager.Instance.ShowInputFieldDialog(t.Get(Keys.EnterCampaignName), defaultCampaignName);
 
             if (string.IsNullOrEmpty(campaignName)) return;
@@ -136,10 +136,7 @@ namespace Scripts.UI.Components
                 Mathf.Clamp(columns, MapEditorManager.MinColumns, MapEditorManager.MaxColumns));
 
             newMap.MapName = string.IsNullOrEmpty(mapName)
-                ? GetDefaultName(
-                    t.Get(Keys.NewMapName),
-                    _selectedCampaign.Maps.Select(m => m.MapName)
-                )
+                ? t.Get(Keys.NewMapName).IncrementName(_selectedCampaign.Maps.Select(m => m.MapName))
                 : mapName;
 
             if (_selectedCampaign.Maps.Any(m => m.MapName == newMap.MapName))

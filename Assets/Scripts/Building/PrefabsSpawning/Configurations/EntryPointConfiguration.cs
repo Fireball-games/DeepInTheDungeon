@@ -3,9 +3,9 @@
     public class EntryPointConfiguration : PrefabConfiguration
     {
         public bool IsMovingForwardOnStart;
-        public string EntryPointName;
+        public string Name;
         public int PlayerRotationY;
-        public override string DisplayName => EntryPointName;
+        public override string DisplayName => Name;
 
         public EntryPointConfiguration()
         {
@@ -14,7 +14,7 @@
         public EntryPointConfiguration(EntryPointConfiguration configuration) : base(configuration)
         {
             IsMovingForwardOnStart = configuration.IsMovingForwardOnStart;
-            EntryPointName = configuration.EntryPointName;
+            Name = configuration.Name;
             PlayerRotationY = configuration.PlayerRotationY;
         }
         

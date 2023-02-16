@@ -11,7 +11,7 @@ namespace Scripts.Helpers
 {
     public static class FileOperationsHelper
     {
-        public const string CampaignDirectoryName = "Maps";
+        public const string CampaignDirectoryName = "Campaigns";
         public const string WallsDirectoryName = "Walls";
         public const string EnemiesDirectoryName = "Enemies";
         public const string PropsDirectoryName = "Props";
@@ -21,9 +21,23 @@ namespace Scripts.Helpers
         public const string ServicesDirectoryName = "ServicePrefabs";
         
         public static string CampaignDirectoryPath => Path.Combine(PersistentPath, CampaignDirectoryName);
+        public static string ApplicationResourcesPath => Path.Combine(Application.dataPath, "Resources");
+        public static string FullCampaignsResourcesPath => Path.Combine(ApplicationResourcesPath, CampaignDirectoryName);
+        public static string MainCampaignFileName => $"{Strings.MainCampaignName}{CampaignFileExtension}";
+        public static string StartRoomsFileName => $"{Strings.StartRoomsCampaignName}{CampaignFileExtension}";
         private const string CampaignFileExtension = ".bytes";
-        
+
         private static readonly string PersistentPath = Application.persistentDataPath;
+        
+        private static ES3Settings _eS3ResourcesLocationSettings;
+        
+        static FileOperationsHelper()
+        {
+            _eS3ResourcesLocationSettings = new ES3Settings
+            {
+                location = ES3.Location.Resources,
+            };
+        }
 
         public static string[] GetFilesInDirectory(string relativeDirectoryPath = "", string extensionFilter = "all")
         {
@@ -40,6 +54,8 @@ namespace Scripts.Helpers
 
             return allFiles;
         }
+        
+        public static string GetFullCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryPath, $"{campaignName}{CampaignFileExtension}");
 
         public static string GetSavePath(string campaignName) => Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
 
@@ -154,6 +170,43 @@ namespace Scripts.Helpers
 
         private static string GetFullRelativeCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
 
-        private static string GetFullCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryPath, $"{campaignName}{CampaignFileExtension}");
+        public static bool LoadSystemCampaigns(out Campaign mainCampaign, out Campaign startRoomsCampaign)
+        {
+            mainCampaign = null;
+            startRoomsCampaign = null;
+
+            if (!LoadResourcesCampaign(Strings.MainCampaignName, out mainCampaign))
+            {
+                Logger.LogError($"Failed to load main campaign: {Strings.MainCampaignName}");
+                return false;
+            }
+
+            if (!LoadResourcesCampaign(Strings.StartRoomsCampaignName, out startRoomsCampaign))
+            {
+                Logger.LogError($"Failed to load start rooms campaign: {Strings.StartRoomsCampaignName}");
+                return false;
+            }
+
+            return true;
+        }
+
+        // Loads campaign from resources folder using ES3
+        private static bool LoadResourcesCampaign(string campaignName, out Campaign campaign)
+        {
+            campaign = null;
+
+            if (string.IsNullOrEmpty(campaignName)) return false;
+
+            try
+            {
+                campaign = ES3.Load<Campaign>(campaignName, Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}"), _eS3ResourcesLocationSettings);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to load campaign from resources: {campaignName}: {e}", Logger.ELogSeverity.Release);
+                return false;
+            }
+        }
     }
 }

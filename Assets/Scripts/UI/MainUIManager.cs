@@ -73,6 +73,8 @@ namespace Scripts.UI
 
         public void GraphicRaycasterEnabled(bool isEnabled)
         {
+            if (!_graphicRaycaster) return;
+            
             _graphicRaycaster.enabled = isEnabled;
         }
     }

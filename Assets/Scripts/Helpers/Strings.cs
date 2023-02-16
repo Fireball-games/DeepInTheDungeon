@@ -12,7 +12,7 @@ namespace Scripts.Helpers
         public const string MouseXAxis = "Mouse X";
         public const string MouseYAxis = "Mouse Y";
         public const string MouseWheel = "Mouse ScrollWheel";
-        public const string MainCampaign = "DeepInTheDungeon";
+        public const string MainCampaignName = "DeepInTheDungeon";
         public const string StartRoomsCampaignName = "StartRooms";
         public const string Untagged = "Untagged";
         public const string CampaignStartMapName = "CampaignStart";

@@ -6,7 +6,10 @@ namespace Scripts.Triggers
     {
         internal override void OnTriggerActivated(Enums.ETriggerActivatedDetail activatedDetail = Enums.ETriggerActivatedDetail.None)
         {
-            EventsManager.TriggerOnMapTraversalTriggered(Guid);
+            if (activatedDetail is Enums.ETriggerActivatedDetail.SwitchedOn)
+            {
+                EventsManager.TriggerOnMapTraversalTriggered(Guid);
+            }
         }
     }
 }

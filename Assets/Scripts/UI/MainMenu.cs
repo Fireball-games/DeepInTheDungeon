@@ -55,7 +55,10 @@ namespace Scripts.UI
             SetComponents();
         }
 
-        private void NewCampaignClicked() => Logger.LogNotImplemented();
+        private void NewCampaignClicked()
+        {
+            GameManager.StartNewCampaign();
+        }
 
         private void ContinueCampaignClicked() => GameManager.ContinueFromSave();
 

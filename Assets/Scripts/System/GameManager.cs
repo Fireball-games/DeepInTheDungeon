@@ -14,6 +14,7 @@ using Scripts.UI;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.System
 {
@@ -21,9 +22,12 @@ namespace Scripts.System
     {
         [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private PlayerController playerPrefab;
-        private PlayerController player;
+        private PlayerController _player;
+        
+        private Campaign _mainCampaign;
+        private Campaign _startRoomsCampaign;
 
-        public PlayerController Player => player;
+        public PlayerController Player => _player;
         public Vector3Int PlayerPosition => Player.transform.position.ToVector3Int();
         public MapBuilder MapBuilder => mapBuilder;
         /// <summary>
@@ -67,6 +71,11 @@ namespace Scripts.System
         {
             base.Awake();
             
+            if (!FileOperationsHelper.LoadSystemCampaigns(out _mainCampaign, out _startRoomsCampaign))
+            {
+                Logger.LogError("Failed to load system campaigns.");
+            }
+            
             _currentEntryPoint = new EntryPoint();
         }
 
@@ -98,7 +107,8 @@ namespace Scripts.System
         
         public void StartMainScene(bool fadeIn = true)
         {
-            _currentCampaign = FileOperationsHelper.LoadStartRoomsCampaign();
+            // _currentCampaign = FileOperationsHelper.LoadStartRoomsCampaign();
+            _currentCampaign = _startRoomsCampaign;
             
             bool startedMapBoolFailed = false;
             
@@ -136,9 +146,14 @@ namespace Scripts.System
             OnStartGameRequested(fadeIn);
         }
 
-        public void StartMainCampaign()
+        public void StartNewCampaign()
         {
-            Logger.LogNotImplemented();
+            // TODO: When applicable, handle warning about deleting save files.
+            _currentCampaign = _mainCampaign;
+            _currentMap = _currentCampaign.GetStarterMap();
+            _currentEntryPoint = _currentMap.EntryPoints[0];
+            
+            OnStartGameRequested();
         }
         
         public void ContinueFromSave()
@@ -284,13 +299,13 @@ namespace Scripts.System
         {
             if (!_startLevelAfterBuildFinishes) return;
             
-            player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
+            _player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
-            player.transform.parent = null;
-            player.PlayerMovement.SetPositionAndRotation(
+            _player.transform.parent = null;
+            _player.PlayerMovement.SetPositionAndRotation(
                 _currentEntryPoint.playerGridPosition,
                 Quaternion.Euler(0f, _currentEntryPoint.playerRotationY, 0f));
-            player.PlayerMovement.SetCamera();
+            _player.PlayerMovement.SetCamera();
             
             // To allow playing StartRooms from Editor
             _movementEnabled = true;
@@ -312,7 +327,7 @@ namespace Scripts.System
                     _movementEnabled = false;
                 }
                 
-                player.PlayerMovement.MoveForward(true);
+                _player.PlayerMovement.MoveForward(true);
             }
             
             EventsManager.TriggerOnLevelStarted();

@@ -15,7 +15,8 @@ namespace Helpers.Editor
     {
         private static GUIStyle _deselectedStyle;
         private static GUIStyle _warningStyle;
-        
+        private bool _initialized;
+
         [MenuItem("Window/Tools Window")]
         static void Init()
         {
@@ -23,8 +24,8 @@ namespace Helpers.Editor
 
             window.Show();
         }
-
-        private void OnGUI()
+        
+        private void Initialize()
         {
             _deselectedStyle = new GUIStyle(GUI.skin.button)
             {
@@ -41,6 +42,13 @@ namespace Helpers.Editor
                     textColor = Color.red
                 }
             };
+
+            _initialized = true;
+        }
+
+        private void OnGUI()
+        {
+            if (!_initialized) Initialize();
             
             PlayModeTools();
 

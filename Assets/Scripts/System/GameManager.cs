@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
@@ -14,7 +15,6 @@ using Scripts.UI;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.System
 {
@@ -50,6 +50,7 @@ namespace Scripts.System
         private bool _lookModeOnStartTraversal;
         private bool _startLevelAfterBuildFinishes;
         private bool _isPlayingFromSavedGame;
+        private bool _entryMovementFinished;
 
         public enum EGameMode
         {
@@ -196,7 +197,7 @@ namespace Scripts.System
 
         private async void OnMapTraversalTriggered(string exitConfigurationGuid)
         {
-            if (CurrentMap == null) return;
+            if (CurrentMap == null || !_entryMovementFinished) return;
             
             TriggerConfiguration mapTraversal = TriggerService.GetConfiguration(exitConfigurationGuid);
             
@@ -318,11 +319,6 @@ namespace Scripts.System
             // To allow playing StartRooms from Editor
             _movementEnabled = true;
 
-            // if (SceneLoader.IsInMainScene && !IsPlayingFromEditor)
-            // {
-            //     _movementEnabled = false;
-            // }
-
             ScreenFader.FadeOut(0.5f);
 
             await Task.Delay(200);
@@ -330,14 +326,19 @@ namespace Scripts.System
             if (_currentEntryPoint.isMovingForwardOnStart)
             {
                 _movementEnabled = false;
+                _entryMovementFinished = false;
                 
                 if (SceneLoader.IsInMainScene && !IsPlayingFromEditor)
                 {
-                    PlayerMovement.OnStartResting.AddListener(OnEntryMovementFinishedMainScene);
+                    HandleEntryMovement(SetControlsForMainScene);
                 }
                 else
                 {
-                    PlayerMovement.OnStartResting.AddListener(OnEntryMovementFinished);
+                    HandleEntryMovement( () =>
+                    {
+                        _movementEnabled = true;
+                        PlayerCamera.IsLookModeOn = _lookModeOnStartTraversal;
+                    });
                 }
                 
                 _player.PlayerMovement.MoveForward(true);
@@ -346,18 +347,19 @@ namespace Scripts.System
             EventsManager.TriggerOnLevelStarted();
         }
         
-        private void OnEntryMovementFinished()
+        private Action _onMovementFinished;
+        private void HandleEntryMovement(Action onMovementFinished)
         {
-            _movementEnabled = true;
-            PlayerCamera.IsLookModeOn = _lookModeOnStartTraversal;
-            
-            PlayerMovement.OnStartResting.RemoveListener(OnEntryMovementFinished);
+            if (onMovementFinished != null) _onMovementFinished = onMovementFinished;
+            PlayerMovement.OnStartResting.AddListener(OnMovementFinishedWrapper);
         }
-
-        private void OnEntryMovementFinishedMainScene()
+        
+        private void OnMovementFinishedWrapper()
         {
-            SetControlsForMainScene();
-            PlayerMovement.OnStartResting.RemoveListener(OnEntryMovementFinishedMainScene);
+            _onMovementFinished?.Invoke();
+            _onMovementFinished = null;
+            _entryMovementFinished = true;
+            PlayerMovement.OnStartResting.RemoveListener(OnMovementFinishedWrapper);
         }
 
         private void SetControlsForMainScene()

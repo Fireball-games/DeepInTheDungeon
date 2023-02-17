@@ -23,9 +23,7 @@ namespace Scripts.Helpers
         public static string CampaignDirectoryPath => Path.Combine(PersistentPath, CampaignDirectoryName);
         public static string ApplicationResourcesPath => Path.Combine(Application.dataPath, "Resources");
         public static string FullCampaignsResourcesPath => Path.Combine(ApplicationResourcesPath, CampaignDirectoryName);
-        public static string MainCampaignFileName => $"{Strings.MainCampaignName}{CampaignFileExtension}";
-        public static string StartRoomsFileName => $"{Strings.StartRoomsCampaignName}{CampaignFileExtension}";
-        private const string CampaignFileExtension = ".bytes";
+        public const string CampaignFileExtension = ".bytes";
 
         private static readonly string PersistentPath = Application.persistentDataPath;
         
@@ -175,7 +173,7 @@ namespace Scripts.Helpers
             mainCampaign = null;
             startRoomsCampaign = null;
 
-            if (!LoadResourcesCampaign(Strings.MainCampaignName, out mainCampaign))
+            if (!LoadResourcesCampaign(Strings.GetSelectedMainCampaignName(), out mainCampaign))
             {
                 Logger.LogError($"Failed to load main campaign: {Strings.MainCampaignName}");
                 return false;

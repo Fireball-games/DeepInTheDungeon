@@ -1,0 +1,420 @@
+{
+	"Demo" : {
+		"__type" : "Scripts.Building.Campaign,Assembly-CSharp",
+		"value" : {
+			"CampaignName" : "Demo",
+			"StartMapName" : null,
+			"CampaignStartEntryPointName" : null,
+			"Maps" : [
+				{
+					"MapName" : "Level1",
+					"EditorStartPosition" : {
+						"x" : 2,
+						"y" : 5,
+						"z" : 5
+					},
+					"EditorPlayerStartRotation" : {
+						"x" : 0,
+						"y" : 0,
+						"z" : 0,
+						"w" : 1
+					},
+					"SceneName" : "PlayIndoor",
+					"Layout" : [
+						[
+							[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							]
+						],[
+							[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							]
+						],[
+							[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null
+							],[
+								null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null
+							],[
+								null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							]
+						],[
+							[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							]
+						],[
+							[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null
+							]
+						]
+					],
+					"PrefabConfigurations" : [
+						{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.EntryPointConfiguration,Assembly-CSharp",
+							"IsMovingForwardOnStart" : true,
+							"Name" : "Demo Start",
+							"PlayerRotationY" : 0,
+							"PrefabType" : 11,
+							"PrefabName" : "StartPoint",
+							"TransformData" : {
+								"Position" : {
+									"x" : 5,
+									"y" : -2,
+									"z" : 2
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "b19a1ab5-0774-4a9f-9f8c-f19be23ad632",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						}
+					],
+					"EntryPoints" : [
+						{
+							"name" : "Demo Start",
+							"playerGridPosition" : {
+								"x" : 2,
+								"y" : 5,
+								"z" : 2
+							},
+							"playerRotationY" : 0,
+							"isMovingForwardOnStart" : true
+						}
+					]
+				}
+			]
+		}
+	}
+}

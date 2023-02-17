@@ -7,6 +7,7 @@ using Scripts.System;
 using UnityEditor;
 using UnityEngine;
 using static Scripts.Helpers.FileOperationsHelper;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Helpers.Editor
 {
@@ -16,7 +17,7 @@ namespace Helpers.Editor
         static void Init()
         {
             ToolsWindow window = GetWindow<ToolsWindow>("Tools Window");
-            
+
             window.Show();
         }
 
@@ -26,12 +27,13 @@ namespace Helpers.Editor
 
             CopyMainCampaignToResourcesButton();
             CopyStartRoomsToResourcesButton();
+            CopyDemoToResourcesButton();
         }
 
         private void PlayModeTools()
         {
             GUILayout.Label("Map fixes:", EditorStyles.boldLabel);
-            
+
             if (!Application.isPlaying)
             {
                 GUILayout.Label("These tools are available in play mode.");
@@ -39,21 +41,21 @@ namespace Helpers.Editor
             }
 
             if (!GameManager.Instance) return;
-            
+
             if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor && MapEditorManager.Instance.MapIsPresented)
             {
                 GUILayout.BeginVertical();
-                
+
                 RegenerateGuidsButton();
                 SetAllSpawnPrefabOnBuildToTrueButton();
-            
+
                 GUILayout.EndVertical();
             }
             else
             {
                 GUILayout.Label("Load the map in Editor to see available tools.");
             }
-            
+
             GUILayout.Space(20);
         }
 
@@ -62,7 +64,7 @@ namespace Helpers.Editor
             if (GUILayout.Button("Add missing GUIDs"))
             {
                 bool changesWereMade = false;
-                
+
                 foreach (PrefabConfiguration configuration in GameManager.Instance.CurrentMap.PrefabConfigurations)
                 {
                     if (string.IsNullOrEmpty(configuration.Guid))
@@ -91,28 +93,46 @@ namespace Helpers.Editor
                 MapEditorManager.Instance.SaveMap();
             }
         }
-        
+
         private void CopyMainCampaignToResourcesButton()
         {
             if (GUILayout.Button("Copy Main Campaign to Resources"))
             {
-                string sourcePath = GetFullCampaignPath(Strings.MainCampaignName);
-                string destinationPath = Path.Combine(FullCampaignsResourcesPath, MainCampaignFileName);
-                
-                File.Copy(sourcePath, destinationPath, true);
-                AssetDatabase.Refresh();
+                CopyCampaignToResources(Strings.MainCampaignName);
             }
         }
-        
+
         private void CopyStartRoomsToResourcesButton()
         {
             if (GUILayout.Button("Copy Start Rooms to Resources"))
             {
-                string sourcePath = GetFullCampaignPath(Strings.StartRoomsCampaignName);
-                string destinationPath = Path.Combine(FullCampaignsResourcesPath, StartRoomsFileName);
-                
+                CopyCampaignToResources(Strings.StartRoomsCampaignName);
+            }
+        }
+        
+        private void CopyDemoToResourcesButton()
+        {
+            if (GUILayout.Button("Copy Start Rooms to Resources"))
+            {
+                CopyCampaignToResources(Strings.DemoCampaignName);
+            }
+        }
+
+        private void CopyCampaignToResources(string campaignName)
+        {
+            try
+            {
+                string sourcePath = GetFullCampaignPath(campaignName);
+                string destinationPath = Path.Combine(FullCampaignsResourcesPath, $"{campaignName}{CampaignFileExtension}");
+
                 File.Copy(sourcePath, destinationPath, true);
                 AssetDatabase.Refresh();
+                
+                GetWindow<SceneView>().ShowNotification(new GUIContent($"Campaign {campaignName} copied to Resources."));
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message);
             }
         }
     }

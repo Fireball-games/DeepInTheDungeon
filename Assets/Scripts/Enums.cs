@@ -2,6 +2,12 @@
 {
     public static class Enums
     {
+        public enum EMainCampaignName
+        {
+            MainCampaign = 1,
+            Demo = 2,
+        }
+        
         public enum EPrefabType
         {
             Invalid = 0,

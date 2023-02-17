@@ -9,6 +9,7 @@ using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.Player;
 using Scripts.ScenesManagement;
+using Scripts.ScriptableObjects;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.UI;
@@ -20,6 +21,7 @@ namespace Scripts.System
 {
     public class GameManager : Singleton<GameManager>
     {
+        [SerializeField] private GameConfiguration gameConfiguration;
         [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private PlayerController playerPrefab;
         private PlayerController _player;
@@ -27,6 +29,7 @@ namespace Scripts.System
         private Campaign _mainCampaign;
         private Campaign _startRoomsCampaign;
 
+        public GameConfiguration GameConfiguration => gameConfiguration;
         public PlayerController Player => _player;
         public Vector3Int PlayerPosition => Player.transform.position.ToVector3Int();
         public MapBuilder MapBuilder => mapBuilder;

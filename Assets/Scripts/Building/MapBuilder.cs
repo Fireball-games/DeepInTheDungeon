@@ -158,7 +158,7 @@ namespace Scripts.Building
                 Layout = layout,
                 EditorStartPosition = center,
                 EditorPlayerStartRotation = Quaternion.identity,
-                SceneName = Scenes.MainSceneName,
+                SceneName = Scenes.PlayIndoorSceneName,
                 MapName = Strings.CampaignStartMapName,
             };
         }

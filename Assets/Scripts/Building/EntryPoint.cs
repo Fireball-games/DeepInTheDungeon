@@ -24,6 +24,8 @@ namespace Scripts.Building
             isMovingForwardOnStart = entryPointConfiguration.IsMovingForwardOnStart;
         }
 
+        public EntryPoint Cloned() => (EntryPoint)Clone();
+        
         public object Clone() => new EntryPoint
         {
             name = name,

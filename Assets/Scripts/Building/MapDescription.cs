@@ -38,10 +38,10 @@ namespace Scripts.Building
 
         public IEnumerable<string> EntryPointsNames => EntryPoints.Select(e => e.name);
         
-        public EntryPoint GetEntryPointByName(string entryPointName)
+        public EntryPoint GetEntryPointCloneByName(string entryPointName)
         {
             EntryPoint entryPoint = EntryPoints.FirstOrDefault(ep => ep.name == entryPointName);
-            if (entryPoint != null) return entryPoint;
+            if (entryPoint != null) return entryPoint.Cloned();
             
             Logger.LogWarning($"Entry point not found in map: {MapName}, entry point name: {entryPointName}");
             

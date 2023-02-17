@@ -128,7 +128,7 @@ namespace Scripts.System
             _currentMap = _currentCampaign.GetStarterMap();
             if (_currentMap.EntryPoints.Count > 0)
             {
-                _currentEntryPoint = _currentMap.EntryPoints[0];
+                _currentEntryPoint = _currentMap.EntryPoints[0].Cloned();
             }
             else if (startedMapBoolFailed)
             {
@@ -155,7 +155,7 @@ namespace Scripts.System
             // TODO: When applicable, handle warning about deleting save files.
             _currentCampaign = _mainCampaign;
             _currentMap = _currentCampaign.GetStarterMap();
-            _currentEntryPoint = _currentMap.EntryPoints[0];
+            _currentEntryPoint = _currentMap.EntryPoints[0].Cloned();
             
             PlayerCamera.IsLookModeOn = false;
             
@@ -215,7 +215,7 @@ namespace Scripts.System
                 return;
             }
             
-            EntryPoint entryPoint = mapDescription.GetEntryPointByName(mapTraversal.TargetMapEntranceName);
+            EntryPoint entryPoint = mapDescription.GetEntryPointCloneByName(mapTraversal.TargetMapEntranceName);
             
             if (entryPoint == null)
             {

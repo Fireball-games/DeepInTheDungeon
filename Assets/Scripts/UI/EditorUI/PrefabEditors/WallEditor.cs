@@ -273,7 +273,7 @@ namespace Scripts.UI.EditorUI
             DestroyPath(EPathsType.Waypoint, EditedConfiguration.Guid);
             List<Waypoint> waypoints = path.ToList();
             EditedConfiguration.WayPoints = waypoints;
-            AddReplaceWaypointPath(EditedConfiguration.Guid, waypoints);
+            AddReplaceWaypointPath(EditedConfiguration.Guid, waypoints, true);
             HighlightPoint(EPathsType.Waypoint, EditedConfiguration.Guid, effectedWaypointIndex, isExclusiveHighlight: true);
             HandleCreateOppositePathButton();
         }

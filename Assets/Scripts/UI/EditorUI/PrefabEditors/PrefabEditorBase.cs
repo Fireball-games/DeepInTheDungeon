@@ -90,7 +90,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _saveButton.onClick.AddListener(SaveMap);
             _deleteButton.onClick.AddListener(Delete);
             _cancelButton.onClick.AddListener(RemoveChanges);
-            _prefabsFinderButton.OnClick.AddListener(Open);
+            _prefabsFinderButton.OnClick.AddListener(OpenViaFinderButton);
             
             ManageConfigurableComponents();
         }
@@ -139,6 +139,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             //TODO: here will be SetPrefab call for existing prefab for single instance editors, if existing, opens it, if not prepares for placing the one.
 
             SetActive(true);
+        }
+
+        private void OpenViaFinderButton()
+        {
+            if (EditedConfiguration != null)
+            {
+                PathsService.HighlightPath(PathsService.EPathsType.Waypoint, EditedConfiguration.Guid, false);
+            }
+            
+            Open();
         }
         
         protected virtual IEnumerable<TC> GetExistingConfigurations() => _service.GetConfigurations();

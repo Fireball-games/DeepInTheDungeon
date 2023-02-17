@@ -13,6 +13,9 @@ namespace Helpers.Editor
 {
     public class ToolsWindow : EditorWindow
     {
+        private static GUIStyle _deselectedStyle;
+        private static GUIStyle _warningStyle;
+        
         [MenuItem("Window/Tools Window")]
         static void Init()
         {
@@ -23,11 +26,29 @@ namespace Helpers.Editor
 
         private void OnGUI()
         {
+            _deselectedStyle = new GUIStyle(GUI.skin.button)
+            {
+                normal =
+                {
+                    textColor = Color.black
+                }
+            };
+            
+            _warningStyle = new GUIStyle(GUI.skin.button)
+            {
+                normal =
+                {
+                    textColor = Color.red
+                }
+            };
+            
             PlayModeTools();
 
             CopyMainCampaignToResourcesButton();
             CopyStartRoomsToResourcesButton();
             CopyDemoToResourcesButton();
+            
+            CopyAllResourcesCampaignsToLocalLowButton();
         }
 
         private void PlayModeTools()
@@ -133,6 +154,33 @@ namespace Helpers.Editor
             catch (Exception e)
             {
                 Logger.LogError(e.Message);
+            }
+        }
+        
+        private void CopyAllResourcesCampaignsToLocalLowButton()
+        {
+            if (GUILayout.Button("Copy all Resources campaigns to LocalLow", _warningStyle))
+            {
+                try
+                {
+                    string[] files = Directory.GetFiles(FullCampaignsResourcesPath, $"*{CampaignFileExtension}");
+
+                    foreach (string file in files)
+                    {
+                        string fileName = Path.GetFileName(file);
+                        string destinationPath = Path.Combine(CampaignDirectoryPath, fileName);
+
+                        File.Copy(file, destinationPath, true);
+                    }
+
+                    AssetDatabase.Refresh();
+                    
+                    GetWindow<SceneView>().ShowNotification(new GUIContent("All Resources campaigns copied to LocalLow."));
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError(e.Message);
+                }
             }
         }
     }

@@ -126,7 +126,7 @@ namespace Scripts.Helpers.Extensions
             }
         }
 
-        public static void DismissAllChildrenToPool(this GameObject go, bool isUiObject = false)
+        public static void DismissAllChildrenToPool(this GameObject go)
         {
             while (go.transform.childCount > 0)
             {

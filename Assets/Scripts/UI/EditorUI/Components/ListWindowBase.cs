@@ -34,7 +34,7 @@ namespace Scripts.UI.EditorUI.Components
                 OnCancelClicked.AddListener(onClose);
             }
 
-            listContent.gameObject.DismissAllChildrenToPool(true);
+            listContent.gameObject.DismissAllChildrenToPool();
 
             Buttons ??= new HashSet<TButton>();
             Buttons.Clear();
@@ -59,7 +59,7 @@ namespace Scripts.UI.EditorUI.Components
             button.Set(item, OnItemClicked_internal, SetClickedItemSelected);
         }
 
-        public void DeselectButtons() => Buttons.ForEach(b => b.SetSelected(false));
+        public void DeselectButtons() => Buttons?.ForEach(b => b.SetSelected(false));
 
         public void SetButtonsInteractable(bool isInteractable) => Buttons.ForEach(b => b.SetInteractable(isInteractable));
 

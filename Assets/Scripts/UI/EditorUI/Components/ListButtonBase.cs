@@ -33,7 +33,7 @@ namespace Scripts.UI.EditorUI.Components
         {
             if(!Text) Initialize();
             
-            Text.gameObject.DismissAllChildrenToPool(true);
+            Text.gameObject.DismissAllChildrenToPool();
             SetInteractable(true);
             
             displayedItem = item;

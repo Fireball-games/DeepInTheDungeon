@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
-using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 
-namespace Scripts.UI.EditorUI
+namespace Scripts.System.MonoBases
 {
     public class ExpandedOptionsBase : UIElementBase
     {

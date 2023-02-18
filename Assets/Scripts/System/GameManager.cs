@@ -190,16 +190,23 @@ namespace Scripts.System
             OnStartGameRequested();
         }
 
-        public void LoadLastEditedMap()
+        public void LoadLastEditedMap(EntryPoint entryPoint = null)
         {
             if (!FileOperationsHelper.GetLastEditedCampaignAndMap(out _currentCampaign, out _currentMap))
             {
                 return;
             }
 
-            _currentEntryPoint.playerGridPosition = _currentMap.EditorStartPosition;
-            _currentEntryPoint.playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y;
-            _currentEntryPoint.isMovingForwardOnStart = false;
+            if (entryPoint == null)
+            {
+                _currentEntryPoint.playerGridPosition = _currentMap.EditorStartPosition;
+                _currentEntryPoint.playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y;
+                _currentEntryPoint.isMovingForwardOnStart = false;
+            }
+            else
+            {
+                _currentEntryPoint = entryPoint.Cloned();
+            }
             
             OnStartGameRequested();
         }

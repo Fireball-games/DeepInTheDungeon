@@ -56,7 +56,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void BuildWaypointsControls(List<Waypoint> waypoints)
         {
-            scrollViewContent.gameObject.DismissAllChildrenToPool(true);
+            scrollViewContent.gameObject.DismissAllChildrenToPool();
 
             _map.Clear();
 

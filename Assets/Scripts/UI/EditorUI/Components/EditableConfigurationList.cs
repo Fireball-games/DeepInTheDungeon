@@ -43,7 +43,7 @@ namespace Scripts.UI.EditorUI.Components
             OnListChanged.RemoveAllListeners();
             OnListChanged.AddListener(onListChanged);
 
-            _content.gameObject.DismissAllChildrenToPool(true);
+            _content.gameObject.DismissAllChildrenToPool();
 
             _list.ForEach(item =>
             {

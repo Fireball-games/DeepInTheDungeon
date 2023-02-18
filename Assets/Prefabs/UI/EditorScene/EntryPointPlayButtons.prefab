@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7860952623592852963}
   - component: {fileID: 259400460794538608}
   - component: {fileID: 1173800246589221029}
+  - component: {fileID: 1321349998017221607}
   m_Layer: 5
   m_Name: EntryPointPlayButtons
   m_TagString: Untagged
@@ -78,3 +79,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &1321349998017221607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 942235458553856003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fd5d2eaaa9f48c39cf6b8606142db9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 0}
+  buttonPrefab: {fileID: 8519303279489631876, guid: d763053b8f69d8e49a5b73e8d6193273,
+    type: 3}

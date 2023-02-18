@@ -176,6 +176,17 @@ namespace Scripts.MapEditor
             GameManager.IsPlayingFromEditor = true;
             GameManager.LoadLastEditedMap();
         }
+        
+        public async void PlayFromEntryPoint(EntryPoint entryPoint)
+        {
+            if (await CheckToSaveMapChanges() is EConfirmResult.Cancel)
+            {
+                GameManager.SetCurrentMap(_originalMap);
+            }
+
+            GameManager.IsPlayingFromEditor = true;
+            GameManager.LoadLastEditedMap(entryPoint);
+        }
 
         /// <summary>
         /// Makes check if map is changed and if so, asks user if he wants to save changes. 

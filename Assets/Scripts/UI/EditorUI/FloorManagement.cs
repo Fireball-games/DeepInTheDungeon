@@ -55,7 +55,7 @@ namespace Scripts.UI.EditorUI
             upButton.transform.SetParent(transform);
             downButton.transform.SetParent(transform);
 
-            body.DismissAllChildrenToPool(true);
+            body.DismissAllChildrenToPool();
 
             _floorButtons.Clear();
 

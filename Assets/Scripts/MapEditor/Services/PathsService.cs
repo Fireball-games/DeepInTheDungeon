@@ -235,6 +235,8 @@ namespace Scripts.MapEditor.Services
             {
                 for (int index = 0; index < waypointsParts.Count; index++)
                 {
+                    if (!waypointsParts.HasIndex(pointIndex)) return;
+                    
                     HighlightPoint(pathType, waypointsParts.ElementAt(pointIndex).Value, index == pointIndex);
                 }
             }

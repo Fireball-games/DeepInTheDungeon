@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Threading.Tasks;
 using Scripts.EventsManagement;
 using Scripts.System.MonoBases;
@@ -15,21 +14,20 @@ namespace Scripts.ScenesManagement
         
         public static bool IsInMainScene => _currentSceneName == Scenes.MainSceneName;
         
-        public async void LoadScene(string sceneName, bool fadeIn)
-        {
-            await LoadSceneAsync(sceneName, fadeIn);
-        }
+        public async void LoadScene(string sceneName, bool fadeIn, float fadeInDuration = 0.5f, UnityAction onLoadFinished = null) 
+            => await LoadSceneAsync(sceneName, fadeIn, fadeInDuration, onLoadFinished);
 
         public async void LoadEditorScene()
         {
            await LoadSceneAsync(Scenes.EditorSceneName);
         }
         
-        private static async Task<bool> LoadSceneAsync(string sceneName, bool fadeIn = true, UnityAction onLoadFinished = null)
+        // ReSharper disable once UnusedMethodReturnValue.Local -> it's intentional
+        private static async Task<bool> LoadSceneAsync(string sceneName, bool fadeIn = true, float fadeInDuration = 0.5f, UnityAction onLoadFinished = null)
         {
             if (fadeIn)
             {
-                await ScreenFader.FadeIn(0.5f);
+                await ScreenFader.FadeIn(fadeInDuration);
             }
 
             if (!Scenes.IsValidSceneName(sceneName))

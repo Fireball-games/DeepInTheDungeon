@@ -46,6 +46,8 @@ namespace Scripts.Triggers
         public int GetStartPosition() => startPosition;
         public void SetStartPosition(int newStartPosition) => startPosition = newStartPosition;
 
+        public void Trigger() => TriggerNext();
+
         public override void SetPosition()
         {
             if (activeProperty is EActiveProperty.Position)

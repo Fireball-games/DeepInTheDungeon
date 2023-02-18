@@ -12,6 +12,7 @@ using Scripts.ScenesManagement;
 using Scripts.ScriptableObjects;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
+using Scripts.Triggers;
 using Scripts.UI;
 using Scripts.UI.EditorUI;
 using UnityEngine;
@@ -153,7 +154,7 @@ namespace Scripts.System
             OnStartGameRequested(fadeIn);
         }
 
-        public void StartNewCampaign()
+        public async void StartNewCampaign()
         {
             // TODO: When applicable, handle warning about deleting save files.
             _currentCampaign = _mainCampaign;
@@ -161,6 +162,11 @@ namespace Scripts.System
             _currentEntryPoint = _currentMap.EntryPoints[0].Cloned();
             
             PlayerCamera.IsLookModeOn = false;
+            
+            _player.PlayerMovement.MoveForward(true);
+            FindObjectOfType<DoTweenTriggerReceiver>().Trigger();
+            
+            await Task.Delay(2500);
             
             OnStartGameRequested();
         }
@@ -240,7 +246,7 @@ namespace Scripts.System
 
         private void OnStartGameRequested(bool fadeIn = true)
         {
-            SceneLoader.Instance.LoadScene(_currentMap.SceneName, fadeIn);
+            SceneLoader.Instance.LoadScene(_currentMap.SceneName, fadeIn, 1f);
         }
         
         private void OnSceneStartedLoading()
@@ -322,7 +328,7 @@ namespace Scripts.System
             // To allow playing StartRooms from Editor
             _movementEnabled = true;
 
-            ScreenFader.FadeOut(0.5f);
+            ScreenFader.FadeOut(1.2f);
 
             await Task.Delay(200);
             

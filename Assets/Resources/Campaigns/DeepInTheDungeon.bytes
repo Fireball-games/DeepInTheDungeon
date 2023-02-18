@@ -49,9 +49,53 @@
 							],[
 								null,null,null,null,null,null,null,null,null,null,null,null
 							],[
-								null,null,null,null,null,null,null,null,null,null,null,null
+								null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null,null,null,null,null,null,null
 							],[
-								null,null,null,null,null,null,null,null,null,null,null,null
+								null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null,null,null,null,null,null,null
 							],[
 								null,null,null,null,null,null,null,null,null,null,null,null
 							],[
@@ -1121,81 +1165,6 @@
 								}
 							},
 							"Guid" : "a3d3c1f3-ae79-4271-9cc4-a1e17af4a2a9",
-							"SpawnPrefabOnBuild" : true,
-							"OwnerGuid" : null
-						},{
-							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.EntryPointConfiguration,Assembly-CSharp",
-							"IsMovingForwardOnStart" : true,
-							"Name" : "Main Entrance",
-							"PlayerRotationY" : 90,
-							"PrefabType" : 11,
-							"PrefabName" : "StartPoint",
-							"TransformData" : {
-								"Position" : {
-									"x" : 3,
-									"y" : -2,
-									"z" : 2
-								},
-								"Rotation" : {
-									"x" : 0,
-									"y" : 0,
-									"z" : 0,
-									"w" : 1
-								}
-							},
-							"Guid" : "3e57cd2f-1822-4441-b1e4-419a95540be7",
-							"SpawnPrefabOnBuild" : true,
-							"OwnerGuid" : null
-						},{
-							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
-							"Offset" : 0,
-							"WayPoints" : [
-								{
-									"position" : {
-										"x" : 3,
-										"y" : -2,
-										"z" : 2
-									},
-									"moveSpeedModifier" : 0.3
-								},{
-									"position" : {
-										"x" : 3.5,
-										"y" : -2,
-										"z" : 2
-									},
-									"moveSpeedModifier" : 0.3
-								},{
-									"position" : {
-										"x" : 4.5,
-										"y" : -3,
-										"z" : 2
-									},
-									"moveSpeedModifier" : 0.3
-								},{
-									"position" : {
-										"x" : 5,
-										"y" : -3,
-										"z" : 2
-									},
-									"moveSpeedModifier" : 0.3
-								}
-							],
-							"PrefabType" : 3,
-							"PrefabName" : "MoveWall",
-							"TransformData" : {
-								"Position" : {
-									"x" : 3.5,
-									"y" : -2,
-									"z" : 2
-								},
-								"Rotation" : {
-									"x" : 0,
-									"y" : 0,
-									"z" : 0,
-									"w" : 1
-								}
-							},
-							"Guid" : "a39402b8-7a4c-4323-8195-57c1f6751f2a",
 							"SpawnPrefabOnBuild" : true,
 							"OwnerGuid" : null
 						},{
@@ -2519,14 +2488,110 @@
 							"Guid" : "d4a42ff7-6242-45a3-ae48-6fd74b2e8348",
 							"SpawnPrefabOnBuild" : false,
 							"OwnerGuid" : "5bdd5b9e-8d20-4371-8714-8d1dc8bc197d"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : false,
+							"PrefabType" : 8,
+							"PrefabName" : "WideStairs",
+							"TransformData" : {
+								"Position" : {
+									"x" : 3,
+									"y" : -2,
+									"z" : 2
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0.7071068,
+									"z" : 0,
+									"w" : 0.7071068
+								}
+							},
+							"Guid" : "1a6affc0-227b-46a5-92d2-6268d3874af2",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.EntryPointConfiguration,Assembly-CSharp",
+							"IsMovingForwardOnStart" : true,
+							"Name" : "Main Entrance",
+							"PlayerRotationY" : 90,
+							"PrefabType" : 11,
+							"PrefabName" : "StartPoint",
+							"TransformData" : {
+								"Position" : {
+									"x" : 2,
+									"y" : -1,
+									"z" : 2
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "e01ca75f-01d4-41fe-9560-6aab098f305b",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0,
+							"WayPoints" : [
+								{
+									"position" : {
+										"x" : 2,
+										"y" : -1,
+										"z" : 2
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 2.5,
+										"y" : -1,
+										"z" : 2
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 4.5,
+										"y" : -3,
+										"z" : 2
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 5,
+										"y" : -3,
+										"z" : 2
+									},
+									"moveSpeedModifier" : 0.3
+								}
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "MoveWall",
+							"TransformData" : {
+								"Position" : {
+									"x" : 2.5,
+									"y" : -1,
+									"z" : 2
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "68b85a24-a66a-4810-8ece-b997a0dd5340",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
 						}
 					],
 					"EntryPoints" : [
 						{
 							"name" : "Main Entrance",
 							"playerGridPosition" : {
-								"x" : 2,
-								"y" : 3,
+								"x" : 1,
+								"y" : 2,
 								"z" : 2
 							},
 							"playerRotationY" : 90,

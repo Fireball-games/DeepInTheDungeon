@@ -42,7 +42,17 @@ namespace Scripts.MapEditor
         public bool PrefabIsEdited { get; private set; }
         public bool MapIsBeingBuilt { get; private set; }
         public LayoutType EditedLayout { get; private set; }
-        public MapBuilder MapBuilder => GameManager.MapBuilder;
+        public MapBuilder MapBuilder
+        {
+            get
+            {
+                if (!GameManager || !GameManager.MapBuilder)
+                    return null;
+                
+                return GameManager.MapBuilder;
+            }
+        }
+
         public int CurrentFloor { get; private set; }
         public Dictionary<int, bool> FloorVisibilityMap { get; private set; }
 
@@ -87,8 +97,8 @@ namespace Scripts.MapEditor
         {
             if (map == null)
             {
-                Logger.LogError("Map is null, can't build the map");
-                return;
+                Logger.LogError("Map is null, can't build the map, rebuilding original map.");
+                map = GameManager.CurrentMap;
             }
             
             if (MapIsBeingBuilt) return;

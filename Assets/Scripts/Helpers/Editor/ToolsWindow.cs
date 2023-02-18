@@ -66,7 +66,7 @@ namespace Helpers.Editor
                 return;
             }
 
-            if (!GameManager.Instance) return;
+            if (!GameManager.Instance || !MapEditorManager.Instance) return;
 
             if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor && MapEditorManager.Instance.MapIsPresented)
             {

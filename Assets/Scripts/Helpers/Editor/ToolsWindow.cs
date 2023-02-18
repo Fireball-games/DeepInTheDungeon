@@ -176,7 +176,7 @@ namespace Helpers.Editor
                     foreach (string file in files)
                     {
                         string fileName = Path.GetFileName(file);
-                        string destinationPath = Path.Combine(CampaignDirectoryPath, fileName);
+                        string destinationPath = Path.Combine(CampaignsLocalDirectoryPath, fileName);
 
                         File.Copy(file, destinationPath, true);
                     }

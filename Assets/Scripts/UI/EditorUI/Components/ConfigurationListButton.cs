@@ -31,7 +31,7 @@ namespace Scripts.UI.EditorUI.Components
             GameObject instancedPrefab = GameManager.Instance.MapBuilder
                 .GetPrefabByGuid(item.SpawnPrefabOnBuild ? item.Guid : item.OwnerGuid);
 
-            if (item.PrefabType is EPrefabType.Trigger) AddIcon(EIcon.Trigger);
+            if (item.PrefabType is EPrefabType.TriggerOnWall) AddIcon(EIcon.Trigger);
             if (item.PrefabType is EPrefabType.TriggerReceiver) AddIcon(EIcon.TriggerReceiver);
             if (!item.SpawnPrefabOnBuild) AddIcon(EIcon.Embedded);
 

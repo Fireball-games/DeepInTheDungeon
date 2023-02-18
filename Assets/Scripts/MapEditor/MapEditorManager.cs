@@ -195,7 +195,7 @@ namespace Scripts.MapEditor
         {
             Campaign currentCampaign = GameManager.CurrentCampaign;
 
-            string campaignDirectoryPath = FileOperationsHelper.CampaignDirectoryPath;
+            string campaignDirectoryPath = FileOperationsHelper.CampaignsLocalDirectoryPath;
 
             campaignDirectoryPath.CreateDirectoryIfNotExists();
             GameManager.CurrentMap.EntryPoints = EntryPointService.ConvertEntryPointConfigurationsToEntryPoints();

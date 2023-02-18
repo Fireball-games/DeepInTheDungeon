@@ -23,7 +23,7 @@ namespace Scripts
         private static readonly HashSet<EPrefabType> PrefabTypes = new()
         {
             EPrefabType.Wall, EPrefabType.Enemy, EPrefabType.Item, EPrefabType.Prop, EPrefabType.PrefabTile,
-            EPrefabType.WallBetween, EPrefabType.WallForMovement, EPrefabType.WallOnWall, EPrefabType.Trigger,
+            EPrefabType.WallBetween, EPrefabType.WallForMovement, EPrefabType.WallOnWall, EPrefabType.TriggerOnWall,
             EPrefabType.Service,
         };
         

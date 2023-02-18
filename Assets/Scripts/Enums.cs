@@ -19,7 +19,8 @@
             Prop = 6,
             Item = 7,
             PrefabTile = 8,
-            Trigger = 9,
+            TriggerOnWall = 9,
+            TriggerTile = 13, 
             TriggerReceiver = 10,
             /// <summary>
             /// Service prefabs, groups prefabs not really fitting to separate category, like EntryPoint, for example.

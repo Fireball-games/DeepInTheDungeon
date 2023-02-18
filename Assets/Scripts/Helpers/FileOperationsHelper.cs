@@ -20,18 +20,18 @@ namespace Scripts.Helpers
         public const string TriggersDirectoryName = "Triggers";
         public const string ServicesDirectoryName = "ServicePrefabs";
         
-        public static string CampaignDirectoryPath => Path.Combine(PersistentPath, CampaignDirectoryName);
+        public static string CampaignsLocalDirectoryPath => Path.Combine(PersistentPath, CampaignDirectoryName);
         public static string ApplicationResourcesPath => Path.Combine(Application.dataPath, "Resources");
         public static string FullCampaignsResourcesPath => Path.Combine(ApplicationResourcesPath, CampaignDirectoryName);
         public const string CampaignFileExtension = ".bytes";
 
         private static readonly string PersistentPath = Application.persistentDataPath;
         
-        private static ES3Settings _eS3ResourcesLocationSettings;
+        private static readonly ES3Settings ES3ResourcesLocationSettings;
         
         static FileOperationsHelper()
         {
-            _eS3ResourcesLocationSettings = new ES3Settings
+            ES3ResourcesLocationSettings = new ES3Settings
             {
                 location = ES3.Location.Resources,
             };
@@ -53,7 +53,7 @@ namespace Scripts.Helpers
             return allFiles;
         }
         
-        public static string GetFullCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryPath, $"{campaignName}{CampaignFileExtension}");
+        public static string GetFullCampaignPath(string campaignName) => Path.Combine(CampaignsLocalDirectoryPath, $"{campaignName}{CampaignFileExtension}");
 
         public static string GetSavePath(string campaignName) => Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
 
@@ -161,7 +161,7 @@ namespace Scripts.Helpers
             EPrefabType.Enemy => EnemiesDirectoryName,
             EPrefabType.Prop => PropsDirectoryName,
             EPrefabType.Item => ItemsDirectoryName,
-            EPrefabType.Trigger => TriggersDirectoryName,
+            EPrefabType.TriggerOnWall => TriggersDirectoryName,
             EPrefabType.Service => ServicesDirectoryName,
             _ => throw new ArgumentOutOfRangeException(nameof(prefabType), prefabType, null)
         };
@@ -197,7 +197,7 @@ namespace Scripts.Helpers
 
             try
             {
-                campaign = ES3.Load<Campaign>(campaignName, Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}"), _eS3ResourcesLocationSettings);
+                campaign = ES3.Load<Campaign>(campaignName, Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}"), ES3ResourcesLocationSettings);
                 return true;
             }
             catch (Exception e)

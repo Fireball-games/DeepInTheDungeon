@@ -148,7 +148,7 @@ namespace Scripts.MapEditor.Services
             _lastEnteredWall.WallEligibleForEditing = false;
             _lastEnteredWall = null;
             cursor3D.Hide();
-            EditorUIManager.Instance.WallGizmo.Reset();
+            EditorUIManager.Instance.TileGizmo.Reset();
         }
 
         private void OnNewMapStartedCreation() => RecreateMousePlane();

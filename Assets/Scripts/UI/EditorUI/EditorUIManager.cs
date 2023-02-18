@@ -33,7 +33,7 @@ namespace Scripts.UI.EditorUI
         private TriggerReceiverEditor _triggerReceiverEditor;
         private Transform _body;
 
-        public WallGizmoController WallGizmo { get; private set; }
+        public TileGizmoController TileGizmo { get; private set; }
         public MessageBar MessageBar { get; private set; }
         public NewMapDialog NewMapDialog { get; private set; }
         public DialogBase ConfirmationDialog { get; private set; }
@@ -78,7 +78,7 @@ namespace Scripts.UI.EditorUI
             SelectedCage = _body.Find("SelectedCage").GetComponent<CageController>();
             SelectConfigurationWindow = _body.Find("SelectConfigurationWindow").GetComponent<SelectConfigurationWindow>();
             
-            WallGizmo = FindObjectOfType<WallGizmoController>();
+            TileGizmo = FindObjectOfType<TileGizmoController>();
             Cursor3D = FindObjectOfType<Cursor3D>();
             
             _editors = new Dictionary<EWorkMode, IPrefabEditor>
@@ -154,7 +154,7 @@ namespace Scripts.UI.EditorUI
                     _tilePrefabEditor.Open(prefabType, placeholderTransformData);
                     OpenedEditor = _tilePrefabEditor;
                     break;
-                case EPrefabType.Trigger:
+                case EPrefabType.TriggerOnWall:
                     _triggerEditor.Open(prefabType, placeholderTransformData);
                     OpenedEditor = _triggerEditor;
                     break;
@@ -200,7 +200,7 @@ namespace Scripts.UI.EditorUI
                     _tilePrefabEditor.Open(configuration as TilePrefabConfiguration);
                     OpenedEditor = _tilePrefabEditor;
                     break;
-                case EPrefabType.Trigger:
+                case EPrefabType.TriggerOnWall:
                 case EPrefabType.TriggerReceiver:
                 case EPrefabType.Service:
                     if (WorkMode is EWorkMode.EditEntryPoints)

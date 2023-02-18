@@ -437,7 +437,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SelectedCage.Hide();
 
             Manager.SetAnyObjectEdited(false);
-            Manager.WallGizmo.Reset();
+            Manager.TileGizmo.Reset();
             EditorMouseService.Instance.RefreshMousePosition();
 
             SetActive(false);

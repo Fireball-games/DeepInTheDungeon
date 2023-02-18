@@ -24,6 +24,8 @@ namespace Scripts.System.MonoBases
         {
             get
             {
+                if (!Application.isPlaying) return null;
+                
                 if (instance) return instance;
                 
                 instance = FindObjectOfType<T> ();
@@ -36,6 +38,7 @@ namespace Scripts.System.MonoBases
                 };
 
                 instance = obj.AddComponent<T> ();
+                
                 return instance;
             }
         }

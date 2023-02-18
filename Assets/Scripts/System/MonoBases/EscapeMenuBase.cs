@@ -18,15 +18,7 @@ namespace Scripts.System.MonoBases
         {
             if (Input.GetKeyDown(KeyCode.Escape)) HandleEscapeKeyPressed();
         }
-        
-        protected abstract void SetContentOnShow();
-        
-        /// <summary>
-        /// Optional method to override, sets behaviour when closing the dialog.
-        /// </summary>
-        protected virtual void SetContentOnClose()
-        {}
-        
+
         private void HandleEscapeKeyPressed()
         {
             if (_isOpened && !CancelOnEscape) return;

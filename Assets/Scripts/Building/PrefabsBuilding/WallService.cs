@@ -45,11 +45,6 @@ namespace Scripts.Building.PrefabsBuilding
 
             if (!IsInEditMode) return;
 
-            if (prefabScript && prefabScript.presentedInEditor)
-            {
-                prefabScript.presentedInEditor.SetActive(true);
-            }
-
             if (configuration.HasPath())
             {
                 AddReplaceWaypointPath(configuration.Guid);

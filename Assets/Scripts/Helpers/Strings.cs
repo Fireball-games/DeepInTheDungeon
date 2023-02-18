@@ -21,6 +21,8 @@ namespace Scripts.Helpers
 
         public static string GetSelectedMainCampaignName()
         {
+            if (!GameManager.Instance) return null;
+            
             return GameManager.Instance.GameConfiguration.selectedMainCampaign == Enums.EMainCampaignName.MainCampaign
                 ? MainCampaignName
                 : DemoCampaignName;

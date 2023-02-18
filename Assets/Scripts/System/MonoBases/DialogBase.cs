@@ -63,9 +63,22 @@ namespace Scripts.System.MonoBases
             Modal.Show(this, isModalClosingDialog, showVisibleModal);
 
             _taskCompletionSource = new TaskCompletionSource<EConfirmResult>();
+            SetContentOnShow();
             SetActive(true);
             return await _taskCompletionSource.Task;
         }
+        
+        /// <summary>
+        /// Optional method to override, sets behaviour when showing the dialog.
+        /// </summary>
+        protected virtual void SetContentOnShow()
+        {}
+        
+        /// <summary>
+        /// Optional method to override, sets behaviour when closing the dialog.
+        /// </summary>
+        protected virtual void SetContentOnClose()
+        {}
 
         private void OnCancelClicked() => CloseDialog();
 
@@ -81,6 +94,7 @@ namespace Scripts.System.MonoBases
             _taskCompletionSource.SetResult(result);
             
             Modal.Hide();
+            SetContentOnClose();
             SetActive(false);
         }
     }

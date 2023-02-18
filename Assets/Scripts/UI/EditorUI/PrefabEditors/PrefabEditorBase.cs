@@ -68,6 +68,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected GameObject PhysicalPrefabBody;
         protected GameObject PhysicalPrefab;
         protected bool IsCurrentConfigurationChanged;
+        protected Vector3 DefaultPlaceholderScale;
 
         private TC _originalConfiguration;
         private HashSet<TPrefab> _availablePrefabs;
@@ -116,6 +117,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected abstract void RemoveOtherComponents();
 
         public virtual Vector3 GetCursor3DScale() => Vector3.one;
+        
+        protected virtual Vector3 GetPlaceholderScale() => DefaultPlaceholderScale;
 
         /// <summary>
         /// Opens Existing Prefabs list. Next steps are - clicking in map to add/edit prefabs or open prefabs finder.
@@ -217,8 +220,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetupWindow(isSingleTypeEditor ? singledType : prefabType);
 
+            EditedPrefabType = prefabType;
+            
             _placeholder.transform.position = placeholderTransformData.Position;
             _placeholder.transform.rotation = placeholderTransformData.Rotation;
+            _placeholder.transform.localScale = GetPlaceholderScale();
             _placeholder.transform.parent = null;
             _placeholder.SetActive(true);
 
@@ -232,9 +238,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             SelectedCage.ShowAt(placeholderTransformData.Position,
                 GetCursor3DScale(),
                 placeholderTransformData.Rotation);
-
-            EditedPrefabType = prefabType;
-
 
             VisualizeOtherComponents();
             
@@ -553,6 +556,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Content = frame.Find("ScrollingContent/Viewport/Content");
             
             _placeholder = bodyTransform.Find("Placeholder").gameObject;
+            DefaultPlaceholderScale = _placeholder.transform.localScale;
             _prefabList = bodyTransform.Find("AvailablePrefabs").GetComponent<PrefabList>();
             _existingList = bodyTransform.Find("ExistingPrefabs").GetComponent<ConfigurationList>();
             _prefabTitle = frame.Find("Header/PrefabTitle").GetComponent<Title>();

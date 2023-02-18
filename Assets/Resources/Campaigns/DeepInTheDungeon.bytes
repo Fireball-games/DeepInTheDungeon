@@ -663,56 +663,6 @@
 					],
 					"PrefabConfigurations" : [
 						{
-							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
-							"IsWalkable" : true,
-							"PrefabType" : 8,
-							"PrefabName" : "ExitTrigger",
-							"TransformData" : {
-								"Position" : {
-									"x" : 5,
-									"y" : -3,
-									"z" : 6
-								},
-								"Rotation" : {
-									"x" : 0,
-									"y" : 0,
-									"z" : 0,
-									"w" : 1
-								}
-							},
-							"Guid" : "a22d0407-f53e-431a-92aa-d7a00a62ecaa",
-							"SpawnPrefabOnBuild" : true,
-							"OwnerGuid" : null
-						},{
-							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerConfiguration,Assembly-CSharp",
-							"Subscribers" : [
-								
-							],
-							"TriggerType" : 1,
-							"Count" : 1,
-							"StartPosition" : 0,
-							"TargetMapName" : "Level2",
-							"TargetMapEntranceName" : "Main Entry",
-							"ExitDelay" : 1.5,
-							"PrefabType" : 9,
-							"PrefabName" : "Exit Trigger",
-							"TransformData" : {
-								"Position" : {
-									"x" : 5,
-									"y" : -3,
-									"z" : 6
-								},
-								"Rotation" : {
-									"x" : 0,
-									"y" : 0,
-									"z" : 0,
-									"w" : 1
-								}
-							},
-							"Guid" : "fbad0152-ccfa-426d-8f44-5ace038246c8",
-							"SpawnPrefabOnBuild" : false,
-							"OwnerGuid" : "a22d0407-f53e-431a-92aa-d7a00a62ecaa"
-						},{
 							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
 							"Offset" : 0,
 							"WayPoints" : [
@@ -788,7 +738,7 @@
 						},{
 							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.EntryPointConfiguration,Assembly-CSharp",
 							"IsMovingForwardOnStart" : true,
-							"Name" : "<No Name Set>",
+							"Name" : "Main Entrance",
 							"PlayerRotationY" : 90,
 							"PrefabType" : 11,
 							"PrefabName" : "StartPoint",
@@ -963,11 +913,40 @@
 							"Guid" : "4f23bb46-1508-4d93-9ee7-23b703afe810",
 							"SpawnPrefabOnBuild" : true,
 							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerConfiguration,Assembly-CSharp",
+							"Subscribers" : [
+								
+							],
+							"TriggerType" : 1,
+							"Count" : 1,
+							"StartPosition" : 1,
+							"TargetMapName" : "Level2",
+							"TargetMapEntranceName" : "Main Entry",
+							"ExitDelay" : 1.5,
+							"PrefabType" : 13,
+							"PrefabName" : "ExitTrigger",
+							"TransformData" : {
+								"Position" : {
+									"x" : 5,
+									"y" : -3,
+									"z" : 6
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "3e26bdc8-2a91-4801-9921-28e7fa9e7fa2",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
 						}
 					],
 					"EntryPoints" : [
 						{
-							"name" : "<No Name Set>",
+							"name" : "Main Entrance",
 							"playerGridPosition" : {
 								"x" : 2,
 								"y" : 3,
@@ -2312,9 +2291,17 @@
 							"SpawnPrefabOnBuild" : true,
 							"OwnerGuid" : null
 						},{
-							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
-							"IsWalkable" : true,
-							"PrefabType" : 8,
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerConfiguration,Assembly-CSharp",
+							"Subscribers" : [
+								
+							],
+							"TriggerType" : 1,
+							"Count" : 1,
+							"StartPosition" : 1,
+							"TargetMapName" : "Level1",
+							"TargetMapEntranceName" : "From Level2",
+							"ExitDelay" : 0.5,
+							"PrefabType" : 13,
 							"PrefabName" : "ExitTrigger",
 							"TransformData" : {
 								"Position" : {
@@ -2329,81 +2316,7 @@
 									"w" : 1
 								}
 							},
-							"Guid" : "ae9d8bf8-bcf5-4cdd-8c7a-9cc904203732",
-							"SpawnPrefabOnBuild" : true,
-							"OwnerGuid" : null
-						},{
-							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerConfiguration,Assembly-CSharp",
-							"Subscribers" : [
-								
-							],
-							"TriggerType" : 1,
-							"Count" : 1,
-							"StartPosition" : 0,
-							"TargetMapName" : "Level1",
-							"TargetMapEntranceName" : "From Level2",
-							"ExitDelay" : 0.5,
-							"PrefabType" : 9,
-							"PrefabName" : "Exit Trigger",
-							"TransformData" : {
-								"Position" : {
-									"x" : 2,
-									"y" : -2,
-									"z" : 4
-								},
-								"Rotation" : {
-									"x" : 0,
-									"y" : 0,
-									"z" : 0,
-									"w" : 1
-								}
-							},
-							"Guid" : "fbad0152-ccfa-426d-8f44-5ace038246c8",
-							"SpawnPrefabOnBuild" : false,
-							"OwnerGuid" : "ae9d8bf8-bcf5-4cdd-8c7a-9cc904203732"
-						},{
-							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
-							"Offset" : 0,
-							"WayPoints" : [
-								{
-									"position" : {
-										"x" : 5,
-										"y" : -2,
-										"z" : 9
-									},
-									"moveSpeedModifier" : 0.3
-								},{
-									"position" : {
-										"x" : 5,
-										"y" : -2,
-										"z" : 8.5
-									},
-									"moveSpeedModifier" : 0.3
-								},{
-									"position" : {
-										"x" : 5,
-										"y" : -2,
-										"z" : 7
-									},
-									"moveSpeedModifier" : 0.3
-								}
-							],
-							"PrefabType" : 3,
-							"PrefabName" : "MoveWall",
-							"TransformData" : {
-								"Position" : {
-									"x" : 5,
-									"y" : -2,
-									"z" : 8.5
-								},
-								"Rotation" : {
-									"x" : 0,
-									"y" : 0.7071068,
-									"z" : 0,
-									"w" : 0.7071068
-								}
-							},
-							"Guid" : "2dfaf54d-8a29-4eac-a7eb-1281d684dd6a",
+							"Guid" : "87b0f90b-09a6-440e-8d55-76f37da91674",
 							"SpawnPrefabOnBuild" : true,
 							"OwnerGuid" : null
 						}

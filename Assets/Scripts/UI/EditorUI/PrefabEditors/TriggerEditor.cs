@@ -12,6 +12,7 @@ using Scripts.Triggers;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.Components;
 using UnityEngine;
+using static Scripts.Enums;
 using static Scripts.MapEditor.Services.PathsService;
 using Logger = Scripts.Helpers.Logger;
 
@@ -23,11 +24,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private NumericUpDown _startPositionUpDown;
         private LabeledDropdown _triggerTypeDropdown;
         private NumericUpDown _triggerCountUpDown;
-        
+
         private LabeledDropdown _targetMapDropdown;
         private LabeledDropdown _entryPointDropdown;
         private NumericUpDown _exitDelayUpDown;
-        
+
         private EditableConfigurationList _receiverList;
 
         private Vector3 _prefabWallCenterPosition;
@@ -35,6 +36,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private int _editedPrefabRotationY;
         private readonly Vector3 _wallCursor3DSize = new(0.15f, 1.1f, 1.1f);
         private readonly Vector3 _genericCursor3DSize = new(0.33f, 0.33f, 0.33f);
+        private readonly Vector3 _tileTriggerScale = new(0.75f, 0.75f, 0.75f);
 
         protected override void RemoveOtherComponents()
         {
@@ -44,10 +46,25 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             }
         }
 
-        public override Vector3 GetCursor3DScale() =>
-            EditedConfiguration == null
-                ? IsPrefabFinderActive ? _genericCursor3DSize : _wallCursor3DSize
-                : _genericCursor3DSize;
+        public override Vector3 GetCursor3DScale()
+        {
+            bool isWallTrigger = EditedPrefabType == EPrefabType.TriggerOnWall;
+
+            if (EditedConfiguration != null) return isWallTrigger 
+                ? _wallCursor3DSize 
+                : Vector3.one;
+            
+            if (IsPrefabFinderActive) return _genericCursor3DSize;
+            
+            return isWallTrigger 
+                ? _wallCursor3DSize 
+                : Vector3.one;
+
+        }
+
+        protected override Vector3 GetPlaceholderScale() => EditedPrefabType == EPrefabType.TriggerOnWall
+            ? DefaultPlaceholderScale
+            : _tileTriggerScale;
 
         protected override TriggerConfiguration GetNewConfiguration(string prefabName)
         {
@@ -62,8 +79,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
                 Subscribers = new List<string>(),
                 TriggerType = storePrefab.triggerType,
-                Count = storePrefab.triggerType == Enums.ETriggerType.OneOff 
-                    ? 1 : storePrefab.triggerType == Enums.ETriggerType.Repeat ? 2 : int.MaxValue,
+                Count = storePrefab.triggerType == ETriggerType.OneOff
+                    ? 1
+                    : storePrefab.triggerType == ETriggerType.Repeat
+                        ? 2
+                        : int.MaxValue,
                 StartPosition = 1,
             };
         }
@@ -75,17 +95,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             if (IsCurrentConfigurationChanged)
             {
                 DestroyPath(EPathsType.Trigger, EditedConfiguration.Guid);
-                
+
                 RemoveOtherComponents();
             }
             else if (EditedConfiguration != null)
             {
                 HighlightPath(EPathsType.Trigger, EditedConfiguration.Guid, false);
             }
-            
+
             base.RemoveAndReopen();
         }
-        
+
         protected override void SaveMap()
         {
             HighlightPath(EPathsType.Trigger, EditedConfiguration.Guid, false);
@@ -127,19 +147,19 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             // Logger.Log($"New prefab position: {newPrefabWorldPosition}");
             EditedConfiguration.TransformData.Position = newPrefabWorldPosition;
             PhysicalPrefab.transform.localPosition = newPrefabWorldPosition;
-            
+
             RedrawPath();
         }
 
         private void OnTriggerTypeChanged(int enumIntValue)
         {
             SetEdited();
-            EditedConfiguration.TriggerType = enumIntValue.GetEnumValue<Enums.ETriggerType>();
+            EditedConfiguration.TriggerType = enumIntValue.GetEnumValue<ETriggerType>();
             EditedConfiguration.Count = EditedConfiguration.TriggerType switch
             {
-                Enums.ETriggerType.OneOff => 1,
-                Enums.ETriggerType.Repeat => int.MaxValue,
-                Enums.ETriggerType.Multiple => 3,
+                ETriggerType.OneOff => 1,
+                ETriggerType.Repeat => int.MaxValue,
+                ETriggerType.Multiple => 3,
                 _ => throw new ArgumentOutOfRangeException()
             };
 
@@ -169,20 +189,20 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             positionTrigger!.SetStartPosition(position);
             positionTrigger!.SetPosition();
         }
-        
+
         private void OnTargetMapChanged(string targetMap)
         {
             SetEdited();
             EditedConfiguration.TargetMapName = targetMap;
             VisualizeOtherComponents();
         }
-        
+
         private void OnEntryPointChanged(string entryPointName)
         {
             SetEdited();
             EditedConfiguration.TargetMapEntranceName = entryPointName;
         }
-        
+
         private void OnExitDelayChanged(float exitDelay)
         {
             SetEdited();
@@ -208,7 +228,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _triggerCountUpDown.OnValueChanged.AddListener(OnTriggerCountChanged);
 
             _receiverList = Content.Find("ReceiverList").GetComponent<EditableConfigurationList>();
-            
+
             _targetMapDropdown = Content.Find("TargetMapDropdown").GetComponent<LabeledDropdown>();
             _entryPointDropdown = Content.Find("EntryPointDropdown").GetComponent<LabeledDropdown>();
             _exitDelayUpDown = Content.Find("ExitDelayUpDown").GetComponent<NumericUpDown>();
@@ -226,8 +246,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _exitDelayUpDown.SetCollapsed(true);
 
             if (EditedConfiguration is null) return;
+            
+            bool isExitPointTrigger = EditedPrefab is ExitPointTrigger;
 
-            if (EditedConfiguration.SpawnPrefabOnBuild)
+            if (EditedConfiguration.SpawnPrefabOnBuild && !isExitPointTrigger)
             {
                 Vector3 prefabPosition = PhysicalPrefab.transform.position;
                 _editedPrefabRotationY = Mathf.RoundToInt(PhysicalPrefab.transform.rotation.eulerAngles.y);
@@ -251,17 +273,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _positionControl.SetCollapsed(false);
             }
 
-            bool isMapTraversalTrigger = EditedPrefab is MapTraversalTrigger;
-            
-            if (!isMapTraversalTrigger && EditedPrefab is IPositionsTrigger positionsTrigger)
+            if (!isExitPointTrigger && EditedPrefab is IPositionsTrigger positionsTrigger)
             {
                 _startPositionUpDown.Label.text = t.Get(Keys.StartPosition);
                 _startPositionUpDown.maximum = positionsTrigger.GetSteps().Count - 1;
                 _startPositionUpDown.Value = positionsTrigger.GetStartPosition();
                 _startPositionUpDown.SetCollapsed(false);
             }
-            
-            if (isMapTraversalTrigger)
+
+            if (isExitPointTrigger)
             {
                 Campaign currentCampaign = GameManager.CurrentCampaign;
                 List<string> mapsNames = currentCampaign.MapsNames.ToList();
@@ -277,18 +297,19 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                     mapsNames.IndexOf(EditedConfiguration.TargetMapName),
                     OnTargetMapChanged);
                 _targetMapDropdown.SetCollapsed(false);
-                
+
                 MapDescription targetMap = currentCampaign.GetMapByName(EditedConfiguration.TargetMapName);
 
-                if (string.IsNullOrEmpty(EditedConfiguration.TargetMapEntranceName))
+                if (string.IsNullOrEmpty(EditedConfiguration.TargetMapEntranceName) ||
+                    EditedConfiguration.TargetMapEntranceName == t.Get(Keys.NoNameSet))
                     OnEntryPointChanged(targetMap?.EntryPointsNames.FirstOrDefault());
-                
+
                 _entryPointDropdown.Set($"{t.Get(Keys.EntryPoint)}:",
                     currentCampaign.GetMapByName(EditedConfiguration.TargetMapName)?.EntryPointsNames ?? new List<string>(),
                     targetMap == null ? 0 : targetMap.EntryPointsNames.ToList().IndexOf(EditedConfiguration.TargetMapEntranceName),
                     OnEntryPointChanged);
                 _entryPointDropdown.SetCollapsed(false);
-                
+
                 _exitDelayUpDown.Label.text = $"{t.Get(Keys.ExitDelay)}:";
                 _exitDelayUpDown.OnValueChanged.RemoveAllListeners();
                 _exitDelayUpDown.Value = EditedConfiguration.ExitDelay;
@@ -296,14 +317,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _exitDelayUpDown.SetCollapsed(false);
             }
 
-            if (!isMapTraversalTrigger)
+            if (!isExitPointTrigger)
             {
                 _triggerTypeDropdown.Set($"{t.Get(Keys.TriggerType)}:",
                     EditedConfiguration.TriggerType,
                     OnTriggerTypeChanged);
                 _triggerTypeDropdown.SetCollapsed(false);
-                
-                if (EditedConfiguration.TriggerType is Enums.ETriggerType.Multiple)
+
+                if (EditedConfiguration.TriggerType is ETriggerType.Multiple)
                 {
                     _triggerCountUpDown.Value = EditedConfiguration.Count;
                     _triggerCountUpDown.Label.text = $"{t.Get(Keys.Count)} :";

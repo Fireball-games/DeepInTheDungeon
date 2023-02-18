@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening.Core;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Helpers;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
-using Scripts.UI.Components;
-using TMPro.SpriteAssetUtilities;
 using UnityEngine;
 using static Scripts.Enums;
 using Logger = Scripts.Helpers.Logger;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts
 {
@@ -24,7 +20,7 @@ namespace Scripts
         {
             EPrefabType.Wall, EPrefabType.Enemy, EPrefabType.Item, EPrefabType.Prop, EPrefabType.PrefabTile,
             EPrefabType.WallBetween, EPrefabType.WallForMovement, EPrefabType.WallOnWall, EPrefabType.TriggerOnWall,
-            EPrefabType.Service,
+            EPrefabType.TriggerTile, EPrefabType.Service,
         };
         
         private static HashSet<UIElementBase> _uiComponents = new();

@@ -15,7 +15,6 @@ namespace Helpers.Editor
     {
         private static GUIStyle _deselectedStyle;
         private static GUIStyle _warningStyle;
-        private bool _initialized;
 
         [MenuItem("Window/Tools Window")]
         static void Init()
@@ -31,7 +30,7 @@ namespace Helpers.Editor
             {
                 normal =
                 {
-                    textColor = Color.black
+                    textColor = Color.gray
                 }
             };
             
@@ -39,16 +38,14 @@ namespace Helpers.Editor
             {
                 normal =
                 {
-                    textColor = Color.red
+                    textColor = Color.yellow
                 }
             };
-
-            _initialized = true;
         }
 
         private void OnGUI()
         {
-            if (!_initialized) Initialize();
+            if (_deselectedStyle == null) Initialize();
             
             PlayModeTools();
 
@@ -141,7 +138,7 @@ namespace Helpers.Editor
         
         private void CopyDemoToResourcesButton()
         {
-            if (GUILayout.Button("Copy Start Rooms to Resources"))
+            if (GUILayout.Button("Copy Demo Campaign to Resources"))
             {
                 CopyCampaignToResources(Strings.DemoCampaignName);
             }

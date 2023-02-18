@@ -42,10 +42,9 @@ namespace Scripts.UI.EditorUI
         public CageController SelectedCage { get; private set; }
         public SelectConfigurationWindow SelectConfigurationWindow { get; private set; }
         public TooltipController Tooltip { get; private set; }
-        public EWorkMode WorkMode { get; private set; }
         public bool IsAnyObjectEdited { get; private set; }
         
-
+        private EWorkMode WorkMode { get; set; }
         private ImageButton _playButton;
         private Title _mapTitle;
 
@@ -155,6 +154,7 @@ namespace Scripts.UI.EditorUI
                     OpenedEditor = _tilePrefabEditor;
                     break;
                 case EPrefabType.TriggerOnWall:
+                case EPrefabType.TriggerTile:
                     _triggerEditor.Open(prefabType, placeholderTransformData);
                     OpenedEditor = _triggerEditor;
                     break;
@@ -201,6 +201,10 @@ namespace Scripts.UI.EditorUI
                     OpenedEditor = _tilePrefabEditor;
                     break;
                 case EPrefabType.TriggerOnWall:
+                case EPrefabType.TriggerTile:
+                    _triggerEditor.Open(configuration as TriggerConfiguration);
+                    OpenedEditor = _triggerEditor;
+                    break;
                 case EPrefabType.TriggerReceiver:
                 case EPrefabType.Service:
                     if (WorkMode is EWorkMode.EditEntryPoints)

@@ -69,6 +69,8 @@ namespace Scripts.Building.PrefabsBuilding
             if (configuration is not TC prefabConfiguration || prefabScript is not TPrefab script) return;
 
             newPrefab.transform.localRotation = configuration.TransformData.Rotation;
+            
+            if (prefabScript.presentedInEditor) prefabScript.presentedInEditor.SetActive(IsInEditMode);
 
             ProcessConfiguration(prefabConfiguration, script, newPrefab);
 

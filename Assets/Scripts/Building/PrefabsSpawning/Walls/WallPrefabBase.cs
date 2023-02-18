@@ -20,8 +20,6 @@ namespace Scripts.Building.PrefabsSpawning.Walls
             base.InitializeFromPool();
             WallEligibleForEditing = false;
             _ownConfiguration = null;
-            
-            if (presentedInEditor) presentedInEditor.SetActive(false);
         }
 
         public void OnClickInEditor()

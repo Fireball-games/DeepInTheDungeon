@@ -2,7 +2,7 @@
 
 namespace Scripts.Triggers
 {
-    public class MapTraversalTrigger : Trigger, IEventTrigger
+    public class ExitPointTrigger : Trigger, IEventTrigger
     {
         internal override void OnTriggerActivated(Enums.ETriggerActivatedDetail activatedDetail = Enums.ETriggerActivatedDetail.None)
         {

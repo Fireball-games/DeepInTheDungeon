@@ -35,6 +35,7 @@ namespace Scripts.Helpers
         public static Color Yellow { get; } = new(1.0f, 1.0f, 0.0f);
         public static Color Beige { get; } = new(0.96f, 0.96f, 0.86f);
         public static Color FullTransparentBlack { get; } = new(0, 0, 0, 0);
+        public static Color Gray { get; } = new(0.5f, 0.5f, 0.5f);
 
         private void Awake()
         {

@@ -162,6 +162,7 @@ namespace Scripts.Helpers
             EPrefabType.Prop => PropsDirectoryName,
             EPrefabType.Item => ItemsDirectoryName,
             EPrefabType.TriggerOnWall => TriggersDirectoryName,
+            EPrefabType.TriggerTile => TriggersDirectoryName,
             EPrefabType.Service => ServicesDirectoryName,
             _ => throw new ArgumentOutOfRangeException(nameof(prefabType), prefabType, null)
         };

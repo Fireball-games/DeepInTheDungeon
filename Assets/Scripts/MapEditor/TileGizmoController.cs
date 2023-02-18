@@ -163,7 +163,11 @@ namespace Scripts.MapEditor
             wallPlaceholder.transform.localRotation = positionData.Rotation;
 
             _isPlacementValid = false;
-            _prefabType = EPrefabType.WallBetween;
+            _prefabType = _workMode switch
+            {
+                EWorkMode.Walls => EPrefabType.WallBetween,
+                _ => EPrefabType.Invalid
+            };
 
             if (_affectedParts.HasFlag(EAffectedPart.Wall))
             {
@@ -205,12 +209,22 @@ namespace Scripts.MapEditor
 
             if (_affectedParts.HasFlag(EAffectedPart.Between) && direction is not ETileDirection.Floor)
             {
+                _prefabType = _workMode switch
+                {
+                    _ => _prefabType
+                };
+                
                 _isPlacementValid = true;
                 wallPlaceholder.SetActive(true);
             }
             
             if (_affectedParts.HasFlag(EAffectedPart.Floor) && direction is ETileDirection.Floor)
             {
+                if (_workMode is EWorkMode.Triggers)
+                {
+                    _prefabType = EPrefabType.TriggerTile;    
+                }
+                
                 _isPlacementValid = true;
                 centerPlaceholder.SetActive(true);
             }

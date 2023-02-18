@@ -83,13 +83,13 @@ namespace Scripts.UI.Components
             _dropdown.options.Clear();
             items.ForEach(o => _dropdown.options.Add(new TMP_Dropdown.OptionData(o)));
         }
-        
-        public void OnValueChanged(int value)
+
+        private void OnValueChanged(int value)
         {
             OnIntValueChanged.Invoke(value);
         }
 
-        public void OnValueChanged(string value)
+        private void OnValueChanged(string value)
         {
             OnStringValueChanged.Invoke(value);
         }

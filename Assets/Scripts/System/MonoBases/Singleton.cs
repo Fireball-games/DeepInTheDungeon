@@ -2,7 +2,20 @@
 
 namespace Scripts.System.MonoBases
 {
-    public abstract class Singleton<T> : MonoBehaviour where T : Component
+    /// <summary>
+    /// Prevention of accessing singleton on application quit.
+    /// </summary>
+    public abstract class SingletonBase : MonoBehaviour
+    {
+        protected static bool IsApplicationExiting;
+
+        private void OnApplicationQuit()
+        {
+            IsApplicationExiting = true;
+        }
+    }
+    
+    public abstract class Singleton<T> : SingletonBase where T : Component
     {
 	
         #region Fields
@@ -24,7 +37,7 @@ namespace Scripts.System.MonoBases
         {
             get
             {
-                if (!Application.isPlaying) return null;
+                if (IsApplicationExiting) return null;
                 
                 if (instance) return instance;
                 

@@ -222,7 +222,7 @@ namespace Scripts.System
             
             if (entryPoint == null)
             {
-                Logger.LogWarning($"Could not find entry point with name {mapTraversal.TargetMapName} or {mapTraversal.TargetMapEntranceName}.");
+                Logger.LogWarning($"Could not find entry point in map: {mapTraversal.TargetMapName.WrapInColor(Colors.Warning)} with name: {mapTraversal.TargetMapEntranceName.WrapInColor(Colors.Warning)}.");
                 return;
             }
             

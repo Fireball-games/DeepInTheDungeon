@@ -4,6 +4,7 @@ using System.Linq;
 using Scripts.Building;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor.Services;
@@ -283,32 +284,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (isExitPointTrigger)
             {
-                Campaign currentCampaign = GameManager.CurrentCampaign;
-                List<string> mapsNames = currentCampaign.MapsNames.ToList();
-
-                if (string.IsNullOrEmpty(EditedConfiguration.TargetMapName))
-                {
-                    SetEdited();
-                    EditedConfiguration.TargetMapName = mapsNames.FirstOrDefault();
-                }
-
-                _targetMapDropdown.Set($"{t.Get(Keys.TargetMap)}:",
-                    mapsNames,
-                    mapsNames.IndexOf(EditedConfiguration.TargetMapName),
-                    OnTargetMapChanged);
-                _targetMapDropdown.SetCollapsed(false);
-
-                MapDescription targetMap = currentCampaign.GetMapByName(EditedConfiguration.TargetMapName);
-
-                if (string.IsNullOrEmpty(EditedConfiguration.TargetMapEntranceName) ||
-                    EditedConfiguration.TargetMapEntranceName == t.Get(Keys.NoNameSet))
-                    OnEntryPointChanged(targetMap?.EntryPointsNames.FirstOrDefault());
-
-                _entryPointDropdown.Set($"{t.Get(Keys.EntryPoint)}:",
-                    currentCampaign.GetMapByName(EditedConfiguration.TargetMapName)?.EntryPointsNames ?? new List<string>(),
-                    targetMap == null ? 0 : targetMap.EntryPointsNames.ToList().IndexOf(EditedConfiguration.TargetMapEntranceName),
-                    OnEntryPointChanged);
-                _entryPointDropdown.SetCollapsed(false);
+                HandleTargetEntryPointDropdowns();
 
                 _exitDelayUpDown.Label.text = $"{t.Get(Keys.ExitDelay)}:";
                 _exitDelayUpDown.OnValueChanged.RemoveAllListeners();
@@ -338,6 +314,34 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _receiverList.SetCollapsed(false);
                 RedrawPath();
             }
+        }
+        
+        private void HandleTargetEntryPointDropdowns()
+        {
+            Campaign currentCampaign = GameManager.CurrentCampaign;
+            List<string> mapsNames = new() {t.Get(Keys.NoMapSelected.WrapInColor(Colors.Warning))};
+            mapsNames.AddRange(currentCampaign.MapsNames.ToList());
+
+            int selectedMapIndex = mapsNames.IndexOf(EditedConfiguration.TargetMapName);
+
+            _targetMapDropdown.Set($"{t.Get(Keys.TargetMap)}:", mapsNames, selectedMapIndex, OnTargetMapChanged);
+            _targetMapDropdown.SetCollapsed(false);
+
+            MapDescription targetMap = currentCampaign.GetMapByName(EditedConfiguration.TargetMapName);
+
+            if (targetMap == null)
+            {
+                return;
+            }
+
+            IEnumerable<string> entryPoints = new List<string> {t.Get(Keys.NoNameSet).WrapInColor(Colors.Warning)};
+            entryPoints = entryPoints.Concat(targetMap.EntryPointsNames ?? new List<string>());
+                
+            _entryPointDropdown.Set($"{t.Get(Keys.EntryPoint)}:",
+                entryPoints,
+                targetMap.EntryPointsNames.ToList().IndexOf(EditedConfiguration.TargetMapEntranceName),
+                OnEntryPointChanged);
+            _entryPointDropdown.SetCollapsed(false);
         }
 
         private string ExtractReceiverGuid(PrefabConfiguration configuration)

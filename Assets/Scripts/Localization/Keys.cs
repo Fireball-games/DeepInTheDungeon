@@ -59,6 +59,7 @@ namespace Scripts.Localization
         public const string NewMapNamePrompt = "NewMapNamePrompt";
         public const string NoChangesToSave = "NoChangesToSave";
         public const string NoFilesToShow = "NoFilesToShow";
+        public const string NoMapSelected = "NoMapSelected";
         public const string NoMapToPlayLoaded = "NoMapToPlayLoaded";
         public const string NoNameSet = "NoNameSet";
         public const string NoPrefabsAvailable = "NoPrefabsAvailable";

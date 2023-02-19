@@ -70,7 +70,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private readonly Dictionary<ConfigurableElement, ConfigurablePropertyAttribute> _configurableComponents = new();
 
         protected bool CanOpen => !IsCurrentConfigurationChanged;
-        protected bool IsOpened => _mainWindow.activeSelf || _existingList.IsActive;
         protected bool IsPrefabFinderActive => _existingList.IsActive;
 
         private void Awake()
@@ -119,8 +118,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetExistingList(true, existingConfigurations);
             
-            //TODO: here will be SetPrefab call for existing prefab for single instance editors, if existing, opens it, if not prepares for placing the one.
-
             SetActive(true);
         }
 

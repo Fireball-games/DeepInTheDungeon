@@ -29,7 +29,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 Guid = Guid.NewGuid().ToString(),
                 PrefabType = EditedPrefabType,
                 PrefabName = prefabName,
-                TransformData = new PositionRotation(SelectedCage.transform.position, Quaternion.Euler(Vector3.zero)),
+                TransformData = new PositionRotation(SelectedCursor.transform.position, Quaternion.Euler(Vector3.zero)),
                 SpawnPrefabOnBuild = true,
 
                 IsWalkable = storedPrefab.isWalkable,

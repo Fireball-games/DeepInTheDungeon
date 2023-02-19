@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NaughtyAttributes;
-using Scripts.Building;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
@@ -22,11 +21,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using static Scripts.Enums;
-using static Scripts.MapEditor.Enums;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
-    public abstract class PrefabEditorBase<TC, TPrefab, TService> : EditorWindowBase, IPrefabEditor
+    public abstract class PrefabEditorBase<TC, TPrefab, TService> : MapPartsEditorWindowBase
         where TC : PrefabConfiguration
         where TPrefab : PrefabBase
         where TService : IPrefabService<TC>, new()
@@ -37,11 +35,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         [ShowIf(nameof(isSingleTypeEditor))]
         [Tooltip("Type for single type editors")]
         [SerializeField] private EPrefabType singledType;
-        
-        [EnableIf(nameof(isSingleTypeEditor))]
-        [Tooltip("Means that this editor handles just one instance of its type. Like EditorStartPoint, for example.")]
-        [SerializeField] private bool isSingleInstanceEditor;
-        
+
         protected Transform Content;
 
         private GameObject _placeholder;
@@ -60,8 +54,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private EditorUIManager Manager => EditorUIManager.Instance;
 
         protected GameManager GameManager => GameManager.Instance;
-        protected CageController SelectedCage => Manager.SelectedCage;
-        protected MapBuilder MapBuilder => MapEditorManager.Instance.MapBuilder;
         protected TC EditedConfiguration;
         protected TPrefab EditedPrefab;
         protected EPrefabType EditedPrefabType;
@@ -78,6 +70,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private readonly Dictionary<ConfigurableElement, ConfigurablePropertyAttribute> _configurableComponents = new();
 
         protected bool CanOpen => !IsCurrentConfigurationChanged;
+        protected bool IsOpened => _mainWindow.activeSelf || _existingList.IsActive;
         protected bool IsPrefabFinderActive => _existingList.IsActive;
 
         private void Awake()
@@ -96,17 +89,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             ManageConfigurableComponents();
         }
 
-        private void OnEnable()
-        {
-            EditorEvents.OnWorkModeChanged += Close;
-        }
-
-        private void OnDisable()
-        {
-            EditorEvents.OnWorkModeChanged -= Close;
-            StopAllCoroutines();
-        }
-
         protected abstract TC GetNewConfiguration(string prefabName);
         protected abstract TC CloneConfiguration(TC sourceConfiguration);
         protected abstract void InitializeOtherComponents();
@@ -116,28 +98,26 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         /// </summary>
         protected abstract void RemoveOtherComponents();
 
-        public virtual Vector3 GetCursor3DScale() => Vector3.one;
-        
         protected virtual Vector3 GetPlaceholderScale() => DefaultPlaceholderScale;
 
         /// <summary>
         /// Opens Existing Prefabs list. Next steps are - clicking in map to add/edit prefabs or open prefabs finder.
         /// </summary>
-        public virtual void Open()
+        public override void Open()
         {
-            _mainWindow.SetActive(isSingleInstanceEditor || isSingleTypeEditor);
+            _mainWindow.SetActive(isSingleTypeEditor);
             _prefabList.Close();
             _existingList.Close();
             _prefabTitle.SetActive(false);
             EditedConfiguration = _originalConfiguration = null;
             SetEdited(false);
-            SelectedCage.Hide();
+            SelectedCursor.Hide();
 
             SetButtons();
 
             IEnumerable<TC> existingConfigurations = GetExistingConfigurations();
 
-            if (!isSingleInstanceEditor) SetExistingList(true, existingConfigurations);
+            SetExistingList(true, existingConfigurations);
             
             //TODO: here will be SetPrefab call for existing prefab for single instance editors, if existing, opens it, if not prepares for placing the one.
 
@@ -177,7 +157,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             MoveCameraToPrefab(configuration.TransformData.Position);
 
-            SelectedCage.ShowAt(configuration.TransformData.Position,
+            SelectedCursor.ShowAt(configuration.TransformData.Position,
                 GetCursor3DScale(),
                 configuration.TransformData.Rotation);
 
@@ -186,7 +166,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetExistingList(false);
             
-            if (!isSingleInstanceEditor)
+            if (!isSingleTypeEditor)
             {
                 SetPrefabList(EditedConfiguration.SpawnPrefabOnBuild, _availablePrefabs!);
             }
@@ -235,13 +215,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 return;
             }
 
-            SelectedCage.ShowAt(placeholderTransformData.Position,
+            SelectedCursor.ShowAt(placeholderTransformData.Position,
                 GetCursor3DScale(),
                 placeholderTransformData.Rotation);
 
             VisualizeOtherComponents();
             
-            if (!isSingleInstanceEditor) SetExistingList(false);
+            SetExistingList(false);
             
             if (!isSingleTypeEditor) SetPrefabList(true, _availablePrefabs);
             
@@ -250,17 +230,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             else
                 SetStatusText(t.Get(Keys.SelectPrefab));
         }
-
-        /// <summary>
-        /// IPrefabEditor method
-        /// </summary>
-        public virtual void CloseWithRemovingChanges()
-        {
-            RemoveAndClose();
-        }
-
-        public virtual void MoveCameraToPrefab(Vector3 targetPosition) =>
-            EditorCameraService.Instance.MoveCameraToPrefab(Vector3Int.RoundToInt(targetPosition));
 
         private void SetPrefab(string prefabName)
         {
@@ -370,7 +339,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Open();
         }
 
-        private void RemoveAndClose()
+        protected override void RemoveAndClose()
         {
             if (IsCurrentConfigurationChanged)
             {
@@ -437,7 +406,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             PhysicalPrefabBody = null;
             PhysicalPrefab = null;
 
-            SelectedCage.Hide();
+            SelectedCursor.Hide();
 
             Manager.SetAnyObjectEdited(false);
             Manager.TileGizmo.Reset();
@@ -508,11 +477,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                     .Where(prefab => prefab.prefabType == prefabType)
                     .ToHashSet();
             }
-        }
-
-        private void Close(EWorkMode _)
-        {
-            if (!CanOpen) RemoveAndClose();
         }
 
         private void SetPrefabList(bool isOpen,
@@ -632,12 +596,5 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             
             _configurableComponents.Add(uiComponent, attribute);
         }
-
-#if UNITY_EDITOR
-        private void OnValidate()
-        {
-            if (!isSingleTypeEditor) isSingleInstanceEditor = false;
-        }
-#endif
     }
 }

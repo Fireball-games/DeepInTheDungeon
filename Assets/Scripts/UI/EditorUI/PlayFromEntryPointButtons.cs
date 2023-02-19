@@ -15,8 +15,17 @@ namespace Scripts.UI.EditorUI
     {
         [SerializeField] private Button buttonPrefab;
 
-        private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
-        
+        private static MapBuilder MapBuilder
+        {
+            get
+            {
+                if (GameManager.Instance == null || GameManager.Instance.MapBuilder == null)
+                    return null;
+                
+                return GameManager.Instance.MapBuilder;
+            }
+        }
+
         private void OnEnable()
         {
             MapBuilder.OnLayoutBuilt.AddListener(RedrawButtons);
@@ -25,6 +34,8 @@ namespace Scripts.UI.EditorUI
 
         private void OnDisable()
         {
+            if (MapBuilder == null) return;
+            
             MapBuilder.OnLayoutBuilt.RemoveListener(RedrawButtons);
             EditorEvents.OnMapSaved -= RedrawButtons;
         }

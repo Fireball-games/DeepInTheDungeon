@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
-using Scripts.Building;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor;
-using Scripts.MapEditor.Services;
-using Scripts.System;
-using Scripts.System.MonoBases;
 using Scripts.Triggers;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.Components;
@@ -18,12 +14,9 @@ using UnityEngine.UI;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
-    public class TriggerReceiverEditor : EditorWindowBase, IPrefabEditor
+    public class TriggerReceiverEditor : MapPartsEditorWindowBase
     {
         private readonly Vector3 _cursor3DScale = new(0.3f, 0.3f, 0.3f);
-
-        private MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
-        private CageController SelectedCursor => EditorUIManager.Instance.SelectedCage;
 
         private Transform _content;
         private Title _title;
@@ -45,7 +38,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             AssignComponents();
         }
 
-        public void Open()
+        public override void Open()
         {
             IEnumerable<TriggerReceiverConfiguration> availableConfigurations =
                 MapBuilder.GetConfigurations<TriggerReceiverConfiguration>(Enums.EPrefabType.TriggerReceiver);
@@ -61,16 +54,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             body.SetActive(true);
         }
 
-        public void CloseWithRemovingChanges()
+        protected override void RemoveAndClose()
         {
             RemoveChanges();
             Close();
         }
 
-        public void MoveCameraToPrefab(Vector3 worldPosition) =>
-            EditorCameraService.Instance.MoveCameraToPrefab(Vector3Int.RoundToInt(worldPosition));
-
-        public Vector3 GetCursor3DScale() => _cursor3DScale;
+        public override Vector3 GetCursor3DScale() => _cursor3DScale;
 
         private void Save()
         {

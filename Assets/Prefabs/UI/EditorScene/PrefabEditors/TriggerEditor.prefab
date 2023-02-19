@@ -900,22 +900,22 @@ PrefabInstance:
     - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
       propertyPath: m_Color.a
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.6627451
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.6627451
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6211060879368811018, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.6784314
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6328801447179413717, guid: 864804fe332ca104d9a1967e76773334,
         type: 3}
@@ -1350,9 +1350,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 3780217031036938235}
+  workMode: 8
   isSingleTypeEditor: 0
   singledType: 0
-  isSingleInstanceEditor: 0
 --- !u!1 &3780217031036938235 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3799294447354124338, guid: 864804fe332ca104d9a1967e76773334,

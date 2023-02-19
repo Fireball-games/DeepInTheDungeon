@@ -6,16 +6,14 @@ using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
 using Scripts.System;
-using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
-    public class EditorStartPointEditor : EditorWindowBase, IPrefabEditor
+    public class EditorStartPointEditor : MapPartsEditorWindowBase
     {
-        private CageController SelectedCursor => EditorUIManager.Instance.SelectedCage;
         private RotationWidget _rotationWidget;
         private ImageButton _searchButton;
         
@@ -41,7 +39,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             AssignComponents();
         }
 
-        public void Open()
+        public override void Open()
         {
             SetActive(true);
             SetButtons();
@@ -60,17 +58,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _editorStartIndicator.SetPositionByWorld(placeholderTransformData.Position);
         }
 
-        public void CloseWithRemovingChanges()
+        protected override void RemoveAndClose()
         {
             _editorStartIndicator.SetPositionByWorld(_originalPosition);
             _editorStartIndicator.SetArrowRotation(_originalRotation);
             SetActive(false);
         }
 
-        public void MoveCameraToPrefab(Vector3 worldPosition) => CameraService.MoveCameraToPrefab(worldPosition);
-
-        public Vector3 GetCursor3DScale() => Vector3.one;
-        
         private void OnRotated(int direction)
         {
             SetEdited(true);

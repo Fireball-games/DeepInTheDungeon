@@ -18,7 +18,6 @@ namespace Scripts.Helpers
         public static string SavesLocalDirectoryPath => Path.Combine(PersistentPath, SavesDirectoryName); 
         public static string FullCampaignsResourcesPath => Path.Combine(ApplicationResourcesPath, CampaignDirectoryName);
 
-        
         private static readonly string PersistentPath = Application.persistentDataPath;
         private static string ApplicationResourcesPath => Path.Combine(Application.dataPath, ResourcesDirectoryName);
         private static readonly ES3Settings ES3ResourcesLocationSettings;

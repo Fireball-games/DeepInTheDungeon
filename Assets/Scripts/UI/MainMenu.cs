@@ -57,7 +57,7 @@ namespace Scripts.UI
 
         private void NewCampaignClicked()
         {
-            GameManager.StartNewCampaign();
+            GameManager.StartMainCampaign();
         }
 
         private void ContinueCampaignClicked() => GameManager.ContinueFromSave();

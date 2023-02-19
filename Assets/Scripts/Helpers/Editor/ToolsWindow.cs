@@ -7,6 +7,7 @@ using Scripts.System;
 using UnityEditor;
 using UnityEngine;
 using static Scripts.Helpers.FileOperationsHelper;
+using static Scripts.Helpers.Strings;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Helpers.Editor

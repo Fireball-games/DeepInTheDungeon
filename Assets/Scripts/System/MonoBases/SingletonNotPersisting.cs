@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Scripts.System.Saving;
+using UnityEngine;
+using Logger = Scripts.Helpers.Logger; 
 
 namespace Scripts.System.MonoBases
 {

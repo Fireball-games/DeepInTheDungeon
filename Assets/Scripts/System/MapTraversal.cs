@@ -8,6 +8,7 @@ using Scripts.Helpers.Extensions;
 using Scripts.Player;
 using Scripts.ScenesManagement;
 using Scripts.System.Pooling;
+using Scripts.System.Saving;
 using Scripts.Triggers;
 using Scripts.UI;
 using UnityEngine;
@@ -155,6 +156,8 @@ namespace Scripts.System
             
             if (CurrentMap == null || !_entryMovementFinished) return false;
             
+            SaveManager.StoreTraversalData(CurrentCampaign, CurrentMap, _currentEntryPoint);
+
             TriggerConfiguration mapTraversal = TriggerService.GetConfiguration(exitConfigurationGuid);
             
             if (mapTraversal == null)
@@ -217,6 +220,8 @@ namespace Scripts.System
                 }
                 else
                 {
+                    SaveManager.Save("AutoSave", true);
+                    
                     HandleEntryMovement( () =>
                     {
                         MovementEnabled = true;
@@ -258,6 +263,7 @@ namespace Scripts.System
             _onMovementFinished?.Invoke();
             _onMovementFinished = null;
             _entryMovementFinished = true;
+            GameManager.CanSave = true;
             PlayerMovement.OnStartResting.RemoveListener(OnMovementFinishedWrapper);
         }
 

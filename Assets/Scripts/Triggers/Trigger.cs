@@ -124,11 +124,4 @@ namespace Scripts.Triggers
             positionsTrigger.SetPosition();
         }
     }
-
-    [Serializable]
-    public class TriggerSaveData
-    {
-        public int count;
-        public int currentPosition;
-    }
 }

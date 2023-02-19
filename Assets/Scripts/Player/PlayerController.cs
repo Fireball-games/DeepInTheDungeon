@@ -1,4 +1,8 @@
-﻿using Scripts.System.MonoBases;
+﻿using Scripts.Helpers;
+using Scripts.System;
+using Scripts.System.MonoBases;
+using Scripts.System.Saving;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Player
 {
@@ -12,6 +16,24 @@ namespace Scripts.Player
             base.Awake();
             
             _playerMovement = GetComponent<PlayerMovement>();
+        }
+        
+        /// <summary>
+        /// Used to store player data for saving.
+        /// </summary>
+        /// <returns></returns>
+        public PlayerSaveData CaptureState()
+        {
+            return new PlayerSaveData
+            {
+                currentCampaign = GameManager.Instance.CurrentCampaign.CampaignName,
+                currentMap = GameManager.Instance.CurrentMap.MapName,
+                playerTransformData = new PositionRotation
+                {
+                    Position = transform.position,
+                    Rotation = transform.rotation
+                }
+            };
         }
     }
 }

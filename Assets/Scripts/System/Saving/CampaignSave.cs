@@ -7,6 +7,6 @@ namespace Scripts.System.Saving
     public class CampaignSave
     {
         public string campaignName;
-        public IEnumerable<MapSave> mapsSaves;
+        public List<MapSave> mapsSaves;
     }
 }

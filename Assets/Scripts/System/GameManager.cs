@@ -35,7 +35,8 @@ namespace Scripts.System
         public bool MovementEnabled => movementEnabled;
         public bool IsPlayingFromEditor { get; set; }
         public EGameMode GameMode => _gameMode;
-        
+        public bool CanSave { get; internal set; }
+
         internal PlayerController player;
         internal bool movementEnabled;
 
@@ -145,6 +146,8 @@ namespace Scripts.System
                 return;
             }
 
+            CanSave = false;
+            
             await Task.Delay((int)exitDelay * 1000);
             
             OnStartGameRequested();
@@ -153,6 +156,7 @@ namespace Scripts.System
 
         private void OnStartGameRequested(bool fadeIn = true)
         {
+            CanSave = false;
             SceneLoader.Instance.LoadScene(CurrentMap.SceneName, fadeIn, 1f);
         }
         

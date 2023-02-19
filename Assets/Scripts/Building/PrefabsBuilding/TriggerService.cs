@@ -17,7 +17,7 @@ namespace Scripts.Building.PrefabsBuilding
             return new TriggerConfiguration(prefab as Trigger, ownerGuid, spawnPrefabOnBuild);
         }
 
-        private static readonly Dictionary<string, TriggerReceiver> TriggerReceivers;
+        public static readonly Dictionary<string, TriggerReceiver> TriggerReceivers;
 
         static TriggerService()
         {

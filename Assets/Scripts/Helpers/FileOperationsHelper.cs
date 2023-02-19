@@ -50,6 +50,7 @@ namespace Scripts.Helpers
         public static string GetFullSavesPath(string saveName) => Path.Combine(SavesLocalDirectoryPath, $"{saveName}{SaveFileExtension}");
 
         public static string GetLocalRelativeCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
+        public static string GetLocalRelativeSavePath(string saveName) => Path.Combine(SavesDirectoryName, $"{saveName}{SaveFileExtension}");
 
         public static void SaveCampaign(Campaign campaign, Action onSaveFailed = null)
         {
@@ -217,6 +218,21 @@ namespace Scripts.Helpers
             saves = loadedSaves;
 
             return true;
+        }
+
+        // Saves save to file using ES3
+        public static void SavePositionToLocale(Save save)
+        {
+            if (save == null) return;
+
+            try
+            {
+                ES3.Save(save.saveName, save, GetLocalRelativeSavePath(save.saveName));
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to save save: {save.saveName}: {e}", Logger.ELogSeverity.Release);
+            }
         }
     }
 }

@@ -10,11 +10,10 @@ namespace Scripts.System.Saving
     [Serializable]
     public class Save
     {
+        public string saveName;
         public CharacterProfile characterProfile;
-        public string currentCampaign;
-        public string currentMap;
-        public PositionRotation playerTransformData;
-        public IEnumerable<CampaignSave> campaignsSaves;
+        public PlayerSaveData playerSaveData;
+        public List<CampaignSave> campaignsSaves;
 
         public DateTime timeSaved;
         public byte[] screenshot;

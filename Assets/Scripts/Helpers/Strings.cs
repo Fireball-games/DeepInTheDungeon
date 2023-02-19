@@ -22,6 +22,7 @@ namespace Scripts.Helpers
         public const string EnemiesDirectoryName = "Enemies";
         public const string ItemsDirectoryName = "Items";
         public const string MainCampaignName = "DeepInTheDungeon";
+        public const string PlayerGuid = "PlayerData";
         public const string PrefabsDirectoryName = "TilePrefabs";
         public const string PropsDirectoryName = "Props";
         public const string ResourcesDirectoryName = "Resources";

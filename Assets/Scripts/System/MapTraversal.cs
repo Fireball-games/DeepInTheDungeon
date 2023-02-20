@@ -20,6 +20,7 @@ namespace Scripts.System
     {
         public Campaign CurrentCampaign => _currentCampaign;
         public MapDescription CurrentMap => _currentMap;
+        internal bool EntryMovementFinished => _entryMovementFinished;
         
         private static GameManager GameManager => GameManager.Instance;
         private static MapBuilder MapBuilder => GameManager.MapBuilder;
@@ -155,9 +156,11 @@ namespace Scripts.System
             exitDelay = 0f;
             
             if (CurrentMap == null || !_entryMovementFinished) return false;
-            //TODO: make update enum - player / map / all
-            // SaveManager.StoreTraversalData(CurrentCampaign, CurrentMap, _currentEntryPoint);
-            SaveManager.Save("AutoSave", true, false, CurrentCampaign, CurrentMap);
+
+            if (!GameManager.IsPlayingFromEditor)
+            {
+                SaveManager.SaveToTemp(CurrentCampaign, CurrentMap);
+            }
 
             TriggerConfiguration mapTraversal = TriggerService.GetConfiguration(exitConfigurationGuid);
             
@@ -209,8 +212,11 @@ namespace Scripts.System
             ScreenFader.FadeOut(1.2f);
 
             await Task.Delay(200);
-            
-            SaveManager.RestoreMapDataFromCurrentSave();
+
+            if (!GameManager.IsPlayingFromEditor)
+            {
+                SaveManager.RestoreMapDataFromCurrentSave();
+            }
             
             if (_currentEntryPoint.isMovingForwardOnStart)
             {
@@ -266,7 +272,10 @@ namespace Scripts.System
 
         private void HandleFirstStepAfterTraversal()
         {
-            SaveManager.Save("AutoSave", true);
+            if (!GameManager.IsPlayingFromEditor)
+            {
+                SaveManager.SaveToDisc("MapEntry", true);
+            }
             MovementEnabled = true;
             PlayerCamera.IsLookModeOn = _lookModeOnStartTraversal;
         }

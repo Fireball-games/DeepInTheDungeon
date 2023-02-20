@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.Building.PrefabsBuilding;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Player;
 using Scripts.System.MonoBases;
@@ -20,13 +21,26 @@ namespace Scripts.System.Saving
         private static IEnumerable<Save> _saves = Enumerable.Empty<Save>();
         // TODO: Make sure, that _currentSave is always up to date and is null when creating new character.
         private static Save _currentSave;
-        
+        private static Save _tempSave;
+
+        private void OnEnable()
+        {
+            EventsManager.OnSceneStartedLoading += OnSceneStartedLoading;
+            EventsManager.OnNewCampaignStarted.AddListener(OnNewCampaignStarted);
+        }
+
         private void Start()
         {
             if (!_saves.Any() && (FileOperationsHelper.LoadAllSaves(out IEnumerable<Save> saves)))
             {
                 _saves = saves;
             }
+        }
+        
+        private void OnDisable()
+        {
+            EventsManager.OnSceneStartedLoading -= OnSceneStartedLoading;
+            EventsManager.OnNewCampaignStarted.RemoveListener(OnNewCampaignStarted);
         }
 
         /// <summary>
@@ -37,16 +51,31 @@ namespace Scripts.System.Saving
         /// <param name="updatePlayerOnly">If we want to update only player position, like on arrival from previously visited map</param>
         /// <param name="overrideCampaign">Overrides current campaign from GameManager.</param>
         /// <param name="overrideMap">Overrides current map from GameManager</param>
-        public static void Save(string saveName, bool isAutoSave = false, bool updatePlayerOnly = false, Campaign overrideCampaign = null, MapDescription overrideMap = null)
+        public static async void SaveToDisc(string saveName, bool isAutoSave = false, bool updatePlayerOnly = false, Campaign overrideCampaign = null, MapDescription overrideMap = null)
         {
             if (!GameManager.Instance.CanSave && !isAutoSave) return;
             
-            Instance.StartCoroutine(Instance.SaveCoroutine(saveName, updatePlayerOnly, overrideCampaign, overrideMap));
+            await CreateSave(saveName, updatePlayerOnly, overrideCampaign, overrideMap);
+            
+            SaveToDisc();
         }
 
-        private IEnumerator SaveCoroutine(string saveName, bool updatePlayerOnly = false, Campaign overrideCampaign = null, MapDescription overrideMap = null)
+        public static async void SaveToTemp(Campaign overrideCampaign, MapDescription overrideMap)
         {
-            yield return new WaitForEndOfFrame();
+            _tempSave = await CreateSave("MapExit", true, overrideCampaign, overrideMap);
+        }
+
+        /// <summary>
+        /// Creates save file from current save and store that save in _currentSave.
+        /// </summary>
+        /// <param name="saveName"></param>
+        /// <param name="updatePlayerOnly"></param>
+        /// <param name="overrideCampaign"></param>
+        /// <param name="overrideMap"></param>
+        /// <returns></returns>
+        private static async Task<Save> CreateSave(string saveName, bool updatePlayerOnly = false, Campaign overrideCampaign = null, MapDescription overrideMap = null)
+        {
+            await AsyncHelpers.WaitForEndOfFrameAsync();
             
             byte[] screenshot = ScreenCapture.CaptureScreenshotAsTexture().EncodeToPNG();
 
@@ -71,7 +100,7 @@ namespace Scripts.System.Saving
             }
             Logger.Log($"Saving to {saveName}");
             _currentSave = save;
-            FileOperationsHelper.SavePositionToLocale(save);
+            return save;
         }
 
         // Checks for current campaign name in GameManager and if its data are already saved in current campaign saves. If yes, copies all mapsSaves from that campaign save and
@@ -126,6 +155,22 @@ namespace Scripts.System.Saving
             }
 
             return campaignSaves;
+        }
+        
+        private void OnNewCampaignStarted()
+        {
+            _currentSave = null;
+        }
+        
+        private static void SaveToDisc() => FileOperationsHelper.SavePositionToLocale(_currentSave);
+
+        private void OnSceneStartedLoading()
+        {
+            if (_tempSave == null) return;
+            
+            _currentSave = _tempSave;
+            SaveToDisc();
+            _tempSave = null;
         }
 
         // Gather all data from all ISavable objects in the scene that need to be saved and stores those data

@@ -110,7 +110,7 @@ namespace Scripts.System
                 Logger.LogWarning("Could not start new campaign.");
                 return;
             }
-
+            EventsManager.TriggerOnNewCampaignStarted();
             await Task.Delay(2500);
             
             OnStartGameRequested();
@@ -142,7 +142,7 @@ namespace Scripts.System
         {
             if (!_mapTraversal.SetForTraversal(exitConfigurationGuid, out float exitDelay))
             {
-                Logger.LogWarning("Could not traverse map.");
+                if (_mapTraversal.EntryMovementFinished) Logger.LogWarning("Could not traverse map.");
                 return;
             }
 

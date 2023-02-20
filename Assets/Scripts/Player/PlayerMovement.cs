@@ -14,7 +14,6 @@ using Scripts.ScriptableObjects;
 using Scripts.System;
 using UnityEngine;
 using UnityEngine.Events;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Player
 {
@@ -55,11 +54,11 @@ namespace Scripts.Player
                 if (value == _atRest) return;
                 
                 _atRest = value;
+
+                if (!_atRest) return;
                 
-                if (_atRest)
-                {
-                    OnStartResting.Invoke();
-                }
+                transform.position = _targetPosition = _prevTargetPosition = transform.position.ToVector3Int();
+                OnStartResting.Invoke();
             }
         }
 

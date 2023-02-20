@@ -155,8 +155,9 @@ namespace Scripts.System
             exitDelay = 0f;
             
             if (CurrentMap == null || !_entryMovementFinished) return false;
-            
-            SaveManager.StoreTraversalData(CurrentCampaign, CurrentMap, _currentEntryPoint);
+            //TODO: make update enum - player / map / all
+            // SaveManager.StoreTraversalData(CurrentCampaign, CurrentMap, _currentEntryPoint);
+            SaveManager.Save("AutoSave", true, false, CurrentCampaign, CurrentMap);
 
             TriggerConfiguration mapTraversal = TriggerService.GetConfiguration(exitConfigurationGuid);
             
@@ -220,13 +221,7 @@ namespace Scripts.System
                 }
                 else
                 {
-                    SaveManager.Save("AutoSave", true);
-                    
-                    HandleEntryMovement( () =>
-                    {
-                        MovementEnabled = true;
-                        PlayerCamera.IsLookModeOn = _lookModeOnStartTraversal;
-                    });
+                    HandleEntryMovement(HandleFirstStepAfterTraversal);
                 }
                 
                 Player.PlayerMovement.MoveForward(true);
@@ -265,6 +260,13 @@ namespace Scripts.System
             _entryMovementFinished = true;
             GameManager.CanSave = true;
             PlayerMovement.OnStartResting.RemoveListener(OnMovementFinishedWrapper);
+        }
+
+        private void HandleFirstStepAfterTraversal()
+        {
+            SaveManager.Save("AutoSave", true);
+            MovementEnabled = true;
+            PlayerCamera.IsLookModeOn = _lookModeOnStartTraversal;
         }
 
         private void SetControlsForMainScene()

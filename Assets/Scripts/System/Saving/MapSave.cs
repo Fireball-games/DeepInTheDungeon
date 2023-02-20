@@ -7,6 +7,6 @@ namespace Scripts.System.Saving
     public class MapSave
     {
         public string mapName;
-        public IEnumerable<MapStateRecord> mapState;
+        public List<MapStateRecord> mapState;
     }
 }

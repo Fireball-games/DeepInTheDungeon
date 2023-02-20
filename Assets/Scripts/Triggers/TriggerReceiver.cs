@@ -14,7 +14,7 @@ namespace Scripts.Triggers
         public int startPosition;
         public string identification;
         
-        protected int CurrentMovement;
+        protected int CurrentPosition;
 
         protected bool AtRest = true;
 
@@ -52,7 +52,7 @@ namespace Scripts.Triggers
             new TriggerSaveData
             {
                 count = 0,
-                currentPosition = CurrentMovement,
+                currentPosition = CurrentPosition,
             };
 
         public void RestoreState(object state)

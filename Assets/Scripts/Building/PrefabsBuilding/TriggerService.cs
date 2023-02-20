@@ -70,7 +70,6 @@ namespace Scripts.Building.PrefabsBuilding
 
                 if (IsInEditMode)
                 {
-                    TriggerReceivers.TryAdd(receiver.Guid, receiver);
 
                     configuration = AddTriggerReceiverConfigurationToMap(receiver, prefabScript.Guid);
                 }
@@ -86,6 +85,7 @@ namespace Scripts.Building.PrefabsBuilding
 
                 receiver.startPosition = configuration.StartPosition;
                 receiver.Guid = configuration.Guid;
+                TriggerReceivers.TryAdd(receiver.Guid, receiver);
                 receiver.SetPosition();
             }
         }

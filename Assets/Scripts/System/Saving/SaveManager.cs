@@ -36,14 +36,16 @@ namespace Scripts.System.Saving
         /// </summary>
         /// <param name="saveName">Name of saved position stored in save file and name of the save file.</param>
         /// <param name="isAutoSave">If saved position is AutoSave.</param>
-        public static void Save(string saveName, bool isAutoSave = false)
+        /// <param name="overrideCampaign">Overrides current campaign from GameManager.</param>
+        /// <param name="overrideMap">Overrides current map from GameManager</param>
+        public static void Save(string saveName, bool isAutoSave = false, bool updatePlayerOnly = false, Campaign overrideCampaign = null, MapDescription overrideMap = null)
         {
             if (!GameManager.Instance.CanSave && !isAutoSave) return;
             
-            Instance.StartCoroutine(Instance.SaveCoroutine(saveName));
+            Instance.StartCoroutine(Instance.SaveCoroutine(saveName, overrideCampaign, overrideMap));
         }
 
-        private IEnumerator SaveCoroutine(string saveName)
+        private IEnumerator SaveCoroutine(string saveName, Campaign overrideCampaign = null, MapDescription overrideMap = null)
         {
             yield return new WaitForEndOfFrame();
             
@@ -60,7 +62,7 @@ namespace Scripts.System.Saving
                 screenshot = screenshot
             };
             
-            save.campaignsSaves = ManageCampaignSaves(_currentSave ?? save).ToList();
+            save.campaignsSaves = ManageCampaignSaves(_currentSave ?? save, overrideCampaign, overrideMap).ToList();
             
             _currentSave = save;
             FileOperationsHelper.SavePositionToLocale(save);
@@ -68,7 +70,7 @@ namespace Scripts.System.Saving
 
         // Checks for current campaign name in GameManager and if its data are already saved in current campaign saves. If yes, copies all mapsSaves from that campaign save and
         // overwrites data for current map state. If not, creates new CampaignSave and adds it to the list with current data.
-        private static IEnumerable<CampaignSave> ManageCampaignSaves(Save referenceSave)
+        private static IEnumerable<CampaignSave> ManageCampaignSaves(Save referenceSave, Campaign overrideCampaign = null, MapDescription overrideMap = null)
         {
             if (referenceSave == null)
             {
@@ -77,8 +79,8 @@ namespace Scripts.System.Saving
             }
             
             IEnumerable<CampaignSave> campaignSaves = referenceSave.campaignsSaves;
-            string currentCampaignName = GameManager.Instance.CurrentCampaign.CampaignName;
-            string currentMapName = GameManager.Instance.CurrentMap.MapName;
+            string currentCampaignName = overrideCampaign?.CampaignName ?? GameManager.Instance.CurrentCampaign.CampaignName;
+            string currentMapName = overrideMap?.MapName ?? GameManager.Instance.CurrentMap.MapName;
             
             CampaignSave currentCampaignSave = campaignSaves.FirstOrDefault(c => c.campaignName == currentCampaignName);
             
@@ -120,12 +122,17 @@ namespace Scripts.System.Saving
 
         // Gather all data from all ISavable objects in the scene that need to be saved and stores those data
         // in MapStateRecords.
-        private static IEnumerable<MapStateRecord> CaptureCurrentMapState()
+        private static List<MapStateRecord> CaptureCurrentMapState()
         {
-            IEnumerable<ISavable> savables = TriggerService.GetPrefabScripts();
+            IEnumerable<ISavable> savables = TriggerService.GetPrefabScripts().ToList();
             savables = savables.Concat(TriggerService.TriggerReceivers.Values);
+            List<MapStateRecord> result = savables.Select(CaptureSavaData).ToList();
+            return result;
+        }
 
-            return savables.Select(savable => new MapStateRecord {guid = savable.Guid, saveData = savable.CaptureState()});
+        private static MapStateRecord CaptureSavaData(ISavable savable)
+        {
+            return new MapStateRecord {guid = savable.Guid, saveData = savable.CaptureState()};
         }
 
         // Stores map state at the time of traversal trigger activation. These data are supposed to be used when player returns

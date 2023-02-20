@@ -59,7 +59,7 @@ namespace Scripts.Triggers
                 activePart.localRotation = Quaternion.Euler(steps[startPosition].target);
             }
 
-            CurrentMovement = startPosition == steps.Count - 1 ? 0 : startPosition + 1;
+            CurrentPosition = startPosition == steps.Count - 1 ? 0 : startPosition + 1;
         }
 
         protected override void TriggerNext()
@@ -67,20 +67,20 @@ namespace Scripts.Triggers
             switch (moveType)
             {
                 case ETriggerMoveType.ThereAndBack:
-                    CurrentMovement = 0;
+                    CurrentPosition = 0;
                     _movementStore[0].OnComplete(() => RunBackTween())
                         .Restart();
                     break;
                 case ETriggerMoveType.Switch:
-                    if (CurrentMovement == 0)
+                    if (CurrentPosition == 0)
                     {
                         _movementStore[0].OnComplete(SetResting).Restart();
-                        CurrentMovement = 1;
+                        CurrentPosition = 1;
                     }
                     else
                     {
                         _movementStore[1].Restart();
-                        CurrentMovement = 0;
+                        CurrentPosition = 0;
                     }
 
                     break;

@@ -2,6 +2,7 @@
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Saving;
+using UnityEngine;
 using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Player
@@ -30,7 +31,7 @@ namespace Scripts.Player
                 currentMap = GameManager.Instance.CurrentMap.MapName,
                 playerTransformData = new PositionRotation
                 {
-                    Position = transform.position,
+                    Position = Vector3Int.FloorToInt(transform.position),
                     Rotation = transform.rotation
                 }
             };

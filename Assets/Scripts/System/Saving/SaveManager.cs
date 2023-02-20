@@ -42,10 +42,10 @@ namespace Scripts.System.Saving
         {
             if (!GameManager.Instance.CanSave && !isAutoSave) return;
             
-            Instance.StartCoroutine(Instance.SaveCoroutine(saveName, overrideCampaign, overrideMap));
+            Instance.StartCoroutine(Instance.SaveCoroutine(saveName, updatePlayerOnly, overrideCampaign, overrideMap));
         }
 
-        private IEnumerator SaveCoroutine(string saveName, Campaign overrideCampaign = null, MapDescription overrideMap = null)
+        private IEnumerator SaveCoroutine(string saveName, bool updatePlayerOnly = false, Campaign overrideCampaign = null, MapDescription overrideMap = null)
         {
             yield return new WaitForEndOfFrame();
             
@@ -62,7 +62,14 @@ namespace Scripts.System.Saving
                 screenshot = screenshot
             };
             
-            save.campaignsSaves = ManageCampaignSaves(_currentSave ?? save, overrideCampaign, overrideMap).ToList();
+            if (updatePlayerOnly && _currentSave != null)
+            {
+                save.campaignsSaves = _currentSave.campaignsSaves;
+            }
+            else
+            {
+                save.campaignsSaves = ManageCampaignSaves(_currentSave ?? save, overrideCampaign, overrideMap).ToList();
+            }
             
             _currentSave = save;
             FileOperationsHelper.SavePositionToLocale(save);
@@ -70,7 +77,8 @@ namespace Scripts.System.Saving
 
         // Checks for current campaign name in GameManager and if its data are already saved in current campaign saves. If yes, copies all mapsSaves from that campaign save and
         // overwrites data for current map state. If not, creates new CampaignSave and adds it to the list with current data.
-        private static IEnumerable<CampaignSave> ManageCampaignSaves(Save referenceSave, Campaign overrideCampaign = null, MapDescription overrideMap = null)
+        private static IEnumerable<CampaignSave> ManageCampaignSaves(Save referenceSave, Campaign overrideCampaign = null,
+            MapDescription overrideMap = null)
         {
             if (referenceSave == null)
             {
@@ -79,6 +87,7 @@ namespace Scripts.System.Saving
             }
             
             IEnumerable<CampaignSave> campaignSaves = referenceSave.campaignsSaves;
+
             string currentCampaignName = overrideCampaign?.CampaignName ?? GameManager.Instance.CurrentCampaign.CampaignName;
             string currentMapName = overrideMap?.MapName ?? GameManager.Instance.CurrentMap.MapName;
             

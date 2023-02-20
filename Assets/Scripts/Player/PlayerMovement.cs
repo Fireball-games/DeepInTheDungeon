@@ -14,6 +14,7 @@ using Scripts.ScriptableObjects;
 using Scripts.System;
 using UnityEngine;
 using UnityEngine.Events;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Player
 {
@@ -397,6 +398,12 @@ namespace Scripts.Player
                             .GetPrefabConfigurationByTransformData(
                                 new PositionRotation(hitTransform.position, hitTransform.rotation)) as WallConfiguration)?
                         .WayPoints ?? new List<Waypoint>());
+
+                    if (_waypoints[0].position != currentPosition.ToVector3Int())
+                    {
+                        // Wall triggers movement only when player is at start point = walls are one way.
+                        _waypoints.Clear();
+                    }
 
                     return false;
                 }

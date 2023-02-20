@@ -3,6 +3,7 @@ using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Saving;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Player
@@ -25,13 +26,14 @@ namespace Scripts.Player
         /// <returns></returns>
         public PlayerSaveData CaptureState()
         {
+            Logger.Log($"Captured player position: {_playerMovement.PreviousPosition}");
             return new PlayerSaveData
             {
                 currentCampaign = GameManager.Instance.CurrentCampaign.CampaignName,
                 currentMap = GameManager.Instance.CurrentMap.MapName,
                 playerTransformData = new PositionRotation
                 {
-                    Position = Vector3Int.FloorToInt(transform.position),
+                    Position = _playerMovement.PreviousPosition,
                     Rotation = transform.rotation
                 }
             };

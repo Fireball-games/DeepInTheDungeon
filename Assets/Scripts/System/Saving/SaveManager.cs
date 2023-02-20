@@ -21,8 +21,6 @@ namespace Scripts.System.Saving
         // TODO: Make sure, that _currentSave is always up to date and is null when creating new character.
         private static Save _currentSave;
         
-        private static MapTraversalData _lastMapExitRecords;
-
         private void Start()
         {
             if (!_saves.Any() && (FileOperationsHelper.LoadAllSaves(out IEnumerable<Save> saves)))
@@ -36,6 +34,7 @@ namespace Scripts.System.Saving
         /// </summary>
         /// <param name="saveName">Name of saved position stored in save file and name of the save file.</param>
         /// <param name="isAutoSave">If saved position is AutoSave.</param>
+        /// <param name="updatePlayerOnly">If we want to update only player position, like on arrival from previously visited map</param>
         /// <param name="overrideCampaign">Overrides current campaign from GameManager.</param>
         /// <param name="overrideMap">Overrides current map from GameManager</param>
         public static void Save(string saveName, bool isAutoSave = false, bool updatePlayerOnly = false, Campaign overrideCampaign = null, MapDescription overrideMap = null)
@@ -70,7 +69,7 @@ namespace Scripts.System.Saving
             {
                 save.campaignsSaves = ManageCampaignSaves(_currentSave ?? save, overrideCampaign, overrideMap).ToList();
             }
-            
+            Logger.Log($"Saving to {saveName}");
             _currentSave = save;
             FileOperationsHelper.SavePositionToLocale(save);
         }
@@ -144,17 +143,48 @@ namespace Scripts.System.Saving
             return new MapStateRecord {guid = savable.Guid, saveData = savable.CaptureState()};
         }
 
-        // Stores map state at the time of traversal trigger activation. These data are supposed to be used when player returns
-        // to the map and stored upon player entering the new map into enter map AutoSave.
-        public static void StoreTraversalData(Campaign currentCampaign, MapDescription currentMap, EntryPoint currentEntryPoint)
+        /// <summary>
+        /// If player has traversed the map and current save has data about current map, restores map state from the time of traversal trigger activation.
+        /// </summary>
+        public static void RestoreMapDataFromCurrentSave()
         {
-            _lastMapExitRecords = new MapTraversalData
+            if (_currentSave == null)
             {
-                campaign = currentCampaign,
-                map = currentMap,
-                entryPoint = currentEntryPoint,
-                mapState = CaptureCurrentMapState()
-            };
+                Logger.Log("Current save is null. Aborting restoring map data.");
+                return;
+            }
+            
+            CampaignSave currentCampaignSave = _currentSave.campaignsSaves.FirstOrDefault(c => c.campaignName == GameManager.Instance.CurrentCampaign.CampaignName);
+            if (currentCampaignSave == null)
+            {
+                Logger.Log("Current campaign save is null. Aborting restoring map data.");
+                return;
+            }
+            
+            MapSave currentMapSave = currentCampaignSave.mapsSaves.FirstOrDefault(m => m.mapName == GameManager.Instance.CurrentMap.MapName);
+            if (currentMapSave == null)
+            {
+                Logger.Log("Current map save is null. Aborting restoring map data.");
+                return;
+            }
+            
+            RestoreMapData(currentMapSave.mapState);
+        }
+
+        private static void RestoreMapData(List<MapStateRecord> mapState)
+        {
+            Logger.Log("Restoring map data.");
+            IEnumerable<ISavable> savables = TriggerService.GetPrefabScripts().ToList();
+            savables = savables.Concat(TriggerService.TriggerReceivers.Values);
+            
+            foreach (ISavable savable in savables)
+            {
+                MapStateRecord record = mapState.FirstOrDefault(r => r.guid == savable.Guid);
+                if (record != null)
+                {
+                    savable.RestoreState(record.saveData);
+                }
+            }
         }
     }
     

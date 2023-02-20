@@ -49,12 +49,10 @@ namespace Helpers.Editor
             if (_deselectedStyle == null) Initialize();
             
             PlayModeTools();
-
-            CopyMainCampaignToResourcesButton();
-            CopyStartRoomsToResourcesButton();
-            CopyDemoToResourcesButton();
             
-            CopyAllResourcesCampaignsToLocalLowButton();
+            EditorGUILayout.Separator();
+
+            FileOperationsTools();
         }
 
         private void PlayModeTools()
@@ -84,6 +82,32 @@ namespace Helpers.Editor
             }
 
             GUILayout.Space(20);
+        }
+        
+        private void FileOperationsTools()
+        {
+            GUILayout.Label("File operations:", EditorStyles.boldLabel);
+
+            GUILayout.BeginVertical();
+
+            CopyMainCampaignToResourcesButton();
+            CopyStartRoomsToResourcesButton();
+            CopyDemoToResourcesButton();
+            EditorGUILayout.Space(10);
+            CopyAllResourcesCampaignsToLocalLowButton();
+            EditorGUILayout.Separator();
+            OpenLocalLowFolderButton();
+            EditorGUILayout.Space(10);
+            EditorGUILayout.Separator();
+            GUILayout.EndVertical();
+        }
+
+        private void OpenLocalLowFolderButton()
+        {
+            if (GUILayout.Button("Open LocalLow folder"))
+            {
+                OpenFolder(Path.Combine(Application.persistentDataPath));
+            }
         }
 
         private void RegenerateGuidsButton()
@@ -125,7 +149,7 @@ namespace Helpers.Editor
         {
             if (GUILayout.Button("Copy Main Campaign to Resources"))
             {
-                CopyCampaignToResources(Strings.MainCampaignName);
+                CopyCampaignToResources(MainCampaignName);
             }
         }
 
@@ -133,7 +157,7 @@ namespace Helpers.Editor
         {
             if (GUILayout.Button("Copy Start Rooms to Resources"))
             {
-                CopyCampaignToResources(Strings.StartRoomsCampaignName);
+                CopyCampaignToResources(StartRoomsCampaignName);
             }
         }
         
@@ -141,7 +165,7 @@ namespace Helpers.Editor
         {
             if (GUILayout.Button("Copy Demo Campaign to Resources"))
             {
-                CopyCampaignToResources(Strings.DemoCampaignName);
+                CopyCampaignToResources(DemoCampaignName);
             }
         }
 

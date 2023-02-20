@@ -9,7 +9,7 @@ namespace Scripts.Triggers
     {
         public List<DoTweenMoveStep> GetSteps();
         public int GetStartPosition();
-        public void SetStartPosition(int newStartPosition);
+        public void SetStartPosition(int newStartPosition, bool isTargetPosition = true);
         public void SetPosition();
 
     }

@@ -31,6 +31,7 @@ namespace Scripts.Player
         [SerializeField] private Camera playerCamera;
 
         public static float TransitionRotationSpeed { get; private set; }
+        public Vector3 PreviousPosition => _prevTargetPosition;
 
         private Vector3 _targetPosition;
         private Vector3 _prevTargetPosition;
@@ -44,12 +45,12 @@ namespace Scripts.Player
         
         private bool _atRest = true;
         
-        public static UnityEvent OnStartResting = new();
+        public static readonly UnityEvent OnStartResting = new();
 
-        public bool AtRest
+        private bool AtRest
         {
             get => _atRest;
-            private set
+            set
             {
                 if (value == _atRest) return;
                 

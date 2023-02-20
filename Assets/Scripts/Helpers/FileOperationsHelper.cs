@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Scripts.Building;
@@ -132,6 +133,17 @@ namespace Scripts.Helpers
             return loadedPrefabs != null && loadedPrefabs.Any();
         }
         
+        public static void OpenFolder(string absoluteFolderPath)
+        {
+#if UNITY_STANDALONE_WIN
+            if (string.IsNullOrEmpty(absoluteFolderPath)) return;
+#endif
+
+#if UNITY_STANDALONE_WIN
+            Process.Start("explorer.exe", absoluteFolderPath.Replace('/', '\\'));
+#endif
+        }
+
         private static Campaign LoadLastEditedCampaign()
         {
             string[] campaignMapKey = PlayerPrefsHelper.LastEditedMap;

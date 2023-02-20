@@ -116,6 +116,11 @@ namespace Scripts.Triggers
 
         public List<DoTweenMoveStep> GetSteps() => steps;
         public int GetStartPosition() => startPosition;
-        public void SetStartPosition(int newStartPosition) => startPosition = newStartPosition;
+        public void SetStartPosition(int newStartPosition, bool isTargetPosition = false)
+        {
+            startPosition = isTargetPosition
+                ? startPosition == steps.Count - 1 ? 0 : startPosition + 1
+                : newStartPosition;
+        }
     }
 }

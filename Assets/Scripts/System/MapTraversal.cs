@@ -210,6 +210,8 @@ namespace Scripts.System
 
             await Task.Delay(200);
             
+            SaveManager.RestoreMapDataFromCurrentSave();
+            
             if (_currentEntryPoint.isMovingForwardOnStart)
             {
                 MovementEnabled = false;

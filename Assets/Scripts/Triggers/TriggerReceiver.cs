@@ -65,7 +65,7 @@ namespace Scripts.Triggers
 
             if (this is not IPositionsTrigger positionsTrigger) return;
             
-            positionsTrigger.SetStartPosition(saveData.currentPosition);
+            positionsTrigger.SetStartPosition(saveData.currentPosition, true);
             positionsTrigger.SetPosition();
         }
     }

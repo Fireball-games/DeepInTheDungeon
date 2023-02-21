@@ -51,7 +51,7 @@ namespace Scripts.System.Saving
         /// <param name="updatePlayerOnly">If we want to update only player position, like on arrival from previously visited map</param>
         /// <param name="overrideCampaign">Overrides current campaign from GameManager.</param>
         /// <param name="overrideMap">Overrides current map from GameManager</param>
-        public static async void SaveToDisc(string saveName, bool isAutoSave = false, bool updatePlayerOnly = false, Campaign overrideCampaign = null, MapDescription overrideMap = null)
+        public static async Task SaveToDisc(string saveName, bool isAutoSave = false, bool updatePlayerOnly = false, Campaign overrideCampaign = null, MapDescription overrideMap = null)
         {
             if (!GameManager.Instance.CanSave && !isAutoSave) return;
             
@@ -60,9 +60,9 @@ namespace Scripts.System.Saving
             SaveToDisc();
         }
 
-        public static async void SaveToTemp(Campaign overrideCampaign, MapDescription overrideMap)
+        public static async void SaveToTemp(string saveName, Campaign overrideCampaign, MapDescription overrideMap)
         {
-            _tempSave = await CreateSave("MapExit", true, overrideCampaign, overrideMap);
+            _tempSave = await CreateSave(saveName, true, overrideCampaign, overrideMap);
         }
 
         /// <summary>
@@ -75,9 +75,7 @@ namespace Scripts.System.Saving
         /// <returns></returns>
         private static async Task<Save> CreateSave(string saveName, bool updatePlayerOnly = false, Campaign overrideCampaign = null, MapDescription overrideMap = null)
         {
-            await AsyncHelpers.WaitForEndOfFrameAsync();
-            
-            byte[] screenshot = ScreenCapture.CaptureScreenshotAsTexture().EncodeToPNG();
+            byte[] screenshot = await ScreenShotService.Instance.GetCurrentScreenshotBytes();
 
             Save save = new()
             {
@@ -162,7 +160,10 @@ namespace Scripts.System.Saving
             _currentSave = null;
         }
         
-        private static void SaveToDisc() => FileOperationsHelper.SavePositionToLocale(_currentSave);
+        private static void SaveToDisc()
+        {
+            FileOperationsHelper.SavePositionToLocale(_currentSave);
+        }
 
         private void OnSceneStartedLoading()
         {

@@ -159,7 +159,7 @@ namespace Scripts.System
 
             if (!GameManager.IsPlayingFromEditor)
             {
-                SaveManager.SaveToTemp(CurrentCampaign, CurrentMap);
+                SaveManager.SaveToTemp(Strings.MapExitSaveName, CurrentCampaign, CurrentMap);
             }
 
             TriggerConfiguration mapTraversal = TriggerService.GetConfiguration(exitConfigurationGuid);
@@ -270,12 +270,14 @@ namespace Scripts.System
             PlayerMovement.OnStartResting.RemoveListener(OnMovementFinishedWrapper);
         }
 
-        private void HandleFirstStepAfterTraversal()
+        private async void HandleFirstStepAfterTraversal()
         {
             if (!GameManager.IsPlayingFromEditor)
             {
-                SaveManager.SaveToDisc("MapEntry", true);
+                await SaveManager.SaveToDisc(Strings.MapEntrySaveName, true);
             }
+            // To prevent moving before some async operations finishes
+            await Task.Delay(100);
             MovementEnabled = true;
             PlayerCamera.IsLookModeOn = _lookModeOnStartTraversal;
         }

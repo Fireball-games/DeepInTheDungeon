@@ -274,7 +274,7 @@ namespace Scripts.System
         {
             if (!GameManager.IsPlayingFromEditor)
             {
-                await SaveManager.SaveToDisc(Strings.MapEntrySaveName, true);
+                await SaveManager.SaveToDisc(Strings.MapEntrySaveName, true, true);
             }
             // To prevent moving before some async operations finishes
             await Task.Delay(100);

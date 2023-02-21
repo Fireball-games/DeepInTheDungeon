@@ -39,12 +39,21 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             AssignComponents();
         }
 
+        private void OnEnable()
+        {
+            EditorEvents.OnMapBuilt.AddListener(OnMapBuilt);
+        }
+        
+        private void OnDisable()
+        {
+            EditorEvents.OnMapBuilt.RemoveListener(OnMapBuilt);
+        }
+
         public override void Open()
         {
             SetActive(true);
             SetButtons();
-            _originalPosition = _indicatorTransform.position;
-            _originalRotation = _indicatorTransform.rotation;
+            SetOriginalPositionAndRotation();
         }
         
         public void Open(PositionRotation placeholderTransformData)
@@ -63,6 +72,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _editorStartIndicator.SetPositionByWorld(_originalPosition);
             _editorStartIndicator.SetArrowRotation(_originalRotation);
             SetActive(false);
+        }
+        
+        private void OnMapBuilt() => SetOriginalPositionAndRotation();
+
+        private void SetOriginalPositionAndRotation()
+        {
+            _originalPosition = _indicatorTransform.position;
+            _originalRotation = _indicatorTransform.rotation;
         }
 
         private void OnRotated(int direction)
@@ -154,7 +171,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _searchButton.OnClick.AddListener(OnSearchButtonClicked);
             _searchButton.OnMouseEnter.AddListener(OnSearchButtonMouseEnter);
             _searchButton.OnMouseExit.AddListener(OnSearchButtonMouseExit);
-            
         }
     }
 }

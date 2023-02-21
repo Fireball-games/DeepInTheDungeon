@@ -275,6 +275,8 @@ namespace Scripts.MapEditor
             playerIcon.SetActive(true);
 
             EditorCameraService.Instance.ResetCamera();
+            
+            EditorEvents.TriggerOnMapBuilt();
         }
 
         private void OnPrefabEdited(bool isEdited)

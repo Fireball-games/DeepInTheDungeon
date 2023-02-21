@@ -13,7 +13,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
         /// How many times can be trigger triggered.
         /// </summary>
         public int Count;
-        public int StartPosition;
+        public int CurrentPosition;
         
         //MapTraversalTriggerProperties
         public string TargetMapName;
@@ -29,7 +29,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             Subscribers = configuration.Subscribers;
             TriggerType = configuration.TriggerType;
             Count = configuration.Count;
-            StartPosition = configuration.StartPosition;
+            CurrentPosition = configuration.CurrentPosition;
             
             TargetMapName = configuration.TargetMapName;
             TargetMapEntranceName = configuration.TargetMapEntranceName;
@@ -44,7 +44,7 @@ namespace Scripts.Building.PrefabsSpawning.Configurations
             
             if (trigger is IPositionsTrigger positionsTrigger)
             {
-                StartPosition = positionsTrigger.GetStartPosition();
+                CurrentPosition = positionsTrigger.GetCurrentPosition();
             }
 
             TransformData.Position = trigger.transform.position.Round(2);

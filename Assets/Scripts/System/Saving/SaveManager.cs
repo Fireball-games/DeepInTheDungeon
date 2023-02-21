@@ -8,7 +8,6 @@ using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Player;
 using Scripts.System.MonoBases;
-using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.System.Saving
@@ -62,7 +61,7 @@ namespace Scripts.System.Saving
 
         public static async void SaveToTemp(string saveName, Campaign overrideCampaign, MapDescription overrideMap)
         {
-            _tempSave = await CreateSave(saveName, true, overrideCampaign, overrideMap);
+            _tempSave = await CreateSave(saveName, false, overrideCampaign, overrideMap);
         }
 
         /// <summary>
@@ -96,7 +95,7 @@ namespace Scripts.System.Saving
             {
                 save.campaignsSaves = ManageCampaignSaves(_currentSave ?? save, overrideCampaign, overrideMap).ToList();
             }
-            Logger.Log($"Saving to {saveName}");
+            
             _currentSave = save;
             return save;
         }
@@ -162,6 +161,7 @@ namespace Scripts.System.Saving
         
         private static void SaveToDisc()
         {
+            Logger.Log($"Saving to disc: {_currentSave.saveName}");
             FileOperationsHelper.SavePositionToLocale(_currentSave);
         }
 
@@ -219,7 +219,6 @@ namespace Scripts.System.Saving
 
         private static void RestoreMapData(List<MapStateRecord> mapState)
         {
-            Logger.Log("Restoring map data.");
             IEnumerable<ISavable> savables = TriggerService.GetPrefabScripts().ToList();
             savables = savables.Concat(TriggerService.TriggerReceivers.Values);
             
@@ -232,13 +231,5 @@ namespace Scripts.System.Saving
                 }
             }
         }
-    }
-    
-    internal class MapTraversalData
-    {
-        public Campaign campaign;
-        public MapDescription map;
-        public EntryPoint entryPoint;
-        public IEnumerable<MapStateRecord> mapState;
     }
 }

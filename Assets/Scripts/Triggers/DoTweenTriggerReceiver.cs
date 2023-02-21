@@ -12,18 +12,18 @@ namespace Scripts.Triggers
         public EActiveProperty activeProperty;
         public List<DoTweenMoveStep> steps;
 
-        private List<Tween> _movementStore;
+        private List<Tween> _positionStore;
 
         private void Awake()
         {
-            _movementStore = new List<Tween>();
+            _positionStore = new List<Tween>();
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
             
-            _movementStore?.Clear();
+            _positionStore?.Clear();
 
             for (int index = 0; index < steps.Count; index++)
             {
@@ -38,33 +38,25 @@ namespace Scripts.Triggers
                     newTween.OnPlay(SetBusy);
                 }
 
-                _movementStore?.Add(newTween);
+                _positionStore?.Add(newTween);
             }
         }
 
         public List<DoTweenMoveStep> GetSteps() => steps;
-        public int GetStartPosition() => startPosition;
-        public void SetStartPosition(int newStartPosition, bool isTargetPosition = false)
-        {
-            startPosition = isTargetPosition
-                ? startPosition == steps.Count - 1 ? 0 : startPosition + 1
-                : newStartPosition;
-        }
-
         public void Trigger() => TriggerNext();
-
-        public override void SetPosition()
+        public int GetCurrentPosition() => CurrentPosition;
+        public void SetCurrentPosition(int newPosition)
         {
+            CurrentPosition = newPosition;
+            
             if (activeProperty is EActiveProperty.Position)
             {
-                activePart.localPosition = steps[startPosition].target;
+                activePart.localPosition = steps[CurrentPosition].target;
             }
             else
             {
-                activePart.localRotation = Quaternion.Euler(steps[startPosition].target);
+                activePart.localRotation = Quaternion.Euler(steps[CurrentPosition].target);
             }
-
-            CurrentPosition = startPosition == steps.Count - 1 ? 0 : startPosition + 1;
         }
 
         protected override void TriggerNext()
@@ -73,20 +65,12 @@ namespace Scripts.Triggers
             {
                 case ETriggerMoveType.ThereAndBack:
                     CurrentPosition = 0;
-                    _movementStore[0].OnComplete(() => RunBackTween())
+                    _positionStore[1].OnComplete(() => RunBackTween())
                         .Restart();
                     break;
                 case ETriggerMoveType.Switch:
-                    if (CurrentPosition == 0)
-                    {
-                        _movementStore[0].OnComplete(SetResting).Restart();
-                        CurrentPosition = 1;
-                    }
-                    else
-                    {
-                        _movementStore[1].Restart();
-                        CurrentPosition = 0;
-                    }
+                    CurrentPosition = CurrentPosition == steps.Count - 1 ? 0 : CurrentPosition + 1;
+                    _positionStore[CurrentPosition].OnComplete(SetResting).Restart();
 
                     break;
                 case ETriggerMoveType.None:
@@ -107,7 +91,10 @@ namespace Scripts.Triggers
                 TriggerNext();
             }
 
-            _movementStore[^1].Restart();
+            _positionStore[0].OnComplete(() => {
+                SetResting();
+                _positionStore[0].OnComplete(null);
+            }).Restart();
         }
 
         private Tween BuildTween(DoTweenMoveStep step)

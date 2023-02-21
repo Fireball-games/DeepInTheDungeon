@@ -159,17 +159,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activePart: {fileID: 1715027707809379539}
-  Guid: 
-  startPosition: 1
   identification: Door Gate /w Buttons
   moveType: 2
   activeProperty: 1
   steps:
-  - target: {x: 0, y: 0.85, z: 0}
-    duration: 1
-    movementEase: 5
   - target: {x: 0, y: 0, z: 0}
     duration: 0.5
+    movementEase: 5
+  - target: {x: 0, y: 0.85, z: 0}
+    duration: 1
     movementEase: 6
 --- !u!1 &1734688257216418539
 GameObject:

@@ -50,6 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabType: 9
   guid: 
+  presentedInEditor: {fileID: 0}
   triggerType: 2
   count: 0
   mustBeOnSameTile: 0
@@ -60,10 +61,10 @@ MonoBehaviour:
   activeProperty: 1
   startPosition: 1
   steps:
-  - target: {x: 0.02, y: 0, z: 0}
+  - target: {x: 0, y: 0, z: 0}
     duration: 0.3
     movementEase: 1
-  - target: {x: 0, y: 0, z: 0}
+  - target: {x: 0.02, y: 0, z: 0}
     duration: 0.3
     movementEase: 1
 --- !u!114 &-5565847098308697614

@@ -43,8 +43,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             if (prefabScript is IPositionsTrigger positionsTrigger)
             {
-                positionsTrigger.SetStartPosition(configuration.StartPosition);
-                positionsTrigger.SetPosition();
+                positionsTrigger.SetCurrentPosition(configuration.CurrentPosition);
             }
         }
 
@@ -83,10 +82,13 @@ namespace Scripts.Building.PrefabsBuilding
                     }
                 }
 
-                receiver.startPosition = configuration.StartPosition;
                 receiver.Guid = configuration.Guid;
                 TriggerReceivers.TryAdd(receiver.Guid, receiver);
-                receiver.SetPosition();
+                
+                if (receiver is IPositionsTrigger positionsTrigger)
+                {
+                    positionsTrigger.SetCurrentPosition(configuration.CurrentPosition);
+                }
             }
         }
 
@@ -149,8 +151,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             if (script is IPositionsTrigger positionsTrigger)
             {
-                positionsTrigger.SetStartPosition(configuration.StartPosition);
-                positionsTrigger.SetPosition();
+                positionsTrigger.SetCurrentPosition(configuration.CurrentPosition);
             }
 
             if (IsInEditMode)

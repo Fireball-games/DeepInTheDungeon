@@ -134,7 +134,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _startPositionUpDown.OnValueChanged.RemoveAllListeners();
                 _startPositionUpDown.Label.text = t.Get(Keys.StartPosition);
                 _startPositionUpDown.maximum = positionsReceiver.GetSteps().Count - 1;
-                _startPositionUpDown.Value = positionsReceiver.GetStartPosition();
+                _startPositionUpDown.Value = positionsReceiver.GetCurrentPosition();
                 _startPositionUpDown.OnValueChanged.AddListener(OnStartPositionChanged);
             }
 
@@ -147,10 +147,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void OnStartPositionChanged(float newValue)
         {
             SetEdited(true);
-            int newPosition = (int) Mathf.Clamp(newValue, 0, ((IPositionsTrigger) _editedPrefab).GetSteps().Count - 1);
-            _editedConfiguration.StartPosition = newPosition;
-            _editedPrefab.startPosition = newPosition;
-            _editedPrefab.SetPosition();
+            IPositionsTrigger positionsReceiver = (IPositionsTrigger) _editedPrefab;
+            int newPosition = (int) Mathf.Clamp(newValue, 0, (positionsReceiver.GetSteps().Count - 1));
+            _editedConfiguration.CurrentPosition = newPosition;
+            positionsReceiver.SetCurrentPosition(newPosition);
         }
 
         private void SetButtons()

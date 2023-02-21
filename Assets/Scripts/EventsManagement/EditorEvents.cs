@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 using static Scripts.MapEditor.Enums;
 
 namespace Scripts.EventsManagement
@@ -7,6 +8,7 @@ namespace Scripts.EventsManagement
     public static class EditorEvents
     {
         public static event Action OnNewMapStartedCreation;
+        public static readonly UnityEvent OnMapBuilt = new();
         public static event Action<EWorkMode> OnWorkModeChanged;
         public static event Action<Vector3Int, Vector3Int> OnMouseGridPositionChanged;
         public static event Action<ELevel> OnWorkingLevelChanged;
@@ -19,6 +21,7 @@ namespace Scripts.EventsManagement
         // ***********    Triggers    ***********
 
         public static void TriggerOnNewMapStartedCreation() => OnNewMapStartedCreation?.Invoke();
+        public static void TriggerOnMapBuilt() => OnMapBuilt.Invoke();
         public static void TriggerOnWorkModeChanged(EWorkMode workMode) => OnWorkModeChanged?.Invoke(workMode);
         public static void TriggerOnMouseGridPositionChanged(Vector3Int newGridPosition, Vector3Int previousGridPosition) =>
             OnMouseGridPositionChanged?.Invoke(newGridPosition, previousGridPosition);

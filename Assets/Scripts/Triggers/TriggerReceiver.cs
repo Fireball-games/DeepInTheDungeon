@@ -11,12 +11,10 @@ namespace Scripts.Triggers
     {
         [SerializeField] protected Transform activePart;
         public string Guid { get; set; }
-        public int startPosition;
+        public int CurrentPosition { get; protected set; }
         public string identification;
         
-        protected int CurrentPosition;
-
-        protected bool AtRest = true;
+        private bool _atRest = true;
 
         private void Awake()
         {
@@ -35,7 +33,7 @@ namespace Scripts.Triggers
 
         private void OnTriggerNext(Trigger source)
         {
-            if (AtRest && source.subscribers.Contains(Guid))
+            if (_atRest && source.subscribers.Contains(Guid))
             {
                 TriggerNext();
             }
@@ -43,10 +41,9 @@ namespace Scripts.Triggers
 
         protected abstract void TriggerNext();
 
-        protected void SetResting() => AtRest = true;
+        protected void SetResting() => _atRest = true;
 
-        protected void SetBusy() => AtRest = false;
-        public abstract void SetPosition();
+        protected void SetBusy() => _atRest = false;
         
         public object CaptureState() =>
             new TriggerSaveData
@@ -65,8 +62,7 @@ namespace Scripts.Triggers
 
             if (this is not IPositionsTrigger positionsTrigger) return;
             
-            positionsTrigger.SetStartPosition(saveData.currentPosition, true);
-            positionsTrigger.SetPosition();
+            positionsTrigger.SetCurrentPosition(saveData.currentPosition);
         }
     }
 }

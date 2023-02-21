@@ -8,9 +8,12 @@ namespace Scripts.Triggers
     public interface IPositionsTrigger
     {
         public List<DoTweenMoveStep> GetSteps();
-        public int GetStartPosition();
-        public void SetStartPosition(int newStartPosition, bool isTargetPosition = true);
-        public void SetPosition();
+        public int GetCurrentPosition();
 
+        /// <summary>
+        /// Sets start position for trigger or trigger receiver - sets position physically as well.
+        /// </summary>
+        /// <param name="newPosition"></param>
+        public void SetCurrentPosition(int newPosition);
     }
 }

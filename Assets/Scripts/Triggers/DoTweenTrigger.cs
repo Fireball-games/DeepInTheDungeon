@@ -19,7 +19,7 @@ namespace Scripts.Triggers
             base.Awake();
             _positionStore = new List<Tween>();
         }
-        
+
         private void OnEnable()
         {
             _positionStore?.Clear();
@@ -41,7 +41,7 @@ namespace Scripts.Triggers
             }
         }
 
-        internal override void OnTriggerActivated(ETriggerActivatedDetail _ = ETriggerActivatedDetail.None)
+        internal override void OnTriggerActivated(ETriggerActivatedDetail detail = ETriggerActivatedDetail.None)
         {
             switch (moveType)
             {
@@ -51,8 +51,13 @@ namespace Scripts.Triggers
                         .Restart();
                     break;
                 case ETriggerMoveType.Switch:
-                    CurrentPosition = CurrentPosition == steps.Count - 1 ? 0 : CurrentPosition + 1;
-                    _positionStore[CurrentPosition].OnComplete(() => SetResting(true)).Restart();
+                    if (CurrentPosition == 0 && detail is ETriggerActivatedDetail.None or ETriggerActivatedDetail.SwitchedOn
+                        || CurrentPosition == 1 && detail is ETriggerActivatedDetail.None or ETriggerActivatedDetail.SwitchedOff)
+                    {
+                        CurrentPosition = CurrentPosition == steps.Count - 1 ? 0 : CurrentPosition + 1;
+                    }
+                    
+                    _positionStore[CurrentPosition].OnComplete(() => { SetResting(true); }).Restart();
 
                     break;
                 case ETriggerMoveType.None:
@@ -74,12 +79,13 @@ namespace Scripts.Triggers
 
             if (count <= 0) return;
 
-            _positionStore[0].OnComplete(() => {
+            _positionStore[0].OnComplete(() =>
+            {
                 atRest = true;
                 _positionStore[0].OnComplete(null);
             }).Restart();
         }
-        
+
         private Tween BuildTween(DoTweenMoveStep step)
             => BuildTween(step.target, step.duration, step.movementEase);
 
@@ -96,10 +102,11 @@ namespace Scripts.Triggers
 
         public List<DoTweenMoveStep> GetSteps() => steps;
         public int GetCurrentPosition() => CurrentPosition;
+
         public void SetCurrentPosition(int newPosition)
         {
             CurrentPosition = newPosition;
-            
+
             if (activeProperty is EActiveProperty.Position)
             {
                 ActivePart.localPosition = steps[CurrentPosition].target;

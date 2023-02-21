@@ -70,7 +70,11 @@ namespace Scripts.Triggers
                     break;
                 case ETriggerMoveType.Switch:
                     CurrentPosition = CurrentPosition == steps.Count - 1 ? 0 : CurrentPosition + 1;
-                    _positionStore[CurrentPosition].OnComplete(SetResting).Restart();
+                    _positionStore[CurrentPosition].OnComplete(() =>
+                    {
+                        CheckCorrectPosition();
+                        SetResting();
+                    }).Restart();
 
                     break;
                 case ETriggerMoveType.None:
@@ -81,6 +85,18 @@ namespace Scripts.Triggers
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void CheckCorrectPosition()
+        {
+            if (activeProperty is EActiveProperty.Position)
+            {
+                activePart.localPosition = steps[CurrentPosition].target;
+            }
+            else
+            {
+                activePart.localRotation = Quaternion.Euler(steps[CurrentPosition].target);
             }
         }
 

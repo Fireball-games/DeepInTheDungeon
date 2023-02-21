@@ -220,13 +220,12 @@ MonoBehaviour:
   subscribers: []
   moveType: 2
   activeProperty: 1
-  startPosition: 1
   steps:
   - target: {x: 0, y: 0, z: 0}
-    duration: 0.3
+    duration: 1
     movementEase: 1
   - target: {x: 0, y: -0.05, z: 0}
-    duration: 1
+    duration: 0
     movementEase: 9
 --- !u!114 &5749258612593445232
 MonoBehaviour:

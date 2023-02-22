@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Scripts.Triggers
@@ -23,5 +24,7 @@ namespace Scripts.Triggers
             }
             isAtRest = true;
         }
+        
+        public abstract void SetState(int state);
     }
 }

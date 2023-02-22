@@ -1,9 +1,11 @@
-﻿using Scripts.Helpers;
+﻿using System.Collections.Generic;
+using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Triggers
 {
-    public class StateScriptTriggerReceiver : TriggerReceiver
+    public class StateScriptTriggerReceiver : TriggerReceiver, IPositionsTrigger
     {
         private bool _currentState;
         private StateTriggerTarget _target;
@@ -27,6 +29,15 @@ namespace Scripts.Triggers
                 _currentState = !_currentState;
                 _target.RunState(_currentState);
             }
+        }
+
+        public List<DoTweenMoveStep> GetSteps() => new(2);
+
+        public int GetCurrentPosition() => _currentState ? 0 : 1;
+
+        public void SetCurrentPosition(int newPosition)
+        {
+            _target.SetState(newPosition);
         }
     }
 }

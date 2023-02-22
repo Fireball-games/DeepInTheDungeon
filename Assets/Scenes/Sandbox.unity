@@ -358,7 +358,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3bc8e42481e475a46a0ed83e3117fdce, type: 2}
+  - {fileID: 2100000, guid: 1689094d618fb754da9f55a9ca90c152, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1596,7 +1596,6 @@ GameObject:
   - component: {fileID: 1176291310}
   - component: {fileID: 1176291309}
   - component: {fileID: 1176291308}
-  - component: {fileID: 1176291307}
   m_Layer: 0
   m_Name: DissolveTile
   m_TagString: Untagged
@@ -1604,21 +1603,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1176291307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1176291306}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8535ee7c67882bb48b5ec75b97222490, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isAtRest: 1
-  _effectDuration: 3
-  _scaleDuration: 1
 --- !u!114 &1176291308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4230,6 +4214,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 757220258283127892, guid: 16be1b531e484384685481160b62924f,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e57a270b6a14478449990c6878333920, type: 2}
     - target: {fileID: 757220259146956192, guid: 16be1b531e484384685481160b62924f,
         type: 3}
       propertyPath: m_RootOrder
@@ -4238,7 +4227,7 @@ PrefabInstance:
     - target: {fileID: 757220259146956192, guid: 16be1b531e484384685481160b62924f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.745
       objectReference: {fileID: 0}
     - target: {fileID: 757220259146956192, guid: 16be1b531e484384685481160b62924f,
         type: 3}
@@ -4289,6 +4278,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LaserBeamCube
+      objectReference: {fileID: 0}
+    - target: {fileID: 757220259146956197, guid: 16be1b531e484384685481160b62924f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16be1b531e484384685481160b62924f, type: 3}

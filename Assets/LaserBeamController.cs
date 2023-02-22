@@ -1,49 +1,41 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LaserBeamController : MonoBehaviour
 {
-    [SerializeField] float lifeTime = 2f;
     private LineRenderer _lineRenderer;
+    private Vector3 _beamStart;
+    private Vector3 _beamEnd;
 
     private void Awake()
     {
         _lineRenderer = GetComponent<LineRenderer>();
-    }
-
-    public void ActivateBeam()
-    {
-        StartCoroutine(ActivateBeamRoutine());
-    }
-
-    private IEnumerator ActivateBeamRoutine()
-    {
-        while (true)
-        {
-            yield return StartCoroutine(AnimateBeamCoroutine());
-        }
-    }
-
-    private IEnumerator AnimateBeamCoroutine()
-    {
-        Vector3 beamOrigin = transform.position;
-        Vector3 beamStart = GetRandomPointOnCube();
-        Vector3 beamEnd = GetRandomPointOnCube();
         
-        Vector3 direction = (beamEnd - transform.position).normalized;
-        Vector3 outsidePoint = transform.position + direction * 2f;
+        _beamStart = GetRandomPointOnCube();
+        _beamEnd = GetRandomPointOnCube();
+    }
+
+    public void ActivateBeam(float duration)
+    {
+        _lineRenderer.enabled = true;
+        StartCoroutine(AnimateBeamCoroutine(duration));
+    }
+
+    private IEnumerator AnimateBeamCoroutine(float duration)
+    {
+        Vector3 transformPosition = transform.position;
+
+        Vector3 direction = (_beamEnd - transformPosition).normalized;
+        Vector3 outsidePoint = transformPosition + direction * 2f;
         
         float startTime = Time.time;
         
-        while (Time.time < startTime + Random.Range(lifeTime, lifeTime * 3))
+        while (Time.time < startTime + duration)
         {
-            float t = (Time.time - startTime) / lifeTime;
-            _lineRenderer.SetPosition(0, beamOrigin);
-            // _lineRenderer.SetPosition(1, Vector3.Lerp(beamStart, beamEnd, t));
-            Vector3 tDirection = Vector3.Lerp(beamStart, beamEnd, t) - outsidePoint;
+            float t = (Time.time - startTime) / duration;
+            _lineRenderer.SetPosition(0, transformPosition);
+            Vector3 tDirection = Vector3.Lerp(_beamStart, _beamEnd, t) - outsidePoint;
             Vector3 cubePointOnT = Physics.Raycast(outsidePoint, tDirection, out RaycastHit hit, 2f) ? hit.point : Vector3.zero;
-            // Debug.DrawRay(outsidePoint, tDirection, Color.blue, 0.1f);
             _lineRenderer.SetPosition(1, cubePointOnT);
             yield return null;
         }
@@ -53,22 +45,27 @@ public class LaserBeamController : MonoBehaviour
     {
         Vector3 center = transform.position;
 
-        Vector3 randomPointOutsideCubeInSphericalCoordinates = Random.insideUnitSphere * transform.localScale.x * 2f;
+        Vector3 randomPointOutsideCubeInSphericalCoordinates = Random.insideUnitSphere * (transform.localScale.x * 2f);
     
         // Cast a ray from the surface point in a random direction
         Vector3 direction = center - randomPointOutsideCubeInSphericalCoordinates;
         Ray ray = new Ray(randomPointOutsideCubeInSphericalCoordinates, direction);
-    
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100f))
-        {
-            // Get the point on the surface of the cube that was hit
-            Vector3 pointOnCube = hit.point;
-            
-            // Debug.DrawRay(randomPointOutsideCubeInSphericalCoordinates, direction, Color.red, lifeTime);
-            return pointOnCube;
-        }
 
-        return hit.point;
+        if (!Physics.Raycast(ray, out RaycastHit hit, 100f)) return hit.point;
+        
+        // Get the point on the surface of the cube that was hit
+        Vector3 pointOnCube = hit.point;
+            
+        // Debug.DrawRay(randomPointOutsideCubeInSphericalCoordinates, direction, Color.red, lifeTime);
+        return pointOnCube;
+
+    }
+
+    public void DeactivateBeam()
+    {
+        StopAllCoroutines();
+        _lineRenderer.SetPosition(0, Vector3.zero);
+        _lineRenderer.SetPosition(1, Vector3.zero);
+        _lineRenderer.enabled = false;
     }
 }

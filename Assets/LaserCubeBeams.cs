@@ -9,16 +9,21 @@ public class LaserCubeBeams : MonoBehaviour
     [SerializeField] float _scaleDuration = 1f;
     private List<LaserBeamController> _beamControllers = new();
     private GameObject _innerCube;
+    private ParticleSystem _centerEffect;
 
     private void Awake()
     {
         _beamControllers = GetComponentsInChildren<LaserBeamController>(true).ToList();
         _innerCube = transform.GetChild(0).gameObject;
+        _innerCube.SetActive(false);
+        _centerEffect = transform.Find("CenterEffect").GetComponent<ParticleSystem>();
+        _centerEffect.Stop();
     }
 
     private void StartDissolve()
     {
         _innerCube.SetActive(true);
+        _centerEffect.Play();
 
         foreach (var beam in _beamControllers)
         {
@@ -34,6 +39,7 @@ public class LaserCubeBeams : MonoBehaviour
                     beam.DeactivateBeam();
                 }
                 _innerCube.SetActive(false);
+                _centerEffect.Stop();
             }).SetAutoKill(true).Play();
         }).SetAutoKill(true).Play();
     }
@@ -41,6 +47,7 @@ public class LaserCubeBeams : MonoBehaviour
     private void Solidify()
     {
         _innerCube.SetActive(true);
+        _centerEffect.Play();
         
         foreach (var beam in _beamControllers)
         {
@@ -56,6 +63,7 @@ public class LaserCubeBeams : MonoBehaviour
                         beam.DeactivateBeam();
                     }
                     _innerCube.SetActive(false);
+                    _centerEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
                 }).SetAutoKill(true).Play();
         }).SetAutoKill(true).Play();
     }

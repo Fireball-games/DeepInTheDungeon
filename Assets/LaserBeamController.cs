@@ -10,7 +10,10 @@ public class LaserBeamController : MonoBehaviour
     private void Awake()
     {
         _lineRenderer = GetComponent<LineRenderer>();
-        
+    }
+
+    public void SetBeamEndPoints()
+    {
         _beamStart = GetRandomPointOnCube();
         _beamEnd = GetRandomPointOnCube();
     }

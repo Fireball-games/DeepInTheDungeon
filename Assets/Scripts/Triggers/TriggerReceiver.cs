@@ -16,7 +16,7 @@ namespace Scripts.Triggers
         
         private bool _atRest = true;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             Guid = global::System.Guid.NewGuid().ToString();
         }

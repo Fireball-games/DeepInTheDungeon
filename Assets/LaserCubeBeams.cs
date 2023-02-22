@@ -12,7 +12,7 @@ public class LaserCubeBeams : MonoBehaviour
 
     private void Awake()
     {
-        _beamControllers = GetComponentsInChildren<LaserBeamController>().ToList();
+        _beamControllers = GetComponentsInChildren<LaserBeamController>(true).ToList();
         _innerCube = transform.GetChild(0).gameObject;
     }
 

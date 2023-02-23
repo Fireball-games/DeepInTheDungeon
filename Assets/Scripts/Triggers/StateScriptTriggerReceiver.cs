@@ -13,6 +13,7 @@ namespace Scripts.Triggers
         protected override void Awake()
         {
             base.Awake();
+            
             _target = GetComponentInChildren<StateTriggerTarget>();
             _target.isAtRest = true;
             
@@ -35,9 +36,6 @@ namespace Scripts.Triggers
 
         public int GetCurrentPosition() => _currentState ? 0 : 1;
 
-        public void SetCurrentPosition(int newPosition)
-        {
-            _target.SetState(newPosition);
-        }
+        public void SetCurrentPosition(int newPosition) => _target.SetState(newPosition);
     }
 }

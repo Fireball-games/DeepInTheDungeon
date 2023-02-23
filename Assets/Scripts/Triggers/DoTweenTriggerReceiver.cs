@@ -14,7 +14,7 @@ namespace Scripts.Triggers
 
         private List<Tween> _positionStore;
 
-        private void Awake()
+        protected override void Awake()
         {
             _positionStore = new List<Tween>();
         }

@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LaserCubeMaterial
+  m_Name: DissolveTileMaterial
   m_Shader: {fileID: -6465566751694194690, guid: 6699eb5224f1e6e4b80bd3fca9a99958,
     type: 3}
   m_ValidKeywords: []
@@ -128,7 +128,7 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DierctionEdgeWidthScale: 10
-    - _Dissolve: 0
+    - _Dissolve: 0.001
     - _DissolveAlpha: 0.329
     - _DstBlend: 10
     - _EdgeColorIntensity: 1

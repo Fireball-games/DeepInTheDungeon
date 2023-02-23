@@ -162,7 +162,7 @@
 											"MeshInfo" : null
 										}
 									},
-									"IsForMovement" : true
+									"IsForMovement" : false
 								},null,null,null,null,null,null,{
 									"TileWalls" : {
 										"Floor" : {
@@ -1044,7 +1044,7 @@
 											"MeshInfo" : null
 										}
 									},
-									"IsForMovement" : true
+									"IsForMovement" : false
 								},null,null
 							],[
 								null,null,null,null,null,null,null,null,null,null,null,null
@@ -4277,6 +4277,256 @@
 							"Guid" : "fd8027ae-7d8f-43f8-8f02-b738f703f455",
 							"SpawnPrefabOnBuild" : true,
 							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0,
+							"WayPoints" : [
+								{
+									"position" : {
+										"x" : 3,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 3.5,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 4.5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								}
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "MoveWallUp",
+							"TransformData" : {
+								"Position" : {
+									"x" : 3.5,
+									"y" : -3,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1.00000012
+								}
+							},
+							"Guid" : "89a5beee-f618-4a19-ba53-0e50f329c78f",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "37668f3b-b60d-44fc-928f-bd6653ca0d88"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0,
+							"WayPoints" : [
+								{
+									"position" : {
+										"x" : 5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 4.5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 3.5,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 3,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								}
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "MoveWallDown",
+							"TransformData" : {
+								"Position" : {
+									"x" : 4.5,
+									"y" : -2,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1.00000012
+								}
+							},
+							"Guid" : "22c17aa8-b1a4-4111-adc8-018ec4952034",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "37668f3b-b60d-44fc-928f-bd6653ca0d88"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0,
+							"WayPoints" : [
+								{
+									"position" : {
+										"x" : 7,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 6.5,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 5.5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								}
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "MoveWallUp",
+							"TransformData" : {
+								"Position" : {
+									"x" : 6.5,
+									"y" : -3,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 1.00000012,
+									"z" : 0,
+									"w" : 0
+								}
+							},
+							"Guid" : "eb85bdb8-057f-41b0-bc77-3ec4715eb75a",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "5bdd5b9e-8d20-4371-8714-8d1dc8bc197d"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0,
+							"WayPoints" : [
+								{
+									"position" : {
+										"x" : 5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 5.5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 6.5,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 7,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								}
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "MoveWallDown",
+							"TransformData" : {
+								"Position" : {
+									"x" : 5.5,
+									"y" : -2,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 1.00000012,
+									"z" : 0,
+									"w" : 0
+								}
+							},
+							"Guid" : "0c9b536c-b848-4ace-acde-9de25aed1df2",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "5bdd5b9e-8d20-4371-8714-8d1dc8bc197d"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : false,
+							"PrefabType" : 8,
+							"PrefabName" : "CeilingCorner",
+							"TransformData" : {
+								"Position" : {
+									"x" : 5,
+									"y" : -4,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0.7071068,
+									"z" : 0,
+									"w" : 0.7071068
+								}
+							},
+							"Guid" : "eb147d30-e7ed-404d-ab53-092b00100eb7",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : false,
+							"PrefabType" : 8,
+							"PrefabName" : "CeilingCorner",
+							"TransformData" : {
+								"Position" : {
+									"x" : 4,
+									"y" : -2,
+									"z" : 2
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 1,
+									"z" : 0,
+									"w" : 0
+								}
+							},
+							"Guid" : "5db6fd3c-b84e-4996-8a19-2b9c0535e4f6",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
 						}
 					],
 					"EntryPoints" : [
@@ -5062,7 +5312,7 @@
 											"MeshInfo" : null
 										}
 									},
-									"IsForMovement" : true
+									"IsForMovement" : false
 								},null,null,null,{
 									"TileWalls" : {
 										"Floor" : {
@@ -6031,35 +6281,6 @@
 							"SpawnPrefabOnBuild" : true,
 							"OwnerGuid" : null
 						},{
-							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerConfiguration,Assembly-CSharp",
-							"Subscribers" : [
-								
-							],
-							"TriggerType" : 2,
-							"Count" : 2,
-							"CurrentPosition" : 0,
-							"TargetMapName" : null,
-							"TargetMapEntranceName" : null,
-							"ExitDelay" : 0,
-							"PrefabType" : 9,
-							"PrefabName" : "GateButton",
-							"TransformData" : {
-								"Position" : {
-									"x" : 4.5,
-									"y" : -2,
-									"z" : 11
-								},
-								"Rotation" : {
-									"x" : 0,
-									"y" : 1,
-									"z" : 0,
-									"w" : -4.371139E-08
-								}
-							},
-							"Guid" : "74ee9a73-01fd-44fc-9d31-10cd3d44c527",
-							"SpawnPrefabOnBuild" : true,
-							"OwnerGuid" : null
-						},{
 							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
 							"Offset" : 0,
 							"WayPoints" : [
@@ -6375,6 +6596,99 @@
 								}
 							},
 							"Guid" : "ae05b25a-df57-43e8-86e8-c2c1cd3f839a",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : false,
+							"PrefabType" : 8,
+							"PrefabName" : "DissolveTile",
+							"TransformData" : {
+								"Position" : {
+									"x" : 6,
+									"y" : -2,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "85432211-0a1b-4d26-ae0e-f478acc4bbd9",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerReceiverConfiguration,Assembly-CSharp",
+							"CurrentPosition" : 0,
+							"Identification" : "DissolveWall",
+							"PrefabType" : 10,
+							"PrefabName" : "DissolveWall",
+							"TransformData" : {
+								"Position" : {
+									"x" : 6,
+									"y" : -2,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "03100a7a-768d-41a4-a4c7-1bd08740ac4c",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "85432211-0a1b-4d26-ae0e-f478acc4bbd9"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : true,
+							"PrefabType" : 8,
+							"PrefabName" : "WalkthroughTile",
+							"TransformData" : {
+								"Position" : {
+									"x" : 9,
+									"y" : -3,
+									"z" : 7
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "1f2d2674-ab3e-4811-b608-3150f8171b44",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerConfiguration,Assembly-CSharp",
+							"Subscribers" : [
+								"03100a7a-768d-41a4-a4c7-1bd08740ac4c"
+							],
+							"TriggerType" : 2,
+							"Count" : 2,
+							"CurrentPosition" : 0,
+							"TargetMapName" : null,
+							"TargetMapEntranceName" : null,
+							"ExitDelay" : 0,
+							"PrefabType" : 9,
+							"PrefabName" : "GateButton",
+							"TransformData" : {
+								"Position" : {
+									"x" : 5.5,
+									"y" : -2,
+									"z" : 10
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "ebc1b578-bf06-47ee-8963-329ef0937b19",
 							"SpawnPrefabOnBuild" : true,
 							"OwnerGuid" : null
 						}

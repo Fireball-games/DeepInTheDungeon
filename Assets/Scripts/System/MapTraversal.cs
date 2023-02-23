@@ -24,6 +24,7 @@ namespace Scripts.System
         
         private static GameManager GameManager => GameManager.Instance;
         private static MapBuilder MapBuilder => GameManager.MapBuilder;
+        private static MainUIManager UIManager => MainUIManager.Instance;
         private PlayerCameraController PlayerCamera => PlayerCameraController.Instance;
         private PlayerController Player
         {
@@ -105,10 +106,7 @@ namespace Scripts.System
             _currentMap = _currentCampaign.GetStarterMap();
             _currentEntryPoint = _currentMap.EntryPoints[0].Cloned();
             
-            PlayerCamera.IsLookModeOn = false;
-            
-            GameManager.Player.PlayerMovement.MoveForward(true);
-            GameObject.FindObjectOfType<DoTweenTriggerReceiver>().Trigger();
+            StartMapFromMainScreenButtonClickHandling();
 
             return true;
         }
@@ -127,7 +125,6 @@ namespace Scripts.System
             
             Logger.LogError("Could not load last played campaign.");
             return false;
-
         }
 
         public bool SetForStartingFromLastEditedMap(EntryPoint entryPoint)
@@ -213,7 +210,7 @@ namespace Scripts.System
 
             await Task.Delay(200);
 
-            if (!GameManager.IsPlayingFromEditor)
+            if (!SceneLoader.IsInMainScene && !GameManager.IsPlayingFromEditor)
             {
                 SaveManager.RestoreMapDataFromCurrentSave();
             }
@@ -254,6 +251,15 @@ namespace Scripts.System
         {
             _currentMap ??= CurrentCampaign.GetStarterMap();
         }
+
+        private void StartMapFromMainScreenButtonClickHandling()
+        {
+            PlayerCamera.IsLookModeOn = false;
+            MainUIManager.Instance.ShowCrossHair(false);
+            
+            GameManager.Player.PlayerMovement.MoveForward(true);
+            GameObject.FindObjectOfType<DoTweenTriggerReceiver>().Trigger();
+        }
         
         private void HandleEntryMovement(Action onMovementFinished)
         {
@@ -293,8 +299,9 @@ namespace Scripts.System
                 MinYRotation = -85f,
                 MaxYRotation = 85f
             });
-            MainUIManager.Instance.ShowCrossHair(true);
-            MainUIManager.Instance.GraphicRaycasterEnabled(false);
+            
+            UIManager.ShowCrossHair(true);
+            UIManager.GraphicRaycasterEnabled(false);
         }
     }
 }

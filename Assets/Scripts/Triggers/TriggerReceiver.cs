@@ -60,9 +60,9 @@ namespace Scripts.Triggers
                 return;
             }
 
-            if (this is not IPositionsTrigger positionsTrigger) return;
+            if (this is not IPositionsTrigger positionsReceiver) return;
             
-            positionsTrigger.SetCurrentPosition(saveData.currentPosition);
+            positionsReceiver.SetCurrentPosition(saveData.currentPosition);
         }
     }
 }

@@ -126,6 +126,17 @@ namespace Scripts.System
             
             OnStartGameRequested();
         }
+        
+        public void QuickLoad()
+        {
+            if (!_mapTraversal.SetForQuickLoad())
+            {
+                Logger.LogWarning("Could not quick load.");
+                return;
+            }
+            
+            OnStartGameRequested();
+        }
 
         public void LoadLastEditedMap(EntryPoint entryPoint = null)
         {

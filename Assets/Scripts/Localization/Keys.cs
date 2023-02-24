@@ -14,6 +14,7 @@ namespace Scripts.Localization
         public const string AddOpenMap = "AddOpenMap";
         public const string AddWaypoint = "AddWaypoint";
         public const string AvailablePrefabs = "AvailablePrefabs";
+        public const string AutoSave = "AutoSave";
         public const string Campaign = "Campaign";
         public const string Cancel = "Cancel";
         public const string Close = "Close";
@@ -50,6 +51,8 @@ namespace Scripts.Localization
         public const string LoadLastEditedMap = "LoadLastEditedMap";
         public const string Map = "Map";
         public const string MapAlreadyExists = "MapAlreadyExists";
+        public const string MapEntry = "MapEntry";
+        public const string MapExit = "MapExit";
         public const string MapSaved = "MapSaved";
         public const string MapSelection = "MapSelection";
         public const string MoveOnEnter = "MoveOnEnter";
@@ -72,6 +75,8 @@ namespace Scripts.Localization
         public const string ReturnToEditor = "ReturnToEditor";
         public const string ReturnToMainScene = "ReturnToMainScene";
         public const string Rotate = "Rotate";
+        public const string QuickLoad = "QuickLoad";
+        public const string QuickSave = "QuickSave";
         public const string Rows = "Rows";
         public const string Save = "Save";
         public const string SaveFailed = "SaveFailed";

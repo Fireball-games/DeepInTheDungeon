@@ -5,6 +5,7 @@ using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
+using Scripts.Localization;
 using Scripts.Player;
 using Scripts.ScenesManagement;
 using Scripts.System.Pooling;
@@ -113,44 +114,16 @@ namespace Scripts.System
 
         public bool SetForStartingFromSave()
         {
-            Save lastSave = SaveManager.CurrentSave;
-
-            if (lastSave == null)
-            {
-                Logger.LogWarning("Could not load last save.");
-                return false;
-            }
-
-            if (lastSave.playerSaveData.currentCampaign == Strings.MainCampaignName)
-            {
-                _currentCampaign = _mainCampaign;
-            }
-            else
-            {
-                FileOperationsHelper.LoadCampaign(lastSave.CurrentCampaign, out _currentCampaign);
-            }
-
-            if (_currentCampaign == null)
-            {
-                Logger.LogError("Could not load last played campaign.");
-                return false;
-            }
-
-            _currentMap = _currentCampaign.GetMapByName(lastSave.CurrentMap);
-
-            if (_currentMap == null)
-            {
-                Logger.LogError("Failed to get last played map.");
-                return false;
-            }
-
-            _currentEntryPoint.playerGridPosition = lastSave.PlayerGridPosition;
-            _currentEntryPoint.playerRotationY = (int) lastSave.PlayerRotation.eulerAngles.y;
-            _currentEntryPoint.isMovingForwardOnStart = false;
+            if (!SetCampaignFromLastSave()) return false;
 
             StartMapFromMainScreenButtonClickHandling();
 
             return true;
+        }
+        
+        public bool SetForQuickLoad()
+        {
+            return SetCampaignFromLastSave();
         }
 
         public bool SetForStartingFromLastEditedMap(EntryPoint entryPoint)
@@ -182,7 +155,7 @@ namespace Scripts.System
 
             if (!GameManager.IsPlayingFromEditor)
             {
-                SaveManager.SaveToTemp(Strings.MapExitSaveName, CurrentCampaign, CurrentMap);
+                SaveManager.SaveToTemp(Keys.MapExit, CurrentCampaign, CurrentMap);
             }
 
             TriggerConfiguration mapTraversal = TriggerService.GetConfiguration(exitConfigurationGuid);
@@ -283,6 +256,46 @@ namespace Scripts.System
             _currentMap ??= CurrentCampaign.GetStarterMap();
         }
 
+        private bool SetCampaignFromLastSave()
+        {
+            Save lastSave = SaveManager.CurrentSave;
+
+            if (lastSave == null)
+            {
+                Logger.LogWarning("Could not load last save.");
+                return false;
+            }
+
+            if (lastSave.playerSaveData.currentCampaign == Strings.MainCampaignName)
+            {
+                _currentCampaign = _mainCampaign;
+            }
+            else
+            {
+                FileOperationsHelper.LoadCampaign(lastSave.CurrentCampaign, out _currentCampaign);
+            }
+
+            if (_currentCampaign == null)
+            {
+                Logger.LogError("Could not load last played campaign.");
+                return false;
+            }
+
+            _currentMap = _currentCampaign.GetMapByName(lastSave.CurrentMap);
+
+            if (_currentMap == null)
+            {
+                Logger.LogError("Failed to get last played map.");
+                return false;
+            }
+
+            _currentEntryPoint.playerGridPosition = lastSave.PlayerGridPosition;
+            _currentEntryPoint.playerRotationY = (int) lastSave.PlayerRotation.eulerAngles.y;
+            _currentEntryPoint.isMovingForwardOnStart = false;
+
+            return true;
+        }
+
         private void StartMapFromMainScreenButtonClickHandling()
         {
             PlayerCamera.IsLookModeOn = false;
@@ -311,7 +324,7 @@ namespace Scripts.System
         {
             if (!GameManager.IsPlayingFromEditor)
             {
-                await SaveManager.SaveToDisc(Strings.MapEntrySaveName, true, true);
+                await SaveManager.SaveToDisc(Keys.MapEntry, true, true);
             }
 
             // To prevent moving before some async operations finishes

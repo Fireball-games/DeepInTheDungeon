@@ -17,7 +17,7 @@ namespace Scripts.System.Saving
         public PlayerSaveData playerSaveData;
         public List<CampaignSave> campaignsSaves;
 
-        public DateTime timeSaved;
+        public DateTime timeStamp;
         public byte[] screenshot;
         
         public Vector3 PlayerGridPosition => playerSaveData.playerTransformData.Position.ToGridPosition();

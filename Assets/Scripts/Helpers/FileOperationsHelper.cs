@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.Helpers.Extensions;
+using Scripts.Localization;
+using Scripts.System;
 using Scripts.System.Saving;
 using Scripts.UI;
 using UnityEngine;
@@ -16,13 +19,21 @@ namespace Scripts.Helpers
     public static class FileOperationsHelper
     {
         public static string CampaignsLocalDirectoryPath => Path.Combine(PersistentPath, CampaignDirectoryName);
-        public static string SavesLocalDirectoryPath => Path.Combine(PersistentPath, SavesDirectoryName); 
         public static string FullCampaignsResourcesPath => Path.Combine(ApplicationResourcesPath, CampaignDirectoryName);
 
+        private static string SavesLocalDirectoryPath => Path.Combine(PersistentPath, SavesDirectoryName);
         private static readonly string PersistentPath = Application.persistentDataPath;
         private static string ApplicationResourcesPath => Path.Combine(Application.dataPath, ResourcesDirectoryName);
         private static readonly ES3Settings ES3ResourcesLocationSettings;
-        
+
+        private static readonly Dictionary<string, int> MaxFilesForSaveNameRoot = new()
+        {
+            {Keys.AutoSave, GameManager.Instance.GameConfiguration.maxAutoSaves},
+            {Keys.QuickSave, GameManager.Instance.GameConfiguration.maxQuickSaves},
+            {Keys.MapEntry, GameManager.Instance.GameConfiguration.maxMapEntrySaves},
+            {Keys.MapExit, GameManager.Instance.GameConfiguration.maxMapExitSaves},
+        };
+
         static FileOperationsHelper()
         {
             ES3ResourcesLocationSettings = new ES3Settings
@@ -46,12 +57,13 @@ namespace Scripts.Helpers
 
             return allFiles;
         }
-        
-        public static string GetFullCampaignPath(string campaignName) => Path.Combine(CampaignsLocalDirectoryPath, $"{campaignName}{CampaignFileExtension}");
-        public static string GetFullSavesPath(string saveName) => Path.Combine(SavesLocalDirectoryPath, $"{saveName}{SaveFileExtension}");
 
-        public static string GetLocalRelativeCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
-        public static string GetLocalRelativeSavePath(string saveName) => Path.Combine(SavesDirectoryName, $"{saveName}{SaveFileExtension}");
+        public static string GetFullCampaignPath(string campaignName) =>
+            Path.Combine(CampaignsLocalDirectoryPath, $"{campaignName}{CampaignFileExtension}");
+
+        public static string GetLocalRelativeCampaignPath(string campaignName) =>
+            Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
+
 
         public static void SaveCampaign(Campaign campaign, Action onSaveFailed = null)
         {
@@ -99,14 +111,14 @@ namespace Scripts.Helpers
 
             return LoadCampaign(campaignName, out Campaign campaign) ? campaign : null;
         }
-        
+
         public static bool GetLastEditedCampaignAndMap(out Campaign campaign, out MapDescription map)
         {
             campaign = null;
             map = null;
 
             campaign = LoadLastEditedCampaign();
-            
+
             if (campaign != null && campaign.HasMapWithName(PlayerPrefsHelper.LastEditedMap[1]))
             {
                 map = campaign.GetMapByName(PlayerPrefsHelper.LastEditedMap[1]);
@@ -114,15 +126,15 @@ namespace Scripts.Helpers
             else
             {
                 PlayerPrefsHelper.RemoveLastEditedMap();
-                
+
                 if (MainUIManager.Instance)
                 {
                     MainUIManager.Instance.RefreshMainMenuButtons();
                 }
-                
+
                 Logger.LogError("Could not load last edited map.");
             }
-            
+
             return map != null;
         }
 
@@ -132,7 +144,7 @@ namespace Scripts.Helpers
 
             return loadedPrefabs != null && loadedPrefabs.Any();
         }
-        
+
         public static void OpenFolder(string absoluteFolderPath)
         {
 #if UNITY_STANDALONE_WIN
@@ -143,7 +155,7 @@ namespace Scripts.Helpers
             Process.Start("explorer.exe", absoluteFolderPath.Replace('/', '\\'));
 #endif
         }
-        
+
         public static bool LoadCampaign(string campaignName, out Campaign campaign)
         {
             campaign = null;
@@ -163,6 +175,9 @@ namespace Scripts.Helpers
                 return false;
             }
         }
+        private static string GetFullSavesPath(string saveName) => Path.Combine(SavesLocalDirectoryPath, $"{saveName}{SaveFileExtension}");
+        
+        private static string GetLocalRelativeSavePath(string saveName) => Path.Combine(SavesDirectoryName, $"{saveName}{SaveFileExtension}");
 
         private static Campaign LoadLastEditedCampaign()
         {
@@ -189,7 +204,8 @@ namespace Scripts.Helpers
             _ => throw new ArgumentOutOfRangeException(nameof(prefabType), prefabType, null)
         };
 
-        private static string GetFullRelativeCampaignPath(string campaignName) => Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
+        private static string GetFullRelativeCampaignPath(string campaignName) =>
+            Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
 
         // Loads campaign from resources folder using ES3
         private static bool LoadResourcesCampaign(string campaignName, out Campaign campaign)
@@ -200,7 +216,8 @@ namespace Scripts.Helpers
 
             try
             {
-                campaign = ES3.Load<Campaign>(campaignName, Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}"), ES3ResourcesLocationSettings);
+                campaign = ES3.Load<Campaign>(campaignName, Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}"),
+                    ES3ResourcesLocationSettings);
                 return true;
             }
             catch (Exception e)
@@ -213,7 +230,7 @@ namespace Scripts.Helpers
         public static bool LoadAllSaves(out IEnumerable<Save> saves)
         {
             saves = null;
-            
+
             SavesLocalDirectoryPath.CreateDirectoryIfNotExists();
 
             string[] allSaves = GetFilesInDirectory(SavesLocalDirectoryPath, SaveFileExtension);
@@ -224,8 +241,18 @@ namespace Scripts.Helpers
                 return false;
             }
 
-            IEnumerable<Save> loadedSaves = allSaves.Select(savePath => ES3.Load<Save>(Path.GetFileNameWithoutExtension(savePath), savePath))
-                .Where(save => save != null);
+            IEnumerable<Save> loadedSaves;
+
+            try
+            {
+                loadedSaves = allSaves.Select(savePath => ES3.Load<Save>(Path.GetFileNameWithoutExtension(savePath), savePath))
+                    .Where(save => save != null);
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to load saves: {e}", Logger.ELogSeverity.Release);
+                return false;
+            }
 
             saves = loadedSaves;
 
@@ -246,5 +273,46 @@ namespace Scripts.Helpers
                 Logger.Log($"Failed to save save: {save.saveName}: {e}", Logger.ELogSeverity.Release);
             }
         }
+
+        public static async Task<IEnumerable<string>> RenameAndRemoveOldestSaveForName(string rootSaveName)
+        {
+            if (!LoadAllSaves(out IEnumerable<Save> loadedSaves)) return null;
+
+            await Task.Yield();
+
+            List<Save> savesWithSameNameRoot = loadedSaves.Where(save => save.saveName.Contains(rootSaveName)).ToList();
+
+            if (!savesWithSameNameRoot.Any()) return null;
+
+            if (savesWithSameNameRoot.Count < GetMaxSavesCountForRootName(rootSaveName))
+                return savesWithSameNameRoot.Select(save => save.saveName);
+            
+            Save oldestSave = savesWithSameNameRoot.OrderBy(save => save.timeStamp).First();
+
+            savesWithSameNameRoot.Remove(oldestSave);
+            DeleteSave(oldestSave.saveName);
+
+            foreach (Save save in savesWithSameNameRoot)
+            {
+                save.saveName = save.saveName.DecrementName();
+                SavePositionToLocale(save);
+                await Task.Yield();
+            }
+
+            return savesWithSameNameRoot.Select(save => save.saveName);
+        }
+
+        private static void DeleteSave(string saveFileName)
+        {
+            string savePath = GetFullSavesPath(saveFileName);
+
+            if (File.Exists(savePath))
+            {
+                File.Delete(savePath);
+            }
+        }
+
+        private static int GetMaxSavesCountForRootName(string rootSaveName)
+            => MaxFilesForSaveNameRoot.TryGetValue(rootSaveName, out int maxFiles) ? maxFiles : 1;
     }
 }

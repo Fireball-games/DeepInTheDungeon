@@ -27,6 +27,7 @@ namespace Scripts.Triggers
         {
             if (_target.isAtRest)
             {
+                CurrentPosition = _currentState ? 0 : 1;
                 _currentState = !_currentState;
                 _target.RunState(_currentState);
             }

@@ -3,11 +3,10 @@ using DG.Tweening;
 using Scripts.Building;
 using Scripts.Helpers.Extensions;
 using Scripts.System;
-using Scripts.System.Pooling;
 using Scripts.Triggers;
 using UnityEngine;
 
-public class DissolveCubeTriggerTarget : StateTriggerTarget, IPoolInitializable
+public class DissolveCubeTriggerTarget : StateTriggerTarget
 {
     [SerializeField] float _effectDuration = 3f;
     [SerializeField] float _scaleDuration = 1f;
@@ -113,6 +112,4 @@ public class DissolveCubeTriggerTarget : StateTriggerTarget, IPoolInitializable
         
         MapBuilder.SetTileForMovement(transform.position, state == 1);
     }
-
-    public void InitializeFromPool() => SetState(0);
 }

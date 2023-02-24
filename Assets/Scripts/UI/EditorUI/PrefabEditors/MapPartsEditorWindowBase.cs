@@ -31,17 +31,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         public abstract void Open();
 
         public virtual void CloseWithRemovingChanges() => RemoveAndClose();
-        
-        private void Close(EWorkMode newWorkMode)
-        {
-            if (newWorkMode != workMode) RemoveAndClose();
-        }
-        
+
         protected abstract void RemoveAndClose();
 
         public virtual void MoveCameraToPrefab(Vector3 targetPosition) =>
             EditorCameraService.Instance.MoveCameraToPrefab(Vector3Int.RoundToInt(targetPosition));
 
         public virtual Vector3 GetCursor3DScale() => Vector3.one;
+        
+        private void Close(EWorkMode newWorkMode)
+        {
+            if (newWorkMode != workMode) RemoveAndClose();
+        }
     }
 }

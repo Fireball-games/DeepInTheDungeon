@@ -129,6 +129,8 @@ namespace Scripts.System
         
         public void QuickLoad()
         {
+            if (IsPlayingFromEditor) return;
+            
             if (!_mapTraversal.SetForQuickLoad())
             {
                 Logger.LogWarning("Could not quick load.");

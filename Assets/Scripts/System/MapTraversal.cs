@@ -196,6 +196,9 @@ namespace Scripts.System
 
         public async Task OnLayoutBuilt()
         {
+            PlayerCamera.IsLookModeOn = false;
+            MouseCursorManager.ResetCursor();
+            
             Player = ObjectPool.Instance.GetFromPool(_playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
             Player.transform.parent = null;
@@ -207,14 +210,15 @@ namespace Scripts.System
             // To allow playing StartRooms from Editor
             MovementEnabled = true;
 
-            ScreenFader.FadeOut(1.2f);
-
-            await Task.Delay(200);
-
             if (!SceneLoader.IsInMainScene && !GameManager.IsPlayingFromEditor)
             {
                 SaveManager.RestoreMapDataFromCurrentSave();
             }
+            
+            ScreenFader.FadeOut(1.2f);
+
+            await Task.Delay(200);
+
 
             if (_currentEntryPoint.isMovingForwardOnStart)
             {
@@ -298,7 +302,7 @@ namespace Scripts.System
 
         private void StartMapFromMainScreenButtonClickHandling()
         {
-            PlayerCamera.IsLookModeOn = false;
+            PlayerCameraController.Instance.IsLookModeOn = false;
             MainUIManager.Instance.ShowCrossHair(false);
 
             GameManager.Player.PlayerMovement.MoveForward(true);

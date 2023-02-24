@@ -143,17 +143,8 @@ namespace Scripts.Helpers
             Process.Start("explorer.exe", absoluteFolderPath.Replace('/', '\\'));
 #endif
         }
-
-        private static Campaign LoadLastEditedCampaign()
-        {
-            string[] campaignMapKey = PlayerPrefsHelper.LastEditedMap;
-
-            if (!PlayerPrefsHelper.IsCampaignMapKeyValid(campaignMapKey)) return null;
-
-            return LoadCampaign(campaignMapKey[0], out Campaign campaign) ? campaign : null;
-        }
-
-        private static bool LoadCampaign(string campaignName, out Campaign campaign)
+        
+        public static bool LoadCampaign(string campaignName, out Campaign campaign)
         {
             campaign = null;
 
@@ -171,6 +162,15 @@ namespace Scripts.Helpers
                 Logger.Log($"Failed to load campaign from file: {campaignName}: {e}", Logger.ELogSeverity.Release);
                 return false;
             }
+        }
+
+        private static Campaign LoadLastEditedCampaign()
+        {
+            string[] campaignMapKey = PlayerPrefsHelper.LastEditedMap;
+
+            if (!PlayerPrefsHelper.IsCampaignMapKeyValid(campaignMapKey)) return null;
+
+            return LoadCampaign(campaignMapKey[0], out Campaign campaign) ? campaign : null;
         }
 
         private static string GetPrefabPathByType(EPrefabType prefabType) => prefabType switch

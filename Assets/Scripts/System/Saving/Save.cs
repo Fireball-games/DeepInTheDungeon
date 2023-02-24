@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Scripts.Helpers.Extensions;
 using Scripts.Player.CharacterSystem;
+using UnityEngine;
 
 namespace Scripts.System.Saving
 {
@@ -17,5 +19,10 @@ namespace Scripts.System.Saving
 
         public DateTime timeSaved;
         public byte[] screenshot;
+        
+        public Vector3 PlayerGridPosition => playerSaveData.playerTransformData.Position.ToGridPosition();
+        public Quaternion PlayerRotation => playerSaveData.playerTransformData.Rotation;
+        public string CurrentCampaign => playerSaveData.currentCampaign;
+        public string CurrentMap => playerSaveData.currentMap;
     }
 }

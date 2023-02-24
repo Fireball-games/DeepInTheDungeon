@@ -17,9 +17,9 @@ namespace Scripts.System.Saving
     /// </summary>
     public class SaveManager : SingletonNotPersisting<SaveManager>
     {
-        private static IEnumerable<Save> _saves = Enumerable.Empty<Save>();
         // TODO: Make sure, that _currentSave is always up to date and is null when creating new character.
-        private static Save _currentSave;
+        public static Save CurrentSave { get; private set; }
+        private static IEnumerable<Save> _saves = Enumerable.Empty<Save>();
         private static Save _tempSave;
 
         private void OnEnable()
@@ -30,12 +30,17 @@ namespace Scripts.System.Saving
 
         private void Start()
         {
-            if (!_saves.Any() && (FileOperationsHelper.LoadAllSaves(out IEnumerable<Save> saves)))
+            if (!_saves.Any())
             {
-                _saves = saves;
+                FileOperationsHelper.LoadAllSaves(out _saves);
             }
+
+            if (!_saves.Any()) return;
+            
+            _saves = _saves.OrderByDescending(s => s.timeSaved);
+            CurrentSave = _saves.First();
         }
-        
+
         private void OnDisable()
         {
             EventsManager.OnSceneStartedLoading -= OnSceneStartedLoading;
@@ -87,22 +92,22 @@ namespace Scripts.System.Saving
                 screenshot = screenshot
             };
             
-            if (updatePlayerOnly && _currentSave != null)
+            if (updatePlayerOnly && CurrentSave != null)
             {
-                save.campaignsSaves = _currentSave.campaignsSaves;
+                save.campaignsSaves = CurrentSave.campaignsSaves;
             }
             else
             {
-                save.campaignsSaves = ManageCampaignSaves(_currentSave ?? save, overrideCampaign, overrideMap).ToList();
+                save.campaignsSaves = CollectCampaignSaves(CurrentSave ?? save, overrideCampaign, overrideMap).ToList();
             }
             
-            _currentSave = save;
+            CurrentSave = save;
             return save;
         }
 
         // Checks for current campaign name in GameManager and if its data are already saved in current campaign saves. If yes, copies all mapsSaves from that campaign save and
         // overwrites data for current map state. If not, creates new CampaignSave and adds it to the list with current data.
-        private static IEnumerable<CampaignSave> ManageCampaignSaves(Save referenceSave, Campaign overrideCampaign = null,
+        private static IEnumerable<CampaignSave> CollectCampaignSaves(Save referenceSave, Campaign overrideCampaign = null,
             MapDescription overrideMap = null)
         {
             if (referenceSave == null)
@@ -156,20 +161,20 @@ namespace Scripts.System.Saving
         
         private void OnNewCampaignStarted()
         {
-            _currentSave = null;
+            CurrentSave = null;
         }
         
         private static void SaveToDisc()
         {
-            Logger.Log($"Saving to disc: {_currentSave.saveName}");
-            FileOperationsHelper.SavePositionToLocale(_currentSave);
+            Logger.Log($"Saving to disc: {CurrentSave.saveName}");
+            FileOperationsHelper.SavePositionToLocale(CurrentSave);
         }
 
         private void OnSceneStartedLoading()
         {
             if (_tempSave == null) return;
             
-            _currentSave = _tempSave;
+            CurrentSave = _tempSave;
             SaveToDisc();
             _tempSave = null;
         }
@@ -194,13 +199,13 @@ namespace Scripts.System.Saving
         /// </summary>
         public static void RestoreMapDataFromCurrentSave()
         {
-            if (_currentSave == null)
+            if (CurrentSave == null)
             {
                 Logger.Log("Current save is null. Aborting restoring map data.");
                 return;
             }
             
-            CampaignSave currentCampaignSave = _currentSave.campaignsSaves.FirstOrDefault(c => c.campaignName == GameManager.Instance.CurrentCampaign.CampaignName);
+            CampaignSave currentCampaignSave = CurrentSave.campaignsSaves.FirstOrDefault(c => c.campaignName == GameManager.Instance.CurrentCampaign.CampaignName);
             if (currentCampaignSave == null)
             {
                 Logger.Log("Current campaign save is null. Aborting restoring map data.");

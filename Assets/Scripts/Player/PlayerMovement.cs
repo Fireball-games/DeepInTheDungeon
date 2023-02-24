@@ -72,6 +72,10 @@ namespace Scripts.Player
             _waypoints = new List<Waypoint>();
         }
 
+        public void SetCamera() => CameraManager.Instance.SetMainCamera(playerCamera);
+        
+        public void SetDefaultTransitionSpeed() => transitionSpeed = _defaultMoveSpeed;
+
         public void SetPositionAndRotation(Vector3 gridPosition, Quaternion rotation)
         {
             Transform playerTransform = transform;
@@ -428,11 +432,6 @@ namespace Scripts.Player
 
             Ray ray = new(currentPosition, Vector3.down);
             return Physics.Raycast(ray, 0.7f, LayerMask.GetMask(LayersManager.WallMaskName));
-        }
-
-        public void SetCamera()
-        {
-            CameraManager.Instance.SetMainCamera(playerCamera);
         }
 
         private bool NotAtTargetPosition(Vector3 targetPosition) => Vector3.Distance(transform.position, targetPosition) > 0.05f;

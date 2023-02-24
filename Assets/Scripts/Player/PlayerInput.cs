@@ -9,6 +9,8 @@ namespace Scripts.Player
         public KeyCode forward = KeyCode.W;
         public KeyCode back = KeyCode.S;
         public KeyCode left = KeyCode.A;
+        public KeyCode quickLoad = KeyCode.F9;
+        public KeyCode quickSave = KeyCode.F5;
         public KeyCode right = KeyCode.D;
         public KeyCode turnLeft = KeyCode.Q;
         public KeyCode turnRight = KeyCode.E;

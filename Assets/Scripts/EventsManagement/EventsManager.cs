@@ -7,7 +7,7 @@ namespace Scripts.EventsManagement
 {
     public class EventsManager : MonoBehaviour
     {
-        public static UnityEvent OnNewCampaignStarted = new();
+        public static readonly UnityEvent OnNewCampaignStarted = new();
         public static event Action OnLevelStarted;
         public static event Action OnSceneStartedLoading;
         public static event Action<string> OnSceneFinishedLoading;

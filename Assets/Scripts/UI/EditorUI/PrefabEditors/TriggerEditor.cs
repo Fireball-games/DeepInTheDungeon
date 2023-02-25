@@ -53,13 +53,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (EditedConfiguration != null) return isWallTrigger 
                 ? _wallCursor3DSize 
-                : Vector3.one;
+                : _tileTriggerScale;
             
             if (IsPrefabFinderActive) return _genericCursor3DSize;
             
             return isWallTrigger 
                 ? _wallCursor3DSize 
-                : Vector3.one;
+                : _tileTriggerScale;
 
         }
 

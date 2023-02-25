@@ -1,4 +1,5 @@
 ﻿using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
@@ -64,7 +65,12 @@ namespace Scripts.UI.EditorUI.Components
         {
             Quaternion rotation = displayedItem.TransformData.Rotation;
             Vector3 position = displayedItem.TransformData.Position;
-            Cursor3D.ShowAt(position, UIManager.OpenedEditor.GetCursor3DScale(), rotation);
+            
+            Vector3 cursorScale = EditorPrefabScaleOverrides.Get(displayedItem.PrefabName, out Vector3 scale) 
+                ? scale
+                : UIManager.OpenedEditor.GetCursor3DScale();
+            
+            Cursor3D.ShowAt(position, cursorScale, rotation);
 
             MouseOverCoroutine();
         }

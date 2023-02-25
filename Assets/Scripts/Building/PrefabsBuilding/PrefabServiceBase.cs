@@ -78,7 +78,7 @@ namespace Scripts.Building.PrefabsBuilding
             AddToStore(prefabConfiguration, script, newPrefab);
         }
 
-        public void ProcessAllEmbedded(GameObject newPrefab)
+        public void ProcessAllEmbedded(GameObject newPrefab, bool isEditorBuild = false)
         {
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
 
@@ -90,7 +90,7 @@ namespace Scripts.Building.PrefabsBuilding
                 // We dont want to process only embedded walls, not owners
                 if (prefabScript.Guid == embeddedPrefab.Guid) continue;
 
-                if (IsInEditMode)
+                if (isEditorBuild)
                 {
                     configuration = AddConfigurationToMap(embeddedPrefab, prefabScript.Guid);
                 }

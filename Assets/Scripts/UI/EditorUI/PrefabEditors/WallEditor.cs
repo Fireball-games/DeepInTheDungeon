@@ -192,9 +192,9 @@ namespace Scripts.UI.EditorUI
                 Guid = Guid.NewGuid().ToString(),
             };
 
-            MapBuilder.BuildPrefab(_createdOppositeWall);
+            MapBuilder.BuildPrefab(_createdOppositeWall, true);
             HighlightPath(EPathsType.Waypoint, _createdOppositeWall.Guid);
-            // AddReplaceWaypointPath(_createdOppositeWall.Guid, oppositePoints);
+            
             SetEdited();
         }
 

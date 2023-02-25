@@ -57,7 +57,7 @@ namespace Scripts.Building.PrefabsBuilding
             // Not used in triggers because they need special treatment. So whole RemoveAllEmbedded is overridden.
         }
 
-        public static void ProcessEmbeddedTriggerReceivers(GameObject newPrefab)
+        public static void ProcessEmbeddedTriggerReceivers(GameObject newPrefab, bool isEditorBuild = false)
         {
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
 
@@ -67,7 +67,7 @@ namespace Scripts.Building.PrefabsBuilding
             {
                 TriggerReceiverConfiguration configuration;
 
-                if (IsInEditMode)
+                if (isEditorBuild)
                 {
 
                     configuration = AddTriggerReceiverConfigurationToMap(receiver, prefabScript.Guid);

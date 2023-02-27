@@ -17,7 +17,7 @@ namespace Scripts.Building.PrefabsBuilding
             return new TriggerConfiguration(prefab as Trigger, ownerGuid, spawnPrefabOnBuild);
         }
 
-        private static readonly Dictionary<string, TriggerReceiver> TriggerReceivers;
+        public static readonly Dictionary<string, TriggerReceiver> TriggerReceivers;
 
         static TriggerService()
         {
@@ -43,8 +43,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             if (prefabScript is IPositionsTrigger positionsTrigger)
             {
-                positionsTrigger.SetStartPosition(configuration.StartPosition);
-                positionsTrigger.SetPosition();
+                positionsTrigger.SetCurrentPosition(configuration.CurrentPosition);
             }
         }
 
@@ -58,7 +57,7 @@ namespace Scripts.Building.PrefabsBuilding
             // Not used in triggers because they need special treatment. So whole RemoveAllEmbedded is overridden.
         }
 
-        public static void ProcessEmbeddedTriggerReceivers(GameObject newPrefab)
+        public static void ProcessEmbeddedTriggerReceivers(GameObject newPrefab, bool isEditorBuild = false)
         {
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
 
@@ -68,9 +67,8 @@ namespace Scripts.Building.PrefabsBuilding
             {
                 TriggerReceiverConfiguration configuration;
 
-                if (IsInEditMode)
+                if (isEditorBuild)
                 {
-                    TriggerReceivers.TryAdd(receiver.Guid, receiver);
 
                     configuration = AddTriggerReceiverConfigurationToMap(receiver, prefabScript.Guid);
                 }
@@ -84,9 +82,13 @@ namespace Scripts.Building.PrefabsBuilding
                     }
                 }
 
-                receiver.startPosition = configuration.StartPosition;
                 receiver.Guid = configuration.Guid;
-                receiver.SetPosition();
+                TriggerReceivers.TryAdd(receiver.Guid, receiver);
+                
+                if (receiver is IPositionsTrigger positionsTrigger)
+                {
+                    positionsTrigger.SetCurrentPosition(configuration.CurrentPosition);
+                }
             }
         }
 
@@ -149,8 +151,7 @@ namespace Scripts.Building.PrefabsBuilding
 
             if (script is IPositionsTrigger positionsTrigger)
             {
-                positionsTrigger.SetStartPosition(configuration.StartPosition);
-                positionsTrigger.SetPosition();
+                positionsTrigger.SetCurrentPosition(configuration.CurrentPosition);
             }
 
             if (IsInEditMode)

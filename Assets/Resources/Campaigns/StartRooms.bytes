@@ -3,8 +3,8 @@
 		"__type" : "Scripts.Building.Campaign,Assembly-CSharp",
 		"value" : {
 			"CampaignName" : "StartRooms",
-			"StartMapName" : null,
-			"CampaignStartEntryPointName" : null,
+			"StartMapName" : "EntryMap",
+			"CampaignStartEntryPointName" : "Start",
 			"Maps" : [
 				{
 					"MapName" : "EntryMap",
@@ -661,7 +661,7 @@
 						},{
 							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.EntryPointConfiguration,Assembly-CSharp",
 							"IsMovingForwardOnStart" : true,
-							"Name" : null,
+							"Name" : "Start",
 							"PlayerRotationY" : 0,
 							"PrefabType" : 11,
 							"PrefabName" : "StartPoint",
@@ -811,7 +811,7 @@
 							"OwnerGuid" : null
 						},{
 							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerReceiverConfiguration,Assembly-CSharp",
-							"StartPosition" : 1,
+							"CurrentPosition" : 0,
 							"Identification" : "Door Gate",
 							"PrefabType" : 10,
 							"PrefabName" : "Door Gate",
@@ -883,11 +883,32 @@
 							"Guid" : "1581071b-7269-49ef-aff2-56c59d8aaf48",
 							"SpawnPrefabOnBuild" : true,
 							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : false,
+							"PrefabType" : 8,
+							"PrefabName" : "CeilingCorner",
+							"TransformData" : {
+								"Position" : {
+									"x" : 5,
+									"y" : -3,
+									"z" : 10
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0.7071068,
+									"z" : 0,
+									"w" : 0.7071068
+								}
+							},
+							"Guid" : "07bd3f26-1d72-401e-88d4-225140cfced6",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
 						}
 					],
 					"EntryPoints" : [
 						{
-							"name" : null,
+							"name" : "Start",
 							"playerGridPosition" : {
 								"x" : 2,
 								"y" : 5,

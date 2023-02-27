@@ -1,4 +1,5 @@
 ﻿using Scripts.System;
+using Scripts.System.Saving;
 using UnityEngine;
 
 namespace Scripts.Player
@@ -9,6 +10,8 @@ namespace Scripts.Player
         public KeyCode forward = KeyCode.W;
         public KeyCode back = KeyCode.S;
         public KeyCode left = KeyCode.A;
+        public KeyCode quickLoad = KeyCode.F9;
+        public KeyCode quickSave = KeyCode.F5;
         public KeyCode right = KeyCode.D;
         public KeyCode turnLeft = KeyCode.Q;
         public KeyCode turnRight = KeyCode.E;
@@ -30,6 +33,17 @@ namespace Scripts.Player
 
         private void Update()
         {
+            if (Input.GetKeyUp(quickSave))
+            {
+                SaveManager.QuickSave();
+                return;
+            }
+            if (Input.GetKeyUp(quickLoad))
+            {
+                GameManager.Instance.QuickLoad();
+                return;
+            }
+            
             if (!PlayerCamera || !GameManager.Instance.MovementEnabled) return;
             
             PlayerCamera.isLeaning = Input.GetKey(toggleLeaningMode);
@@ -37,11 +51,11 @@ namespace Scripts.Player
             if (!PlayerCamera.isLeaning)
             {
                 if (Input.GetKeyUp(forward)) _playerMovement.MoveForward();
-                if (Input.GetKeyUp(back)) _playerMovement.MoveBackwards();
-                if (Input.GetKeyUp(left)) _playerMovement.MoveLeft();
-                if (Input.GetKeyUp(right)) _playerMovement.MoveRight();
-                if (Input.GetKeyUp(turnLeft)) _playerMovement.RotateLeft();
-                if (Input.GetKeyUp(turnRight)) _playerMovement.RotateRight();
+                else if (Input.GetKeyUp(back)) _playerMovement.MoveBackwards();
+                else if (Input.GetKeyUp(left)) _playerMovement.MoveLeft();
+                else if (Input.GetKeyUp(right)) _playerMovement.MoveRight();
+                else if (Input.GetKeyUp(turnLeft)) _playerMovement.RotateLeft();
+                else if (Input.GetKeyUp(turnRight)) _playerMovement.RotateRight();
             }
             else
             {

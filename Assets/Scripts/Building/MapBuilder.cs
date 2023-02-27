@@ -313,7 +313,8 @@ namespace Scripts.Building
 
         public void RemovePrefab<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.RemovePrefab(configuration);
 
-        public bool BuildPrefab<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.BuildPrefab(configuration);
+        public bool BuildPrefab<TC>(TC configuration, bool isEditorBuild = false) where TC : PrefabConfiguration 
+            => _prefabBuilder.BuildPrefab(configuration, isEditorBuild);
 
         public void AddReplacePrefabConfiguration<TC>(TC configuration) where TC : PrefabConfiguration =>
             _prefabBuilder.AddReplacePrefabConfiguration(configuration);

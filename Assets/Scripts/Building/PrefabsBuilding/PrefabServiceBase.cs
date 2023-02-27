@@ -33,8 +33,9 @@ namespace Scripts.Building.PrefabsBuilding
         
         protected static IEnumerable<TC> Configurations =>
             Store.Values.Select(configuration => configuration.Configuration);
-        
+
         public IEnumerable<TC> GetConfigurations() => Configurations;
+        public static IEnumerable<TPrefab> GetPrefabScripts() => PrefabScripts; 
 
         public static TC GetConfiguration(string guid) =>
             Store.TryGetValue(guid, out PrefabStoreItem<TC, TPrefab> item) ? item.Configuration : null;
@@ -77,7 +78,7 @@ namespace Scripts.Building.PrefabsBuilding
             AddToStore(prefabConfiguration, script, newPrefab);
         }
 
-        public void ProcessAllEmbedded(GameObject newPrefab)
+        public void ProcessAllEmbedded(GameObject newPrefab, bool isEditorBuild = false)
         {
             PrefabBase prefabScript = newPrefab.GetComponent<PrefabBase>();
 
@@ -89,7 +90,7 @@ namespace Scripts.Building.PrefabsBuilding
                 // We dont want to process only embedded walls, not owners
                 if (prefabScript.Guid == embeddedPrefab.Guid) continue;
 
-                if (IsInEditMode)
+                if (isEditorBuild)
                 {
                     configuration = AddConfigurationToMap(embeddedPrefab, prefabScript.Guid);
                 }

@@ -5,7 +5,6 @@ using Scripts.Building.Tile;
 using Scripts.Helpers.Extensions;
 using UnityEngine;
 using static Scripts.MapEditor.Services.PathsService;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building.PrefabsBuilding
 {

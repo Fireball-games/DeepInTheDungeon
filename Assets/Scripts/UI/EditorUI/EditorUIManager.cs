@@ -231,7 +231,7 @@ namespace Scripts.UI.EditorUI
         private void CloseEditorWindow()
         {
             IsAnyObjectEdited = false;
-
+            // TODO: maybe redundant, each editor should check if to close itself on work mode change
             OpenedEditor?.CloseWithRemovingChanges();
 
             OpenedEditor = null;

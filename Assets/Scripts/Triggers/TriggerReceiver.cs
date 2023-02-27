@@ -1,22 +1,22 @@
 ﻿using Scripts.Building.PrefabsSpawning;
 using Scripts.EventsManagement;
+using Scripts.System.Saving;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Triggers
 {
     [RequireComponent(typeof(PrefabBase))]
-    public abstract class TriggerReceiver : MonoBehaviour
+    public abstract class TriggerReceiver : MonoBehaviour, ISavable
     {
         [SerializeField] protected Transform activePart;
-        public string Guid;  
-        public int startPosition;
+        public string Guid { get; set; }
+        public int CurrentPosition { get; protected set; }
         public string identification;
         
-        protected int CurrentMovement;
+        private bool _atRest = true;
 
-        protected bool AtRest = true;
-
-        private void Awake()
+        protected virtual void Awake()
         {
             Guid = global::System.Guid.NewGuid().ToString();
         }
@@ -33,7 +33,7 @@ namespace Scripts.Triggers
 
         private void OnTriggerNext(Trigger source)
         {
-            if (AtRest && source.subscribers.Contains(Guid))
+            if (_atRest && source.subscribers.Contains(Guid))
             {
                 TriggerNext();
             }
@@ -41,9 +41,28 @@ namespace Scripts.Triggers
 
         protected abstract void TriggerNext();
 
-        protected void SetResting() => AtRest = true;
+        protected void SetResting() => _atRest = true;
 
-        protected void SetBusy() => AtRest = false;
-        public abstract void SetPosition();
+        protected void SetBusy() => _atRest = false;
+        
+        public object CaptureState() =>
+            new TriggerSaveData
+            {
+                count = 0,
+                currentPosition = CurrentPosition,
+            };
+
+        public void RestoreState(object state)
+        {
+            if (state is not TriggerSaveData saveData)
+            {
+                Logger.LogError("Invalid save data.", logObject: this);
+                return;
+            }
+
+            if (this is not IPositionsTrigger positionsReceiver) return;
+            
+            positionsReceiver.SetCurrentPosition(saveData.currentPosition);
+        }
     }
 }

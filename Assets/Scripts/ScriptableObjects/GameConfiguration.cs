@@ -7,5 +7,9 @@ namespace Scripts.ScriptableObjects
     public class GameConfiguration : ScriptableObject
     {
         public EMainCampaignName selectedMainCampaign = EMainCampaignName.MainCampaign;
+        public int maxAutoSaves = 5;
+        public int maxQuickSaves = 5;
+        public int maxMapEntrySaves = 3;
+        public int maxMapExitSaves = 3;
     }
 }

@@ -30,6 +30,7 @@ namespace Scripts.Player
         [SerializeField] private Camera playerCamera;
 
         public static float TransitionRotationSpeed { get; private set; }
+        public Vector3 PreviousPosition => _prevTargetPosition;
 
         private Vector3 _targetPosition;
         private Vector3 _prevTargetPosition;
@@ -43,21 +44,21 @@ namespace Scripts.Player
         
         private bool _atRest = true;
         
-        public static UnityEvent OnStartResting = new();
+        public static readonly UnityEvent OnStartResting = new();
 
-        public bool AtRest
+        private bool AtRest
         {
             get => _atRest;
-            private set
+            set
             {
                 if (value == _atRest) return;
                 
                 _atRest = value;
+
+                if (!_atRest) return;
                 
-                if (_atRest)
-                {
-                    OnStartResting.Invoke();
-                }
+                transform.position = _targetPosition = _prevTargetPosition = transform.position.ToVector3Int();
+                OnStartResting.Invoke();
             }
         }
 
@@ -70,6 +71,10 @@ namespace Scripts.Player
             _defaultRotationSpeed = transitionRotationSpeed;
             _waypoints = new List<Waypoint>();
         }
+
+        public void SetCamera() => CameraManager.Instance.SetMainCamera(playerCamera);
+        
+        public void SetDefaultTransitionSpeed() => transitionSpeed = _defaultMoveSpeed;
 
         public void SetPositionAndRotation(Vector3 gridPosition, Quaternion rotation)
         {
@@ -398,6 +403,12 @@ namespace Scripts.Player
                                 new PositionRotation(hitTransform.position, hitTransform.rotation)) as WallConfiguration)?
                         .WayPoints ?? new List<Waypoint>());
 
+                    if (_waypoints[0].position != currentPosition.ToVector3Int())
+                    {
+                        // Wall triggers movement only when player is at start point = walls are one way.
+                        _waypoints.Clear();
+                    }
+
                     return false;
                 }
                 
@@ -421,11 +432,6 @@ namespace Scripts.Player
 
             Ray ray = new(currentPosition, Vector3.down);
             return Physics.Raycast(ray, 0.7f, LayerMask.GetMask(LayersManager.WallMaskName));
-        }
-
-        public void SetCamera()
-        {
-            CameraManager.Instance.SetMainCamera(playerCamera);
         }
 
         private bool NotAtTargetPosition(Vector3 targetPosition) => Vector3.Distance(transform.position, targetPosition) > 0.05f;

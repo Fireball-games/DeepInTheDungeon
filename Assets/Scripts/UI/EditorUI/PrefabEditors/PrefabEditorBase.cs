@@ -244,7 +244,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 EditedConfiguration = GetNewConfiguration(prefabName);
             }
 
-            if (!MapBuilder.BuildPrefab(EditedConfiguration))
+            if (!MapBuilder.BuildPrefab(EditedConfiguration, true))
             {
                 SetStatusText(t.Get(Keys.ErrorBuildingPrefab));
                 _placeholder.SetActive(false);
@@ -351,7 +351,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             if (_isEditingExistingPrefab)
             {
                 MapBuilder.RemovePrefab(EditedConfiguration);
-                MapBuilder.BuildPrefab(_originalConfiguration);
+                MapBuilder.BuildPrefab(_originalConfiguration, true);
                 EditedConfiguration = CloneConfiguration(_originalConfiguration);
             }
 

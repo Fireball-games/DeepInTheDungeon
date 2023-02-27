@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Scripts.EventsManagement;
 using Scripts.ScenesManagement;
@@ -12,11 +11,11 @@ namespace Scripts.UI.PlayMode
     {
         [SerializeField] private List<UIElementBase> hideOnStart;
 
-        [NonSerialized] public ImageUIElement CrossHair;
+        private ImageUIElement _crossHair;
 
         private void Awake()
         {
-            CrossHair = body.transform.Find("CrossHair").GetComponent<ImageUIElement>();
+            _crossHair = body.transform.Find("CrossHair").GetComponent<ImageUIElement>();
         }
 
         private void OnEnable()
@@ -31,7 +30,7 @@ namespace Scripts.UI.PlayMode
 
         private void OnLookModeActiveChanged(bool isActive)
         {
-            CrossHair.SetActive(isActive);
+            _crossHair.SetActive(isActive);
         }
 
         private void Start()

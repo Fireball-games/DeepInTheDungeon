@@ -15,6 +15,7 @@ using Scripts.UI.EditorUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Scripts.Helpers.FileOperationsHelper;
 using static Scripts.Helpers.Strings;
 using Logger = Scripts.Helpers.Logger;
 
@@ -104,7 +105,7 @@ namespace Scripts.UI.Components
 
             _existingCampaigns.Add(campaign);
 
-            FileOperationsHelper.SaveCampaign(campaign);
+            SaveCampaign(campaign);
 
             _selectedCampaign = campaign;
             GameManager.Instance.SetCurrentCampaign(campaign);
@@ -216,7 +217,7 @@ namespace Scripts.UI.Components
             // no need to create new list if its not empty
             if (_existingCampaigns.Any()) return;
 
-            _existingFiles = FileOperationsHelper.GetFilesInDirectory(FileOperationsHelper.CampaignDirectoryName);
+            _existingFiles = GetFilesInDirectory(CampaignDirectoryName);
             _existingCampaigns.Clear();
 
             if (_existingFiles != null && _existingFiles.Any())
@@ -226,7 +227,7 @@ namespace Scripts.UI.Components
                     try
                     {
                         string campaignName = Path.GetFileNameWithoutExtension(campaignFile);
-                        Campaign loadedCampaign = ES3.Load<Campaign>(campaignName, FileOperationsHelper.GetSavePath(campaignName));
+                        Campaign loadedCampaign = ES3.Load<Campaign>(campaignName, GetLocalRelativeCampaignPath(campaignName));
                         if (loadedCampaign != null)
                         {
                             _existingCampaigns.Add(loadedCampaign);

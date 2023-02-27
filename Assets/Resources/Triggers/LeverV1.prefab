@@ -332,6 +332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabType: 9
   guid: 
+  presentedInEditor: {fileID: 0}
   triggerType: 2
   count: 0
   mustBeOnSameTile: 1
@@ -342,10 +343,10 @@ MonoBehaviour:
   activeProperty: 2
   startPosition: 1
   steps:
-  - target: {x: 0, y: 0, z: 50}
+  - target: {x: 0, y: 0, z: 0}
     duration: 0.5
     movementEase: 9
-  - target: {x: 0, y: 0, z: 0}
+  - target: {x: 0, y: 0, z: 50}
     duration: 0.5
     movementEase: 9
 --- !u!114 &854613738620229892

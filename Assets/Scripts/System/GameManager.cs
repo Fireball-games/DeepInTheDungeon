@@ -1,8 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Scripts.Building;
-using Scripts.Building.PrefabsBuilding;
-using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
@@ -12,8 +9,6 @@ using Scripts.ScenesManagement;
 using Scripts.ScriptableObjects;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
-using Scripts.Triggers;
-using Scripts.UI;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
@@ -25,42 +20,43 @@ namespace Scripts.System
         [SerializeField] private GameConfiguration gameConfiguration;
         [SerializeField] private MapBuilder mapBuilder;
         [SerializeField] private PlayerController playerPrefab;
-        private PlayerController _player;
         
-        private Campaign _mainCampaign;
-        private Campaign _startRoomsCampaign;
+        private MapTraversal _mapTraversal;
 
         public GameConfiguration GameConfiguration => gameConfiguration;
-        public PlayerController Player => _player;
+        public PlayerController Player => player;
         public Vector3Int PlayerPosition => Player.transform.position.ToVector3Int();
         public MapBuilder MapBuilder => mapBuilder;
         /// <summary>
         /// Current campaign is set only in GameManager and is pointing to LastEditedCampaign, StartRooms, SelectedCampaign or Loaded campaign. 
         /// </summary>
-        public Campaign CurrentCampaign => _currentCampaign;
-        public MapDescription CurrentMap => _currentMap;
-        public bool MovementEnabled => _movementEnabled;
+        public Campaign CurrentCampaign => _mapTraversal.CurrentCampaign;
+        public MapDescription CurrentMap => _mapTraversal.CurrentMap;
+        public bool MovementEnabled => movementEnabled;
         public bool IsPlayingFromEditor { get; set; }
         public EGameMode GameMode => _gameMode;
+        public bool CanSave { get; internal set; }
 
-        private PlayerCameraController PlayerCamera => PlayerCameraController.Instance;
+        internal PlayerController player;
+        internal bool movementEnabled;
 
-        private Campaign _currentCampaign;
-        private MapDescription _currentMap;
-        private EntryPoint _currentEntryPoint;
-        private bool _movementEnabled;
         private EGameMode _gameMode = EGameMode.Play;
 
-        private bool _lookModeOnStartTraversal;
         private bool _startLevelAfterBuildFinishes;
         private bool _isPlayingFromSavedGame;
-        private bool _entryMovementFinished;
 
         public enum EGameMode
         {
             MainScene = 0,
             Play = 1,
             Editor = 2,
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            _mapTraversal = new MapTraversal(playerPrefab);
         }
 
         private void OnEnable()
@@ -75,18 +71,6 @@ namespace Scripts.System
             }
         }
 
-        protected override void Awake()
-        {
-            base.Awake();
-            
-            if (!FileOperationsHelper.LoadSystemCampaigns(out _mainCampaign, out _startRoomsCampaign))
-            {
-                Logger.LogError("Failed to load system campaigns.");
-            }
-            
-            _currentEntryPoint = new EntryPoint();
-        }
-
         private void OnDisable()
         {
             EventsManager.OnSceneStartedLoading -= OnSceneStartedLoading;
@@ -99,73 +83,34 @@ namespace Scripts.System
             }
         }
 
-        public void SetCurrentCampaign(Campaign campaign)
-        {
-            _currentCampaign = campaign;
-        }
+        public void SetCurrentCampaign(Campaign campaign) => _mapTraversal.SetCurrentCampaign(campaign);
 
         public void SetCurrentMap(MapDescription mapDescription)
         {
-            if (mapDescription  == null) return;
-            
-            _currentMap = mapDescription;
-            
-            mapBuilder.SetLayout(mapDescription.Layout);
+            _mapTraversal.SetCurrentMap(mapDescription);
         }
         
         public void StartMainScene(bool fadeIn = true)
         {
-            // _currentCampaign = FileOperationsHelper.LoadStartRoomsCampaign();
-            _currentCampaign = _startRoomsCampaign;
-            
-            bool startedMapBoolFailed = false;
-            
-            if (_currentCampaign == null)
+            if(!_mapTraversal.SetForStartFromMainScreen())
             {
-                startedMapBoolFailed = true;
-                Logger.LogError("Could not load start rooms campaign.");
-                _currentCampaign = MapBuilder.GenerateFallbackStartRoomsCampaign();
-            }
-            
-            //TODO: Here will be logic determining which start room to load depending on player progress. Its StarterMap for now.
-            
-            _currentMap = _currentCampaign.GetStarterMap();
-            if (_currentMap.EntryPoints.Count > 0)
-            {
-                _currentEntryPoint = _currentMap.EntryPoints[0].Cloned();
-            }
-            else if (startedMapBoolFailed)
-            {
-                Logger.LogError("Could not load entry point.");
-                _currentEntryPoint = new EntryPoint
-                {
-                    isMovingForwardOnStart = false,
-                    playerGridPosition = _currentMap.EditorStartPosition,
-                    playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y
-                };
-            }
-
-            if (_currentCampaign == null || _currentMap == null)
-            {
-                Logger.LogError("Could not load last played campaign.");
+                Logger.LogWarning("Could not start main scene.");
                 return;
             }
             
             OnStartGameRequested(fadeIn);
         }
 
-        public async void StartNewCampaign()
+        public async void StartMainCampaign()
         {
             // TODO: When applicable, handle warning about deleting save files.
-            _currentCampaign = _mainCampaign;
-            _currentMap = _currentCampaign.GetStarterMap();
-            _currentEntryPoint = _currentMap.EntryPoints[0].Cloned();
-            
-            PlayerCamera.IsLookModeOn = false;
-            
-            _player.PlayerMovement.MoveForward(true);
-            FindObjectOfType<DoTweenTriggerReceiver>().Trigger();
-            
+
+            if (!_mapTraversal.SetForStartingMainCampaign())
+            {
+                Logger.LogWarning("Could not start new campaign.");
+                return;
+            }
+            EventsManager.TriggerOnNewCampaignStarted();
             await Task.Delay(2500);
             
             OnStartGameRequested();
@@ -173,17 +118,22 @@ namespace Scripts.System
         
         public void ContinueFromSave()
         {
-            // TODO: Gets data from saved position. 
-            _currentCampaign = FileOperationsHelper.LoadLastPlayedCampaign();
-            _currentMap = _currentCampaign.GetStarterMap();
-            // TODO: Once save positions work, get data from there
-            _currentEntryPoint.playerGridPosition = _currentMap.EditorStartPosition;
-            _currentEntryPoint.playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y;
-            _currentEntryPoint.isMovingForwardOnStart = false;
-            
-            if (_currentCampaign == null || _currentMap == null)
+            if (!_mapTraversal.SetForStartingFromSave())
             {
-                Logger.LogError("Could not load last played campaign.");
+                Logger.LogWarning("Could not continue from save.");
+                return;
+            }
+            
+            OnStartGameRequested();
+        }
+        
+        public void QuickLoad()
+        {
+            if (IsPlayingFromEditor) return;
+            
+            if (!_mapTraversal.SetForQuickLoad())
+            {
+                Logger.LogWarning("Could not quick load.");
                 return;
             }
             
@@ -192,20 +142,10 @@ namespace Scripts.System
 
         public void LoadLastEditedMap(EntryPoint entryPoint = null)
         {
-            if (!FileOperationsHelper.GetLastEditedCampaignAndMap(out _currentCampaign, out _currentMap))
+            if (!_mapTraversal.SetForStartingFromLastEditedMap(entryPoint))
             {
+                Logger.LogWarning("Could not load last edited map.");
                 return;
-            }
-
-            if (entryPoint == null)
-            {
-                _currentEntryPoint.playerGridPosition = _currentMap.EditorStartPosition;
-                _currentEntryPoint.playerRotationY = (int)_currentMap.EditorPlayerStartRotation.eulerAngles.y;
-                _currentEntryPoint.isMovingForwardOnStart = false;
-            }
-            else
-            {
-                _currentEntryPoint = entryPoint.Cloned();
             }
             
             OnStartGameRequested();
@@ -213,39 +153,15 @@ namespace Scripts.System
 
         private async void OnMapTraversalTriggered(string exitConfigurationGuid)
         {
-            if (CurrentMap == null || !_entryMovementFinished) return;
-            
-            TriggerConfiguration mapTraversal = TriggerService.GetConfiguration(exitConfigurationGuid);
-            
-            if (mapTraversal == null)
+            if (!_mapTraversal.SetForTraversal(exitConfigurationGuid, out float exitDelay))
             {
-                Logger.LogWarning($"Could not find exit point trigger configuration with guid {exitConfigurationGuid}.");
+                if (_mapTraversal.EntryMovementFinished) Logger.LogWarning("Could not traverse map.");
                 return;
             }
-            // Storing so if getting the data fails, game can continue.
-            MapDescription mapDescription = _currentCampaign.GetMapByName(mapTraversal.TargetMapName);
+
+            CanSave = false;
             
-            if (mapDescription == null)
-            {
-                Logger.LogWarning($"Could not find map with name {mapTraversal.TargetMapName}.");
-                return;
-            }
-            
-            EntryPoint entryPoint = mapDescription.GetEntryPointCloneByName(mapTraversal.TargetMapEntranceName);
-            
-            if (entryPoint == null)
-            {
-                Logger.LogWarning($"Could not find entry point in map: {mapTraversal.TargetMapName.WrapInColor(Colors.Warning)} with name: {mapTraversal.TargetMapEntranceName.WrapInColor(Colors.Warning)}.");
-                return;
-            }
-            
-            _currentMap = mapDescription;
-            _currentEntryPoint = entryPoint;
-            
-            _lookModeOnStartTraversal = PlayerCamera.IsLookModeOn;
-            PlayerCamera.IsLookModeOn = false;
-            
-            await Task.Delay((int)mapTraversal.ExitDelay * 1000);
+            await Task.Delay((int)exitDelay * 1000);
             
             OnStartGameRequested();
         }
@@ -253,7 +169,8 @@ namespace Scripts.System
 
         private void OnStartGameRequested(bool fadeIn = true)
         {
-            SceneLoader.Instance.LoadScene(_currentMap.SceneName, fadeIn, 1f);
+            CanSave = false;
+            SceneLoader.Instance.LoadScene(CurrentMap.SceneName, fadeIn, 1f);
         }
         
         private void OnSceneStartedLoading()
@@ -289,7 +206,6 @@ namespace Scripts.System
 
             if (sceneName is Scenes.MainSceneName)
             {
-                // IsPlayingFromEditor = false;
                 if (!IsPlayingFromEditor)
                 {
                     _gameMode = EGameMode.MainScene;
@@ -301,7 +217,7 @@ namespace Scripts.System
         
         private void StartBuildingLevel()
         {
-            if (_currentCampaign == null)
+            if (CurrentCampaign == null)
             {
                 Logger.LogWarning("No Campaign is set, this should not happen here, ever.");
                 return;
@@ -309,88 +225,24 @@ namespace Scripts.System
             
             _gameMode = EGameMode.Play;
             
-            _movementEnabled = false;
+            movementEnabled = false;
 
             _startLevelAfterBuildFinishes = true;
-            
-            _currentMap ??= _currentCampaign.GetStarterMap();
 
-            PlayerPrefs.SetString(Strings.LastPlayedCampaign, _currentCampaign.CampaignName);
+            _mapTraversal.CheckCurrentMap();
+
+            PlayerPrefs.SetString(Strings.LastPlayedCampaign,CurrentCampaign.CampaignName);
             
-            mapBuilder.BuildMap(_currentMap);
+            mapBuilder.BuildMap(CurrentMap);
         }
 
         private async void OnLayoutBuilt()
         {
             if (!_startLevelAfterBuildFinishes) return;
             
-            _player = ObjectPool.Instance.GetFromPool(playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
-                .GetComponent<PlayerController>();
-            _player.transform.parent = null;
-            _player.PlayerMovement.SetPositionAndRotation(
-                _currentEntryPoint.playerGridPosition,
-                Quaternion.Euler(0f, _currentEntryPoint.playerRotationY, 0f));
-            _player.PlayerMovement.SetCamera();
-            
-            // To allow playing StartRooms from Editor
-            _movementEnabled = true;
-
-            ScreenFader.FadeOut(1.2f);
-
-            await Task.Delay(200);
-            
-            if (_currentEntryPoint.isMovingForwardOnStart)
-            {
-                _movementEnabled = false;
-                _entryMovementFinished = false;
-                
-                if (SceneLoader.IsInMainScene && !IsPlayingFromEditor)
-                {
-                    HandleEntryMovement(SetControlsForMainScene);
-                }
-                else
-                {
-                    HandleEntryMovement( () =>
-                    {
-                        _movementEnabled = true;
-                        PlayerCamera.IsLookModeOn = _lookModeOnStartTraversal;
-                    });
-                }
-                
-                _player.PlayerMovement.MoveForward(true);
-            }
+            await _mapTraversal.OnLayoutBuilt();
             
             EventsManager.TriggerOnLevelStarted();
-        }
-        
-        private Action _onMovementFinished;
-        private void HandleEntryMovement(Action onMovementFinished)
-        {
-            if (onMovementFinished != null) _onMovementFinished = onMovementFinished;
-            PlayerMovement.OnStartResting.AddListener(OnMovementFinishedWrapper);
-        }
-        
-        private void OnMovementFinishedWrapper()
-        {
-            _onMovementFinished?.Invoke();
-            _onMovementFinished = null;
-            _entryMovementFinished = true;
-            PlayerMovement.OnStartResting.RemoveListener(OnMovementFinishedWrapper);
-        }
-
-        private void SetControlsForMainScene()
-        {
-            _movementEnabled = false;
-            PlayerCameraController.Instance.IsLookModeOn = true;
-            PlayerCameraController.Instance.SetRotationLimits(new RotationSettings
-            {
-                MinXRotation = -60f,
-                MaxXRotation = 60f,
-                MinYRotation = -85f,
-                MaxYRotation = 85f
-            });
-            MainUIManager.Instance.ShowCrossHair(true);
-            MainUIManager.Instance.GraphicRaycasterEnabled(false);
         }
     }
 }

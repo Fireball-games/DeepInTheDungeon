@@ -10,7 +10,6 @@ namespace Scripts.Triggers
     {
         public ETriggerMoveType moveType;
         public EActiveProperty activeProperty;
-        public int startPosition;
         public List<DoTweenMoveStep> steps;
 
         private List<Tween> _positionStore;
@@ -20,7 +19,7 @@ namespace Scripts.Triggers
             base.Awake();
             _positionStore = new List<Tween>();
         }
-        
+
         private void OnEnable()
         {
             _positionStore?.Clear();
@@ -42,40 +41,23 @@ namespace Scripts.Triggers
             }
         }
 
-        public  void SetPosition()
-        {
-            if (activeProperty is EActiveProperty.Position)
-            {
-                ActivePart.localPosition = steps[startPosition].target;
-            }
-            else
-            {
-                ActivePart.localRotation = Quaternion.Euler(steps[startPosition].target);
-            }
-
-            CurrentPosition = startPosition == steps.Count - 1 ? 0 : startPosition + 1;
-        }
-
-        internal override void OnTriggerActivated(ETriggerActivatedDetail _ = ETriggerActivatedDetail.None)
+        internal override void OnTriggerActivated(ETriggerActivatedDetail detail = ETriggerActivatedDetail.None)
         {
             switch (moveType)
             {
                 case ETriggerMoveType.ThereAndBack:
                     CurrentPosition = 0;
-                    _positionStore[0].OnComplete(() => RunBackTween(true))
+                    _positionStore[1].OnComplete(() => RunBackTween(true))
                         .Restart();
                     break;
                 case ETriggerMoveType.Switch:
-                    if (CurrentPosition == 0)
+                    if (CurrentPosition == 0 && detail is ETriggerActivatedDetail.None or ETriggerActivatedDetail.SwitchedOn
+                        || CurrentPosition == 1 && detail is ETriggerActivatedDetail.None or ETriggerActivatedDetail.SwitchedOff)
                     {
-                        _positionStore[0].OnComplete(() => SetResting(true)).Restart();
-                        CurrentPosition = 1;
+                        CurrentPosition = CurrentPosition == steps.Count - 1 ? 0 : CurrentPosition + 1;
                     }
-                    else
-                    {
-                        _positionStore[1].OnComplete(() => SetResting(true)).Restart();
-                        CurrentPosition = 0;
-                    }
+                    
+                    _positionStore[CurrentPosition].OnComplete(() => { SetResting(true); }).Restart();
 
                     break;
                 case ETriggerMoveType.None:
@@ -97,9 +79,13 @@ namespace Scripts.Triggers
 
             if (count <= 0) return;
 
-            _positionStore[^1].Restart();
+            _positionStore[0].OnComplete(() =>
+            {
+                atRest = true;
+                _positionStore[0].OnComplete(null);
+            }).Restart();
         }
-        
+
         private Tween BuildTween(DoTweenMoveStep step)
             => BuildTween(step.target, step.duration, step.movementEase);
 
@@ -115,7 +101,20 @@ namespace Scripts.Triggers
         }
 
         public List<DoTweenMoveStep> GetSteps() => steps;
-        public int GetStartPosition() => startPosition;
-        public void SetStartPosition(int newStartPosition) => startPosition = newStartPosition;
+        public int GetCurrentPosition() => CurrentPosition;
+
+        public void SetCurrentPosition(int newPosition)
+        {
+            CurrentPosition = newPosition;
+
+            if (activeProperty is EActiveProperty.Position)
+            {
+                ActivePart.localPosition = steps[CurrentPosition].target;
+            }
+            else
+            {
+                ActivePart.localRotation = Quaternion.Euler(steps[CurrentPosition].target);
+            }
+        }
     }
 }

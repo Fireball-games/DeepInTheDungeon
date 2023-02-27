@@ -6,18 +6,33 @@ namespace Scripts.Helpers
 {
     public static class Strings
     {
-        public const string DemoCampaignName = "Demo";
-        public const string Show = "Show";
+        // Common
+        public const string CampaignStartMapName = "CampaignStart";
         public const string LastEditedMap = "LastEditedMap";
         public const string LastPlayedCampaign = "LastPlayedCampaign";
         public const string MainCamera = "MainCamera";
-        public const string MainCampaignName = "DeepInTheDungeon";
         public const string MouseXAxis = "Mouse X";
         public const string MouseYAxis = "Mouse Y";
         public const string MouseWheel = "Mouse ScrollWheel";
-        public const string StartRoomsCampaignName = "StartRooms";
+        public const string Screenshot = "Screenshot";
+        public const string Show = "Show";
         public const string Untagged = "Untagged";
-        public const string CampaignStartMapName = "CampaignStart";
+        // FileOperations
+        public const string DemoCampaignName = "Demo";
+        public const string CampaignDirectoryName = "Campaigns";
+        public const string CampaignFileExtension = ".bytes";
+        public const string EnemiesDirectoryName = "Enemies";
+        public const string ItemsDirectoryName = "Items";
+        public const string MainCampaignName = "DeepInTheDungeon";
+        public const string PrefabsDirectoryName = "TilePrefabs";
+        public const string PropsDirectoryName = "Props";
+        public const string ResourcesDirectoryName = "Resources";
+        public const string SavesDirectoryName = "Save";
+        public const string SaveFileExtension = ".sav";
+        public const string ServicesDirectoryName = "ServicePrefabs";
+        public const string StartRoomsCampaignName = "StartRooms";
+        public const string TriggersDirectoryName = "Triggers";
+        public const string WallsDirectoryName = "Walls";
 
         public static string GetSelectedMainCampaignName()
         {
@@ -31,15 +46,27 @@ namespace Scripts.Helpers
         public static string IncrementName(this string baseString, IEnumerable<string> existingNames)
         {
             int number = 1;
-            string name = baseString;
+            string name = $"{baseString}{number}";
 
             while (existingNames.Contains(name))
             {
-                name = $"{baseString}{number}";
                 number++;
+                name = $"{baseString}{number}";
             }
 
             return name;
+        }
+
+        public static string DecrementName(this string baseString, int decrementBy = 1)
+        {
+            if (!int.TryParse(baseString.Substring(baseString.Length - 1), out int number))
+            {
+                Logger.LogWarning($"Decrement name failed. Base string: {baseString}");
+                return baseString;
+            } 
+            
+            number -= decrementBy;
+            return $"{baseString.Substring(0, baseString.Length - 1)}{number}";
         }
     }
 }

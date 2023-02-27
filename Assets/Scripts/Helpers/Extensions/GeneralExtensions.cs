@@ -191,9 +191,8 @@ namespace Scripts.Helpers.Extensions
             return "#" + ColorUtility.ToHtmlStringRGBA(color);
         }
 
-        public static string ToLines(this IEnumerable<string> source)
-        {
-            return string.Join('\n', source);
-        }
+        public static string ToLines(this IEnumerable<string> source) => string.Join('\n', source);
+
+        public static Vector3 ToVectorUniform(this float value) => new(value, value, value);
     }
 }

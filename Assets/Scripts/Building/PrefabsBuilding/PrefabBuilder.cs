@@ -62,8 +62,9 @@ namespace Scripts.Building.PrefabsBuilding
         /// Builds new prefab and both stores configuration in MapDescription and GameObject in Prefabs list.
         /// </summary>
         /// <param name="configuration"></param>
+        /// <param name="isEditorBuild">Use True if new prefab is created for map layout. False is default for when map is being created as a whole.</param>
         /// <returns></returns>
-        public bool BuildPrefab(PrefabConfiguration configuration)
+        public bool BuildPrefab(PrefabConfiguration configuration, bool isEditorBuild = false)
         {
             if (configuration == null) return false;
             
@@ -78,9 +79,9 @@ namespace Scripts.Building.PrefabsBuilding
             {
                 GameObject newPrefab = BuildPhysicalPrefab(configuration);
 
-                TriggerService.ProcessEmbeddedTriggerReceivers(newPrefab);
-                _triggerService.ProcessAllEmbedded(newPrefab);
-                _wallService.ProcessAllEmbedded(newPrefab);
+                TriggerService.ProcessEmbeddedTriggerReceivers(newPrefab, isEditorBuild);
+                _triggerService.ProcessAllEmbedded(newPrefab, isEditorBuild);
+                _wallService.ProcessAllEmbedded(newPrefab, isEditorBuild);
 
                 bool isEditorMode = GameManager.Instance.GameMode is GameManager.EGameMode.Editor;
 
@@ -130,10 +131,11 @@ namespace Scripts.Building.PrefabsBuilding
             ObjectPool.Instance.ReturnToPool(prefabGo);
         }
         
-        public void RemoveConfiguration(string guid)
-        {
-            RemoveConfiguration(GetConfigurationByGuid<PrefabConfiguration>(guid));
-        }
+        public void RemoveConfiguration(string guid) 
+            => RemoveConfiguration(GetConfigurationByGuid<PrefabConfiguration>(guid));
+
+        public void RemoveConfiguration(PrefabConfiguration configuration) 
+            => MapDescription.PrefabConfigurations.Remove(configuration);
 
         public GameObject GetPrefabByGuid(string guid)
         {
@@ -260,11 +262,6 @@ namespace Scripts.Building.PrefabsBuilding
             MapBuilder.Prefabs.Add(newPrefab);
 
             return newPrefab;
-        }
-
-        private void RemoveConfiguration(PrefabConfiguration configuration)
-        {
-            MapDescription.PrefabConfigurations.Remove(configuration);
         }
 
         private int FindIndexOfConfiguration(PrefabConfiguration configuration) =>

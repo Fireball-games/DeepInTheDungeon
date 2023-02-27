@@ -53,13 +53,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (EditedConfiguration != null) return isWallTrigger 
                 ? _wallCursor3DSize 
-                : Vector3.one;
+                : _tileTriggerScale;
             
             if (IsPrefabFinderActive) return _genericCursor3DSize;
             
             return isWallTrigger 
                 ? _wallCursor3DSize 
-                : Vector3.one;
+                : _tileTriggerScale;
 
         }
 
@@ -85,7 +85,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                     : storePrefab.triggerType == ETriggerType.Repeat
                         ? 2
                         : int.MaxValue,
-                StartPosition = 1,
+                CurrentPosition = 0,
             };
         }
 
@@ -185,10 +185,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             SetEdited();
             int position = (int) newPosition;
-            EditedConfiguration.StartPosition = position;
-            IPositionsTrigger positionTrigger = EditedPrefab as IPositionsTrigger;
-            positionTrigger!.SetStartPosition(position);
-            positionTrigger!.SetPosition();
+            EditedConfiguration.CurrentPosition = position;
+            
+            if (EditedPrefab is not IPositionsTrigger positionsTrigger) return;
+            
+            positionsTrigger.SetCurrentPosition(position);
         }
 
         private void OnTargetMapChanged(string targetMap)
@@ -278,7 +279,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             {
                 _startPositionUpDown.Label.text = t.Get(Keys.StartPosition);
                 _startPositionUpDown.maximum = positionsTrigger.GetSteps().Count - 1;
-                _startPositionUpDown.Value = positionsTrigger.GetStartPosition();
+                _startPositionUpDown.Value = positionsTrigger.GetCurrentPosition();
                 _startPositionUpDown.SetCollapsed(false);
             }
 

@@ -1,11 +1,13 @@
 using System;
 using Scripts.Triggers;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Scripts.EventsManagement
 {
     public class EventsManager : MonoBehaviour
     {
+        public static readonly UnityEvent OnNewCampaignStarted = new();
         public static event Action OnLevelStarted;
         public static event Action OnSceneStartedLoading;
         public static event Action<string> OnSceneFinishedLoading;
@@ -17,6 +19,7 @@ namespace Scripts.EventsManagement
 
         // ***********    Triggers    ***********
 
+        public static void TriggerOnNewCampaignStarted() => OnNewCampaignStarted.Invoke();
         public static void TriggerOnLevelStarted() => OnLevelStarted?.Invoke();
         public static void TriggerOnSceneStartedLoading() => OnSceneStartedLoading?.Invoke();
         public static void TriggerOnSceneFinishedLoading(string sceneName) => OnSceneFinishedLoading?.Invoke(sceneName);

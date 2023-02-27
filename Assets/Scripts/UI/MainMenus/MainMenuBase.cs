@@ -11,7 +11,7 @@ using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI
 {
-    public class MainMenu : MonoBehaviour
+    public abstract class MainMenuBase : MonoBehaviour
     {
         public GameObject body;
 

@@ -15,8 +15,8 @@ namespace Scripts.UI
         [SerializeField] private Transform body;
         private ImageUIElement _crossHair;
 
-        private List<MainMenu> _mainMenus;
-        private MainMenu _mainMenuOnUI;
+        private List<MainMenuBase> _mainMenus;
+        private MainMenuBase _mainMenuOnUI;
         private GraphicRaycaster _graphicRaycaster;
 
         protected override void Awake()
@@ -61,9 +61,9 @@ namespace Scripts.UI
             _graphicRaycaster = GetComponent<GraphicRaycaster>();
             
             _crossHair = body.Find("CrossHair").GetComponent<ImageUIElement>();
-            _mainMenuOnUI = body.Find("MainEscapeMenu/MainMenu").GetComponent<MainMenu>();
+            _mainMenuOnUI = body.Find("MainEscapeMenu/MainMenu").GetComponent<MainMenuBase>();
             
-            _mainMenus = new List<MainMenu>
+            _mainMenus = new List<MainMenuBase>
             {
                 _mainMenuOnUI,
             };

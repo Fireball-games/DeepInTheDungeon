@@ -1,4 +1,5 @@
-﻿using Scripts.System.MonoBases;
+﻿using Scripts.Helpers;
+using Scripts.System.MonoBases;
 using UnityEngine.UI;
 
 namespace Scripts.UI.PlayMode
@@ -19,11 +20,13 @@ namespace Scripts.UI.PlayMode
 
         protected override void SetContentOnShow()
         {
+            // Logger.Log("Raycaster enabled");
             _graphicRaycaster.enabled = true;
         }
         
         protected override void SetContentOnClose()
         {
+            // Logger.Log("Raycaster disabled");
             _graphicRaycaster.enabled = false;
         }
     }

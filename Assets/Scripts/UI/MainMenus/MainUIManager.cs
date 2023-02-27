@@ -43,7 +43,7 @@ namespace Scripts.UI
 
         public void ShowCrossHair(bool show) => _crossHair.SetActive(show);
         
-        public void RefreshMainMenuButtons() => _mainMenus.ForEach(menu => menu.RefreshButtons());
+        public void RefreshMainMenuButtons() => _mainMenus.ForEach(menu => menu.RefreshMainMenuButtons());
 
         private void OnLevelStarted()
         {

@@ -102,7 +102,7 @@ namespace Scripts.UI
         
         private void AssignComponents()
         {
-            Transform playButtons = body.transform.Find("PlayButtons");
+            Transform playButtons = body.transform.Find("Frame/PlayButtons");
             _newCampaignButton = playButtons.Find("NewCampaignButton").GetComponent<Button>();
             _newCampaignButton.onClick.AddListener(NewCampaignClicked);
             _continueCampaignButton = playButtons.Find("ContinueCampaignButton").GetComponent<Button>();
@@ -112,7 +112,7 @@ namespace Scripts.UI
             _lastEditedMapButton = playButtons.Find("LastEditedMapButton").GetComponent<Button>();
             _lastEditedMapButton.onClick.AddListener(LastEditedMapClicked);
             
-            Transform systemButtons = body.transform.Find("SystemButtons");
+            Transform systemButtons = body.transform.Find("Frame/SystemButtons");
             _createNewCharacterButton = systemButtons.Find("CreateNewCharacterButton").GetComponent<Button>();
             _createNewCharacterButton.onClick.AddListener(CreateNewCharacterClicked);
             _settingsButton = systemButtons.Find("SettingsButton").GetComponent<Button>();

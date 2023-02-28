@@ -1,13 +1,14 @@
 ﻿using Scripts.System;
 using Scripts.System.MonoBases;
+using UnityEngine;
 
 namespace Scripts.UI
 {
     public abstract class MainMenuBase : UIElementBase
     {
-        private ButtonsMenu _buttonsMenu;
-        private LoadMenu _loadMenu;
-        private StartCampaignMenu _startCampaignMenu;
+        protected ButtonsMenu buttonsMenu;
+        protected LoadMenu loadMenu;
+        protected StartCampaignMenu startCampaignMenu;
         
         protected static GameManager GameManager => GameManager.Instance;
         
@@ -18,13 +19,13 @@ namespace Scripts.UI
 
         public abstract override void SetActive(bool active);
         
-        public void RefreshMainMenuButtons() => _buttonsMenu.RefreshButtons();
+        public void RefreshMainMenuButtons() => buttonsMenu.RefreshButtons();
         
         private void AssignComponents()
         {
-            _buttonsMenu = GetComponentInChildren<ButtonsMenu>();
-            _loadMenu = GetComponentInChildren<LoadMenu>();
-            _startCampaignMenu = GetComponentInChildren<StartCampaignMenu>();
+            buttonsMenu = GetComponentInChildren<ButtonsMenu>();
+            loadMenu = GetComponentInChildren<LoadMenu>();
+            startCampaignMenu = GetComponentInChildren<StartCampaignMenu>();
         }
     }
 }

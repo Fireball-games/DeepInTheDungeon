@@ -350,6 +350,7 @@ namespace Scripts.System
             });
 
             UIManager.ShowCrossHair(true);
+            GameObject.FindObjectOfType<MainMenuWorld>().SetActive(true);
             UIManager.GraphicRaycasterEnabled(false);
         }
     }

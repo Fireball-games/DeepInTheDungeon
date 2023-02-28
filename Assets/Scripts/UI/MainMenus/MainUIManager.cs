@@ -48,11 +48,11 @@ namespace Scripts.UI
         private void OnLevelStarted()
         {
             MainMenuCarrier mainMenuCarrier = FindObjectOfType<MainMenuCarrier>();
-
+            
             if (!mainMenuCarrier) return;
             
             mainMenuCarrier.mainMenuCanvas.worldCamera = CameraManager.Instance.mainCamera;
-            mainMenuCarrier.mainMenu.SetActive(true);
+            // mainMenuCarrier.mainMenu.SetActive(true);
             _mainMenus.Add(mainMenuCarrier.mainMenu);
         }
         

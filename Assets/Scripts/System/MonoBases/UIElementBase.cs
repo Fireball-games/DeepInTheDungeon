@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Scripts.System.MonoBases
@@ -19,58 +20,79 @@ namespace Scripts.System.MonoBases
             Fade,
             Scale
         }
-        
+
         /// <summary>
         /// Disables body.
         /// </summary>
         /// <param name="isActive"></param>
-        public virtual void SetActive(bool isActive)
+        public virtual async Task SetActive(bool isActive)
         {
             if (!body) return;
-            
+
+            TaskCompletionSource<bool> tcs = new();
+
             if (isActive && _isCollapsed)
             {
-                SetCollapsed(false);
+                await SetCollapsed(false);
             }
             
             if (transitionType == ETransitionType.Fade)
             {
                 _canvasGroup ??= gameObject.AddComponent<CanvasGroup>();
                 _canvasGroup.alpha = isActive ? 0 : 1;
-                body.SetActive(isActive);
-                _canvasGroup.DOFade(isActive ? 1 : 0, transitionDuration).SetAutoKill(true).Play();
+                body.SetActive(true);
+                _canvasGroup.DOFade(isActive ? 1 : 0, transitionDuration).SetAutoKill(true).OnComplete(() =>
+                {
+                    tcs.SetResult(true);
+                    body.SetActive(isActive);
+                }).Play();
             }
             else if (transitionType == ETransitionType.Scale)
             {
                 _rectTransform ??= gameObject.GetComponent<RectTransform>();
                 _rectTransform.localScale = isActive ? Vector3.zero : Vector3.one;
-                body.SetActive(isActive);
-                _rectTransform.DOScale(isActive ? Vector3.one : Vector3.zero, transitionDuration).SetAutoKill(true).Play();
+                body.SetActive(true);
+                _rectTransform.DOScale(isActive ? Vector3.one : Vector3.zero, transitionDuration).SetAutoKill(true)
+                    .OnComplete(() =>
+                    {
+                        tcs.SetResult(true);
+                        body.SetActive(isActive);
+                    })
+                    .Play();
             }
             else
             {
+                tcs.SetResult(true);
                 body.SetActive(isActive);
             }
+
+            await tcs.Task;
         }
 
         /// <summary>
         /// Same as SetActive, but disables whole element, not just body.
         /// </summary>
         /// <param name="isCollapsed"></param>
-        public void SetCollapsed(bool isCollapsed)
+        public async Task SetCollapsed(bool isCollapsed)
         {
+            TaskCompletionSource<bool> tcs = new();
+            
             if (isCollapsed)
             {
+                await SetActive(false);
                 _isCollapsed = true;
                 gameObject.SetActive(false);
-                SetActive(false);
+                tcs.SetResult(true);
             }
             else
             {
-                _isCollapsed = false;
                 gameObject.SetActive(true);
-                SetActive(true);
+                await SetActive(true);
+                _isCollapsed = false;
+                tcs.SetResult(true);
             }
+            
+            await tcs.Task;
         }
 
         public bool IsActive => body.activeSelf;

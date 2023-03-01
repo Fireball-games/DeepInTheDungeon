@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.EventsManagement;
 using Scripts.System;
@@ -18,6 +20,14 @@ namespace Scripts.UI
         private List<MainMenuBase> _mainMenus;
         private MainMenuBase _mainMenuOnUI;
         private GraphicRaycaster _graphicRaycaster;
+        
+        [Flags]
+        public enum ETargetedMainMenu
+        {
+            OnUi = 1 << 0,
+            OnWorldCanvas = 1 << 1,
+            Both = OnUi | OnWorldCanvas,
+        } 
 
         protected override void Awake()
         {
@@ -36,12 +46,24 @@ namespace Scripts.UI
             EventsManager.OnLevelStarted -= OnLevelStarted;
         }
         
-        public void ShowMainMenu(bool show)
+        public async void ShowMainMenu(bool show, ETargetedMainMenu targetedMainMenu = ETargetedMainMenu.Both)
         {
-            _mainMenus.ForEach(menu => menu.SetActive(show));
+            List<Task> tasks = new();
+            foreach (MainMenuBase menu in _mainMenus)
+            {
+                switch (menu)
+                {
+                    case MainMenuOnUI when targetedMainMenu.HasFlag(ETargetedMainMenu.OnUi):
+                    case MainMenuWorld when targetedMainMenu.HasFlag(ETargetedMainMenu.OnWorldCanvas):
+                        tasks.Add(menu.SetActive(show));
+                        break;
+                }
+            }
+            
+            await Task.WhenAll(tasks);
         }
 
-        public void ShowCrossHair(bool show) => _crossHair.SetActive(show);
+        public async void ShowCrossHair(bool show) => await _crossHair.SetActive(show);
         
         public void RefreshMainMenuButtons() => _mainMenus.ForEach(menu => menu.RefreshMainMenuButtons());
 

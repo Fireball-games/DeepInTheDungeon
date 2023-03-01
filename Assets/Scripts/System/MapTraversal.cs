@@ -8,11 +8,13 @@ using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.Player;
 using Scripts.ScenesManagement;
+using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.System.Saving;
 using Scripts.Triggers;
 using Scripts.UI;
 using UnityEngine;
+using static Scripts.UI.MainUIManager;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.System
@@ -25,7 +27,7 @@ namespace Scripts.System
 
         private static GameManager GameManager => GameManager.Instance;
         private static MapBuilder MapBuilder => GameManager.MapBuilder;
-        private static MainUIManager UIManager => MainUIManager.Instance;
+        private static MainUIManager UIManager => SingletonNotPersisting<MainUIManager>.Instance;
         private PlayerCameraController PlayerCamera => PlayerCameraController.Instance;
 
         private PlayerController Player
@@ -300,15 +302,6 @@ namespace Scripts.System
             return true;
         }
 
-        private void StartMapFromMainScreenButtonClickHandling()
-        {
-            PlayerCameraController.Instance.IsLookModeOn = false;
-            MainUIManager.Instance.ShowCrossHair(false);
-
-            GameManager.Player.PlayerMovement.MoveForward(true);
-            GameObject.FindObjectOfType<DoTweenTriggerReceiver>().Trigger();
-        }
-
         private void HandleEntryMovement(Action onMovementFinished)
         {
             if (onMovementFinished != null) _onMovementFinished = onMovementFinished;
@@ -322,6 +315,16 @@ namespace Scripts.System
             _entryMovementFinished = true;
             GameManager.CanSave = true;
             PlayerMovement.OnStartResting.RemoveListener(OnMovementFinishedWrapper);
+        }
+        
+        private void StartMapFromMainScreenButtonClickHandling()
+        {
+            PlayerCameraController.Instance.IsLookModeOn = false;
+            UIManager.ShowCrossHair(false);
+            UIManager.ShowMainMenu(false);
+
+            GameManager.Player.PlayerMovement.MoveForward(true);
+            GameObject.FindObjectOfType<DoTweenTriggerReceiver>().Trigger();
         }
 
         private async void HandleFirstStepAfterTraversal()
@@ -337,7 +340,7 @@ namespace Scripts.System
             PlayerCamera.IsLookModeOn = _lookModeOnStartTraversal;
         }
 
-        private void SetControlsForMainScene()
+        private async void SetControlsForMainScene()
         {
             MovementEnabled = false;
             PlayerCameraController.Instance.IsLookModeOn = true;
@@ -350,8 +353,9 @@ namespace Scripts.System
             });
 
             UIManager.ShowCrossHair(true);
-            GameObject.FindObjectOfType<MainMenuWorld>().SetActive(true);
             UIManager.GraphicRaycasterEnabled(false);
+            UIManager.ShowMainMenu(true, ETargetedMainMenu.OnWorldCanvas);
+            // await GameObject.FindObjectOfType<MainMenuWorld>().SetActive(true);
         }
     }
 }

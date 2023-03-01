@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
@@ -43,14 +44,14 @@ namespace Scripts.UI.EditorUI
             EditorEvents.OnFloorChanged -= OnFloorChanged;
         }
 
-        public override void SetActive(bool isActive)
+        public override async Task SetActive(bool isActive)
         {
-            base.SetActive(isActive);
+            await base.SetActive(isActive);
 
             ConstructButtons();
         }
 
-        private void ConstructButtons()
+        private async void ConstructButtons()
         {
             upButton.transform.SetParent(transform);
             downButton.transform.SetParent(transform);
@@ -63,12 +64,12 @@ namespace Scripts.UI.EditorUI
             _floorCount = map.Layout.GetLength(0);
             _currentFloor = Manager.CurrentFloor;
 
-            upButton.SetActive(true);
+            await upButton.SetActive(true);
             upButton.transform.SetParent(body.transform);
 
             AddFloorButtons();
 
-            downButton.SetActive(true);
+            await downButton.SetActive(true);
             downButton.transform.SetParent(body.transform);
 
             SetInteractivity();

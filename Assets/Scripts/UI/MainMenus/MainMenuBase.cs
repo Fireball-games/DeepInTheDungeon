@@ -1,6 +1,6 @@
-﻿using Scripts.System;
+﻿using System.Threading.Tasks;
+using Scripts.System;
 using Scripts.System.MonoBases;
-using UnityEngine;
 
 namespace Scripts.UI
 {
@@ -17,15 +17,24 @@ namespace Scripts.UI
             AssignComponents();
         }
 
-        public abstract override void SetActive(bool active);
+        public override async Task SetActive(bool active)
+        {
+            body.SetActive(true);
+            Task buttons = buttonsMenu.SetActive(active);
+            Task load = loadMenu.SetActive(false);
+            Task campaign = startCampaignMenu.SetActive(false);
+            
+            await Task.WhenAll(buttons, load, campaign);
+            body.SetActive(active);
+        }
         
         public void RefreshMainMenuButtons() => buttonsMenu.RefreshButtons();
         
         private void AssignComponents()
         {
-            buttonsMenu = GetComponentInChildren<ButtonsMenu>();
-            loadMenu = GetComponentInChildren<LoadMenu>();
-            startCampaignMenu = GetComponentInChildren<StartCampaignMenu>();
+            buttonsMenu = GetComponentInChildren<ButtonsMenu>(true);
+            loadMenu = GetComponentInChildren<LoadMenu>(true);
+            startCampaignMenu = GetComponentInChildren<StartCampaignMenu>(true);
         }
     }
 }

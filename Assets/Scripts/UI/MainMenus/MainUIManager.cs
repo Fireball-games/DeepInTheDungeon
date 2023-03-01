@@ -55,7 +55,7 @@ namespace Scripts.UI
                 {
                     case MainMenuOnUI when targetedMainMenu.HasFlag(ETargetedMainMenu.OnUi):
                     case MainMenuWorld when targetedMainMenu.HasFlag(ETargetedMainMenu.OnWorldCanvas):
-                        tasks.Add(menu.SetActive(show));
+                        tasks.Add(menu.SetActiveAsync(show));
                         break;
                 }
             }
@@ -63,7 +63,7 @@ namespace Scripts.UI
             await Task.WhenAll(tasks);
         }
 
-        public async void ShowCrossHair(bool show) => await _crossHair.SetActive(show);
+        public async void ShowCrossHairAsync(bool show) => await _crossHair.SetActiveAsync(show);
         
         public void RefreshMainMenuButtons() => _mainMenus.ForEach(menu => menu.RefreshMainMenuButtons());
 

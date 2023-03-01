@@ -44,9 +44,9 @@ namespace Scripts.UI.EditorUI
             EditorEvents.OnFloorChanged -= OnFloorChanged;
         }
 
-        public override async Task SetActive(bool isActive)
+        public override async Task SetActiveAsync(bool isActive)
         {
-            await base.SetActive(isActive);
+            await base.SetActiveAsync(isActive);
 
             ConstructButtons();
         }
@@ -64,12 +64,12 @@ namespace Scripts.UI.EditorUI
             _floorCount = map.Layout.GetLength(0);
             _currentFloor = Manager.CurrentFloor;
 
-            await upButton.SetActive(true);
+            await upButton.SetActiveAsync(true);
             upButton.transform.SetParent(body.transform);
 
             AddFloorButtons();
 
-            await downButton.SetActive(true);
+            await downButton.SetActiveAsync(true);
             downButton.transform.SetParent(body.transform);
 
             SetInteractivity();

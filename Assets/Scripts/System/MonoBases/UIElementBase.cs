@@ -22,10 +22,26 @@ namespace Scripts.System.MonoBases
         }
 
         /// <summary>
-        /// Disables body.
+        /// Disables/Enables the body, IGNORES TRANSITIONS.
         /// </summary>
         /// <param name="isActive"></param>
-        public virtual async Task SetActive(bool isActive)
+        public virtual void SetActive(bool isActive)
+        {
+            if (!body) return;
+
+            if (isActive && _isCollapsed)
+            {
+                SetCollapsed(false);
+            }
+            
+            body.SetActive(isActive);
+        }
+
+        /// <summary>
+        /// Disables body. Like SetActive, but works with transitions.
+        /// </summary>
+        /// <param name="isActive"></param>
+        public virtual async Task SetActiveAsync(bool isActive)
         {
             if (!body) return;
 
@@ -33,7 +49,7 @@ namespace Scripts.System.MonoBases
 
             if (isActive && _isCollapsed)
             {
-                await SetCollapsed(false);
+                SetCollapsed(false);
             }
             
             if (transitionType == ETransitionType.Fade)
@@ -68,18 +84,34 @@ namespace Scripts.System.MonoBases
 
             await tcs.Task;
         }
+        
+        public void SetCollapsed(bool isCollapsed)
+        {
+                if (isCollapsed)
+                {
+                    SetActive(false);
+                    _isCollapsed = true;
+                    gameObject.SetActive(false);
+                }
+                else
+                {
+                    gameObject.SetActive(true);
+                    SetActive(true);
+                    _isCollapsed = false;
+                }
+        }
 
         /// <summary>
         /// Same as SetActive, but disables whole element, not just body.
         /// </summary>
         /// <param name="isCollapsed"></param>
-        public async Task SetCollapsed(bool isCollapsed)
+        public async Task SetCollapsedAsync(bool isCollapsed)
         {
             TaskCompletionSource<bool> tcs = new();
             
             if (isCollapsed)
             {
-                await SetActive(false);
+                await SetActiveAsync(false);
                 _isCollapsed = true;
                 gameObject.SetActive(false);
                 tcs.SetResult(true);
@@ -87,7 +119,7 @@ namespace Scripts.System.MonoBases
             else
             {
                 gameObject.SetActive(true);
-                await SetActive(true);
+                await SetActiveAsync(true);
                 _isCollapsed = false;
                 tcs.SetResult(true);
             }

@@ -20,9 +20,9 @@ namespace Scripts.UI.PlayMode
             _graphicRaycaster = graphicRaycaster;
         }
 
-        protected override void SetContentOnShow()
+        protected override async void SetContentOnShow()
         {
-            _mainMenu.SetActive(true);
+            await _mainMenu.SetActiveAsync(true);
             
             // Logger.Log("Raycaster enabled");
             _graphicRaycaster.enabled = true;

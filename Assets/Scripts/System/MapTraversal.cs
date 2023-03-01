@@ -320,7 +320,7 @@ namespace Scripts.System
         private void StartMapFromMainScreenButtonClickHandling()
         {
             PlayerCameraController.Instance.IsLookModeOn = false;
-            UIManager.ShowCrossHair(false);
+            UIManager.ShowCrossHairAsync(false);
             UIManager.ShowMainMenu(false);
 
             GameManager.Player.PlayerMovement.MoveForward(true);
@@ -340,7 +340,7 @@ namespace Scripts.System
             PlayerCamera.IsLookModeOn = _lookModeOnStartTraversal;
         }
 
-        private async void SetControlsForMainScene()
+        private void SetControlsForMainScene()
         {
             MovementEnabled = false;
             PlayerCameraController.Instance.IsLookModeOn = true;
@@ -352,7 +352,7 @@ namespace Scripts.System
                 MaxYRotation = 85f
             });
 
-            UIManager.ShowCrossHair(true);
+            UIManager.ShowCrossHairAsync(true);
             UIManager.GraphicRaycasterEnabled(false);
             UIManager.ShowMainMenu(true, ETargetedMainMenu.OnWorldCanvas);
             // await GameObject.FindObjectOfType<MainMenuWorld>().SetActive(true);

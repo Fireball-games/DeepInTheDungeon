@@ -17,12 +17,12 @@ namespace Scripts.UI
             AssignComponents();
         }
 
-        public override async Task SetActive(bool active)
+        public override async Task SetActiveAsync(bool active)
         {
             body.SetActive(true);
-            Task buttons = buttonsMenu.SetActive(active);
-            Task load = loadMenu.SetActive(false);
-            Task campaign = startCampaignMenu.SetActive(false);
+            Task buttons = buttonsMenu.SetActiveAsync(active);
+            Task load = loadMenu.SetActiveAsync(false);
+            Task campaign = startCampaignMenu.SetActiveAsync(false);
             
             await Task.WhenAll(buttons, load, campaign);
             body.SetActive(active);

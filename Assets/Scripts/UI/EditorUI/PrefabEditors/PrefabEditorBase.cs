@@ -107,7 +107,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _mainWindow.SetActive(isSingleTypeEditor);
             _prefabList.Close();
             _existingList.Close();
-            await _prefabTitle.SetActive(false);
+            await _prefabTitle.SetActiveAsync(false);
             EditedConfiguration = _originalConfiguration = null;
             SetEdited(false);
             SelectedCursor.Hide();
@@ -118,7 +118,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             SetExistingList(true, existingConfigurations);
             
-            await SetActive(true);
+            await SetActiveAsync(true);
         }
 
         private void OpenViaFinderButton()
@@ -158,7 +158,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 GetCursor3DScale(),
                 configuration.TransformData.Rotation);
 
-            await _prefabTitle.SetActive(true);
+            await _prefabTitle.SetActiveAsync(true);
             _prefabTitle.SetTitle(configuration.PrefabName);
 
             SetExistingList(false);
@@ -251,7 +251,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 return;
             }
 
-            await _prefabTitle.SetActive(true);
+            await _prefabTitle.SetActiveAsync(true);
             _prefabTitle.SetTitle(EditedConfiguration.PrefabName);
 
             if (!EditedConfiguration.SpawnPrefabOnBuild) 
@@ -282,13 +282,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             ConfigurablePropertyAttribute attribute = _configurableComponents[c];
             if (EditedConfiguration == null || !EditedConfiguration.SpawnPrefabOnBuild && attribute.IsAvailableForEmbedded)
             {
-                await c.SetCollapsed(true);
+                await c.SetCollapsedAsync(true);
                 return;
             }
 
             if (EditedConfiguration.SpawnPrefabOnBuild && attribute.IsAvailableForEmbedded)
             {
-                await c.SetActive(true);
+                await c.SetActiveAsync(true);
 
                 if (attribute.SetValueFromConfiguration)
                 {
@@ -397,7 +397,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _placeholder.transform.parent = body.transform;
             _placeholder.SetActive(false);
 
-            await _prefabTitle.SetActive(false);
+            await _prefabTitle.SetActiveAsync(false);
             SetPrefabList(false);
             SetExistingList(false);
             _mainWindow.SetActive(false);
@@ -411,7 +411,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Manager.TileGizmo.Reset();
             EditorMouseService.Instance.RefreshMousePosition();
 
-            await SetActive(false);
+            await SetActiveAsync(false);
         }
 
 
@@ -440,8 +440,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private async void SetupWindow(EPrefabType prefabType)
         {
-            await SetActive(true);
-            await _prefabList.SetActive(false);
+            await SetActiveAsync(true);
+            await _prefabList.SetActiveAsync(false);
             SetExistingList(false);
             _mainWindow.SetActive(true);
             SetStatusText();
@@ -484,7 +484,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             if (!isOpen)
             {
-                await _prefabList.SetActive(false);
+                await _prefabList.SetActiveAsync(false);
                 return;
             }
 
@@ -580,7 +580,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             ConfigurableElement uiComponent = PrefabStore.CloneUIComponent(componentType);
             
             uiComponent.transform.SetParent(Content);
-            await uiComponent.SetCollapsed(true);
+            await uiComponent.SetCollapsedAsync(true);
             uiComponent.SetLabel(t.Get(attribute.LabelText));
             uiComponent.SetOnValueChanged(value =>
             {

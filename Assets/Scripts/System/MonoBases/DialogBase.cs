@@ -64,7 +64,7 @@ namespace Scripts.System.MonoBases
 
             _taskCompletionSource = new TaskCompletionSource<EConfirmResult>();
             SetContentOnShow();
-            SetActive(true);
+            await SetActiveAsync(true);
             return await _taskCompletionSource.Task;
         }
         

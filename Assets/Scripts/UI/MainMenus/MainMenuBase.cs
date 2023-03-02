@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using DG.Tweening;
 using Scripts.System;
 using Scripts.System.MonoBases;
+using UnityEngine;
 
 namespace Scripts.UI
 {
@@ -9,6 +11,8 @@ namespace Scripts.UI
         protected ButtonsMenu buttonsMenu;
         protected LoadMenu loadMenu;
         protected StartCampaignMenu startCampaignMenu;
+
+        private bool _firstOpenHappened;
         
         protected static GameManager GameManager => GameManager.Instance;
         
@@ -19,13 +23,29 @@ namespace Scripts.UI
 
         public override async Task SetActiveAsync(bool active)
         {
-            body.SetActive(true);
-            Task buttons = buttonsMenu.SetActiveAsync(active);
-            Task load = loadMenu.SetActiveAsync(false);
-            Task campaign = startCampaignMenu.SetActiveAsync(false);
+            if (active)
+            {
+                body.SetActive(true);
+                loadMenu.SetActive(false);
+                startCampaignMenu.SetActive(false);
+                await buttonsMenu.SetActiveAsync(true);
+            }
+            else
+            {
+                Task load = loadMenu.SetActiveAsync(false);
+                Task campaign = startCampaignMenu.SetActiveAsync(false);
+                Task buttons = buttonsMenu.SetActiveAsync(true);
+                
+                await Task.WhenAll(load, campaign, buttons);
+            }
             
-            await Task.WhenAll(buttons, load, campaign);
             body.SetActive(active);
+        }
+        
+        protected virtual async void OpenLoadMenu()
+        {
+            buttonsMenu.transform.DOLocalMove(new Vector3(-500,0, 0), 0.5f);
+            await loadMenu.SetActiveAsync(true);
         }
         
         public void RefreshMainMenuButtons() => buttonsMenu.RefreshButtons();

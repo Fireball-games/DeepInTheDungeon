@@ -62,7 +62,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             for (int i = 0; i < waypoints.Count; i++)
             {
-                GameObject controlGo = ObjectPool.Instance.GetFromPool(waypointPrefab, scrollViewContent.gameObject);
+                GameObject controlGo = ObjectPool.Instance.SpawnFromPool(waypointPrefab, scrollViewContent.gameObject);
                 WaypointControl control = controlGo.GetComponent<WaypointControl>();
 
                 string title = i == 0 ? t.Get(Keys.StartPoint) : i == waypoints.Count - 1 ? t.Get(Keys.EndPoint) : $"{Keys.Point} {i + 1}";
@@ -93,7 +93,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private void AddAddWaypointWidget(string labelText, EAddWaypointType type)
         {
             AddWaypointWidget widget = ObjectPool.Instance
-                .GetFromPool(addWaypointPrefab, scrollViewContent.gameObject)
+                .SpawnFromPool(addWaypointPrefab, scrollViewContent.gameObject)
                 .GetComponent<AddWaypointWidget>();
 
             widget.Set(labelText, type, OnAddWaypointClicked);

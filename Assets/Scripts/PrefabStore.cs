@@ -45,7 +45,7 @@ namespace Scripts
         public static GameObject Instantiate(string configurationPrefabName, GameObject parent)
         {
             return PrefabMap.ContainsKey(configurationPrefabName)
-                ? ObjectPool.Instance.GetFromPool(PrefabMap[configurationPrefabName], parent)
+                ? ObjectPool.Instance.SpawnFromPool(PrefabMap[configurationPrefabName], parent)
                 : null;
         }
         
@@ -62,7 +62,7 @@ namespace Scripts
                 return component;
             }
             
-            component = ObjectPool.Instance.GetFromPool(component.gameObject, null).GetComponent<ConfigurableElement>();
+            component = ObjectPool.Instance.SpawnFromPool(component.gameObject, null).GetComponent<ConfigurableElement>();
             return component;
         }
 

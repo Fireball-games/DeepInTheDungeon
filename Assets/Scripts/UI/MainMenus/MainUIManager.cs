@@ -46,9 +46,10 @@ namespace Scripts.UI
             EventsManager.OnLevelStarted -= OnLevelStarted;
         }
         
-        public async void ShowMainMenu(bool show, ETargetedMainMenu targetedMainMenu = ETargetedMainMenu.Both)
+        public async Task ShowMainMenu(bool show, ETargetedMainMenu targetedMainMenu = ETargetedMainMenu.Both)
         {
             List<Task> tasks = new();
+            
             foreach (MainMenuBase menu in _mainMenus)
             {
                 switch (menu)

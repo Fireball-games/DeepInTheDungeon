@@ -66,15 +66,21 @@ namespace Scripts.System
  
             byte[] fileData = File.ReadAllBytes(filePath);
 
-            return GetScreenshotFromBytes(fileData);
+            return GetScreenshotTextureFromBytes(fileData);
         }
 
-        public Texture2D GetScreenshotFromBytes(byte[] bytes)
+        public Texture2D GetScreenshotTextureFromBytes(byte[] bytes)
         {
             Texture2D texture = new(captureWidth, captureHeight);
             texture.LoadImage(bytes); //..this will auto-resize the texture dimensions.
 
             return texture;
+        }
+        
+        public Sprite GetScreenshotSpriteFromBytes(byte[] bytes)
+        {
+            Texture2D texture = GetScreenshotTextureFromBytes(bytes);
+            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
         }
     }
 }

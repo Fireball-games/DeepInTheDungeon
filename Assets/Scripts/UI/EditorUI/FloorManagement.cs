@@ -106,7 +106,7 @@ namespace Scripts.UI.EditorUI
         {
             for (int i = 0; i < _floorCount - 2; i++)
             {
-                FloorButton newButton = ObjectPool.Instance.GetFromPool(floorButtonPrefab, body)
+                FloorButton newButton = ObjectPool.Instance.SpawnFromPool(floorButtonPrefab, body)
                     .GetComponent<FloorButton>();
 
                 newButton.SetActive(true, (i + 1));

@@ -30,9 +30,9 @@ namespace Scripts.System.Pooling
             }
         }
 
-        public GameObject GetFromPool(GameObject go, GameObject parent) => GetFromPool(go, Vector3.zero, Quaternion.identity, parent);
+        public GameObject SpawnFromPool(GameObject go, GameObject parent) => SpawnFromPool(go, Vector3.zero, Quaternion.identity, parent);
         
-        public GameObject GetFromPool(GameObject go, Vector3 position, Quaternion rotation, GameObject parent = null) 
+        public GameObject SpawnFromPool(GameObject go, Vector3 position, Quaternion rotation, GameObject parent = null) 
         {
             if (Pool.ContainsKey(go.name) && Pool[go.name].Any())
             {

@@ -21,6 +21,8 @@ namespace Scripts.System.Saving
     {
         // TODO: Make sure, that _currentSave is always up to date and is null when creating new character.
         public static Save CurrentSave { get; private set; }
+        public static IEnumerable<Save> Saves => _saves;
+
         private static IEnumerable<Save> _saves = Enumerable.Empty<Save>();
         private static Save _tempSave;
         private static readonly List<string> SystemSavesNames = new() {Keys.AutoSave, Keys.QuickSave, Keys.MapEntry, Keys.MapExit};

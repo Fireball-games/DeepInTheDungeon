@@ -201,7 +201,7 @@ namespace Scripts.System
             PlayerCamera.IsLookModeOn = false;
             MouseCursorManager.ResetCursor();
             
-            Player = ObjectPool.Instance.GetFromPool(_playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
+            Player = ObjectPool.Instance.SpawnFromPool(_playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
             Player.transform.parent = null;
             Player.PlayerMovement.SetPositionAndRotation(
@@ -317,11 +317,11 @@ namespace Scripts.System
             PlayerMovement.OnStartResting.RemoveListener(OnMovementFinishedWrapper);
         }
         
-        private void StartMapFromMainScreenButtonClickHandling()
+        private async void StartMapFromMainScreenButtonClickHandling()
         {
             PlayerCameraController.Instance.IsLookModeOn = false;
             UIManager.ShowCrossHairAsync(false);
-            UIManager.ShowMainMenu(false);
+            await UIManager.ShowMainMenu(false);
 
             GameManager.Player.PlayerMovement.MoveForward(true);
             GameObject.FindObjectOfType<DoTweenTriggerReceiver>().Trigger();
@@ -340,7 +340,7 @@ namespace Scripts.System
             PlayerCamera.IsLookModeOn = _lookModeOnStartTraversal;
         }
 
-        private void SetControlsForMainScene()
+        private async void SetControlsForMainScene()
         {
             MovementEnabled = false;
             PlayerCameraController.Instance.IsLookModeOn = true;
@@ -354,8 +354,7 @@ namespace Scripts.System
 
             UIManager.ShowCrossHairAsync(true);
             UIManager.GraphicRaycasterEnabled(false);
-            UIManager.ShowMainMenu(true, ETargetedMainMenu.OnWorldCanvas);
-            // await GameObject.FindObjectOfType<MainMenuWorld>().SetActive(true);
+            await UIManager.ShowMainMenu(true, ETargetedMainMenu.OnWorldCanvas);
         }
     }
 }

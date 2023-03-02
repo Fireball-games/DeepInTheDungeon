@@ -47,13 +47,13 @@ namespace Scripts.UI.EditorUI.Components
 
             _list.ForEach(item =>
             {
-                DeletableConfigurationListButton newButton = ObjectPool.Instance.GetFromPool(itemPrefab.gameObject, _content.gameObject)
+                DeletableConfigurationListButton newButton = ObjectPool.Instance.SpawnFromPool(itemPrefab.gameObject, _content.gameObject)
                     .GetComponent<DeletableConfigurationListButton>();
 
                 newButton.Set(item, null, OnDeleteButtonClicked, false, interactableNavigationButton: false, isCameraStayingOnNavigatedPosition);
             });
 
-            Button addButton = ObjectPool.Instance.GetFromPool(buttonPrefab.gameObject, _content.gameObject)
+            Button addButton = ObjectPool.Instance.SpawnFromPool(buttonPrefab.gameObject, _content.gameObject)
                 .GetComponent<Button>();
 
             addButton.GetComponentInChildren<TMP_Text>().text = t.Get(Keys.AddNewSubscriber);

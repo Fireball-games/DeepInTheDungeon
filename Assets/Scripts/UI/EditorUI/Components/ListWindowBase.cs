@@ -44,7 +44,7 @@ namespace Scripts.UI.EditorUI.Components
             foreach (T item in items)  
             {
                 TButton newButton = ObjectPool.Instance
-                    .GetFromPool(itemPrefab, listContent)
+                    .SpawnFromPool(itemPrefab, listContent)
                     .GetComponent<TButton>();
 
                 SetButton(newButton, item);

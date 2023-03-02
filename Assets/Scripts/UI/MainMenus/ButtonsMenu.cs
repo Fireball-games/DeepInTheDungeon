@@ -44,7 +44,6 @@ namespace Scripts.UI
         {
             SetComponents();
         }
-
         
         public void RefreshButtons() => SetComponents();
         

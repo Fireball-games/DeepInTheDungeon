@@ -258,7 +258,7 @@ namespace Scripts.UI.Components
 
             _existingCampaigns.ForEach(campaign =>
             {
-                GameObject fileItem = ObjectPool.Instance.GetFromPool(fileItemPrefab, _campaignsParent.gameObject);
+                GameObject fileItem = ObjectPool.Instance.SpawnFromPool(fileItemPrefab, _campaignsParent.gameObject);
                 fileItem.name = campaign.CampaignName;
                 fileItem.GetComponentInChildren<TMP_Text>().text = campaign.CampaignName;
                 Button button = fileItem.GetComponentInChildren<Button>();
@@ -302,7 +302,7 @@ namespace Scripts.UI.Components
 
             foreach (MapDescription map in _selectedCampaign.Maps)
             {
-                GameObject fileItem = ObjectPool.Instance.GetFromPool(fileItemPrefab, _mapsItemsParent.gameObject);
+                GameObject fileItem = ObjectPool.Instance.SpawnFromPool(fileItemPrefab, _mapsItemsParent.gameObject);
                 fileItem.name = map.MapName;
                 fileItem.GetComponentInChildren<TMP_Text>().text = map.MapName;
                 fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => LoadMap(map.MapName));

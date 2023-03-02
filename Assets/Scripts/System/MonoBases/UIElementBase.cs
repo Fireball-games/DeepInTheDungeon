@@ -21,6 +21,21 @@ namespace Scripts.System.MonoBases
             Scale
         }
 
+        private void Awake()
+        {
+            if (transitionType == ETransitionType.Scale)
+            {
+                _rectTransform = gameObject.GetComponent<RectTransform>();
+                _rectTransform.localScale = Vector3.zero;
+            }
+            
+            if (transitionType == ETransitionType.Fade)
+            {
+                _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+                _canvasGroup.alpha = 0;
+            }
+        }
+
         /// <summary>
         /// Disables/Enables the body, IGNORES TRANSITIONS.
         /// </summary>
@@ -54,8 +69,7 @@ namespace Scripts.System.MonoBases
             
             if (transitionType == ETransitionType.Fade)
             {
-                _canvasGroup ??= gameObject.AddComponent<CanvasGroup>();
-                _canvasGroup.alpha = isActive ? 0 : 1;
+                if (!_canvasGroup) Awake();
                 body.SetActive(true);
                 _canvasGroup.DOFade(isActive ? 1 : 0, transitionDuration).SetAutoKill(true).OnComplete(() =>
                 {
@@ -65,8 +79,7 @@ namespace Scripts.System.MonoBases
             }
             else if (transitionType == ETransitionType.Scale)
             {
-                _rectTransform ??= gameObject.GetComponent<RectTransform>();
-                _rectTransform.localScale = isActive ? Vector3.zero : Vector3.one;
+                if (!_rectTransform) Awake();
                 body.SetActive(true);
                 _rectTransform.DOScale(isActive ? Vector3.one : Vector3.zero, transitionDuration).SetAutoKill(true)
                     .OnComplete(() =>

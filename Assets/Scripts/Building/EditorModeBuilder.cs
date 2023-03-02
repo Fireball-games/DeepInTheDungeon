@@ -34,7 +34,7 @@ namespace Scripts.Building
             }
             
             GameObject cube = DefaultsProvider.defaultNullCubePrefab
-                ? ObjectPool.Instance.GetFromPool(DefaultsProvider.defaultNullCubePrefab, LayoutParent.gameObject)
+                ? ObjectPool.Instance.SpawnFromPool(DefaultsProvider.defaultNullCubePrefab, LayoutParent.gameObject)
                 : GameObject.CreatePrimitive(PrimitiveType.Cube);
             
             cube.transform.parent = LayoutParent;

@@ -25,6 +25,14 @@ namespace Scripts.UI
         {
             if (active)
             {
+                if (!_firstOpenHappened)
+                {
+                    buttonsMenu.PrepareForTransition();
+                    loadMenu.PrepareForTransition();
+                    startCampaignMenu.PrepareForTransition();
+                    _firstOpenHappened = true;
+                }
+                
                 body.SetActive(true);
                 loadMenu.SetActive(false);
                 startCampaignMenu.SetActive(false);
@@ -34,11 +42,12 @@ namespace Scripts.UI
             {
                 Task load = loadMenu.SetActiveAsync(false);
                 Task campaign = startCampaignMenu.SetActiveAsync(false);
-                Task buttons = buttonsMenu.SetActiveAsync(true);
+                Task buttons = buttonsMenu.SetActiveAsync(false);
                 
                 await Task.WhenAll(load, campaign, buttons);
             }
             
+            CanvasGroup.blocksRaycasts = active;
             body.SetActive(active);
         }
         

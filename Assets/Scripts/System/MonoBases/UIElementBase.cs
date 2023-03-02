@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -11,7 +12,39 @@ namespace Scripts.System.MonoBases
         [SerializeField] private float transitionDuration = 0.5f;
 
         private CanvasGroup _canvasGroup;
+        protected CanvasGroup CanvasGroup
+        {
+            get
+            {
+                if (!_canvasGroup)
+                {
+                    _canvasGroup = GetComponent<CanvasGroup>();
+                    
+                    if (!_canvasGroup)
+                    {
+                        _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+                    }
+                }
+
+                return _canvasGroup;
+            }
+        }
+        
         private RectTransform _rectTransform;
+        
+        private RectTransform RectTransform
+        {
+            get
+            {
+                if (!_rectTransform)
+                {
+                    _rectTransform = GetComponent<RectTransform>();
+                }
+
+                return _rectTransform;
+            }
+        }
+        
         private bool _isCollapsed;
         
         private enum ETransitionType
@@ -20,19 +53,21 @@ namespace Scripts.System.MonoBases
             Fade,
             Scale
         }
-
-        private void Awake()
+        
+        /// <summary>
+        /// This method should be called if you want to set element to proper values before transition, like first show time. 
+        /// </summary>
+        public void PrepareForTransition()
         {
-            if (transitionType == ETransitionType.Scale)
-            {
-                _rectTransform = gameObject.GetComponent<RectTransform>();
-                _rectTransform.localScale = Vector3.zero;
-            }
+            if (!body) return;
             
             if (transitionType == ETransitionType.Fade)
             {
-                _canvasGroup = gameObject.AddComponent<CanvasGroup>();
-                _canvasGroup.alpha = 0;
+                CanvasGroup.alpha = 0;
+            }
+            else if (transitionType == ETransitionType.Scale)
+            {
+                RectTransform.localScale = Vector3.zero;
             }
         }
 
@@ -69,9 +104,17 @@ namespace Scripts.System.MonoBases
             
             if (transitionType == ETransitionType.Fade)
             {
-                if (!_canvasGroup) Awake();
+                // If the body is already active/inactive, return.
+                if (isActive && Math.Abs(CanvasGroup.alpha - 1) < float.Epsilon 
+                    || !isActive && Math.Abs(CanvasGroup.alpha) < float.Epsilon)
+                {
+                    body.SetActive(isActive);
+                    tcs.SetResult(true);
+                    return;
+                }
+                
                 body.SetActive(true);
-                _canvasGroup.DOFade(isActive ? 1 : 0, transitionDuration).SetAutoKill(true).OnComplete(() =>
+                CanvasGroup.DOFade(isActive ? 1 : 0, transitionDuration).SetAutoKill(true).OnComplete(() =>
                 {
                     tcs.SetResult(true);
                     body.SetActive(isActive);
@@ -79,9 +122,16 @@ namespace Scripts.System.MonoBases
             }
             else if (transitionType == ETransitionType.Scale)
             {
-                if (!_rectTransform) Awake();
+                if (isActive && RectTransform.localScale == Vector3.one 
+                    || !isActive && RectTransform.localScale == Vector3.zero)
+                {
+                    body.SetActive(isActive);
+                    tcs.SetResult(true);
+                    return;
+                }
+                
                 body.SetActive(true);
-                _rectTransform.DOScale(isActive ? Vector3.one : Vector3.zero, transitionDuration).SetAutoKill(true)
+                RectTransform.DOScale(isActive ? Vector3.one : Vector3.zero, transitionDuration).SetAutoKill(true)
                     .OnComplete(() =>
                     {
                         tcs.SetResult(true);

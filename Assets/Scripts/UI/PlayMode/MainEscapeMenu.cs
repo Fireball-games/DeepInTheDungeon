@@ -1,4 +1,5 @@
-﻿using Scripts.System.MonoBases;
+﻿using System.Threading.Tasks;
+using Scripts.System.MonoBases;
 using UnityEngine.UI;
 
 namespace Scripts.UI.PlayMode
@@ -27,7 +28,7 @@ namespace Scripts.UI.PlayMode
             _graphicRaycaster.enabled = true;
         }
         
-        protected override async void SetContentOnClose()
+        protected override async Task SetContentOnClose()
         {
             await _mainMenu.SetActiveAsync(false);
             // Logger.Log("Raycaster disabled");

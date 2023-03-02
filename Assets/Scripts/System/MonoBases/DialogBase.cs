@@ -73,12 +73,14 @@ namespace Scripts.System.MonoBases
         /// </summary>
         protected virtual void SetContentOnShow()
         {}
-        
+
         /// <summary>
         /// Optional method to override, sets behaviour when closing the dialog.
         /// </summary>
-        protected virtual void SetContentOnClose()
-        {}
+        protected virtual async Task SetContentOnClose()
+        {
+            await Task.Delay(0);
+        }
 
         private void OnCancelClicked() => CloseDialog();
 
@@ -86,7 +88,7 @@ namespace Scripts.System.MonoBases
 
         public void CloseDialog() => OnConfirm(EConfirmResult.Cancel);
 
-        private void OnConfirm(EConfirmResult result)
+        private async void OnConfirm(EConfirmResult result)
         {
             if (_isClosed) return;
             
@@ -94,7 +96,7 @@ namespace Scripts.System.MonoBases
             _taskCompletionSource.SetResult(result);
             
             Modal.Hide();
-            SetContentOnClose();
+            await SetContentOnClose();
             SetActive(false);
         }
     }

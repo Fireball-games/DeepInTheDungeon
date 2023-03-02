@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Scripts.Building.PrefabsSpawning.Configurations;
+﻿using Scripts.Building.PrefabsSpawning.Configurations;
 using UnityEngine;
 
 namespace Scripts.Building.PrefabsBuilding

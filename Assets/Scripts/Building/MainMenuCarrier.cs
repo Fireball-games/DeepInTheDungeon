@@ -1,5 +1,4 @@
-﻿using System;
-using Scripts.UI;
+﻿using Scripts.UI;
 using UnityEngine;
 
 namespace Scripts.Building

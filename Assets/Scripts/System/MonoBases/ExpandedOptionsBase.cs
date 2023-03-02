@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
-using Scripts.UI.Components;
+using Scripts.UI.Components.Buttons;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 

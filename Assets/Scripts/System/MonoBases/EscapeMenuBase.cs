@@ -19,7 +19,7 @@ namespace Scripts.System.MonoBases
             if (Input.GetKeyDown(KeyCode.Escape)) HandleEscapeKeyPressed();
         }
 
-        private void HandleEscapeKeyPressed()
+        private async void HandleEscapeKeyPressed()
         {
             if (_isOpened && !CancelOnEscape) return;
             
@@ -35,7 +35,7 @@ namespace Scripts.System.MonoBases
 
             PlayerCameraController.IsLookModeOn = _isFreeLookOnOnOpen;
             _isOpened = false;
-            SetContentOnClose();
+            await SetContentOnClose();
             CloseDialog();
         }
         

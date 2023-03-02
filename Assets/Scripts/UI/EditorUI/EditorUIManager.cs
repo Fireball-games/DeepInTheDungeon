@@ -9,6 +9,7 @@ using Scripts.MapEditor;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
+using Scripts.UI.Components.Buttons;
 using Scripts.UI.EditorUI.Components;
 using Scripts.UI.EditorUI.PrefabEditors;
 using Scripts.UI.Tooltip;

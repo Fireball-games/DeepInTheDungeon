@@ -7,6 +7,7 @@ using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
 using Scripts.System;
 using Scripts.UI.Components;
+using Scripts.UI.Components.Buttons;
 using UnityEngine;
 using UnityEngine.UI;
 

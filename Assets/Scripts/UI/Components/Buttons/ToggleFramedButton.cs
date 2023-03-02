@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Scripts.UI.Components
+namespace Scripts.UI.Components.Buttons
 {
     public class ToggleFramedButton : ImageButton
     {

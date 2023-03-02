@@ -4,7 +4,7 @@ using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.System.MonoBases;
-using Scripts.UI.Components;
+using Scripts.UI.Components.Buttons;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
 

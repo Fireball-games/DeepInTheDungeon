@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Scripts.UI.Components
+namespace Scripts.UI.Components.Buttons
 {
     public class ImageButton : UIElementBase, IPoolInitializable
     {

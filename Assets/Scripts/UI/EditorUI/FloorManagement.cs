@@ -6,7 +6,7 @@ using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
-using Scripts.UI.Components;
+using Scripts.UI.Components.Buttons;
 using Scripts.UI.EditorUI.Components;
 using UnityEngine;
 

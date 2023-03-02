@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
-using Scripts.UI.Components;
+using Scripts.UI.Components.Buttons;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;

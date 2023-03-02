@@ -1,7 +1,6 @@
 using Scripts.System.MonoBases;
 using TMPro;
 using UnityEngine.Events;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.UI.Components
 {

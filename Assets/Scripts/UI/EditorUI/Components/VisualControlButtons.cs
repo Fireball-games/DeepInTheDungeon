@@ -1,7 +1,7 @@
 using Scripts.EventsManagement;
 using Scripts.MapEditor.Services;
 using Scripts.System.MonoBases;
-using Scripts.UI.Components;
+using Scripts.UI.Components.Buttons;
 using static Scripts.MapEditor.Services.PathsService;
 
 namespace Scripts.UI.EditorUI.Components

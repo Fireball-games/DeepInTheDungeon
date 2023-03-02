@@ -1,7 +1,7 @@
 ﻿using System;
 using Scripts.MapEditor;
 using Scripts.MapEditor.Services;
-using Scripts.UI.Components;
+using Scripts.UI.Components.Buttons;
 using UnityEngine;
 
 namespace Scripts.UI.EditorUI.Components

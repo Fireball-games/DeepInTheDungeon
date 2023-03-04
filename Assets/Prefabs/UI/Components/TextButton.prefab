@@ -68,8 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 10
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84558fee4534f9a47854a9135542e9e0, type: 2}
-  m_sharedMaterial: {fileID: 2302260387640609844, guid: 84558fee4534f9a47854a9135542e9e0,
+  m_fontAsset: {fileID: 11400000, guid: 45290ffc011136a41be6449edec246ad, type: 2}
+  m_sharedMaterial: {fileID: -2201121219761555109, guid: 45290ffc011136a41be6449edec246ad,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6784314, g: 0.6627451, b: 0.6627451, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -389,16 +389,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 7192448784807796458}
+  transitionType: 0
+  transitionDuration: 0.5
   frame: {fileID: 0}
   icon: {fileID: 0}
   background: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  idleColor: {r: 0.6784314, g: 0.6627451, b: 0.6627451, a: 1}
-  enteredColor: {r: 0.5647059, g: 0.5647059, b: 0.5647059, a: 1}
-  clickedColor: {r: 0.1764706, g: 1, b: 0.36862746, a: 1}
-  selectedColor: {r: 0.7725491, g: 0.54509807, b: 0, a: 1}
-  selectedEnteredColor: {r: 0.56078434, g: 0.6509804, b: 0.007843138, a: 1}
   clickedEffectDuration: 0.2
-  mouseClickOverlay: {fileID: 8496990387129893940}
   frameImage: {fileID: 0}
   iconImage: {fileID: 0}
   backgroundImage: {fileID: 1204645358615734697}

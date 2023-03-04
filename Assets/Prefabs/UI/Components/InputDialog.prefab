@@ -52,6 +52,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 7264193051742222813}
+  transitionType: 0
+  transitionDuration: 0.5
   title: {fileID: 2112619458169279452}
   cancelButton: {fileID: 62610491623869665}
   confirmButton: {fileID: 2852438619541870199}
@@ -419,13 +421,19 @@ PrefabInstance:
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
       propertyPath: m_fontSize
-      value: 21.75
+      value: 19.4
       objectReference: {fileID: 0}
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
       propertyPath: m_margin.x
       value: -16.885933
       objectReference: {fileID: 0}
+    - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
       propertyPath: m_fontColor.b
@@ -441,6 +449,12 @@ PrefabInstance:
       propertyPath: m_fontColor.r
       value: 0.6541474
       objectReference: {fileID: 0}
+    - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -2201121219761555109, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
       propertyPath: m_fontColor32.rgba
@@ -653,13 +667,19 @@ PrefabInstance:
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
       propertyPath: m_fontSize
-      value: 21.75
+      value: 19.4
       objectReference: {fileID: 0}
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
       propertyPath: m_margin.x
       value: -16.885933
       objectReference: {fileID: 0}
+    - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
       propertyPath: m_fontColor.b
@@ -675,6 +695,12 @@ PrefabInstance:
       propertyPath: m_fontColor.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -2201121219761555109, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
       propertyPath: m_fontColor32.rgba
@@ -887,8 +913,20 @@ PrefabInstance:
     - target: {fileID: 2369424273657079581, guid: dbab2df7ebc497349a7b5bb91a18f97f,
         type: 3}
       propertyPath: m_fontSize
-      value: 33.95
+      value: 31.85
       objectReference: {fileID: 0}
+    - target: {fileID: 2369424273657079581, guid: dbab2df7ebc497349a7b5bb91a18f97f,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
+    - target: {fileID: 2369424273657079581, guid: dbab2df7ebc497349a7b5bb91a18f97f,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -2201121219761555109, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
     - target: {fileID: 3616750005964622927, guid: dbab2df7ebc497349a7b5bb91a18f97f,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1101,6 +1139,52 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3745978771208700431, guid: b57ac27acce03524e9a6b82382ea5a32,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 39.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 3745978771208700431, guid: b57ac27acce03524e9a6b82382ea5a32,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
+    - target: {fileID: 3745978771208700431, guid: b57ac27acce03524e9a6b82382ea5a32,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -2201121219761555109, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
+    - target: {fileID: 4322147787463863625, guid: b57ac27acce03524e9a6b82382ea5a32,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 48.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322147787463863625, guid: b57ac27acce03524e9a6b82382ea5a32,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
+    - target: {fileID: 4322147787463863625, guid: b57ac27acce03524e9a6b82382ea5a32,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -2201121219761555109, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
+    - target: {fileID: 4598649475026008177, guid: b57ac27acce03524e9a6b82382ea5a32,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
+    - target: {fileID: 4598649475026008177, guid: b57ac27acce03524e9a6b82382ea5a32,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -2201121219761555109, guid: 45290ffc011136a41be6449edec246ad,
+        type: 2}
     - target: {fileID: 7747772512822543217, guid: b57ac27acce03524e9a6b82382ea5a32,
         type: 3}
       propertyPath: m_Name

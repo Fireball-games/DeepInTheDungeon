@@ -70,8 +70,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Map Saved '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84558fee4534f9a47854a9135542e9e0, type: 2}
-  m_sharedMaterial: {fileID: 2302260387640609844, guid: 84558fee4534f9a47854a9135542e9e0,
+  m_fontAsset: {fileID: 11400000, guid: 45290ffc011136a41be6449edec246ad, type: 2}
+  m_sharedMaterial: {fileID: -2201121219761555109, guid: 45290ffc011136a41be6449edec246ad,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -170,12 +170,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dee2456077cc4d83ade5793afdf9b8fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Text: {fileID: 6164201001803404267}
-  ResizeTextObject: 1
-  Padding: {x: 10, y: 10}
-  MaxSize: {x: 300, y: Infinity}
-  MinSize: {x: 200, y: 30}
-  ControlAxes: 3
+  text: {fileID: 0}
+  resizeTextObject: 1
+  padding: {x: 0, y: 0}
+  maxSize: {x: 1000, y: Infinity}
+  minSize: {x: 0, y: 0}
+  controlAxes: 3
 --- !u!1 &5717020708698944157
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,7 +30,7 @@ namespace Helpers.Editor
 
             window.Show();
         }
-        
+
         private void Initialize()
         {
             _deselectedStyle = new GUIStyle(GUI.skin.button)
@@ -40,7 +40,7 @@ namespace Helpers.Editor
                     textColor = Color.gray
                 }
             };
-            
+
             _warningStyle = new GUIStyle(GUI.skin.button)
             {
                 normal =
@@ -53,7 +53,7 @@ namespace Helpers.Editor
         private void OnGUI()
         {
             if (_deselectedStyle == null) Initialize();
-            
+
             PlayModeTools();
             EditorGUILayout.Separator();
             FileOperationsTools();
@@ -89,7 +89,7 @@ namespace Helpers.Editor
 
             GUILayout.Space(20);
         }
-        
+
         private void FileOperationsTools()
         {
             GUILayout.Label("File operations:", EditorStyles.boldLabel);
@@ -107,7 +107,7 @@ namespace Helpers.Editor
             EditorGUILayout.Separator();
             GUILayout.EndVertical();
         }
-        
+
         private void MiscellaneousTools()
         {
             GUILayout.Label("Miscellaneous:", EditorStyles.boldLabel);
@@ -177,7 +177,7 @@ namespace Helpers.Editor
                 CopyCampaignToResources(StartRoomsCampaignName);
             }
         }
-        
+
         private void CopyDemoToResourcesButton()
         {
             if (GUILayout.Button("Copy Demo Campaign to Resources"))
@@ -195,7 +195,7 @@ namespace Helpers.Editor
 
                 File.Copy(sourcePath, destinationPath, true);
                 AssetDatabase.Refresh();
-                
+
                 GetWindow<SceneView>().ShowNotification(new GUIContent($"Campaign {campaignName} copied to Resources."));
             }
             catch (Exception e)
@@ -203,7 +203,7 @@ namespace Helpers.Editor
                 Logger.LogError(e.Message);
             }
         }
-        
+
         private void CopyAllResourcesCampaignsToLocalLowButton()
         {
             if (GUILayout.Button("Copy all Resources campaigns to LocalLow", _warningStyle))
@@ -221,7 +221,7 @@ namespace Helpers.Editor
                     }
 
                     AssetDatabase.Refresh();
-                    
+
                     GetWindow<SceneView>().ShowNotification(new GUIContent("All Resources campaigns copied to LocalLow."));
                 }
                 catch (Exception e)
@@ -242,7 +242,7 @@ namespace Helpers.Editor
                 SwapFont(selectedFontIndex);
             }
         }
-        
+
         private string[] GetFontNames() => Resources.LoadAll<TMP_FontAsset>("Fonts & Materials").Select(font => font.name).ToArray();
 
         private void SwapFont(int fontIndex)
@@ -261,6 +261,26 @@ namespace Helpers.Editor
             {
                 Debug.LogError("Font " + fontName + " not found in Resources/Fonts folder");
             }
+        }
+        
+        private string[] LoadAllPrefabs(string rootPath)
+        {
+            List<string> prefabPaths = new();
+
+            foreach (string filePath in Directory.GetFiles(rootPath))
+            {
+                if (Path.GetExtension(filePath) == ".prefab")
+                {
+                    prefabPaths.Add(filePath);
+                }
+            }
+
+            foreach (string directoryPath in Directory.GetDirectories(rootPath))
+            {
+                prefabPaths.AddRange(LoadAllPrefabs(directoryPath));
+            }
+
+            return prefabPaths.ToArray();
         }
     }
 }

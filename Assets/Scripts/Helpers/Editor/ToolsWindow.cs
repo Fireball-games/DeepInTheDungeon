@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Scripts.Building.PrefabsSpawning.Configurations;
-using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.System;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using static Scripts.Helpers.FileOperationsHelper;
@@ -16,6 +19,9 @@ namespace Helpers.Editor
     {
         private static GUIStyle _deselectedStyle;
         private static GUIStyle _warningStyle;
+
+        private string[] fontNames;
+        int selectedFontIndex = 0;
 
         [MenuItem("Window/Tools Window")]
         static void Init()
@@ -49,10 +55,10 @@ namespace Helpers.Editor
             if (_deselectedStyle == null) Initialize();
             
             PlayModeTools();
-            
             EditorGUILayout.Separator();
-
             FileOperationsTools();
+            EditorGUILayout.Separator();
+            MiscellaneousTools();
         }
 
         private void PlayModeTools()
@@ -99,6 +105,17 @@ namespace Helpers.Editor
             OpenLocalLowFolderButton();
             EditorGUILayout.Space(10);
             EditorGUILayout.Separator();
+            GUILayout.EndVertical();
+        }
+        
+        private void MiscellaneousTools()
+        {
+            GUILayout.Label("Miscellaneous:", EditorStyles.boldLabel);
+
+            GUILayout.BeginVertical();
+
+            SwapFonts();
+
             GUILayout.EndVertical();
         }
 
@@ -211,6 +228,38 @@ namespace Helpers.Editor
                 {
                     Logger.LogError(e.Message);
                 }
+            }
+        }
+
+        private void SwapFonts()
+        {
+            fontNames = GetFontNames();
+
+            selectedFontIndex = EditorGUILayout.Popup("Select Font", selectedFontIndex, fontNames);
+
+            if (GUILayout.Button("Swap Font"))
+            {
+                SwapFont(selectedFontIndex);
+            }
+        }
+        
+        private string[] GetFontNames() => Resources.LoadAll<TMP_FontAsset>("Fonts & Materials").Select(font => font.name).ToArray();
+
+        private void SwapFont(int fontIndex)
+        {
+            string fontName = fontNames[fontIndex];
+            TMP_FontAsset font = Resources.Load<TMP_FontAsset>("Fonts & Materials/" + fontName);
+
+            if (font)
+            {
+                foreach (TMP_Text tmpText in FindObjectsOfType<TMP_Text>())
+                {
+                    tmpText.font = font;
+                }
+            }
+            else
+            {
+                Debug.LogError("Font " + fontName + " not found in Resources/Fonts folder");
             }
         }
     }

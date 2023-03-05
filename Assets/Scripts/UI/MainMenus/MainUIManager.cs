@@ -84,14 +84,14 @@ namespace Scripts.UI
             _graphicRaycaster = GetComponent<GraphicRaycaster>();
             
             _crossHair = body.Find("CrossHair").GetComponent<ImageUIElement>();
-            _mainMenuOnUI = body.Find("MainEscapeMenu/MainMenu").GetComponent<MainMenuBase>();
-            
-            _mainMenus = new List<MainMenuBase>
-            {
-                _mainMenuOnUI,
-            };
+            // _mainMenuOnUI = body.Find("MainEscapeMenu/MainMenu").GetComponent<MainMenuBase>();
 
-            GetComponentInChildren<MainEscapeMenu>().SetGraphicRaycaster(_graphicRaycaster);
+            _mainMenus = new List<MainMenuBase>();
+            // {
+            //     _mainMenuOnUI,
+            // };
+
+            GetComponentInChildren<MainEscapeMenu>(true).SetGraphicRaycaster(_graphicRaycaster);
         }
 
         public void GraphicRaycasterEnabled(bool isEnabled)
@@ -100,5 +100,7 @@ namespace Scripts.UI
             
             _graphicRaycaster.enabled = isEnabled;
         }
+
+        public void OpenLoadMenu() => _mainMenus.ForEach(menu => menu.OpenLoadMenu());
     }
 }

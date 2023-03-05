@@ -2,5 +2,9 @@
 {
     public class MainMenuWorld : MainMenuBase
     {
+        internal override async void OpenLoadMenu()
+        {
+            await LoadMenu.SetActiveAsync(true);
+        }
     }
 }

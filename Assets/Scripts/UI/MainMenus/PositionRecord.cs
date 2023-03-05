@@ -8,12 +8,14 @@ using Scripts.System.MonoBases;
 using Scripts.System.Saving;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Scripts.UI
 {
     public class PositionRecord : UIElementBase
     {
+        private Button _button;
         private RawImage _screenShot;
         private TMP_Text _positionName;
         private TMP_Text _dateTime;
@@ -26,9 +28,19 @@ namespace Scripts.UI
             AssignComponents();
         }
         
-        public async Task Set(Save save)
+        public async Task Set(Save save, UnityAction onClick)
         {
             SetActive(false);
+            PrepareForTransition();
+            RectTransform rectTransform = GetComponent<RectTransform>();
+            Vector3 position = rectTransform.anchoredPosition3D;
+            position.z = 0;
+            rectTransform.anchoredPosition3D = position;
+            rectTransform.localRotation = Quaternion.identity;
+            
+            _button.onClick.RemoveAllListeners();
+            _button.onClick.AddListener(onClick);
+            
             _screenShot.texture = ScreenShotService.Instance.GetScreenshotTextureFromBytes(save.screenshot);
             _positionName.text = save.saveName;
             _dateTime.text = save.timeStamp.ToString("dd-MMMM-yy H:mm");
@@ -47,6 +59,8 @@ namespace Scripts.UI
         private void AssignComponents()
         {
             _screenShot = body.transform.Find("ScreenShot").GetComponent<RawImage>();
+            
+            _button = GetComponent<Button>();
             
             Transform nameTime = body.transform.Find("Info/NameTime");
             _positionName = nameTime.Find("PositionName").GetComponent<TMP_Text>();

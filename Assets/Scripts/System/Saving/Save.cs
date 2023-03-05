@@ -12,6 +12,7 @@ namespace Scripts.System.Saving
     [Serializable]
     public class Save
     {
+        public string fileName;
         public string saveName;
         public CharacterProfile characterProfile;
         public PlayerSaveData playerSaveData;

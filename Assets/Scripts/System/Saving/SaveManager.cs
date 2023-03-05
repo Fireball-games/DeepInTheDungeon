@@ -6,6 +6,7 @@ using Scripts.Building;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.Player;
 using Scripts.ScenesManagement;
@@ -56,52 +57,58 @@ namespace Scripts.System.Saving
         /// Handles saving itself. Assumes, that checking for position with same name, numbering of auto and quick saves etc. is handled at this point.
         /// </summary>
         /// <param name="saveName">Name of saved position stored in save file and name of the save file.</param>
+        /// <param name="fileName">Name of the file for saved position, same as saveName if omitted</param>
         /// <param name="isAutoSave">If saved position is AutoSave.</param>
         /// <param name="updatePlayerOnly">If we want to update only player position, like on arrival from previously visited map</param>
         /// <param name="overrideCampaign">Overrides current campaign from GameManager.</param>
         /// <param name="overrideMap">Overrides current map from GameManager</param>
-        public static async Task SaveToDisc(string saveName, bool isAutoSave = false, bool updatePlayerOnly = false, Campaign overrideCampaign = null,
+        public static async Task SaveToDisc(string saveName, string fileName = null, bool isAutoSave = false, bool updatePlayerOnly = false, Campaign overrideCampaign = null,
             MapDescription overrideMap = null)
         {
             if (!GameManager.Instance.CanSave && !isAutoSave) return;
 
-            await CreateSave(saveName, updatePlayerOnly, overrideCampaign, overrideMap);
+            await CreateSave(saveName, fileName, updatePlayerOnly, overrideCampaign, overrideMap);
 
             SaveToDisc();
         }
 
         public static async void SaveToTemp(string saveName, Campaign overrideCampaign, MapDescription overrideMap)
         {
-            _tempSave = await CreateSave(saveName, false, overrideCampaign, overrideMap);
+            _tempSave = await CreateSave(saveName, await ManagePreviousSavesForName(saveName), false, overrideCampaign, overrideMap);
         }
         
         public static async void QuickSave()
         {
             if (SceneLoader.IsInMainScene || GameManager.Instance.GameMode == GameManager.EGameMode.Editor) return;
 
-            await SaveToDisc(await ManagePreviousSavesForName(Keys.QuickSave), true);
+            await SaveToDisc(Keys.QuickSave,await ManagePreviousSavesForName(Keys.QuickSave), true);
+            // FileOperationsHelper.DeleteOldestSystemSave(Keys.QuickSave);
+            
+            // await SaveToDisc(Keys.QuickSave, true);
         }
 
         /// <summary>
         /// Creates save file from current save and store that save in _currentSave.
         /// </summary>
         /// <param name="saveName"></param>
+        /// <param name="fileName"></param>
         /// <param name="updatePlayerOnly"></param>
         /// <param name="overrideCampaign"></param>
         /// <param name="overrideMap"></param>
         /// <returns></returns>
-        private static async Task<Save> CreateSave(string saveName, bool updatePlayerOnly = false, Campaign overrideCampaign = null,
+        private static async Task<Save> CreateSave(string saveName, string fileName = null, bool updatePlayerOnly = false, Campaign overrideCampaign = null,
             MapDescription overrideMap = null)
         {
             byte[] screenshot = await ScreenShotService.Instance.GetCurrentScreenshotBytes();
 
             if (SystemSavesNames.Contains(saveName))
             {
-                saveName = await ManagePreviousSavesForName(saveName);
+                fileName = await ManagePreviousSavesForName(saveName);
             }
             
             Save save = new()
             {
+                fileName = string.IsNullOrEmpty(fileName) ? saveName : fileName,
                 saveName = saveName,
                 // TODO: Add character profile once implemented.
                 characterProfile = null,
@@ -185,8 +192,9 @@ namespace Scripts.System.Saving
 
         private static void SaveToDisc()
         {
-            Logger.Log($"Saving to disc: {CurrentSave.saveName}");
+            Logger.Log($"Saving to disc >  File name: {CurrentSave.fileName.WrapInColor(Colors.Beige)}, Save name: {CurrentSave.saveName.WrapInColor(Colors.Positive)}");
             FileOperationsHelper.SavePositionToLocale(CurrentSave);
+            _saves = _saves.Append(CurrentSave);
         }
 
         private void OnSceneStartedLoading()
@@ -224,22 +232,28 @@ namespace Scripts.System.Saving
                 return;
             }
 
-            CampaignSave currentCampaignSave =
-                CurrentSave.campaignsSaves.FirstOrDefault(c => c.campaignName == GameManager.Instance.CurrentCampaign.CampaignName);
-            if (currentCampaignSave == null)
+            LoadPosition(CurrentSave);
+        }
+
+        public static bool LoadPosition(Save save)
+        {
+            CampaignSave campaignSave = save.campaignsSaves.FirstOrDefault(c => c.campaignName == save.CurrentCampaign);
+            if (campaignSave == null)
             {
                 Logger.Log("Current campaign save is null. Aborting restoring map data.");
-                return;
+                return false;
             }
 
-            MapSave currentMapSave = currentCampaignSave.mapsSaves.FirstOrDefault(m => m.mapName == GameManager.Instance.CurrentMap.MapName);
+            MapSave currentMapSave = campaignSave.mapsSaves.FirstOrDefault(m => m.mapName == save.CurrentMap);
             if (currentMapSave == null)
             {
                 Logger.Log("Current map save is null. Aborting restoring map data.");
-                return;
+                return false;
             }
 
             RestoreMapData(currentMapSave.mapState);
+            
+            return true;
         }
 
         private static void RestoreMapData(List<MapStateRecord> mapState)
@@ -259,7 +273,8 @@ namespace Scripts.System.Saving
 
         private static async Task<string> ManagePreviousSavesForName(string rootSaveName)
         {
-            IEnumerable<string> currentNames = await FileOperationsHelper.RenameAndRemoveOldestSaveForName(rootSaveName);
+            // IEnumerable<string> currentNames = await FileOperationsHelper.RenameAndRemoveOldestSaveForName(rootSaveName);
+            IEnumerable<string> currentNames = await FileOperationsHelper.GetFileNamesAndRemoveOldestSaveForName(rootSaveName);
 
             return currentNames == null || !currentNames.Any() 
                 ? $"{rootSaveName}1" 

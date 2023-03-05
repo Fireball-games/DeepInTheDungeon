@@ -1,4 +1,5 @@
-﻿using Scripts.EventsManagement;
+﻿using System.Linq;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
@@ -6,6 +7,7 @@ using Scripts.Player;
 using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.System.MonoBases;
+using Scripts.System.Saving;
 using UnityEngine;
 using UnityEngine.UI;
 using Logger = Scripts.Helpers.Logger;
@@ -14,16 +16,18 @@ namespace Scripts.UI
 {
     public class ButtonsMenu : UIElementBase
     {
-        private Button _newCampaignButton;
         private Button _continueCampaignButton;
         private Button _customCampaignButton;
-        private Button _lastEditedMapButton;
+        private Button _loadPositionButton;
+        private Button _newCampaignButton;
         private Button _createNewCharacterButton;
-        private Button _settingsButton;
+        private Button _lastEditedMapButton;
         private Button _editorButton;
+        private Button _settingsButton;
         private Button _exitGameButton;
         
         private static GameManager GameManager => GameManager.Instance;
+        private MainUIManager UIManager => MainUIManager.Instance;
         
         private void Awake()
         {
@@ -58,6 +62,8 @@ namespace Scripts.UI
         }
 
         private void ContinueCampaignClicked() => GameManager.ContinueFromSave();
+        
+        private void LoadPositionClicked() => UIManager.OpenLoadMenu();
 
         private void CustomCampaignClicked() => Logger.LogNotImplemented();
 
@@ -87,13 +93,18 @@ namespace Scripts.UI
         
         private void SetComponents()
         {
-            _newCampaignButton.SetText(t.Get(Keys.StartNewCampaign));
             _continueCampaignButton.SetText(t.Get(Keys.ContinueCampaign));
+            _continueCampaignButton.interactable = SaveManager.Saves.Any();
+            
+            _loadPositionButton.SetText(t.Get(Keys.LoadSavedPosition));
+            _loadPositionButton.interactable = SaveManager.Saves.Any();
+            
             _customCampaignButton.SetText(t.Get(Keys.CustomCampaign));
-            _lastEditedMapButton.SetText(t.Get(Keys.LoadLastEditedMap));
+            _newCampaignButton.SetText(t.Get(Keys.StartNewCampaign));
             _createNewCharacterButton.SetText(t.Get(Keys.CreateNewCharacter));
-            _settingsButton.SetText(t.Get(Keys.Settings));
+            _lastEditedMapButton.SetText(t.Get(Keys.LoadLastEditedMap));
             _editorButton.SetText(t.Get(Keys.OpenMapEditor));
+            _settingsButton.SetText(t.Get(Keys.Settings));
             _exitGameButton.SetText(t.Get(Keys.ExitGame));
             
             _lastEditedMapButton.gameObject.SetActive(PlayerPrefsHelper.IsLastEditedMapValid());
@@ -102,22 +113,24 @@ namespace Scripts.UI
         private void AssignComponents()
         {
             Transform playButtons = body.transform.Find("Frame/PlayButtons");
-            _newCampaignButton = playButtons.Find("NewCampaignButton").GetComponent<Button>();
-            _newCampaignButton.onClick.AddListener(NewCampaignClicked);
             _continueCampaignButton = playButtons.Find("ContinueCampaignButton").GetComponent<Button>();
             _continueCampaignButton.onClick.AddListener(ContinueCampaignClicked);
+            _loadPositionButton = playButtons.Find("LoadPositionButton").GetComponent<Button>();
+            _loadPositionButton.onClick.AddListener(LoadPositionClicked);
             _customCampaignButton = playButtons.Find("CustomCampaignButton").GetComponent<Button>();
             _customCampaignButton.onClick.AddListener(CustomCampaignClicked);
-            _lastEditedMapButton = playButtons.Find("LastEditedMapButton").GetComponent<Button>();
-            _lastEditedMapButton.onClick.AddListener(LastEditedMapClicked);
-            
+
             Transform systemButtons = body.transform.Find("Frame/SystemButtons");
+            _newCampaignButton = systemButtons.Find("NewCampaignButton").GetComponent<Button>();
+            _newCampaignButton.onClick.AddListener(NewCampaignClicked);
             _createNewCharacterButton = systemButtons.Find("CreateNewCharacterButton").GetComponent<Button>();
             _createNewCharacterButton.onClick.AddListener(CreateNewCharacterClicked);
             _settingsButton = systemButtons.Find("SettingsButton").GetComponent<Button>();
             _settingsButton.onClick.AddListener(SettingsClicked);
             _editorButton = systemButtons.Find("EditorButton").GetComponent<Button>();
             _editorButton.onClick.AddListener(EditorClicked);
+            _lastEditedMapButton = systemButtons.Find("LastEditedMapButton").GetComponent<Button>();
+            _lastEditedMapButton.onClick.AddListener(LastEditedMapClicked);
             _exitGameButton = systemButtons.Find("ExitGameButton").GetComponent<Button>();
             _exitGameButton.onClick.AddListener(ExitGameClicked);
         }

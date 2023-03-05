@@ -2,5 +2,9 @@
 {
     public class MainMenuOnUI : MainMenuBase
     {
+        internal override void OpenLoadMenu()
+        {
+            
+        }
     }
 }

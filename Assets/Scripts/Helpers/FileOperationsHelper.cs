@@ -266,38 +266,44 @@ namespace Scripts.Helpers
 
             try
             {
-                ES3.Save(save.saveName, save, GetLocalRelativeSavePath(save.saveName));
+                ES3.Save(save.fileName, save, GetLocalRelativeSavePath(save.fileName));
             }
             catch (Exception e)
             {
-                Logger.Log($"Failed to save save: {save.saveName}: {e}", Logger.ELogSeverity.Release);
+                Logger.Log($"Failed to save save: {save.fileName}: {e}", Logger.ELogSeverity.Release);
             }
         }
+        
+        public static void DeleteOldestSystemSave(string saveName)
+        {
+            if (!LoadAllSaves(out IEnumerable<Save> loadedSaves)) return;
 
-        public static async Task<IEnumerable<string>> RenameAndRemoveOldestSaveForName(string rootSaveName)
+            Save oldestSave = loadedSaves.Where(save => save.saveName == saveName)
+                .OrderBy(save => save.timeStamp).FirstOrDefault();
+
+            if (oldestSave == null) return;
+
+            DeleteSave(oldestSave.saveName);
+        }
+
+        public static async Task<IEnumerable<string>> GetFileNamesAndRemoveOldestSaveForName(string rootSaveName)
         {
             if (!LoadAllSaves(out IEnumerable<Save> loadedSaves)) return null;
 
             await Task.Yield();
 
-            List<Save> savesWithSameNameRoot = loadedSaves.Where(save => save.saveName.Contains(rootSaveName)).ToList();
+            List<Save> savesWithSameNameRoot = loadedSaves.Where(save => save.fileName.Contains(rootSaveName)).ToList();
 
             if (!savesWithSameNameRoot.Any()) return null;
 
             if (savesWithSameNameRoot.Count < GetMaxSavesCountForRootName(rootSaveName))
-                return savesWithSameNameRoot.Select(save => save.saveName);
+                return savesWithSameNameRoot.Select(save => save.fileName);
             
             Save oldestSave = savesWithSameNameRoot.OrderBy(save => save.timeStamp).First();
 
             savesWithSameNameRoot.Remove(oldestSave);
-            DeleteSave(oldestSave.saveName);
-
-            foreach (Save save in savesWithSameNameRoot)
-            {
-                save.saveName = save.saveName.DecrementName();
-                SavePositionToLocale(save);
-                await Task.Yield();
-            }
+            Logger.Log($"Deleting save: {oldestSave.fileName}");
+            DeleteSave(oldestSave.fileName);
 
             return savesWithSameNameRoot.Select(save => save.saveName);
         }

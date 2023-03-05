@@ -331,7 +331,7 @@ namespace Scripts.System
         {
             if (!GameManager.IsPlayingFromEditor)
             {
-                await SaveManager.SaveToDisc(Keys.MapEntry, true, true);
+                await SaveManager.SaveToDisc(Keys.MapEntry, isAutoSave: true, updatePlayerOnly: true);
             }
 
             // To prevent moving before some async operations finishes

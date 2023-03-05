@@ -1,48 +1,39 @@
 ﻿using System.Threading.Tasks;
-using DG.Tweening;
-using Scripts.System;
 using Scripts.System.MonoBases;
-using UnityEngine;
 
 namespace Scripts.UI
 {
     public abstract class MainMenuBase : UIElementBase
     {
-        protected ButtonsMenu buttonsMenu;
-        protected LoadMenu loadMenu;
+        private ButtonsMenu _buttonsMenu;
+        protected LoadMenu LoadMenu;
         protected StartCampaignMenu startCampaignMenu;
+        
+        private MainUIManager UIManager => MainUIManager.Instance;
 
-        private bool _firstOpenHappened;
-        
-        protected static GameManager GameManager => GameManager.Instance;
-        
         protected void Awake()
         {
             AssignComponents();
+            
+            _buttonsMenu.PrepareForTransition();
+            LoadMenu.PrepareForTransition();
+            startCampaignMenu.PrepareForTransition();
         }
 
         public override async Task SetActiveAsync(bool active)
         {
             if (active)
             {
-                if (!_firstOpenHappened)
-                {
-                    buttonsMenu.PrepareForTransition();
-                    loadMenu.PrepareForTransition();
-                    startCampaignMenu.PrepareForTransition();
-                    _firstOpenHappened = true;
-                }
-                
                 body.SetActive(true);
-                loadMenu.SetActive(false);
+                LoadMenu.SetActive(false);
                 startCampaignMenu.SetActive(false);
-                await buttonsMenu.SetActiveAsync(true);
+                await _buttonsMenu.SetActiveAsync(true);
             }
             else
             {
-                Task load = loadMenu.SetActiveAsync(false);
+                Task load = LoadMenu.SetActiveAsync(false);
                 Task campaign = startCampaignMenu.SetActiveAsync(false);
-                Task buttons = buttonsMenu.SetActiveAsync(false);
+                Task buttons = _buttonsMenu.SetActiveAsync(false);
                 
                 await Task.WhenAll(load, campaign, buttons);
             }
@@ -51,18 +42,14 @@ namespace Scripts.UI
             body.SetActive(active);
         }
         
-        protected virtual async void OpenLoadMenu()
-        {
-            buttonsMenu.transform.DOLocalMove(new Vector3(-500,0, 0), 0.5f);
-            await loadMenu.SetActiveAsync(true);
-        }
-        
-        public void RefreshMainMenuButtons() => buttonsMenu.RefreshButtons();
+        internal abstract void OpenLoadMenu();
+
+        public void RefreshMainMenuButtons() => _buttonsMenu.RefreshButtons();
         
         private void AssignComponents()
         {
-            buttonsMenu = GetComponentInChildren<ButtonsMenu>(true);
-            loadMenu = GetComponentInChildren<LoadMenu>(true);
+            _buttonsMenu = GetComponentInChildren<ButtonsMenu>(true);
+            LoadMenu = GetComponentInChildren<LoadMenu>(true);
             startCampaignMenu = GetComponentInChildren<StartCampaignMenu>(true);
         }
     }

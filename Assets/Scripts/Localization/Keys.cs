@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 
 namespace Scripts.Localization
 {
@@ -48,6 +49,7 @@ namespace Scripts.Localization
         public const string InvalidNumberOfPrefabsFound = "InvalidNumberOfPrefabsFound";
         public const string Load = "Load";
         public const string LoadingFileFailed = "LoadingFileFailed";
+        public const string LoadSavedPosition = "LoadSavedPosition";
         public const string LoadLastEditedMap = "LoadLastEditedMap";
         public const string Map = "Map";
         public const string MapAlreadyExists = "MapAlreadyExists";

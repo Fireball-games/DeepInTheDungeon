@@ -52,6 +52,7 @@ namespace Scripts.Localization
         public const string LoadSavedPosition = "LoadSavedPosition";
         public const string LoadLastEditedMap = "LoadLastEditedMap";
         public const string Map = "Map";
+        public const string MainMenu = "MainMenu";
         public const string MapAlreadyExists = "MapAlreadyExists";
         public const string MapEntry = "MapEntry";
         public const string MapExit = "MapExit";
@@ -87,6 +88,7 @@ namespace Scripts.Localization
         public const string SaveEditedMapPrompt = "SaveEditedMapPrompt";
         public const string SelectCampaignPrompt = "SelectCampaignPrompt";
         public const string SelectCampaignToLoad = "SelectCampaignToLoad";
+        public const string SelectCampaignToStart = "SelectCampaignToStart";
         public const string SelectConfiguration = "SelectConfiguration";
         public const string SelectMap = "SelectMap";
         public const string SelectMapPrompt = "SelectMapPrompt";

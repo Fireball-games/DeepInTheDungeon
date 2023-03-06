@@ -8,6 +8,7 @@ using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Saving;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Logger = Scripts.Helpers.Logger;
@@ -16,6 +17,7 @@ namespace Scripts.UI
 {
     public class ButtonsMenu : UIElementBase
     {
+        private TMP_Text _titleText;
         private Button _continueCampaignButton;
         private Button _customCampaignButton;
         private Button _loadPositionButton;
@@ -38,7 +40,7 @@ namespace Scripts.UI
         {
             SetComponents();
         }
-        
+
         private void NewCampaignClicked() => GameManager.StartMainCampaign();
 
         private void ContinueCampaignClicked() => GameManager.ContinueFromSave(SaveManager.CurrentSave);
@@ -73,6 +75,8 @@ namespace Scripts.UI
         
         internal void SetComponents()
         {
+            _titleText.text = t.Get(Keys.MainMenu);
+            
             _continueCampaignButton.SetText(t.Get(Keys.ContinueCampaign));
             _continueCampaignButton.interactable = SaveManager.Saves.Any();
             
@@ -92,6 +96,8 @@ namespace Scripts.UI
         
         private void AssignComponents()
         {
+            _titleText = body.transform.Find("Heading/LabelFrame/Title").GetComponent<TMP_Text>();
+            
             Transform playButtons = body.transform.Find("Frame/PlayButtons");
             _continueCampaignButton = playButtons.Find("ContinueCampaignButton").GetComponent<Button>();
             _continueCampaignButton.onClick.AddListener(ContinueCampaignClicked);

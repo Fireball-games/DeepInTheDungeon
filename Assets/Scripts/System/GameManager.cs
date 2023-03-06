@@ -13,6 +13,7 @@ using Scripts.System.Saving;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.System
 {
@@ -150,6 +151,11 @@ namespace Scripts.System
             }
             
             OnStartGameRequested();
+        }
+        
+        public void OnLocalizationChanged()
+        {
+            Logger.LogNotImplemented();
         }
 
         private async void OnMapTraversalTriggered(string exitConfigurationGuid)

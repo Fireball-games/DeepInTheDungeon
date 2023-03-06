@@ -21,7 +21,7 @@ namespace Scripts.System.Saving
     public class SaveManager : SingletonNotPersisting<SaveManager>
     {
         // TODO: Make sure, that _currentSave is always up to date and is null when creating new character.
-        public static Save CurrentSave { get; private set; }
+        public static Save CurrentSave { get; set; }
         public static IEnumerable<Save> Saves => _saves;
 
         private static IEnumerable<Save> _saves = Enumerable.Empty<Save>();

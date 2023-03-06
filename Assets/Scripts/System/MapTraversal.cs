@@ -291,6 +291,8 @@ namespace Scripts.System
             _currentEntryPoint.playerGridPosition = save.PlayerGridPosition;
             _currentEntryPoint.playerRotationY = (int) save.PlayerRotation.eulerAngles.y;
             _currentEntryPoint.isMovingForwardOnStart = false;
+            
+            SaveManager.CurrentSave = save;
 
             return true;
         }

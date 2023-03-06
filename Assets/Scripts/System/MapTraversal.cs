@@ -114,19 +114,16 @@ namespace Scripts.System
             return true;
         }
 
-        public bool SetForStartingFromSave()
+        public bool SetForStartingFromSave(Save save)
         {
-            if (!SetCampaignFromLastSave()) return false;
+            if (!SetCampaignFromSave(save)) return false;
 
             StartMapFromMainScreenButtonClickHandling();
 
             return true;
         }
         
-        public bool SetForQuickLoad()
-        {
-            return SetCampaignFromLastSave();
-        }
+        public bool SetForQuickLoad() => SetCampaignFromSave(SaveManager.CurrentSave);
 
         public bool SetForStartingFromLastEditedMap(EntryPoint entryPoint)
         {
@@ -262,32 +259,28 @@ namespace Scripts.System
             _currentMap ??= CurrentCampaign.GetStarterMap();
         }
 
-        private bool SetCampaignFromLastSave()
+        private bool SetCampaignFromSave(Save save)
         {
-            Save lastSave = SaveManager.CurrentSave;
-
-            if (lastSave == null)
+            if (save == null)
             {
-                Logger.LogWarning("Could not load last save.");
+                Logger.LogWarning("Save not set. Aborting load.");
                 return false;
             }
 
-            if (lastSave.playerSaveData.currentCampaign == Strings.MainCampaignName)
+            if (save.CurrentCampaign == Strings.MainCampaignName)
             {
                 _currentCampaign = _mainCampaign;
             }
             else
             {
-                FileOperationsHelper.LoadCampaign(lastSave.CurrentCampaign, out _currentCampaign);
+                if (!FileOperationsHelper.LoadCampaign(save.CurrentCampaign, out _currentCampaign))
+                {
+                    Logger.LogError("Could not load last played campaign.");
+                    return false;
+                }
             }
 
-            if (_currentCampaign == null)
-            {
-                Logger.LogError("Could not load last played campaign.");
-                return false;
-            }
-
-            _currentMap = _currentCampaign.GetMapByName(lastSave.CurrentMap);
+            _currentMap = _currentCampaign.GetMapByName(save.CurrentMap);
 
             if (_currentMap == null)
             {
@@ -295,8 +288,8 @@ namespace Scripts.System
                 return false;
             }
 
-            _currentEntryPoint.playerGridPosition = lastSave.PlayerGridPosition;
-            _currentEntryPoint.playerRotationY = (int) lastSave.PlayerRotation.eulerAngles.y;
+            _currentEntryPoint.playerGridPosition = save.PlayerGridPosition;
+            _currentEntryPoint.playerRotationY = (int) save.PlayerRotation.eulerAngles.y;
             _currentEntryPoint.isMovingForwardOnStart = false;
 
             return true;
@@ -331,7 +324,7 @@ namespace Scripts.System
         {
             if (!GameManager.IsPlayingFromEditor)
             {
-                await SaveManager.SaveToDisc(Keys.MapEntry, isAutoSave: true, updatePlayerOnly: true);
+                await SaveManager.SaveToDisc(Keys.MapEntry, Keys.MapEntry, isAutoSave: true, updatePlayerOnly: true);
             }
 
             // To prevent moving before some async operations finishes

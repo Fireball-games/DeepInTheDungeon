@@ -1,6 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Scripts.Helpers.Extensions;
+using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.System.Saving;
@@ -33,7 +33,7 @@ namespace Scripts.UI
                     .SpawnFromPool(positionRecordPrefab, _container.gameObject)
                     .GetComponent<PositionRecord>();
 
-                await positionRecord.Set(save, () => SaveManager.LoadPosition(save));
+                await positionRecord.Set(save, () => GameManager.Instance.ContinueFromSave(save));
             }
         }
     }

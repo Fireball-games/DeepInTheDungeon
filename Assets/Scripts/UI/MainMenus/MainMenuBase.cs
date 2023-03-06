@@ -44,7 +44,7 @@ namespace Scripts.UI
         
         internal abstract void OpenLoadMenu();
 
-        public void RefreshMainMenuButtons() => _buttonsMenu.RefreshButtons();
+        public void RefreshMainMenuButtons() => _buttonsMenu.SetComponents();
         
         private void AssignComponents()
         {

@@ -9,6 +9,7 @@ using Scripts.ScenesManagement;
 using Scripts.ScriptableObjects;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
+using Scripts.System.Saving;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
@@ -116,9 +117,9 @@ namespace Scripts.System
             OnStartGameRequested();
         }
         
-        public void ContinueFromSave()
+        public void ContinueFromSave(Save save)
         {
-            if (!_mapTraversal.SetForStartingFromSave())
+            if (!_mapTraversal.SetForStartingFromSave(save))
             {
                 Logger.LogWarning("Could not continue from save.");
                 return;

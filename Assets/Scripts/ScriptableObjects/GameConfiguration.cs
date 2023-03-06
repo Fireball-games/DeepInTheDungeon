@@ -11,5 +11,6 @@ namespace Scripts.ScriptableObjects
         public int maxQuickSaves = 5;
         public int maxMapEntrySaves = 3;
         public int maxMapExitSaves = 3;
+        public int maxManualSaves = 100;
     }
 }

@@ -57,6 +57,7 @@ namespace Scripts.Localization
         public const string MapExit = "MapExit";
         public const string MapSaved = "MapSaved";
         public const string MapSelection = "MapSelection";
+        public const string ManualSave = "ManualSave";
         public const string MoveOnEnter = "MoveOnEnter";
         public const string NewMap = "NewMap";
         public const string NewMapDialogTitle = "NewMapDialogTitle";
@@ -105,7 +106,7 @@ namespace Scripts.Localization
         public const string Up = "Up";
         public const string WaypointEditor = "WaypointEditor";
         public const string West = "West";
-        
+
         private static readonly Dictionary<string, string> Tooltips;
 
         static Keys()

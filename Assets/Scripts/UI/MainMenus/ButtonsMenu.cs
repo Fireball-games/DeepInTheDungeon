@@ -33,35 +33,15 @@ namespace Scripts.UI
         {
             AssignComponents();
         }
-        
-        private void OnEnable()
-        {
-            EventsManager.OnLevelStarted += OnLevelStarted;
-        }
 
-        private void OnDisable()
-        {
-            EventsManager.OnLevelStarted -= OnLevelStarted;
-        }
-        
         private void Start()
         {
             SetComponents();
         }
         
-        public void RefreshButtons() => SetComponents();
-        
-        private void OnLevelStarted()
-        {
-            SetComponents();
-        }
+        private void NewCampaignClicked() => GameManager.StartMainCampaign();
 
-        private void NewCampaignClicked()
-        {
-            GameManager.StartMainCampaign();
-        }
-
-        private void ContinueCampaignClicked() => GameManager.ContinueFromSave();
+        private void ContinueCampaignClicked() => GameManager.ContinueFromSave(SaveManager.CurrentSave);
         
         private void LoadPositionClicked() => UIManager.OpenLoadMenu();
 
@@ -91,7 +71,7 @@ namespace Scripts.UI
             PlayerCameraController.Instance.IsLookModeOn = false;
         }
         
-        private void SetComponents()
+        internal void SetComponents()
         {
             _continueCampaignButton.SetText(t.Get(Keys.ContinueCampaign));
             _continueCampaignButton.interactable = SaveManager.Saves.Any();

@@ -32,6 +32,7 @@ namespace Scripts.Helpers
             {Keys.QuickSave, GameManager.Instance.GameConfiguration.maxQuickSaves},
             {Keys.MapEntry, GameManager.Instance.GameConfiguration.maxMapEntrySaves},
             {Keys.MapExit, GameManager.Instance.GameConfiguration.maxMapExitSaves},
+            {Keys.ManualSave, GameManager.Instance.GameConfiguration.maxManualSaves},
         };
 
         static FileOperationsHelper()
@@ -286,13 +287,9 @@ namespace Scripts.Helpers
             DeleteSave(oldestSave.saveName);
         }
 
-        public static async Task<IEnumerable<string>> GetFileNamesAndRemoveOldestSaveForName(string rootSaveName)
+        public static IEnumerable<string> GetFileNamesAndRemoveOldestSaveForName(IEnumerable<Save> saves, string rootSaveName)
         {
-            if (!LoadAllSaves(out IEnumerable<Save> loadedSaves)) return null;
-
-            await Task.Yield();
-
-            List<Save> savesWithSameNameRoot = loadedSaves.Where(save => save.fileName.Contains(rootSaveName)).ToList();
+            List<Save> savesWithSameNameRoot = saves.Where(save => save.fileName.Contains(rootSaveName)).ToList();
 
             if (!savesWithSameNameRoot.Any()) return null;
 

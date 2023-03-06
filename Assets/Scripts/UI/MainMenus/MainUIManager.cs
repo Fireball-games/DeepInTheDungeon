@@ -75,8 +75,9 @@ namespace Scripts.UI
             if (!mainMenuCarrier) return;
             
             mainMenuCarrier.mainMenuCanvas.worldCamera = CameraManager.Instance.mainCamera;
-            // mainMenuCarrier.mainMenu.SetActive(true);
+            
             _mainMenus.Add(mainMenuCarrier.mainMenu);
+            _mainMenus.ForEach(menu => menu.RefreshMainMenuButtons());
         }
         
         private void AssignComponents()

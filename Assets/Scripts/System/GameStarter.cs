@@ -25,12 +25,12 @@ namespace Scripts.System
 
             switch (Application.systemLanguage)
             {
-                case SystemLanguage.German:
-                    LocalizationManager.Language = "German";
-                    break;
-                case SystemLanguage.Russian:
-                    LocalizationManager.Language = "Russian";
-                    break;
+                // case SystemLanguage.German:
+                //     LocalizationManager.Language = "German";
+                //     break;
+                // case SystemLanguage.Russian:
+                //     LocalizationManager.Language = "Russian";
+                //     break;
                 default:
                     LocalizationManager.Language = "English";
                     break;

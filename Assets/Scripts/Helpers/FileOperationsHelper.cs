@@ -306,7 +306,7 @@ namespace Scripts.Helpers
             Logger.Log($"Deleting save: {oldestSave.fileName}");
             DeleteSave(oldestSave.fileName);
 
-            return savesWithSameNameRoot.Select(save => save.saveName);
+            return savesWithSameNameRoot.Select(save => save.fileName);
         }
 
         private static void DeleteSave(string saveFileName)

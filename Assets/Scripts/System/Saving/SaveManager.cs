@@ -189,6 +189,11 @@ namespace Scripts.System.Saving
         private static void UpdateSaves()
         {
             FileOperationsHelper.LoadAllSaves(out _saves);
+            
+            _saves ??= new List<Save>();
+            
+            if (!_saves.Any()) return;
+            
             _saves = _saves.OrderByDescending(s => s.timeStamp);
         }
 
@@ -267,6 +272,7 @@ namespace Scripts.System.Saving
         private static string ManagePreviousSavesForName(string rootFileName)
         {
             IEnumerable<string> currentNames = FileOperationsHelper.GetFileNamesAndRemoveOldestSaveForName(rootFileName);
+            UpdateSaves();
 
             return currentNames == null || !currentNames.Any() 
                 ? $"{rootFileName}1" 

@@ -11,6 +11,7 @@ namespace Scripts.UI.PlayMode
 {
     public class PlayEscapeMenu : EscapeMenuBase
     {
+        private Button _loadPositionButton;
         private Button _toEditorButton;
         private Button _toMainSceneButton;
         
@@ -18,6 +19,9 @@ namespace Scripts.UI.PlayMode
 
         private void Awake()
         {
+            _loadPositionButton = body.transform.Find("Background/Content/LoadPositionButton").GetComponent<Button>();
+            _loadPositionButton.onClick.AddListener(LoadPosition);
+            
             _toMainSceneButton = body.transform.Find("Background/Content/ToMenuButton").GetComponent<Button>();
             _toMainSceneButton.onClick.AddListener(LeaveToMainScene);
             
@@ -31,6 +35,11 @@ namespace Scripts.UI.PlayMode
             _toEditorButton.SetText(t.Get(Keys.ReturnToEditor));
 
             _toMainSceneButton.SetText(t.Get(Keys.ReturnToMainScene));
+        }
+        
+        private void LoadPosition()
+        {
+            
         }
 
         private void LeaveToMainScene()

@@ -1,38 +1,103 @@
 Key,English
-LoadingFileFailed,Loading File Failed
-ReturnToMainScene,Return to Main Menu
-ReturnToEditor,Return to Editor
-SaveMap,Save Map
-DontSave,"Don't Save
-Save,Save
-CreateMap,Create Map
-SaveEditedMapPrompt,"Map is edited, do you want to save to not loose the changes?"
-NoMapToPlayLoaded,There is no map to Play
-Confirm,Confirm
-Cancel,Cancel
-NewMapNamePrompt,"Enter map name..."
-NewMapName,Map Name
-Columns,Columns
-Rows,Rows
-Default,Default
-NewMapDialogTitle,Create New Map
-NoChangesToSave,"No changes to the map were made."
-NewMap,New Map
-NoFilesToShow,No files found
-SelectMapToLoad,Select map to load
-Test,test
-Load,Load
-Floors,Floors
-Exit,Exit
-SaveFailed,Saving file Failed
+AddCampaign,Add New Campaign
+AddEndPoint,AddEndPoint
+AddMap,Add New Map
+AddNewSubscriber,Add New Subscriber
+AddOpenMap,Add/Open Map
+AddWaypoint,Add Waypoint
+AutoSave,Auto Save
 AvailablePrefabs,Available Prefabs
-NoPrefabsAvailable,"No valid prefabs were found."
-SelectPrefab,"Select prefab for placing in the list of available prefabs."
-ErrorBuildingPrefab,"Error ocured while building the prefab."
+Campaign,Campaign
+Cancel,Cancel
+Close,Close
+Columns,Columns
+Confirm,Confirm
+ContinueCampaign,Continue Campaign
+Count,Count
+CreateMap,Create Map
+CreateNewCharacter,Create New Character
+CreateOppositePath,Create Path in Opposite Direction
+CustomCampaign,Custom Campaign
+Default,Default
+DefaultCampaignName, Campaign
 Delete,Delete
-Offset,Offset
-Rotate,Rotate
-IsWalkable,Eligible for Walking
-StartPoint,Start Point
+DontSave,Don't Save
+Down,Down
+East,East
+EditorStartPoint,Editor Start Point
+EmptyEditorPrompt,"Add new prefab or select existing prefab in scene by clicking on it in the scene, or via prefab finder."
 EndPoint,End Point
-Point,Poin"
+EnterCampaignName,Enter name for the new Campaign.
+EnterName,Enter Name
+EntryPoint,Entry Point
+ErrorBuildingPrefab,Error occured while building the prefab.
+ExistingPrefabs,Existing Prefabs
+Exit,Exit
+ExitDelay,Exit Delay
+ExitGame,Exit Game
+Floors,Floors
+InvalidNumberOfPrefabsFound,Invalid number of prefabs found.
+IsWalkable,Eligible for Walking
+Load,Load
+LoadingFileFailed,Loading File Failed
+LoadLastEditedMap,Load Last Edited Map
+LoadPosition,Load Position
+LoadSavedPosition,Load Saved Position
+MainMenu,Main Menu
+Map,Map
+MapAlreadyExists,Map with this name already exists.
+MapEntry,Map Entry
+MapExit,Map Exit
+MapSaved,Map was Saved
+MapSelection,Map Selection
+ManualSave,Manual Save
+MoveOnEnter,Move On Enter
+NewMap,New Map
+NewMapDialogTitle,Create New Map
+NewMapName,Map Name
+NewMapNamePrompt,Enter map name...
+NoChangesToSave,No changes to the map were made.
+NoFilesToShow,No files found
+NoMapToPlayLoaded,There is no map to Play
+NoPrefabsAvailable,No valid prefabs were found.
+North,North
+NoMapSelected,<No Map Selected>
+NoNameSet,<No Name Set>
+NothingToEditForConfiguration,Nothing to edit for this configuration.
+Offset,Offset
+OpenMapEditor,Open Map Editor
+Point,Point
+Position,Position
+QuickLoad,Quick Load
+QuickSave,Quick Save
+ReturnToEditor,Return to Editor
+ReturnToMainScene,Return to Main Menu
+Rotate,Rotate
+Rows,Rows
+Save,Save
+SaveEditedMapPrompt,"Map is edited, do you want to save to not loose the changes?"
+SaveFailed,Saving file Failed
+SaveMap,Save Map
+SelectCampaign,Select Campaign
+SelectCampaignPrompt,Select/Add Campaign to see available maps.
+SelectCampaignToLoad,Select Campaign to Load
+SelectConfiguration,Select trigger receiver configuration to edit.
+SelectMapPrompt,"Campaign has no maps yet, add one."
+SelectMapToLoad,Select map to load
+SelectPrefab,Select prefab for placing in the list of available prefabs.
+SelectSubscriber,Select Subscriber
+Settings,Settings
+South,South
+SpeedTowardsPoint,Speed Towards Point
+StartNewCampaign,Start New Campaign
+StartPoint,Start Point
+StartPosition,Start Position
+Step,Step
+SubscribedReceivers,Subscribed Receivers
+TargetMap,Target Map
+Test,test
+Tooltip/PlayButton, Runs the map in Play mode.
+TriggerType,Type of Trigger
+Up,Up
+WaypointEditor,Waypoint Editor
+West,West

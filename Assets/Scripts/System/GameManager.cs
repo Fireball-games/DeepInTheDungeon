@@ -5,6 +5,7 @@ using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
 using Scripts.Player;
+using Scripts.Player.CharacterSystem;
 using Scripts.ScenesManagement;
 using Scripts.ScriptableObjects;
 using Scripts.System.MonoBases;
@@ -13,7 +14,6 @@ using Scripts.System.Saving;
 using Scripts.UI.EditorUI;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.System
 {
@@ -38,6 +38,7 @@ namespace Scripts.System
         public bool IsPlayingFromEditor { get; set; }
         public EGameMode GameMode => _gameMode;
         public bool CanSave { get; internal set; }
+        public CharacterProfile CurrentCharacterProfile { get; private set; }
 
         internal PlayerController player;
         internal bool movementEnabled;
@@ -59,6 +60,7 @@ namespace Scripts.System
             base.Awake();
             
             _mapTraversal = new MapTraversal(playerPrefab);
+            CurrentCharacterProfile = new CharacterProfile();
         }
 
         private void OnEnable()
@@ -160,7 +162,9 @@ namespace Scripts.System
 
         private async void OnMapTraversalTriggered(string exitConfigurationGuid)
         {
-            if (!_mapTraversal.SetForTraversal(exitConfigurationGuid, out float exitDelay))
+            float? exitDelay = await _mapTraversal.SetForTraversal(exitConfigurationGuid);
+            
+            if (exitDelay == null)
             {
                 if (_mapTraversal.EntryMovementFinished) Logger.LogWarning("Could not traverse map.");
                 return;

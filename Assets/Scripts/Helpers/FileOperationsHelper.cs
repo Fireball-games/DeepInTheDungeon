@@ -287,9 +287,13 @@ namespace Scripts.Helpers
             DeleteSave(oldestSave.saveName);
         }
 
-        public static IEnumerable<string> GetFileNamesAndRemoveOldestSaveForName(IEnumerable<Save> saves, string rootSaveName)
+        public static IEnumerable<string> GetFileNamesAndRemoveOldestSaveForName(string rootSaveName)
         {
-            List<Save> savesWithSameNameRoot = saves.Where(save => save.fileName.Contains(rootSaveName)).ToList();
+            if (!LoadAllSaves(out IEnumerable<Save> saves)) return null;
+            
+            List<Save> savesWithSameNameRoot = saves.Where(
+                save => /*save.characterProfile == GameManager.Instance.CurrentCharacterProfile
+                        &&*/ save.fileName.Contains(rootSaveName)).ToList();
 
             if (!savesWithSameNameRoot.Any()) return null;
 

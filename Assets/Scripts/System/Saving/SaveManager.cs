@@ -35,14 +35,10 @@ namespace Scripts.System.Saving
 
         private void Start()
         {
-            if (!_saves.Any() && !FileOperationsHelper.LoadAllSaves(out _saves))
-            {
-                _saves = Enumerable.Empty<Save>();
-            }
+            UpdateSaves();
 
             if (!_saves.Any()) return;
 
-            _saves = _saves.OrderByDescending(s => s.timeStamp);
             CurrentSave = _saves.First();
         }
 
@@ -71,7 +67,7 @@ namespace Scripts.System.Saving
             SaveToDisc();
         }
 
-        public static async void SaveToTemp(string saveName, Campaign overrideCampaign, MapDescription overrideMap)
+        public static async Task SaveToTemp(string saveName, Campaign overrideCampaign, MapDescription overrideMap)
         {
             _tempSave = await CreateSave(saveName, saveName, false, overrideCampaign, overrideMap);
         }
@@ -187,7 +183,13 @@ namespace Scripts.System.Saving
         {
             Logger.Log($"Saving to disc >  File name: {CurrentSave.fileName.WrapInColor(Colors.Beige)}, Save name: {CurrentSave.saveName.WrapInColor(Colors.Positive)}");
             FileOperationsHelper.SavePositionToLocale(CurrentSave);
-            _saves = _saves.Append(CurrentSave);
+            UpdateSaves();
+        }
+
+        private static void UpdateSaves()
+        {
+            FileOperationsHelper.LoadAllSaves(out _saves);
+            _saves = _saves.OrderByDescending(s => s.timeStamp);
         }
 
         private void OnSceneStartedLoading()
@@ -217,7 +219,7 @@ namespace Scripts.System.Saving
         /// <summary>
         /// If player has traversed the map and current save has data about current map, restores map state from the time of traversal trigger activation.
         /// </summary>
-        public static void RestoreMapDataFromCurrentSave()
+        public static void RestoreMapDataFromCurrentSave(string mapName)
         {
             if (CurrentSave == null)
             {
@@ -225,10 +227,10 @@ namespace Scripts.System.Saving
                 return;
             }
 
-            LoadPosition(CurrentSave);
+            RestoreMapDataFromSave(CurrentSave, mapName);
         }
 
-        private static void LoadPosition(Save save)
+        private static void RestoreMapDataFromSave(Save save, string mapName)
         {
             CampaignSave campaignSave = save.campaignsSaves.FirstOrDefault(c => c.campaignName == save.CurrentCampaign);
             if (campaignSave == null)
@@ -237,7 +239,7 @@ namespace Scripts.System.Saving
                 return;
             }
 
-            MapSave currentMapSave = campaignSave.mapsSaves.FirstOrDefault(m => m.mapName == save.CurrentMap);
+            MapSave currentMapSave = campaignSave.mapsSaves.FirstOrDefault(m => m.mapName == mapName);
             if (currentMapSave == null)
             {
                 Logger.Log("Current map save is null. Aborting restoring map data.");
@@ -264,7 +266,7 @@ namespace Scripts.System.Saving
 
         private static string ManagePreviousSavesForName(string rootFileName)
         {
-            IEnumerable<string> currentNames = FileOperationsHelper.GetFileNamesAndRemoveOldestSaveForName(_saves, rootFileName);
+            IEnumerable<string> currentNames = FileOperationsHelper.GetFileNamesAndRemoveOldestSaveForName(rootFileName);
 
             return currentNames == null || !currentNames.Any() 
                 ? $"{rootFileName}1" 

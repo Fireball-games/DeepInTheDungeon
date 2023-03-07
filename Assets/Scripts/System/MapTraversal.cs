@@ -146,15 +146,13 @@ namespace Scripts.System
             return true;
         }
 
-        public bool SetForTraversal(string exitConfigurationGuid, out float exitDelay)
+        public async Task<float?> SetForTraversal(string exitConfigurationGuid)
         {
-            exitDelay = 0f;
-
-            if (CurrentMap == null || !_entryMovementFinished) return false;
+            if (CurrentMap == null || !_entryMovementFinished) return null;
 
             if (!GameManager.IsPlayingFromEditor)
             {
-                SaveManager.SaveToTemp(Keys.MapExit, CurrentCampaign, CurrentMap);
+                await SaveManager.SaveToTemp(Keys.MapExit, CurrentCampaign, CurrentMap);
             }
 
             TriggerConfiguration mapTraversal = TriggerService.GetConfiguration(exitConfigurationGuid);
@@ -162,7 +160,7 @@ namespace Scripts.System
             if (mapTraversal == null)
             {
                 Logger.LogWarning($"Could not find exit point trigger configuration with guid {exitConfigurationGuid}.");
-                return false;
+                return null;
             }
 
             // Storing so if getting the data fails, game can continue.
@@ -171,7 +169,7 @@ namespace Scripts.System
             if (mapDescription == null)
             {
                 Logger.LogWarning($"Could not find map with name {mapTraversal.TargetMapName}.");
-                return false;
+                return null;
             }
 
             EntryPoint entryPoint = mapDescription.GetEntryPointCloneByName(mapTraversal.TargetMapEntranceName);
@@ -180,7 +178,7 @@ namespace Scripts.System
             {
                 Logger.LogWarning(
                     $"Could not find entry point in map: {mapTraversal.TargetMapName.WrapInColor(Colors.Warning)} with name: {mapTraversal.TargetMapEntranceName.WrapInColor(Colors.Warning)}.");
-                return false;
+                return null;
             }
 
             _currentMap = mapDescription;
@@ -189,8 +187,7 @@ namespace Scripts.System
             _lookModeOnStartTraversal = PlayerCamera.IsLookModeOn;
             PlayerCamera.IsLookModeOn = false;
 
-            exitDelay = mapTraversal.ExitDelay;
-            return true;
+            return mapTraversal.ExitDelay;
         }
 
         public async Task OnLayoutBuilt()
@@ -211,7 +208,7 @@ namespace Scripts.System
 
             if (!SceneLoader.IsInMainScene && !GameManager.IsPlayingFromEditor)
             {
-                SaveManager.RestoreMapDataFromCurrentSave();
+                SaveManager.RestoreMapDataFromCurrentSave(CurrentMap.MapName);
             }
             
             ScreenFader.FadeOut(1.2f);

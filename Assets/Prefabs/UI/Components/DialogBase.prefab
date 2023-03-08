@@ -134,7 +134,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 75cd1823697a9cc49830588b2524c8a1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ac11ac3e4a026924f8793f558b6a9698, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -224,8 +224,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 7.8404, y: -4.9518}
+  m_SizeDelta: {x: 115.6808, y: 109.9037}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1268250311964520418
 MonoBehaviour:
@@ -240,6 +240,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 8973059008662647959}
+  transitionType: 0
+  transitionDuration: 0.5
   title: {fileID: 367224253902364310}
   cancelButton: {fileID: 8669162050003263678}
   confirmButton: {fileID: 2476421651978449156}
@@ -295,7 +297,7 @@ PrefabInstance:
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
       propertyPath: m_fontSize
-      value: 13.7
+      value: 12.15
       objectReference: {fileID: 0}
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
@@ -491,6 +493,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Title
       objectReference: {fileID: 0}
+    - target: {fileID: 1071948268855041481, guid: dbab2df7ebc497349a7b5bb91a18f97f,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071948268855041481, guid: dbab2df7ebc497349a7b5bb91a18f97f,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 5e5bbf5d56393034a8fc1006e69d8541,
+        type: 3}
     - target: {fileID: 1906721526621951237, guid: dbab2df7ebc497349a7b5bb91a18f97f,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -791,7 +804,7 @@ PrefabInstance:
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}
       propertyPath: m_fontSize
-      value: 13.7
+      value: 12.15
       objectReference: {fileID: 0}
     - target: {fileID: 2966650223179723660, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
         type: 3}

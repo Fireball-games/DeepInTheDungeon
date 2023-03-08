@@ -31,6 +31,9 @@ namespace Scripts.UI.PlayMode
 
         protected override void SetContentOnShow()
         {
+            _loadPositionButton.gameObject.SetActive(!GameManager.IsPlayingFromEditor);
+            _loadPositionButton.SetText(t.Get(Keys.LoadSavedPosition));
+            
             _toEditorButton.gameObject.SetActive(GameManager.IsPlayingFromEditor);
             _toEditorButton.SetText(t.Get(Keys.ReturnToEditor));
 

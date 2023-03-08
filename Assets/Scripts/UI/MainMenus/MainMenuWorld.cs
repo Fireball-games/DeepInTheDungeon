@@ -4,7 +4,7 @@
     {
         internal override async void OpenLoadMenu()
         {
-            await LoadMenu.SetActiveAsync(true);
+            await LoadMenu.ShowAsync(true);
         }
     }
 }

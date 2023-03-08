@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.System;
@@ -19,12 +20,13 @@ namespace Scripts.UI
 
         private void Awake()
         {
-            _titleText = transform.Find("Background/Heading/LabelFrame/Title").GetComponent<TMP_Text>();
-            _container = transform.Find("Background/Frame/ScrollView/Viewport/Content");
+           AssignComponents();
         }
 
-        public override async Task SetActiveAsync(bool isActive)
+        public async Task ShowAsync(bool isActive, Action onMapSelected = null)
         {
+            if (!_titleText) AssignComponents();
+            
             _titleText.text = t.Get(Keys.LoadSavedPosition);
             if (isActive) _container.gameObject.DismissAllChildrenToPool();
             
@@ -38,8 +40,18 @@ namespace Scripts.UI
                     .SpawnFromPool(positionRecordPrefab, _container.gameObject)
                     .GetComponent<PositionRecord>();
 
-                await positionRecord.Set(save, () => GameManager.Instance.ContinueFromSave(save));
+                await positionRecord.Set(save, () =>
+                {
+                    onMapSelected?.Invoke();
+                    GameManager.Instance.LoadSavedPosition(save);
+                });
             }
+        }
+        
+        private void AssignComponents()
+        {
+            _titleText = transform.Find("Background/Heading/LabelFrame/Title").GetComponent<TMP_Text>();
+            _container = transform.Find("Background/Frame/ScrollView/Viewport/Content");
         }
     }
 }

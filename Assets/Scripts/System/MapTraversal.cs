@@ -123,8 +123,6 @@ namespace Scripts.System
             return true;
         }
         
-        public bool SetForQuickLoad() => SetCampaignFromSave(SaveManager.CurrentSave);
-
         public bool SetForStartingFromLastEditedMap(EntryPoint entryPoint)
         {
             if (!FileOperationsHelper.GetLastEditedCampaignAndMap(out _currentCampaign, out _currentMap))
@@ -256,7 +254,7 @@ namespace Scripts.System
             _currentMap ??= CurrentCampaign.GetStarterMap();
         }
 
-        private bool SetCampaignFromSave(Save save)
+        public bool SetCampaignFromSave(Save save)
         {
             if (save == null)
             {

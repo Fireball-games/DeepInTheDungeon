@@ -135,9 +135,20 @@ namespace Scripts.System
         {
             if (IsPlayingFromEditor) return;
             
-            if (!_mapTraversal.SetForQuickLoad())
+            if (!_mapTraversal.SetCampaignFromSave(SaveManager.CurrentSave))
             {
                 Logger.LogWarning("Could not quick load.");
+                return;
+            }
+            
+            OnStartGameRequested();
+        }
+
+        public void LoadSavedPosition(Save save)
+        {
+            if (!_mapTraversal.SetCampaignFromSave(save))
+            {
+                Logger.LogWarning("Failed to load saved position.");
                 return;
             }
             

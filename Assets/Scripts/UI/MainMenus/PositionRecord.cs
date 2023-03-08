@@ -37,7 +37,8 @@ namespace Scripts.UI
             position.z = 0;
             rectTransform.anchoredPosition3D = position;
             rectTransform.localRotation = Quaternion.identity;
-            
+
+            if (!_button) AssignComponents();
             _button.onClick.RemoveAllListeners();
             _button.onClick.AddListener(onClick);
             

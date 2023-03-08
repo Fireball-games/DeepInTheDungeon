@@ -15,6 +15,8 @@ namespace Scripts.UI.PlayMode
         private Button _toEditorButton;
         private Button _toMainSceneButton;
         
+        private LoadPositionsDialog _loadPositionsDialog; 
+        
         private static GameManager GameManager => GameManager.Instance;
 
         private void Awake()
@@ -27,6 +29,8 @@ namespace Scripts.UI.PlayMode
             
             _toEditorButton = body.transform.Find("Background/Content/ToEditorButton").GetComponent<Button>();
             _toEditorButton.onClick.AddListener(LeaveToEditor);
+            
+            _loadPositionsDialog = FindObjectOfType<LoadPositionsDialog>(true);
         }
 
         protected override void SetContentOnShow()
@@ -38,11 +42,13 @@ namespace Scripts.UI.PlayMode
             _toEditorButton.SetText(t.Get(Keys.ReturnToEditor));
 
             _toMainSceneButton.SetText(t.Get(Keys.ReturnToMainScene));
+            
+            _loadPositionsDialog.SetActive(false);
         }
         
-        private void LoadPosition()
+        private async void LoadPosition()
         {
-            
+            await _loadPositionsDialog.Show(t.Get(Keys.LoadSavedPosition), showVisibleModal: false);
         }
 
         private void LeaveToMainScene()

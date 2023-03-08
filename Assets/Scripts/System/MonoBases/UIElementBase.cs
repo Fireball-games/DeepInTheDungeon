@@ -158,9 +158,9 @@ namespace Scripts.System.MonoBases
                 }
                 else
                 {
-                    gameObject.SetActive(true);
-                    SetActive(true);
                     _isCollapsed = false;
+                    SetActive(true);
+                    gameObject.SetActive(true);
                 }
         }
 

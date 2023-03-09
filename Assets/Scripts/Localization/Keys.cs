@@ -27,6 +27,7 @@ namespace Scripts.Localization
         public const string CreateNewCharacter = "CreateNewCharacter";
         public const string CreateOppositePath = "CreateOppositePath";
         public const string CustomCampaign = "CustomCampaign";
+        public const string CustomCampaigns = "CustomCampaigns";
         public const string Default = "Default";
         public const string DefaultCampaignName = "DefaultCampaignName";
         public const string Delete = "Delete";
@@ -73,6 +74,7 @@ namespace Scripts.Localization
         public const string NothingToEditForConfiguration = "NothingToEditForConfiguration";
         public const string North = "North";
         public const string OpenMapEditor = "OpenMapEditor";
+        public const string OfficialCampaigns = "OfficialCampaigns";
         public const string Offset = "Offset";
         public const string Point = "Point";
         public const string Position = "Position";

@@ -6,5 +6,10 @@
         {
             
         }
+
+        internal override void OpenCustomCampaignMenu()
+        {
+            
+        }
     }
 }

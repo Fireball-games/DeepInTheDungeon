@@ -47,7 +47,7 @@ namespace Scripts.UI
         
         private void LoadPositionClicked() => UIManager.OpenLoadMenu();
 
-        private void CustomCampaignClicked() => Logger.LogNotImplemented();
+        private void CustomCampaignClicked() => UIManager.OpenCustomCampaignMenu();
 
         private void LastEditedMapClicked()
         {

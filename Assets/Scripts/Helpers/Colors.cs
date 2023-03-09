@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Scripts.Helpers
 {
@@ -36,11 +37,31 @@ namespace Scripts.Helpers
         public static Color Beige { get; } = new(0.96f, 0.96f, 0.86f);
         public static Color FullTransparentBlack { get; } = new(0, 0, 0, 0);
         public static Color Gray { get; } = new(0.5f, 0.5f, 0.5f);
+        
+        public enum EColor
+        {
+            White,
+            DeepBlue,
+            LightBlue,
+            Positive,
+            Negative,
+            Warning,
+            Selected,
+            Disabled,
+            SelectedOver,
+            ButtonIdle,
+            ButtonEntered,
+            ButtonClicked,
+        }
+
+        private static Dictionary<EColor, Color> _colorsMap;
 
         private void Awake()
         {
             SetColors();
         }
+        
+        public static Color GetColor(EColor color) => _colorsMap.ContainsKey(color) ? _colorsMap[color] : White;
 
         private void SetColors()
         {
@@ -56,6 +77,22 @@ namespace Scripts.Helpers
             ButtonIdle = buttonIdle;
             ButtonEntered = buttonEntered;
             ButtonClicked = buttonClicked;
+            
+            _colorsMap = new Dictionary<EColor, Color>
+            {
+                {EColor.White, White},
+                {EColor.DeepBlue, DeepBlue},
+                {EColor.LightBlue, LightBlue},
+                {EColor.Positive, Positive},
+                {EColor.Negative, Negative},
+                {EColor.Warning, Warning},
+                {EColor.Selected, Selected},
+                {EColor.Disabled, Disabled},
+                {EColor.SelectedOver, SelectedOver},
+                {EColor.ButtonIdle, ButtonIdle},
+                {EColor.ButtonEntered, ButtonEntered},
+                {EColor.ButtonClicked, ButtonClicked},
+            };
         }
 
 #if UNITY_EDITOR

@@ -9,6 +9,8 @@ namespace Scripts.UI
     public class StartCampaignMenu : UIElementBase
     {
         private TMP_Text _titleText;
+        private TMP_Text _officialCampaignsText;
+        private TMP_Text _customCampaignsText;
 
         private void Awake()
         {
@@ -17,7 +19,12 @@ namespace Scripts.UI
 
         public override async Task SetActiveAsync(bool isActive)
         {
-            if (isActive) _titleText.text = t.Get(Keys.SelectCampaignToStart);
+            if (isActive)
+            {
+                _titleText.text = t.Get(Keys.SelectCampaignToStart);
+                _officialCampaignsText.text = t.Get(Keys.OfficialCampaigns);
+                _customCampaignsText.text = t.Get(Keys.CustomCampaigns);
+            }
             
             await base.SetActiveAsync(isActive);
             
@@ -26,6 +33,8 @@ namespace Scripts.UI
         private void AssignComponents()
         {
             _titleText = transform.Find("Background/Heading/LabelFrame/Title").GetComponent<TMP_Text>();
+            _officialCampaignsText = transform.Find("Background/Frame/OfficialCampaigns/Label/Text").GetComponent<TMP_Text>();
+            _customCampaignsText = transform.Find("Background/Frame/CustomCampaigns/Label/Text").GetComponent<TMP_Text>();
         }
     }
 }

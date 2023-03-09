@@ -9,8 +9,6 @@ namespace Scripts.UI
         protected LoadMenu LoadMenu;
         protected StartCampaignMenu startCampaignMenu;
         
-        private MainUIManager UIManager => MainUIManager.Instance;
-
         protected void Awake()
         {
             AssignComponents();
@@ -43,6 +41,8 @@ namespace Scripts.UI
         }
         
         internal abstract void OpenLoadMenu();
+        
+        internal abstract void OpenCustomCampaignMenu();
 
         public void RefreshMainMenuButtons() => _buttonsMenu.SetComponents();
         
@@ -52,5 +52,6 @@ namespace Scripts.UI
             LoadMenu = GetComponentInChildren<LoadMenu>(true);
             startCampaignMenu = GetComponentInChildren<StartCampaignMenu>(true);
         }
+
     }
 }

@@ -67,6 +67,17 @@ namespace Scripts.UI
         public async void ShowCrossHairAsync(bool show) => await _crossHair.SetActiveAsync(show);
         
         public void RefreshMainMenuButtons() => _mainMenus.ForEach(menu => menu.RefreshMainMenuButtons());
+        
+        public void GraphicRaycasterEnabled(bool isEnabled)
+        {
+            if (!_graphicRaycaster) return;
+            
+            _graphicRaycaster.enabled = isEnabled;
+        }
+
+        public void OpenLoadMenu() => _mainMenus.ForEach(menu => menu.OpenLoadMenu());
+
+        public void OpenCustomCampaignMenu() => _mainMenus.ForEach(menu => menu.OpenCustomCampaignMenu());
 
         private void OnLevelStarted()
         {
@@ -94,14 +105,5 @@ namespace Scripts.UI
 
             GetComponentInChildren<MainEscapeMenu>(true).SetGraphicRaycaster(_graphicRaycaster);
         }
-
-        public void GraphicRaycasterEnabled(bool isEnabled)
-        {
-            if (!_graphicRaycaster) return;
-            
-            _graphicRaycaster.enabled = isEnabled;
-        }
-
-        public void OpenLoadMenu() => _mainMenus.ForEach(menu => menu.OpenLoadMenu());
     }
 }

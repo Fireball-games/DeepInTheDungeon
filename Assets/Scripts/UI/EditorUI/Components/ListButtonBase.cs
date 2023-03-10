@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using static IconStore;
+using static Scripts.UI.IconStore;
 
 namespace Scripts.UI.EditorUI.Components
 {

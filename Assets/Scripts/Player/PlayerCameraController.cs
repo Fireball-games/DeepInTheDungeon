@@ -1,9 +1,9 @@
 using DG.Tweening;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
+using Scripts.PlayMode;
 using Scripts.System;
 using Scripts.System.MonoBases;
-using Scripts.UI.PlayMode;
 using UnityEngine;
 
 namespace Scripts.Player

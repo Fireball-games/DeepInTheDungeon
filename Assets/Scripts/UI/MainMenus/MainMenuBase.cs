@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Scripts.System.MonoBases;
 
-namespace Scripts.UI
+namespace Scripts.UI.MainMenus
 {
     public abstract class MainMenuBase : UIElementBase
     {

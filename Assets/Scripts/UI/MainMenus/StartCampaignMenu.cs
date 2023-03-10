@@ -12,7 +12,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Scripts.UI
+namespace Scripts.UI.MainMenus
 {
     public class StartCampaignMenu : UIElementBase
     {

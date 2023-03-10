@@ -3,7 +3,7 @@ using Scripts.Building.PrefabsSpawning.Walls.Identifications;
 using Scripts.Helpers.Extensions;
 using Scripts.Triggers;
 using UnityEngine.Events;
-using static IconStore;
+using static Scripts.UI.IconStore;
 
 namespace Scripts.UI.EditorUI.Components
 {

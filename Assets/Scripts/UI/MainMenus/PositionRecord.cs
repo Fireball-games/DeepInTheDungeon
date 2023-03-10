@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Scripts.UI
+namespace Scripts.UI.MainMenus
 {
     public class PositionRecord : UIElementBase
     {

@@ -8,6 +8,7 @@ using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
+using Scripts.Helpers.Attributes;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.MapEditor;

@@ -1,4 +1,4 @@
-﻿namespace Scripts.UI
+﻿namespace Scripts.UI.MainMenus
 {
     public class MainMenuOnUI : MainMenuBase
     {

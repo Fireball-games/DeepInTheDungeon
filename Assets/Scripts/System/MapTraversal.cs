@@ -12,10 +12,10 @@ using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.System.Saving;
 using Scripts.Triggers;
-using Scripts.UI;
+using Scripts.UI.MainMenus;
 using UnityEngine;
-using static Scripts.Helpers.CampaignsStore;
-using static Scripts.UI.MainUIManager;
+using static Scripts.System.CampaignsStore;
+using static Scripts.UI.MainMenus.MainUIManager;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.System

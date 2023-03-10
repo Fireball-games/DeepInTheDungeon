@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Scripts.UI.EditorUI.PrefabEditors
+namespace Scripts.Helpers.Attributes
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class ConfigurablePropertyAttribute : Attribute

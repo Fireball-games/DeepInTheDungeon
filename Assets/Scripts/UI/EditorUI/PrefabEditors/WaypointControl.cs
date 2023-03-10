@@ -1,12 +1,14 @@
 using System.Globalization;
 using Scripts.Localization;
 using Scripts.System.Pooling;
+using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using InputField = Scripts.UI.Components.InputField;
 
-namespace Scripts.UI.Components
+namespace Scripts.UI.EditorUI.PrefabEditors
 {
     public class WaypointControl : MonoBehaviour, IPoolInitializable
     {

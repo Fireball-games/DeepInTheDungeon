@@ -8,7 +8,7 @@ using Scripts.Helpers.Extensions;
 using Scripts.Localization;
 using Scripts.System;
 using Scripts.System.Saving;
-using Scripts.UI;
+using Scripts.UI.MainMenus;
 using UnityEngine;
 using static Scripts.Helpers.Strings;
 using static Scripts.Enums;

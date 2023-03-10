@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.Building;
+using Scripts.Helpers;
 
-namespace Scripts.Helpers
+namespace Scripts.System
 {
     public static class CampaignsStore
     {

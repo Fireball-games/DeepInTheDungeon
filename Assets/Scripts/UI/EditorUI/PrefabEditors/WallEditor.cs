@@ -11,14 +11,13 @@ using Scripts.MapEditor.Services;
 using Scripts.ScriptableObjects;
 using Scripts.System;
 using Scripts.UI.Components;
-using Scripts.UI.EditorUI.PrefabEditors;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Services.PathsService;
 
-namespace Scripts.UI.EditorUI
+namespace Scripts.UI.EditorUI.PrefabEditors
 {
     /// <summary>
     /// PrefabEditorBase overload for building walls

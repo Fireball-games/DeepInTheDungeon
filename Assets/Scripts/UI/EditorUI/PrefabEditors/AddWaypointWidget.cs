@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using static Scripts.UI.EditorUI.PrefabEditors.WaypointEditor;
 
-namespace Scripts.UI.Components
+namespace Scripts.UI.EditorUI.PrefabEditors
 {
     public class AddWaypointWidget : MonoBehaviour
     {

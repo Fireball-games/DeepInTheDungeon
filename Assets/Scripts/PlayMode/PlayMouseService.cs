@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static Scripts.System.MouseCursorManager;
 
-namespace Scripts.UI.PlayMode
+namespace Scripts.PlayMode
 {
     public class PlayMouseService : MouseServiceBase<PlayMouseService>
     {

@@ -7,7 +7,7 @@ using Scripts.System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using static IconStore;
+using static Scripts.UI.IconStore;
 using static Scripts.Enums;
 
 namespace Scripts.UI.EditorUI.Components

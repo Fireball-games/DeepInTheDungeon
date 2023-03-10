@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Assets.SimpleLocalization;
-using Scripts.Helpers;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
 

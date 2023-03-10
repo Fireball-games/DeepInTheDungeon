@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
@@ -13,7 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Logger = Scripts.Helpers.Logger;
 
-namespace Scripts.UI
+namespace Scripts.UI.MainMenus
 {
     public class ButtonsMenu : UIElementBase
     {

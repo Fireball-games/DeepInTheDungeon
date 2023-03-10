@@ -1,4 +1,4 @@
-﻿using Scripts.UI;
+﻿using Scripts.UI.MainMenus;
 using UnityEngine;
 
 namespace Scripts.Building

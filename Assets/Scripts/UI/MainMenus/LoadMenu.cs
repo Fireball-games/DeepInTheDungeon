@@ -9,7 +9,7 @@ using Scripts.System.Saving;
 using TMPro;
 using UnityEngine;
 
-namespace Scripts.UI
+namespace Scripts.UI.MainMenus
 {
     public class LoadMenu : UIElementBase
     {

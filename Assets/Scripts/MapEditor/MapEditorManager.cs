@@ -11,7 +11,7 @@ using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.UI.EditorUI;
 using UnityEngine;
-using static MessageBar;
+using static Scripts.UI.Components.MessageBar;
 using static Scripts.Helpers.PlayerPrefsHelper;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MonoBases.DialogBase;

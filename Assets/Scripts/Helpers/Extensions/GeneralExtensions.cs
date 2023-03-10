@@ -134,7 +134,7 @@ namespace Scripts.Helpers.Extensions
                 // Logger.Log("Shooing kids to pool");
                 foreach (Transform child in go.transform)
                 {
-                    ObjectPool.Instance.ReturnToPool(child.gameObject);
+                    ObjectPool.Instance.Dismiss(child.gameObject);
                 }
             }
         }
@@ -194,5 +194,13 @@ namespace Scripts.Helpers.Extensions
         public static string ToLines(this IEnumerable<string> source) => string.Join('\n', source);
 
         public static Vector3 ToVectorUniform(this float value) => new(value, value, value);
+        
+        public static void FixScrollViewPosition(this RectTransform rectTransform)
+        {
+            Vector3 anchoredPosition3D = rectTransform.anchoredPosition3D;
+            anchoredPosition3D.z = 0;
+            rectTransform.anchoredPosition3D = anchoredPosition3D;
+            rectTransform.localRotation = Quaternion.identity;
+        }
     }
 }

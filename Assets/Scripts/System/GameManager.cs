@@ -105,11 +105,13 @@ namespace Scripts.System
             OnStartGameRequested(fadeIn);
         }
 
-        public async void StartMainCampaign()
+        public void StartMainCampaign() => StartCampaign(CampaignsStore.MainCampaign);
+        
+        public async void StartCampaign(Campaign campaign)
         {
             // TODO: When applicable, handle warning about deleting save files.
-
-            if (!_mapTraversal.SetForStartingMainCampaign())
+            
+            if (!_mapTraversal.SetForStartingNewCampaign(campaign))
             {
                 Logger.LogWarning("Could not start new campaign.");
                 return;
@@ -119,7 +121,7 @@ namespace Scripts.System
             
             OnStartGameRequested();
         }
-        
+
         public void ContinueFromSave(Save save)
         {
             if (!_mapTraversal.SetForStartingFromSave(save))
@@ -199,7 +201,7 @@ namespace Scripts.System
         {
             if (Player)
             {
-                ObjectPool.Instance.ReturnToPool(Player.gameObject);
+                ObjectPool.Instance.Dismiss(Player.gameObject);
             }
         }
 

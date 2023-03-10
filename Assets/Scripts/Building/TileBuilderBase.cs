@@ -62,7 +62,7 @@ namespace Scripts.Building
                 // If its not a tile (could be null tile), then get rid of it
                 if (!newTile)
                 {
-                    ObjectPool.Instance.ReturnToPool(foundTile);
+                    ObjectPool.Instance.Dismiss(foundTile);
                     PhysicalTiles.Remove(WorldKey);
                 }
             }
@@ -71,7 +71,7 @@ namespace Scripts.Building
             // not a null tile, because else it would not be here.
             if (!newTile)
             {
-                newTile = ObjectPool.Instance.SpawnFromPool(_tileDefaultPrefab, LayoutParent.gameObject).GetComponent<TileController>();
+                newTile = ObjectPool.Instance.Get(_tileDefaultPrefab, LayoutParent.gameObject).GetComponent<TileController>();
             }
 
             newTile.gameObject.name = _tileDefaultPrefab.name;

@@ -147,8 +147,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2696964824841636374, guid: ae70503ecef3f744cabfd8d17aa4d4a3, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae70503ecef3f744cabfd8d17aa4d4a3, type: 3}
 --- !u!1 &2719568224203755022 stripped
 GameObject:
@@ -168,49 +167,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e3a3988820449e0b7c7aea290d4abbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: 7a0c0aa5d2a3508499f535bf2e31b1fb,
-      type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: 9f1877981f0ced34999b2dcc01f9b72a, type: 3}
-    m_SelectedSprite: {fileID: 21300000, guid: 7a0c0aa5d2a3508499f535bf2e31b1fb, type: 3}
-    m_DisabledSprite: {fileID: 21300000, guid: a550d490fc09b084c8a117a3fc87db7f, type: 3}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 8368699854461832707}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
-  selectOnClick: 1
---- !u!114 &8368699854461832707 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6818155500728217302, guid: ae70503ecef3f744cabfd8d17aa4d4a3,
-    type: 3}
-  m_PrefabInstance: {fileID: 3079736881597407445}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2719568224203755022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  selectedColor: 0
+  unselectedColor: 0

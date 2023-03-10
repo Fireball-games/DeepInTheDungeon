@@ -29,12 +29,12 @@ namespace Scripts.Building
                     return;
                 }
                 // There is physical tile already, let us dispose of it.
-                ObjectPool.Instance.ReturnToPool(foundTile);
+                ObjectPool.Instance.Dismiss(foundTile);
                 PhysicalTiles.Remove(WorldKey);
             }
             
             GameObject cube = DefaultsProvider.defaultNullCubePrefab
-                ? ObjectPool.Instance.SpawnFromPool(DefaultsProvider.defaultNullCubePrefab, LayoutParent.gameObject)
+                ? ObjectPool.Instance.Get(DefaultsProvider.defaultNullCubePrefab, LayoutParent.gameObject)
                 : GameObject.CreatePrimitive(PrimitiveType.Cube);
             
             cube.transform.parent = LayoutParent;

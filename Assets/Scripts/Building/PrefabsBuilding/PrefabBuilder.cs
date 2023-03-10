@@ -128,7 +128,7 @@ namespace Scripts.Building.PrefabsBuilding
             Transform offsetTransform = prefabGo.GetBody();
             if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
 
-            ObjectPool.Instance.ReturnToPool(prefabGo);
+            ObjectPool.Instance.Dismiss(prefabGo);
         }
         
         public void RemoveConfiguration(string guid) 

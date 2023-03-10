@@ -56,7 +56,7 @@ namespace Scripts.UI.EditorUI.Components
         protected void AddIcon(EIcon icon)
         {
             Image newIcon = ObjectPool.Instance
-                .SpawnFromPool(iconPrefab.gameObject, Text.gameObject)
+                .Get(iconPrefab.gameObject, Text.gameObject)
                 .GetComponent<Image>();
 
             newIcon.sprite = Get(icon);

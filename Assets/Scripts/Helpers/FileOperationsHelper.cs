@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
@@ -23,7 +22,7 @@ namespace Scripts.Helpers
 
         private static string SavesLocalDirectoryPath => Path.Combine(PersistentPath, SavesDirectoryName);
         private static readonly string PersistentPath = Application.persistentDataPath;
-        private static string ApplicationResourcesPath => Path.Combine(Application.dataPath, ResourcesDirectoryName);
+        private static readonly string ApplicationResourcesPath;
         private static readonly ES3Settings ES3ResourcesLocationSettings;
 
         private static readonly Dictionary<string, int> MaxFilesForSaveNameRoot = new()
@@ -41,8 +40,16 @@ namespace Scripts.Helpers
             {
                 location = ES3.Location.Resources,
             };
+
+            ApplicationResourcesPath = Path.Combine(Application.dataPath, ResourcesDirectoryName);
         }
 
+        /// <summary>
+        /// Loads all files in PersistentDataPath (LocalLow on windows) and returns their names
+        /// </summary>
+        /// <param name="relativeDirectoryPath"></param>
+        /// <param name="extensionFilter"></param>
+        /// <returns></returns>
         public static string[] GetFilesInDirectory(string relativeDirectoryPath = "", string extensionFilter = "all")
         {
             string fullPath = Path.Combine(PersistentPath, relativeDirectoryPath);
@@ -80,37 +87,6 @@ namespace Scripts.Helpers
                 Logger.Log($"Failed to save campaign: {campaign.CampaignName}: {e}", Logger.ELogSeverity.Release);
                 onSaveFailed?.Invoke();
             }
-        }
-
-        public static bool LoadSystemCampaigns(out Campaign mainCampaign, out Campaign startRoomsCampaign)
-        {
-            mainCampaign = null;
-            startRoomsCampaign = null;
-
-            if (!LoadResourcesCampaign(GetSelectedMainCampaignName(), out mainCampaign))
-            {
-                Logger.LogError($"Failed to load main campaign: {MainCampaignName}");
-                return false;
-            }
-
-            if (!LoadResourcesCampaign(StartRoomsCampaignName, out startRoomsCampaign))
-            {
-                Logger.LogError($"Failed to load start rooms campaign: {StartRoomsCampaignName}");
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Loads last played campaign.
-        /// </summary>
-        /// <returns>Obtained campaign or null</returns>
-        public static Campaign LoadLastPlayedCampaign()
-        {
-            string campaignName = PlayerPrefsHelper.LastPlayedCampaign;
-
-            return LoadCampaign(campaignName, out Campaign campaign) ? campaign : null;
         }
 
         public static bool GetLastEditedCampaignAndMap(out Campaign campaign, out MapDescription map)
@@ -176,8 +152,9 @@ namespace Scripts.Helpers
                 return false;
             }
         }
+
         private static string GetFullSavesPath(string saveName) => Path.Combine(SavesLocalDirectoryPath, $"{saveName}{SaveFileExtension}");
-        
+
         private static string GetLocalRelativeSavePath(string saveName) => Path.Combine(SavesDirectoryName, $"{saveName}{SaveFileExtension}");
 
         private static Campaign LoadLastEditedCampaign()
@@ -207,6 +184,17 @@ namespace Scripts.Helpers
 
         private static string GetFullRelativeCampaignPath(string campaignName) =>
             Path.Combine(CampaignDirectoryName, $"{campaignName}{CampaignFileExtension}");
+
+        private static Campaign LoadCampaignFromResources(string campaignName)
+        {
+            if (LoadResourcesCampaign(campaignName, out Campaign campaign))
+            {
+                return campaign;
+            }
+
+            Logger.LogError($"Failed to load campaign from resources: {campaignName}");
+            return null;
+        }
 
         // Loads campaign from resources folder using ES3
         private static bool LoadResourcesCampaign(string campaignName, out Campaign campaign)
@@ -274,23 +262,11 @@ namespace Scripts.Helpers
                 Logger.Log($"Failed to save save: {save.fileName}: {e}", Logger.ELogSeverity.Release);
             }
         }
-        
-        public static void DeleteOldestSystemSave(string saveName)
-        {
-            if (!LoadAllSaves(out IEnumerable<Save> loadedSaves)) return;
-
-            Save oldestSave = loadedSaves.Where(save => save.saveName == saveName)
-                .OrderBy(save => save.timeStamp).FirstOrDefault();
-
-            if (oldestSave == null) return;
-
-            DeleteSave(oldestSave.saveName);
-        }
 
         public static IEnumerable<string> GetFileNamesAndRemoveOldestSaveForName(string rootSaveName)
         {
             if (!LoadAllSaves(out IEnumerable<Save> saves)) return null;
-            
+
             List<Save> savesWithSameNameRoot = saves.Where(
                 save => /*save.characterProfile == GameManager.Instance.CurrentCharacterProfile
                         &&*/ save.fileName.Contains(rootSaveName)).ToList();
@@ -299,7 +275,7 @@ namespace Scripts.Helpers
 
             if (savesWithSameNameRoot.Count < GetMaxSavesCountForRootName(rootSaveName))
                 return savesWithSameNameRoot.Select(save => save.fileName);
-            
+
             Save oldestSave = savesWithSameNameRoot.OrderBy(save => save.timeStamp).First();
 
             savesWithSameNameRoot.Remove(oldestSave);
@@ -321,5 +297,59 @@ namespace Scripts.Helpers
 
         private static int GetMaxSavesCountForRootName(string rootSaveName)
             => MaxFilesForSaveNameRoot.TryGetValue(rootSaveName, out int maxFiles) ? maxFiles : 1;
+
+        public static IEnumerable<Campaign> LoadCampaignsFromResources()
+        {
+            string[] allCampaigns = Directory.GetFiles(FullCampaignsResourcesPath, $"*{CampaignFileExtension}");
+
+            if (!allCampaigns.Any())
+            {
+                Logger.Log("No campaigns found.", Logger.ELogSeverity.Release);
+                return null;
+            }
+
+            IEnumerable<Campaign> loadedCampaigns;
+
+            try
+            {
+                loadedCampaigns = allCampaigns.Select(campaignPath =>
+                        LoadCampaignFromResources(Path.GetFileNameWithoutExtension(campaignPath)))
+                    .Where(campaign => campaign != null);
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to load campaigns from resources: {e}", Logger.ELogSeverity.Release);
+                return null;
+            }
+
+            return loadedCampaigns;
+        }
+
+        public static IEnumerable<Campaign> LoadCampaignsFromPersistentDataPath()
+        {
+            string[] allCampaigns = GetFilesInDirectory(CampaignDirectoryName, CampaignFileExtension);
+
+            if (!allCampaigns.Any())
+            {
+                Logger.Log("No campaigns found.", Logger.ELogSeverity.Release);
+                return null;
+            }
+
+            Campaign[] loadedCampaigns;
+
+            try
+            {
+                loadedCampaigns = allCampaigns.Select(campaignPath =>
+                        ES3.Load<Campaign>(Path.GetFileNameWithoutExtension(campaignPath), campaignPath))
+                    .Where(campaign => campaign != null).ToArray();
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to load campaigns from persistent data path: {e}", Logger.ELogSeverity.Release);
+                return null;
+            }
+
+            return loadedCampaigns;
+        }
     }
 }

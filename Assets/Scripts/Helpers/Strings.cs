@@ -57,16 +57,9 @@ namespace Scripts.Helpers
             return name;
         }
 
-        public static string DecrementName(this string baseString, int decrementBy = 1)
+        public static string FromCamelCase(this string camelCaseString)
         {
-            if (!int.TryParse(baseString.Substring(baseString.Length - 1), out int number))
-            {
-                Logger.LogWarning($"Decrement name failed. Base string: {baseString}");
-                return baseString;
-            } 
-            
-            number -= decrementBy;
-            return $"{baseString.Substring(0, baseString.Length - 1)}{number}";
+            return string.Concat(camelCaseString.Select((x, i) => i > 0 && char.IsUpper(x) ? " " + x : x.ToString()));
         }
     }
 }

@@ -14,6 +14,7 @@ using Scripts.System.Saving;
 using Scripts.Triggers;
 using Scripts.UI;
 using UnityEngine;
+using static Scripts.Helpers.CampaignsStore;
 using static Scripts.UI.MainUIManager;
 using Logger = Scripts.Helpers.Logger;
 
@@ -40,9 +41,7 @@ namespace Scripts.System
         {
             set => GameManager.movementEnabled = value;
         }
-
-        private readonly Campaign _mainCampaign;
-        private readonly Campaign _startRoomsCampaign;
+        
         private readonly PlayerController _playerPrefab;
 
         private Campaign _currentCampaign;
@@ -57,8 +56,8 @@ namespace Scripts.System
         public MapTraversal(PlayerController playerPrefab)
         {
             _playerPrefab = playerPrefab;
-
-            if (!FileOperationsHelper.LoadSystemCampaigns(out _mainCampaign, out _startRoomsCampaign))
+            
+            if (!LoadCampaigns())
             {
                 Logger.LogError("Failed to load system campaigns.");
             }
@@ -68,7 +67,7 @@ namespace Scripts.System
 
         internal bool SetForStartFromMainScreen()
         {
-            _currentCampaign = _startRoomsCampaign;
+            _currentCampaign = StartRoomsCampaign;
 
             bool startedMapBoolFailed = false;
 
@@ -103,11 +102,25 @@ namespace Scripts.System
             return false;
         }
 
-        internal bool SetForStartingMainCampaign()
+        internal bool SetForStartingNewCampaign(Campaign campaign)
         {
-            _currentCampaign = _mainCampaign;
+            _currentCampaign = campaign;
             _currentMap = _currentCampaign.GetStarterMap();
-            _currentEntryPoint = _currentMap.EntryPoints[0].Cloned();
+            
+            if (_currentMap.EntryPoints is {Count: 0})
+            {
+                Logger.LogWarning($"Campaign {_currentCampaign.CampaignName.WrapInColor(Colors.Yellow)} has no entry points.");
+                _currentEntryPoint = new EntryPoint
+                {
+                    isMovingForwardOnStart = false,
+                    playerGridPosition = _currentMap.EditorStartPosition,
+                    playerRotationY = (int) _currentMap.EditorPlayerStartRotation.eulerAngles.y
+                };
+            }
+            else
+            {
+                _currentEntryPoint = _currentMap.EntryPoints[0].Cloned();
+            }
 
             StartMapFromMainScreenButtonClickHandling();
 
@@ -193,7 +206,7 @@ namespace Scripts.System
             PlayerCamera.IsLookModeOn = false;
             MouseCursorManager.ResetCursor();
             
-            Player = ObjectPool.Instance.SpawnFromPool(_playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
+            Player = ObjectPool.Instance.Get(_playerPrefab.gameObject, Vector3.zero, Quaternion.identity)
                 .GetComponent<PlayerController>();
             Player.transform.parent = null;
             Player.PlayerMovement.SetPositionAndRotation(
@@ -264,7 +277,7 @@ namespace Scripts.System
 
             if (save.CurrentCampaign == Strings.MainCampaignName)
             {
-                _currentCampaign = _mainCampaign;
+                _currentCampaign = MainCampaign;
             }
             else
             {

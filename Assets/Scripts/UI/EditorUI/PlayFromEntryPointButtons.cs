@@ -55,7 +55,7 @@ namespace Scripts.UI.EditorUI
         {
             foreach (EntryPoint entryPoint in GameManager.Instance.CurrentMap.EntryPoints)
             {
-                Button button = ObjectPool.Instance.SpawnFromPool(buttonPrefab.gameObject, gameObject).GetComponent<Button>();
+                Button button = ObjectPool.Instance.Get(buttonPrefab.gameObject, gameObject).GetComponent<Button>();
                 button.GetComponentInChildren<TMP_Text>().text = entryPoint.name;
                 button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() => MapEditorManager.Instance.PlayFromEntryPoint(entryPoint));

@@ -32,11 +32,7 @@ namespace Scripts.UI
         {
             SetActive(false);
             PrepareForTransition();
-            RectTransform rectTransform = GetComponent<RectTransform>();
-            Vector3 position = rectTransform.anchoredPosition3D;
-            position.z = 0;
-            rectTransform.anchoredPosition3D = position;
-            rectTransform.localRotation = Quaternion.identity;
+            GetComponent<RectTransform>().FixScrollViewPosition();
 
             if (!_button) AssignComponents();
             _button.onClick.RemoveAllListeners();

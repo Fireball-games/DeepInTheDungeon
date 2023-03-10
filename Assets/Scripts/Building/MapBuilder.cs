@@ -82,7 +82,7 @@ namespace Scripts.Building
         {
             foreach (GameObject tile in PhysicalTiles.Values)
             {
-                ObjectPool.Instance.ReturnToPool(tile);
+                ObjectPool.Instance.Dismiss(tile);
             }
 
             foreach (GameObject prefab in Prefabs)
@@ -91,7 +91,7 @@ namespace Scripts.Building
 
                 if (offsetTransform) offsetTransform.localPosition = Vector3.zero;
 
-                ObjectPool.Instance.ReturnToPool(prefab);
+                ObjectPool.Instance.Dismiss(prefab);
             }
 
             NullTilesMap.Clear();

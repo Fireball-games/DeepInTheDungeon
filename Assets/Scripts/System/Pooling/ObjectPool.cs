@@ -30,9 +30,9 @@ namespace Scripts.System.Pooling
             }
         }
 
-        public GameObject SpawnFromPool(GameObject go, GameObject parent) => SpawnFromPool(go, Vector3.zero, Quaternion.identity, parent);
+        public GameObject Get(GameObject go, GameObject parent) => Get(go, Vector3.zero, Quaternion.identity, parent);
         
-        public GameObject SpawnFromPool(GameObject go, Vector3 position, Quaternion rotation, GameObject parent = null) 
+        public GameObject Get(GameObject go, Vector3 position, Quaternion rotation, GameObject parent = null) 
         {
             if (Pool.ContainsKey(go.name) && Pool[go.name].Any())
             {
@@ -57,7 +57,7 @@ namespace Scripts.System.Pooling
             return InstantiateNewPoolObject(go, position, rotation, parent);
         }
 
-        public void ReturnToPool(GameObject returningObject)
+        public void Dismiss(GameObject returningObject)
         {
             if (!Pool.ContainsKey(returningObject.name))
             {
@@ -144,7 +144,7 @@ namespace Scripts.System.Pooling
                 for (int i = 0; i < item.howMany; i++)
                 {
                     GameObject newObject = InstantiateNewPoolObject(item.prefabGameObject, true);
-                    ReturnToPool(newObject);
+                    Dismiss(newObject);
                 }
             });
         }

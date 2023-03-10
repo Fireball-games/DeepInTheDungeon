@@ -37,7 +37,7 @@ namespace Scripts.UI
             foreach (Save save in SaveManager.Saves)
             {
                 PositionRecord positionRecord = ObjectPool.Instance
-                    .SpawnFromPool(positionRecordPrefab, _container.gameObject)
+                    .Get(positionRecordPrefab, _container.gameObject)
                     .GetComponent<PositionRecord>();
 
                 await positionRecord.Set(save, () =>

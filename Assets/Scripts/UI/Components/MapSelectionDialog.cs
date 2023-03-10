@@ -253,12 +253,12 @@ namespace Scripts.UI.Components
             {
                 button.SetTextColor(Colors.White);
                 button.onClick.RemoveAllListeners();
-                ObjectPool.Instance.ReturnToPool(button.transform.parent.gameObject);
+                ObjectPool.Instance.Dismiss(button.transform.parent.gameObject);
             }
 
             _existingCampaigns.ForEach(campaign =>
             {
-                GameObject fileItem = ObjectPool.Instance.SpawnFromPool(fileItemPrefab, _campaignsParent.gameObject);
+                GameObject fileItem = ObjectPool.Instance.Get(fileItemPrefab, _campaignsParent.gameObject);
                 fileItem.name = campaign.CampaignName;
                 fileItem.GetComponentInChildren<TMP_Text>().text = campaign.CampaignName;
                 Button button = fileItem.GetComponentInChildren<Button>();
@@ -297,12 +297,12 @@ namespace Scripts.UI.Components
             {
                 button.SetTextColor(Colors.White);
                 button.onClick.RemoveAllListeners();
-                ObjectPool.Instance.ReturnToPool(button.transform.parent.gameObject);
+                ObjectPool.Instance.Dismiss(button.transform.parent.gameObject);
             }
 
             foreach (MapDescription map in _selectedCampaign.Maps)
             {
-                GameObject fileItem = ObjectPool.Instance.SpawnFromPool(fileItemPrefab, _mapsItemsParent.gameObject);
+                GameObject fileItem = ObjectPool.Instance.Get(fileItemPrefab, _mapsItemsParent.gameObject);
                 fileItem.name = map.MapName;
                 fileItem.GetComponentInChildren<TMP_Text>().text = map.MapName;
                 fileItem.GetComponentInChildren<Button>().onClick.AddListener(() => LoadMap(map.MapName));

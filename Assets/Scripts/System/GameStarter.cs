@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Assets.SimpleLocalization;
+using Scripts.Helpers;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.System
 {
@@ -11,6 +13,11 @@ namespace Scripts.System
             SetLocalization();
             
             await Task.Delay(200);
+            
+            if (!CampaignsStore.LoadCampaigns())
+            {
+                Logger.LogError("Failed to load system campaigns.");
+            }
             
             GameManager.Instance.StartMainScene(false);
         }

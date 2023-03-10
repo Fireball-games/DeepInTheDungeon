@@ -56,11 +56,6 @@ namespace Scripts.System
         public MapTraversal(PlayerController playerPrefab)
         {
             _playerPrefab = playerPrefab;
-            
-            if (!LoadCampaigns())
-            {
-                Logger.LogError("Failed to load system campaigns.");
-            }
 
             _currentEntryPoint = new EntryPoint();
         }

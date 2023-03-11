@@ -51,10 +51,12 @@ namespace Scripts.UI.EditorUI
             ConstructButtons();
         }
 
-        private async void ConstructButtons()
+        private void ConstructButtons()
         {
             upButton.transform.SetParent(transform);
+            upButton.SetActive(false);
             downButton.transform.SetParent(transform);
+            downButton.SetActive(false);
 
             body.DismissAllChildrenToPool();
 
@@ -64,12 +66,12 @@ namespace Scripts.UI.EditorUI
             _floorCount = map.Layout.GetLength(0);
             _currentFloor = Manager.CurrentFloor;
 
-            await upButton.SetActiveAsync(true);
+            upButton.SetActive(true);
             upButton.transform.SetParent(body.transform);
 
             AddFloorButtons();
 
-            await downButton.SetActiveAsync(true);
+            downButton.SetActive(true);
             downButton.transform.SetParent(body.transform);
 
             SetInteractivity();

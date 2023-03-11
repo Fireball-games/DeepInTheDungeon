@@ -32,14 +32,14 @@ namespace Scripts.UI.Components
         private Title _lastEditedMapDescription;
 
         private Title _selectCampaignTitle;
-        private GameObject _campaignsScrollView;
+        private ScrollViewUIElement _campaignsScrollView;
         private Transform _campaignsParent;
         private Button _addCampaignButton;
 
         private Title _selectCampaignPrompt;
         private Title _selectMapPrompt;
         private Title _selectMapTitle;
-        private GameObject _mapsScrollView;
+        private ScrollViewUIElement _mapsScrollView;
         private Transform _mapsItemsParent;
         private Button _addMapButton;
 
@@ -61,16 +61,16 @@ namespace Scripts.UI.Components
             _loadLastEditedMapButton = content.Find("LastEditedMapButton").GetComponent<Button>();
             _lastEditedMapDescription = content.Find("LastEditedMapDescription").GetComponent<Title>();
 
-            _campaignsParent = content.Find("CampaignsScrollView/Viewport/Content");
-            _campaignsScrollView = content.Find("CampaignsScrollView").gameObject;
+            _campaignsScrollView = content.Find("CampaignsScrollView").GetComponent<ScrollViewUIElement>();
+            _campaignsParent = _campaignsScrollView.Content;
             _selectCampaignTitle = content.Find("SelectCampaignTitle").GetComponent<Title>();
             _addCampaignButton = content.Find("AddCampaignButton").GetComponent<Button>();
 
             _selectCampaignPrompt = content.Find("SelectCampaignPrompt").GetComponent<Title>();
             _selectMapPrompt = content.Find("SelectMapPrompt").GetComponent<Title>();
             _selectMapTitle = content.Find("SelectMapTitle").GetComponent<Title>();
-            _mapsScrollView = content.Find("MapsScrollView").gameObject;
-            _mapsItemsParent = content.Find("MapsScrollView/Viewport/Content");
+            _mapsScrollView = content.Find("MapsScrollView").GetComponent<ScrollViewUIElement>();
+            _mapsItemsParent = _mapsScrollView.Content;
             _addMapButton = content.Find("AddMapButton").GetComponent<Button>();
 
             _loadLastEditedMapButton.onClick.AddListener(LoadLastEditedMap);

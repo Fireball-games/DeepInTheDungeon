@@ -527,15 +527,16 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _prefabTitle = frame.Find("Header/PrefabTitle").GetComponent<Title>();
             _prefabsFinderButton = frame.Find("Header/PrefabFinderButton").GetComponent<ImageButton>();
             _statusText = Content.Find("StatusText").GetComponent<TMP_Text>();
-            Transform buttons = frame.Find("Buttons");
             _mainWindow = bodyTransform.Find("Background").gameObject;
-            _cancelButton = buttons.Find("CancelButton").GetComponent<Button>();
-            _cancelButton.SetTextColor(Colors.Warning);
-            _saveButton = buttons.Find("SaveButton").GetComponent<Button>();
+            
+            Transform buttons = frame.Find("Buttons");
+            _saveButton = buttons.Find("SaveDelete/SaveButton").GetComponent<Button>();
             _saveButton.SetTextColor(Colors.Positive);
-            _deleteButton = buttons.Find("DeleteButton").GetComponent<Button>();
+            _deleteButton = buttons.Find("SaveDelete/DeleteButton").GetComponent<Button>();
             _deleteButton.SetTextColor(Colors.Negative);
-            _closeButton = buttons.Find("CloseButton").GetComponent<Button>();
+            _cancelButton = buttons.Find("CancelClose/CancelButton").GetComponent<Button>();
+            _cancelButton.SetTextColor(Colors.Warning);
+            _closeButton = buttons.Find("CancelClose/CloseButton").GetComponent<Button>();
         }
         private void ManageConfigurableComponents()
         {

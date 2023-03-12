@@ -39,7 +39,7 @@ namespace Scripts.UI.EditorUI.Components
             if (instancedPrefab && instancedPrefab.GetBody()) AddIcon(EIcon.Wall);
             if (item is WallConfiguration configuration && configuration.HasPath()) AddIcon(EIcon.Move);
 
-            Text.text = displayedItem.DisplayName;
+            Text.text = displayedItem.PrefabName;
         }
 
         protected override void OnClick_internal()

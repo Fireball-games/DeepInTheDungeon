@@ -26,10 +26,10 @@ namespace Scripts.UI.EditorUI
             _saveButton.SetTextColor(Colors.Positive);
             _saveButton.onClick.AddListener(OnSaveClicked);
             
-            _exitButton = bodyTransform.Find("CommonButtons/ExitButton").GetComponent<Button>();
+            _exitButton = bodyTransform.Find("ExitButton").GetComponent<Button>();
             _exitButton.onClick.AddListener(OnExitClicked);
             
-            _addOpenMapButton = bodyTransform.Find("CommonButtons/AddOpenMapButton").GetComponent<Button>();            
+            _addOpenMapButton = bodyTransform.Find("AddOpenMapButton").GetComponent<Button>();            
             _addOpenMapButton.onClick.AddListener(OnNewMapClicked);
         }
 

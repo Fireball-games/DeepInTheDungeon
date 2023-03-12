@@ -108,7 +108,7 @@ namespace Scripts.UI.EditorUI
         {
             string campaignName = GameManager.Instance.CurrentCampaign.CampaignName;
             string mapName = GameManager.Instance.CurrentMap.MapName;
-            _mapTitle.Show($"{t.Get(Keys.Campaign)}: {campaignName.WrapInColor(Colors.Positive)} {t.Get(Keys.Map)}: {mapName.WrapInColor(Colors.Positive)}");
+            _mapTitle.Show($"{t.Get(Keys.Campaign)}: {campaignName.WrapInColor(Colors.Orange)} {t.Get(Keys.Map)}: {mapName.WrapInColor(Colors.Orange)}");
             
             _upperRightPanel.gameObject.SetActive(true);
 

@@ -380,6 +380,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             _isEditingExistingPrefab = true;
             MapBuilder.AddReplacePrefabConfiguration(EditedConfiguration);
+            _originalConfiguration = CloneConfiguration(EditedConfiguration);
             MapEditorManager.Instance.SaveMap();
 
             SetButtons();

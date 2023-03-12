@@ -30,7 +30,7 @@ namespace Scripts.UI.MainMenus
             _titleText.text = t.Get(Keys.LoadSavedPosition);
             if (isActive) _container.gameObject.DismissAllChildrenToPool();
             
-            await base.SetActiveAsync(isActive);
+            SetActive(isActive);
             
             if (!isActive) return;
 

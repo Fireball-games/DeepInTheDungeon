@@ -66,13 +66,13 @@ namespace Scripts.UI.EditorUI
             _floorCount = map.Layout.GetLength(0);
             _currentFloor = Manager.CurrentFloor;
 
-            upButton.SetActive(true);
             upButton.transform.SetParent(body.transform);
+            upButton.SetActive(true);
 
             AddFloorButtons();
 
-            downButton.SetActive(true);
             downButton.transform.SetParent(body.transform);
+            downButton.SetActive(true);
 
             SetInteractivity();
         }

@@ -52,6 +52,11 @@ namespace Scripts.UI.EditorUI.Components
             }
         }
 
+        /// <summary>
+        /// Button set is separated from Open method to allow for custom button set.
+        /// </summary>
+        /// <param name="button"></param>
+        /// <param name="item"></param>
         protected virtual void SetButton(TButton button, T item)
         {
             button.Set(item, OnItemClicked_internal, SetClickedItemSelected);

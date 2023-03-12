@@ -8,6 +8,7 @@ namespace Scripts.Helpers
         [SerializeField] private Color white;
         [SerializeField] private Color deepBlue;
         [SerializeField] private Color lightBlue;
+        [SerializeField] private Color orange;
         [SerializeField] private Color positive;
         [SerializeField] private Color negative;
         [SerializeField] private Color warning;
@@ -35,23 +36,25 @@ namespace Scripts.Helpers
         public static Color LightBlue { get; private set; }
         public static Color Yellow { get; } = new(1.0f, 1.0f, 0.0f);
         public static Color Beige { get; } = new(0.96f, 0.96f, 0.86f);
+        public static Color Orange = new(1.0f, 0.5f, 0.0f);
         public static Color FullTransparentBlack { get; } = new(0, 0, 0, 0);
         public static Color Gray { get; } = new(0.5f, 0.5f, 0.5f);
         
         public enum EColor
         {
-            White,
-            DeepBlue,
-            LightBlue,
-            Positive,
-            Negative,
-            Warning,
-            Selected,
-            Disabled,
-            SelectedOver,
-            ButtonIdle,
-            ButtonEntered,
-            ButtonClicked,
+            White = 1,
+            DeepBlue = 2,
+            LightBlue = 3,
+            Orange = 4,
+            Positive = 5,
+            Negative = 6,
+            Warning = 7,
+            Selected = 8,
+            Disabled = 9,
+            SelectedOver = 10,
+            ButtonIdle = 11,
+            ButtonEntered = 12,
+            ButtonClicked = 13,
         }
 
         private static Dictionary<EColor, Color> _colorsMap;
@@ -68,6 +71,7 @@ namespace Scripts.Helpers
             White = white;
             DeepBlue = deepBlue;
             LightBlue = lightBlue;
+            Orange = orange;
             Positive = positive;
             Negative = negative;
             Warning = warning;
@@ -83,6 +87,7 @@ namespace Scripts.Helpers
                 {EColor.White, White},
                 {EColor.DeepBlue, DeepBlue},
                 {EColor.LightBlue, LightBlue},
+                {EColor.Orange, Orange},
                 {EColor.Positive, Positive},
                 {EColor.Negative, Negative},
                 {EColor.Warning, Warning},

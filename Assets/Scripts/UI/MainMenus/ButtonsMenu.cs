@@ -22,7 +22,6 @@ namespace Scripts.UI.MainMenus
         private Button _loadPositionButton;
         private Button _newCampaignButton;
         private Button _createNewCharacterButton;
-        private Button _lastEditedMapButton;
         private Button _editorButton;
         private Button _settingsButton;
         private Button _exitGameButton;
@@ -85,12 +84,9 @@ namespace Scripts.UI.MainMenus
             _customCampaignButton.SetText(t.Get(Keys.CustomCampaign));
             _newCampaignButton.SetText(t.Get(Keys.StartNewCampaign));
             _createNewCharacterButton.SetText(t.Get(Keys.CreateNewCharacter));
-            _lastEditedMapButton.SetText(t.Get(Keys.LoadLastEditedMap));
             _editorButton.SetText(t.Get(Keys.OpenMapEditor));
             _settingsButton.SetText(t.Get(Keys.Settings));
             _exitGameButton.SetText(t.Get(Keys.ExitGame));
-            
-            _lastEditedMapButton.gameObject.SetActive(PlayerPrefsHelper.IsLastEditedMapValid());
         }
         
         private void AssignComponents()
@@ -114,8 +110,6 @@ namespace Scripts.UI.MainMenus
             _settingsButton.onClick.AddListener(SettingsClicked);
             _editorButton = systemButtons.Find("EditorButton").GetComponent<Button>();
             _editorButton.onClick.AddListener(EditorClicked);
-            _lastEditedMapButton = systemButtons.Find("LastEditedMapButton").GetComponent<Button>();
-            _lastEditedMapButton.onClick.AddListener(LastEditedMapClicked);
             _exitGameButton = systemButtons.Find("ExitGameButton").GetComponent<Button>();
             _exitGameButton.onClick.AddListener(ExitGameClicked);
         }

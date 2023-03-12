@@ -75,7 +75,7 @@ namespace Scripts.System.MonoBases
         /// Disables/Enables the body, IGNORES TRANSITIONS.
         /// </summary>
         /// <param name="isActive"></param>
-        public virtual void SetActive(bool isActive)
+        public void SetActive(bool isActive)
         {
             if (!body) return;
 
@@ -84,7 +84,38 @@ namespace Scripts.System.MonoBases
                 SetCollapsed(false);
             }
             
-            body.SetActive(isActive);
+            if (transitionType == ETransitionType.Fade)
+            {
+                // If the body is already active/inactive, return.
+                if (isActive && Math.Abs(CanvasGroup.alpha - 1) < float.Epsilon 
+                    || !isActive && Math.Abs(CanvasGroup.alpha) < float.Epsilon)
+                {
+                    body.SetActive(isActive);
+                    return;
+                }
+                
+                body.SetActive(true);
+                CanvasGroup.DOFade(isActive ? 1 : 0, transitionDuration)
+                    .SetAutoKill(true).OnComplete(() => body.SetActive(isActive)).Play();
+            }
+            else if (transitionType == ETransitionType.Scale)
+            {
+                if (isActive && RectTransform.localScale == Vector3.one 
+                    || !isActive && RectTransform.localScale == Vector3.zero)
+                {
+                    body.SetActive(isActive);
+                    return;
+                }
+                
+                body.SetActive(true);
+                RectTransform.DOScale(isActive ? Vector3.one : Vector3.zero, transitionDuration).SetAutoKill(true)
+                    .OnComplete(() => body.SetActive(isActive))
+                    .Play();
+            }
+            else
+            {
+                body.SetActive(isActive);
+            }
         }
 
         /// <summary>

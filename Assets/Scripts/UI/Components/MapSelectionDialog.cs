@@ -76,6 +76,8 @@ namespace Scripts.UI.Components
             _loadLastEditedMapButton.onClick.AddListener(LoadLastEditedMap);
             _addCampaignButton.onClick.AddListener(AddCampaign);
             _addMapButton.onClick.AddListener(AddMap);
+            
+            PrepareForTransition();
         }
 
         public async Task Show(bool showCancelButton = true, bool isModalClosingDialog = true)

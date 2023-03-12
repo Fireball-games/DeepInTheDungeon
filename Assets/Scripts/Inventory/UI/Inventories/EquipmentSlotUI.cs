@@ -36,17 +36,14 @@ namespace Scripts.Inventory.UI.Inventories
 
         public int MaxAcceptable(InventoryItem item)
         {
-            EquipableItem equipableItem = item as EquipableItem;
-            if (equipableItem == null) return 0;
-            if (equipableItem.GetAllowedEquipLocation() != equipLocation) return 0;
-            if (GetItem() != null) return 0;
-
-            return 1;
+            if (item == null) return 0;
+            if (item.GetAllowedEquipLocation() != equipLocation) return 0;
+            return GetItem() != null ? 0 : 1;
         }
 
         public void AddItems(InventoryItem item, int number)
         {
-            _playerEquipment.AddItem(equipLocation, (EquipableItem) item);
+            _playerEquipment.AddItem(equipLocation, item);
         }
 
         public InventoryItem GetItem()

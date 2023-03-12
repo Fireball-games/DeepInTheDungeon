@@ -15,10 +15,8 @@ namespace Scripts.Inventory.Inventories
     /// </summary>
     public class Inventory : MonoBehaviour, ISavable
     {
-        // CONFIG DATA
         [Tooltip("Allowed size")]
-        [SerializeField]
-        private int inventorySize = 16;
+        [SerializeField] private int inventorySize = 16;
 
         // STATE
         private InventorySlot[] _slots;

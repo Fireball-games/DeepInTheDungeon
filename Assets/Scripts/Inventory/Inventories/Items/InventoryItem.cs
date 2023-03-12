@@ -22,6 +22,8 @@ namespace Scripts.Inventory.Inventories.Items
         [SerializeField] private Pickup pickup;
         [Tooltip("If true, multiple items of this type can be stacked in the same inventory slot.")]
         [SerializeField] private bool stackable;
+        [Tooltip("Where are we allowed to put this item.")]
+        [SerializeField] private EquipLocation allowedEquipLocation = EquipLocation.Weapon;
 
         // STATE
         private static Dictionary<string, InventoryItem> _itemLookupCache;
@@ -55,6 +57,11 @@ namespace Scripts.Inventory.Inventories.Items
         public string GetDescription()
         {
             return description;
+        }
+        
+        public EquipLocation GetAllowedEquipLocation()
+        {
+            return allowedEquipLocation;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Scripts.Inventory.Inventories.Items;
 using Scripts.System.Saving;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace Scripts.Inventory.Inventories
     public class Equipment : MonoBehaviour, ISavable
     {
         // STATE
-        Dictionary<EquipLocation, EquipableItem> _equippedItems = new();
+        private Dictionary<EquipLocation, EquipableItem> _equippedItems = new();
 
         // PUBLIC
 
@@ -99,7 +100,7 @@ namespace Scripts.Inventory.Inventories
 
             foreach (KeyValuePair<EquipLocation, string> pair in equippedItemsForSerialization)
             {
-                EquipableItem item = (EquipableItem)InventoryItem.GetFromID(pair.Value);
+                EquipableItem item = MapObject.GetFromID<EquipableItem>(pair.Value);
                 if (item != null)
                 {
                     _equippedItems[pair.Key] = item;

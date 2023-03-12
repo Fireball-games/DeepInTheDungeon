@@ -1,4 +1,4 @@
-﻿using Scripts.Inventory.Inventories;
+﻿using Scripts.Inventory.Inventories.Items;
 
 namespace Scripts.Inventory.UI.Inventories
 {

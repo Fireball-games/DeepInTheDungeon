@@ -1,4 +1,4 @@
-﻿using Scripts.Inventory.Inventories;
+﻿using Scripts.Inventory.Inventories.Items;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,8 +13,8 @@ namespace Scripts.Inventory.UI.Inventories
     public class InventoryItemIcon : MonoBehaviour
     {
         // CONFIG DATA
-        [SerializeField] GameObject textContainer;
-        [SerializeField] TextMeshProUGUI itemNumber;
+        [SerializeField] private GameObject textContainer;
+        [SerializeField] private TextMeshProUGUI itemNumber;
 
         // PUBLIC
 

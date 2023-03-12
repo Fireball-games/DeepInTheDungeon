@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Scripts.Inventory.Inventories.Items;
 using Scripts.System.Saving;
 using UnityEngine;
 
@@ -192,7 +193,7 @@ namespace Scripts.Inventory.Inventories
             Dictionary<int, DockedItemRecord> stateDict = (Dictionary<int, DockedItemRecord>)state;
             foreach (KeyValuePair<int, DockedItemRecord> pair in stateDict)
             {
-                AddAction(InventoryItem.GetFromID(pair.Value.itemID), pair.Key, pair.Value.number);
+                AddAction(MapObject.GetFromID<InventoryItem>(pair.Value.itemID), pair.Key, pair.Value.number);
             }
         }
     }

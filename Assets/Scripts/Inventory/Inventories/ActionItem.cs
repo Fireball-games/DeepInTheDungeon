@@ -1,3 +1,4 @@
+using Scripts.Inventory.Inventories.Items;
 using UnityEngine;
 
 namespace Scripts.Inventory.Inventories
@@ -14,7 +15,8 @@ namespace Scripts.Inventory.Inventories
     {
         // CONFIG DATA
         [Tooltip("Does an instance of this item get consumed every time it's used.")]
-        [SerializeField] bool consumable;
+        [SerializeField]
+        private bool consumable;
 
         // PUBLIC
 

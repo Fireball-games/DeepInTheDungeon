@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Scripts.Inventory.UI.Inventories
 {
@@ -10,21 +9,21 @@ namespace Scripts.Inventory.UI.Inventories
     public class InventoryUI : MonoBehaviour
     {
         // CONFIG DATA
-        [SerializeField] InventorySlotUI InventoryItemPrefab;
+        [SerializeField] private InventorySlotUI inventoryItemPrefab;
 
         // CACHE
-        Inventory.Inventories.Inventory playerInventory;
+        private Inventory.Inventories.Inventory _playerInventory;
 
         // LIFECYCLE METHODS
 
         private void Awake() 
         {
-            playerInventory = Inventory.Inventories.Inventory.GetPlayerInventory();
+            _playerInventory = Inventory.Inventories.Inventory.GetPlayerInventory();
         }
 
         private void OnEnable()
         {
-            playerInventory.OnInventoryUpdated.AddListener(Redraw);
+            _playerInventory.OnInventoryUpdated.AddListener(Redraw);
         }
 
         private void Start()
@@ -34,7 +33,7 @@ namespace Scripts.Inventory.UI.Inventories
         
         private void OnDisable()
         {
-            playerInventory.OnInventoryUpdated.RemoveListener(Redraw);
+            _playerInventory.OnInventoryUpdated.RemoveListener(Redraw);
         }
 
         // PRIVATE
@@ -46,10 +45,10 @@ namespace Scripts.Inventory.UI.Inventories
                 Destroy(child.gameObject);
             }
 
-            for (int i = 0; i < playerInventory.GetSize(); i++)
+            for (int i = 0; i < _playerInventory.GetSize(); i++)
             {
-                var itemUI = Instantiate(InventoryItemPrefab, transform);
-                itemUI.Setup(playerInventory, i);
+                var itemUI = Instantiate(inventoryItemPrefab, transform);
+                itemUI.Setup(_playerInventory, i);
             }
         }
     }

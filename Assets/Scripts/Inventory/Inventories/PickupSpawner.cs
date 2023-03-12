@@ -1,4 +1,5 @@
-﻿using Scripts.System.Saving;
+﻿using Scripts.Inventory.Inventories.Items;
+using Scripts.System.Saving;
 using UnityEngine;
 
 namespace Scripts.Inventory.Inventories
@@ -10,8 +11,8 @@ namespace Scripts.Inventory.Inventories
     public class PickupSpawner : MonoBehaviour, ISavable
     {
         // CONFIG DATA
-        [SerializeField] InventoryItem item;
-        [SerializeField] int number = 1;
+        [SerializeField] private InventoryItem item;
+        [SerializeField] private int number = 1;
 
         // LIFECYCLE METHODS
         private void Awake()

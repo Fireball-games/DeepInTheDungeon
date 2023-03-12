@@ -1,4 +1,5 @@
 ﻿using System;
+using Scripts.Inventory.Inventories.Items;
 using Scripts.System.Saving;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,10 +17,11 @@ namespace Scripts.Inventory.Inventories
     {
         // CONFIG DATA
         [Tooltip("Allowed size")]
-        [SerializeField] int inventorySize = 16;
+        [SerializeField]
+        private int inventorySize = 16;
 
         // STATE
-        InventorySlot[] _slots;
+        private InventorySlot[] _slots;
 
         private struct InventorySlot
         {
@@ -241,7 +243,7 @@ namespace Scripts.Inventory.Inventories
             InventorySlotRecord[] slotStrings = (InventorySlotRecord[])state;
             for (int i = 0; i < inventorySize; i++)
             {
-                _slots[i].Item = InventoryItem.GetFromID(slotStrings[i].itemID);
+                _slots[i].Item = InventoryItem.GetFromID<InventoryItem>(slotStrings[i].itemID);
                 _slots[i].Number = slotStrings[i].number;
             }
 

@@ -1,4 +1,5 @@
 ﻿using Scripts.Inventory.Inventories;
+using Scripts.Inventory.Inventories.Items;
 using Scripts.Inventory.Utils.UI.Dragging;
 using UnityEngine;
 
@@ -11,19 +12,19 @@ namespace Scripts.Inventory.UI.Inventories
     {
         // CONFIG DATA
 
-        [SerializeField] InventoryItemIcon icon;
-        [SerializeField] EquipLocation equipLocation = EquipLocation.Weapon;
+        [SerializeField] private InventoryItemIcon icon;
+        [SerializeField] private EquipLocation equipLocation = EquipLocation.Weapon;
 
         // CACHE
-        Equipment playerEquipment;
+        private Equipment _playerEquipment;
 
         // LIFECYCLE METHODS
        
         private void Awake() 
         {
             var player = GameObject.FindGameObjectWithTag("Player");
-            playerEquipment = player.GetComponent<Equipment>();
-            playerEquipment.equipmentUpdated += RedrawUI;
+            _playerEquipment = player.GetComponent<Equipment>();
+            _playerEquipment.equipmentUpdated += RedrawUI;
         }
 
         private void Start() 
@@ -45,12 +46,12 @@ namespace Scripts.Inventory.UI.Inventories
 
         public void AddItems(InventoryItem item, int number)
         {
-            playerEquipment.AddItem(equipLocation, (EquipableItem) item);
+            _playerEquipment.AddItem(equipLocation, (EquipableItem) item);
         }
 
         public InventoryItem GetItem()
         {
-            return playerEquipment.GetItemInSlot(equipLocation);
+            return _playerEquipment.GetItemInSlot(equipLocation);
         }
 
         public int GetNumber()
@@ -67,14 +68,14 @@ namespace Scripts.Inventory.UI.Inventories
 
         public void RemoveItems(int number)
         {
-            playerEquipment.RemoveItem(equipLocation);
+            _playerEquipment.RemoveItem(equipLocation);
         }
 
         // PRIVATE
 
-        void RedrawUI()
+        private void RedrawUI()
         {
-            icon.SetItem(playerEquipment.GetItemInSlot(equipLocation));
+            icon.SetItem(_playerEquipment.GetItemInSlot(equipLocation));
         }
     }
 }

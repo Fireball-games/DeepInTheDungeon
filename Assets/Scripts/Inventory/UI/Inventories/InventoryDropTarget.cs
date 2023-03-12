@@ -1,4 +1,5 @@
 using Scripts.Inventory.Inventories;
+using Scripts.Inventory.Inventories.Items;
 using Scripts.Inventory.Utils.UI.Dragging;
 using UnityEngine;
 

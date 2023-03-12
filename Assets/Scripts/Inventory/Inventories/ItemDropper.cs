@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Scripts.Inventory.Inventories.Items;
 using Scripts.System.Saving;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -90,7 +91,7 @@ namespace Scripts.Inventory.Inventories
             DropRecord[] droppedItemsList = (DropRecord[])state;
             foreach (DropRecord item in droppedItemsList)
             {
-                InventoryItem pickupItem = InventoryItem.GetFromID(item.itemID);
+                InventoryItem pickupItem = MapObject.GetFromID<InventoryItem>(item.itemID);
                 Vector3 position = item.position;
                 int number = item.number;
                 SpawnPickup(pickupItem, position, number);

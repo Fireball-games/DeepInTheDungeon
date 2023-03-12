@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Scripts.Inventory.Inventories.Items;
+using UnityEngine;
 
 namespace Scripts.Inventory.Inventories
 {
@@ -9,11 +10,11 @@ namespace Scripts.Inventory.Inventories
     public class Pickup : MonoBehaviour
     {
         // STATE
-        InventoryItem _item;
-        int _number = 1;
+        private InventoryItem _item;
+        private int _number = 1;
 
         // CACHED REFERENCE
-        Inventory _inventory;
+        private Inventory _inventory;
 
         // LIFECYCLE METHODS
 

@@ -1,4 +1,4 @@
-﻿using Scripts.Inventory.Inventories;
+﻿using Scripts.Inventory.Inventories.Items;
 using Scripts.Inventory.Utils.UI.Dragging;
 using UnityEngine;
 
@@ -7,25 +7,25 @@ namespace Scripts.Inventory.UI.Inventories
     public class InventorySlotUI : MonoBehaviour, IItemHolder, IDragContainer<InventoryItem>
     {
         // CONFIG DATA
-        [SerializeField] InventoryItemIcon icon;
+        [SerializeField] private InventoryItemIcon icon;
 
         // STATE
-        int index;
-        InventoryItem item;
-        Inventory.Inventories.Inventory inventory;
+        private int _index;
+        private InventoryItem _item;
+        private Inventory.Inventories.Inventory _inventory;
 
         // PUBLIC
 
         public void Setup(Inventory.Inventories.Inventory inventory, int index)
         {
-            this.inventory = inventory;
-            this.index = index;
+            _inventory = inventory;
+            _index = index;
             icon.SetItem(inventory.GetItemInSlot(index), inventory.GetNumberInSlot(index));
         }
 
         public int MaxAcceptable(InventoryItem item)
         {
-            if (inventory.HasSpaceFor(item))
+            if (_inventory.HasSpaceFor(item))
             {
                 return int.MaxValue;
             }
@@ -34,22 +34,22 @@ namespace Scripts.Inventory.UI.Inventories
 
         public void AddItems(InventoryItem item, int number)
         {
-            inventory.AddItemToSlot(index, item, number);
+            _inventory.AddItemToSlot(_index, item, number);
         }
 
         public InventoryItem GetItem()
         {
-            return inventory.GetItemInSlot(index);
+            return _inventory.GetItemInSlot(_index);
         }
 
         public int GetNumber()
         {
-            return inventory.GetNumberInSlot(index);
+            return _inventory.GetNumberInSlot(_index);
         }
 
         public void RemoveItems(int number)
         {
-            inventory.RemoveFromSlot(index, number);
+            _inventory.RemoveFromSlot(_index, number);
         }
     }
 }

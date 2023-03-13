@@ -15,7 +15,7 @@ namespace Scripts.Inventory.Inventories
     public class Equipment : MonoBehaviour, ISavable
     {
         // STATE
-        private Dictionary<EquipLocation, InventoryItem> _equippedItems = new();
+        private Dictionary<EquipLocation, EquipableItem> _equippedItems = new();
 
         // PUBLIC
 
@@ -32,7 +32,7 @@ namespace Scripts.Inventory.Inventories
         /// <summary>
         /// Return the item in the given equip location.
         /// </summary>
-        public InventoryItem GetItemInSlot(EquipLocation equipLocation)
+        public EquipableItem GetItemInSlot(EquipLocation equipLocation)
         {
             if (!_equippedItems.ContainsKey(equipLocation))
             {
@@ -46,7 +46,7 @@ namespace Scripts.Inventory.Inventories
         /// Add an item to the given equip location. Do not attempt to equip to
         /// an incompatible slot.
         /// </summary>
-        public void AddItem(EquipLocation slot, InventoryItem item)
+        public void AddItem(EquipLocation slot, EquipableItem item)
         {
             Debug.Assert(item.GetAllowedEquipLocation() == slot);
 
@@ -85,7 +85,7 @@ namespace Scripts.Inventory.Inventories
         object ISavable.CaptureState()
         {
             Dictionary<EquipLocation, string> equippedItemsForSerialization = new();
-            foreach (KeyValuePair<EquipLocation, InventoryItem> pair in _equippedItems)
+            foreach (KeyValuePair<EquipLocation, EquipableItem> pair in _equippedItems)
             {
                 equippedItemsForSerialization[pair.Key] = pair.Value.GetItemID();
             }
@@ -94,13 +94,13 @@ namespace Scripts.Inventory.Inventories
 
         void ISavable.RestoreState(object state)
         {
-            _equippedItems = new Dictionary<EquipLocation, InventoryItem>();
+            _equippedItems = new Dictionary<EquipLocation, EquipableItem>();
 
             Dictionary<EquipLocation, string> equippedItemsForSerialization = (Dictionary<EquipLocation, string>)state;
 
             foreach (KeyValuePair<EquipLocation, string> pair in equippedItemsForSerialization)
             {
-                InventoryItem item = MapObject.GetFromID<InventoryItem>(pair.Value);
+                EquipableItem item = MapObject.GetFromID<EquipableItem>(pair.Value);
                 if (item != null)
                 {
                     _equippedItems[pair.Key] = item;

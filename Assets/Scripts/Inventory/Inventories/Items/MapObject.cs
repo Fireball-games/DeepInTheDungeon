@@ -56,12 +56,6 @@ namespace Scripts.Inventory.Inventories.Items
             return ItemID;
         }
 
-        
-        public string GetDisplayName()
-        {
-            return displayName;
-        }
-
         // PRIVATE
         
         void ISerializationCallbackReceiver.OnBeforeSerialize()

@@ -1,4 +1,5 @@
-﻿using Scripts.Helpers;
+﻿using NaughtyAttributes;
+using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.System.Pooling;
 using TMPro;
@@ -13,7 +14,7 @@ namespace Scripts.UI.EditorUI.Components
     {
         public bool MarkSelectedOnClick = true;
         [SerializeField] private Image iconPrefab;
-        public T displayedItem;
+        [ReadOnly] public T displayedItem;
 
         protected TMP_Text Text;
         
@@ -32,8 +33,12 @@ namespace Scripts.UI.EditorUI.Components
         public virtual void Set(T item, UnityAction<T> onClick, bool setSelectedOnClick = true)
         {
             if(!Text) Initialize();
+
+            if (Text)
+            {
+                Text.gameObject.DismissAllChildrenToPool();
+            }
             
-            Text.gameObject.DismissAllChildrenToPool();
             SetInteractable(true);
             
             displayedItem = item;
@@ -45,11 +50,14 @@ namespace Scripts.UI.EditorUI.Components
             {
                 OnClick.AddListener(onClick);
             }
-            
-            Text.color = _normalColor;
+
+            if (Text)
+            {
+                Text.color = _normalColor;
+            }
         }
 
-        public void SetSelected(bool isSelected) => Text.color = isSelected ? SelectedColor : _normalColor;
+        public virtual void SetSelected(bool isSelected) => Text.color = isSelected ? SelectedColor : _normalColor;
 
         public void SetInteractable(bool isInteractable) => Button.interactable = isInteractable;
 
@@ -64,7 +72,7 @@ namespace Scripts.UI.EditorUI.Components
 
         protected virtual void OnClick_internal()
         {
-            if (MarkSelectedOnClick)
+            if (MarkSelectedOnClick && Text)
             {
                 Text.color = SelectedColor;
             }
@@ -75,7 +83,7 @@ namespace Scripts.UI.EditorUI.Components
         protected virtual void AssignComponents()
         {
             Button = transform.Find("Button").GetComponent<Button>();
-            Text = transform.Find("Button/Text").GetComponent<TMP_Text>();
+            Text = transform.Find("Button/Text")?.GetComponent<TMP_Text>();
         }
 
         private void Initialize()

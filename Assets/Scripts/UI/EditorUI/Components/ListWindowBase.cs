@@ -53,7 +53,7 @@ namespace Scripts.UI.EditorUI.Components
         }
 
         /// <summary>
-        /// Button set is separated from Open method to allow for custom button set.
+        /// Button set is separated from Open method to allow for custom button settings.
         /// </summary>
         /// <param name="button"></param>
         /// <param name="item"></param>

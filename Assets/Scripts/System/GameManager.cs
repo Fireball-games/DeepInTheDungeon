@@ -12,6 +12,7 @@ using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.System.Saving;
 using Scripts.UI.EditorUI;
+using Scripts.UI.MainMenus;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
 
@@ -116,6 +117,7 @@ namespace Scripts.System
                 Logger.LogWarning("Could not start new campaign.");
                 return;
             }
+            
             EventsManager.TriggerOnNewCampaignStarted();
             await Task.Delay(2500);
             
@@ -205,7 +207,7 @@ namespace Scripts.System
             }
         }
 
-        private void OnSceneFinishedLoading(string sceneName)
+        private async void OnSceneFinishedLoading(string sceneName)
         {
             MapBuilder.DemolishMap();
             
@@ -230,6 +232,7 @@ namespace Scripts.System
 
             if (sceneName is Scenes.MainSceneName)
             {
+                await MainUIManager.Instance.ShowMainMenu(false);
                 if (!IsPlayingFromEditor)
                 {
                     _gameMode = EGameMode.MainScene;

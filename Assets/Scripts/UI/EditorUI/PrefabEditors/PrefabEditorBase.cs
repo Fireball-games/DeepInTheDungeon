@@ -362,6 +362,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 MapBuilder.RemovePrefab(EditedConfiguration);
                 EditedConfiguration = null;
                 EditedPrefab = null;
+                SetPrefabTitle(t.Get(Keys.NoPrefabSelected));
                 
                 if (!isSingleTypeEditor)
                 {
@@ -540,7 +541,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         }
 
         private void SetPrefabTitle(string title = null) =>
-            _prefabTitle.SetTitle(string.IsNullOrEmpty(title) ? t.Get(Keys.NoPrefabSelected) : title);
+            _prefabTitle.SetTitle(string.IsNullOrEmpty(title) ? t.Get(Keys.NoPrefabSelected) : title.FromCamelCase());
 
         private void ManageConfigurableComponents()
         {

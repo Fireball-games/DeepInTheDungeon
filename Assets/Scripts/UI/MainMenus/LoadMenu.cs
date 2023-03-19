@@ -23,7 +23,7 @@ namespace Scripts.UI.MainMenus
            AssignComponents();
         }
 
-        public async Task ShowAsync(bool isActive, Action onMapSelected = null)
+        public async void Show(bool isActive, Action onMapSelected = null)
         {
             if (!_titleText) AssignComponents();
             

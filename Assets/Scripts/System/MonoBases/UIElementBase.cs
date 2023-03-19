@@ -75,7 +75,7 @@ namespace Scripts.System.MonoBases
         /// Disables/Enables the body, IGNORES TRANSITIONS.
         /// </summary>
         /// <param name="isActive"></param>
-        public void SetActive(bool isActive)
+        public virtual void SetActive(bool isActive)
         {
             if (!body) return;
 

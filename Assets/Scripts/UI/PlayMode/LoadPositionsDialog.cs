@@ -12,9 +12,9 @@ namespace Scripts.UI.PlayMode
             _loadMenu = body.transform.Find("Content/LoadMenu").GetComponent<LoadMenu>();
         }
         
-        protected override async void SetContentOnShow()
+        protected override void SetContentOnShow()
         {
-            await _loadMenu.ShowAsync(true, OnPositionSelected);
+            _loadMenu.Show(true, OnPositionSelected);
         }
 
         private void OnPositionSelected()

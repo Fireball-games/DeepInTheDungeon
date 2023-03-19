@@ -1,4 +1,6 @@
-﻿using NotImplementedException = System.NotImplementedException;
+﻿using System.Collections.Generic;
+using Scripts.Helpers;
+using Scripts.Inventory.Inventories.Items;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
@@ -7,12 +9,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         
         public override void Open()
         {
-            throw new NotImplementedException();
+            IEnumerable<MapObject> items = MapObject.GetAllItems();
         }
 
         protected override void RemoveAndClose()
         {
-            throw new NotImplementedException();
+            Logger.LogNotImplemented();
         }
     }
 }

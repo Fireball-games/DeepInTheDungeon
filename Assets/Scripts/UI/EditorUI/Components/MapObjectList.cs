@@ -1,7 +1,4 @@
-﻿using Scripts.Helpers;
-using Scripts.Inventory.Inventories.Items;
-using UnityEngine.EventSystems;
-using NotImplementedException = System.NotImplementedException;
+﻿using Scripts.Inventory.Inventories.Items;
 
 namespace Scripts.UI.EditorUI.Components
 {
@@ -15,7 +12,5 @@ namespace Scripts.UI.EditorUI.Components
             
             button.SetParentList(this);
         }
-
-        
     }
 }

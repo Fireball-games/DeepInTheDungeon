@@ -20,6 +20,7 @@ namespace Scripts.UI.EditorUI
         private ImageButton _prefabTileModeButton;
         private ImageButton _triggerModeButton;
         private ExpandedOptionsBase _triggerModeOptions;
+        private ImageButton _itemModeButton;
 
         private static MapEditorManager Manager => MapEditorManager.Instance;
         private Dictionary<ImageButton, EWorkMode[]> _workModesMap;
@@ -35,6 +36,7 @@ namespace Scripts.UI.EditorUI
             _prefabTileModeButton = content.Find("PrefabTileModeButton").GetComponent<ImageButton>();
             _triggerModeButton = content.Find("TriggerModeButton").GetComponent<ImageButton>();
             _triggerModeOptions = _triggerModeButton.transform.Find("TriggerModeExpandedOptions").GetComponent<ExpandedOptionsBase>();
+            _itemModeButton = content.Find("ItemModeButton").GetComponent<ImageButton>();
             
             _workModesMap = new()
             {
@@ -43,6 +45,7 @@ namespace Scripts.UI.EditorUI
                 {_wallModeButton, new[] { EWorkMode.Walls }},
                 {_prefabTileModeButton, new[] { EWorkMode.PrefabTiles}},
                 {_triggerModeButton, new[] { EWorkMode.Triggers, EWorkMode.TriggerReceivers}},
+                {_itemModeButton, new[] { EWorkMode.Items }},
             };
         }
 
@@ -65,6 +68,8 @@ namespace Scripts.UI.EditorUI
             _triggerModeButton.OnClickWithSender += WorkModeButtonClicked;
             _triggerModeButton.OnSelected += ActivateTriggerModeOptions;
             _triggerModeButton.OnDeselected += DeactivateTriggerModeOptions;
+            
+            _itemModeButton.OnClickWithSender += WorkModeButtonClicked;
         }
 
         private void OnDisable()
@@ -86,6 +91,8 @@ namespace Scripts.UI.EditorUI
             _triggerModeButton.OnClickWithSender -= TriggerWorkModeClicked;
             _triggerModeButton.OnSelected -= ActivateTriggerModeOptions;
             _triggerModeButton.OnDeselected -= DeactivateTriggerModeOptions;
+            
+            _itemModeButton.OnClickWithSender -= WorkModeButtonClicked;
         }
 
         private void ActivateBuildModeOptions()

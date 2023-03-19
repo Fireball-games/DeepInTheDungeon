@@ -2,16 +2,16 @@
 {
     public class MainMenuWorld : MainMenuBase
     {
-        internal override async void OpenLoadMenu()
+        internal override void OpenLoadMenu()
         {
-            await startCampaignMenu.SetActiveAsync(false);
-            await LoadMenu.ShowAsync(true);
+            startCampaignMenu.SetActive(false);
+            LoadMenu.Show(true);
         }
 
-        internal override async void OpenCustomCampaignMenu()
+        internal override void OpenCustomCampaignMenu()
         {
-            await LoadMenu.ShowAsync(false);
-            await startCampaignMenu.SetActiveAsync(true);
+            LoadMenu.Show(false);
+            startCampaignMenu.SetActive(true);
         }
     }
 }

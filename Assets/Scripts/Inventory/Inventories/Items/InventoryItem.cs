@@ -16,10 +16,6 @@ namespace Scripts.Inventory.Inventories.Items
         // CONFIG DATA
         [Tooltip("Item description to be displayed in UI.")]
         [SerializeField][TextArea] private string description;
-        [Tooltip("The UI icon to represent this item in the inventory.")]
-        [SerializeField] private Sprite icon;
-        [Tooltip("The prefab that should be spawned when this item is dropped.")]
-        [SerializeField] private Pickup pickup;
         [Tooltip("If true, multiple items of this type can be stacked in the same inventory slot.")]
         [SerializeField] private bool stackable;
 

@@ -32,6 +32,7 @@ namespace Scripts.UI.EditorUI
         private TilePrefabEditor _tilePrefabEditor;
         private TriggerEditor _triggerEditor;
         private TriggerReceiverEditor _triggerReceiverEditor;
+        private ItemEditor _itemEditor;
         private Transform _body;
 
         public TileGizmoController TileGizmo { get; private set; }
@@ -63,16 +64,20 @@ namespace Scripts.UI.EditorUI
             _playButton = _upperRightPanel.Find("PlayButton").GetComponent<ImageButton>();
             _playButton.OnClick.AddListener(manager.PlayMap);
             _mapTitle = _upperRightPanel.Find("MapTitle").GetComponent<Title>();
+            
             NewMapDialog = transform.Find("NewMapDialog").GetComponent<NewMapDialog>();
             ConfirmationDialog = transform.Find("ConfirmationDialog Variant").GetComponent<DialogBase>();
             MapSelectionDialog = transform.Find("MapSelectionDialog").GetComponent<MapSelectionDialog>();
             _inputDialog = transform.Find("InputDialog").GetComponent<InputDialog>();
+            
             _entryPointEditor = _body.Find("EntryPointEditor").GetComponent<EntryPointEditor>();
             _editorStartPointEditor = _body.Find("EditorStartPointEditor").GetComponent<EditorStartPointEditor>();
             _wallEditor = _body.Find("WallEditor").GetComponent<WallEditor>();
             _tilePrefabEditor = _body.Find("TilePrefabEditor").GetComponent<TilePrefabEditor>();
             _triggerEditor = _body.Find("TriggerEditor").GetComponent<TriggerEditor>();
             _triggerReceiverEditor = _body.Find("TriggerReceiverEditor").GetComponent<TriggerReceiverEditor>();
+            _itemEditor = _body.Find("ItemEditor").GetComponent<ItemEditor>();
+            
             MessageBar = transform.Find("MessageBar").GetComponent<MessageBar>();
             Tooltip = transform.Find("Tooltip").GetComponent<TooltipController>();
             SelectedCage = _body.Find("SelectedCage").GetComponent<CageController>();
@@ -88,7 +93,8 @@ namespace Scripts.UI.EditorUI
                 {EWorkMode.Walls, _wallEditor},
                 {EWorkMode.PrefabTiles, _tilePrefabEditor},
                 {EWorkMode.Triggers, _triggerEditor},
-                {EWorkMode.TriggerReceivers, _triggerReceiverEditor}
+                {EWorkMode.TriggerReceivers, _triggerReceiverEditor},
+                {EWorkMode.Items, _itemEditor},
             };
         }
 

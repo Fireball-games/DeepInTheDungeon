@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c6513a5767e496ebdde633b357d763e, type: 3}
   m_Name: Rock
   m_EditorClassIdentifier: 
-  displayName: 
-  description: 
-  icon: {fileID: 0}
-  pickup: {fileID: 0}
+  itemID: 5b4c7204-22bb-498f-818b-b71ee1db5f10
+  displayName: Small Rock
+  icon: {fileID: 21300000, guid: 670a3a1faead8b34c885bc5f7e3afdd8, type: 3}
+  pickup: {fileID: 9054842967696712030, guid: 84ea90319c4e4d64289d9e04ca92725f, type: 3}
+  description: Normal rock
   stackable: 1
   allowedEquipLocation: 5

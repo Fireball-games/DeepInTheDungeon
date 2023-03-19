@@ -29,7 +29,7 @@ namespace Scripts.UI.MainMenus
             AssignComponents();
         }
 
-        public override async Task SetActiveAsync(bool isActive)
+        public override void SetActive(bool isActive)
         {
             if (isActive)
             {
@@ -40,7 +40,7 @@ namespace Scripts.UI.MainMenus
 
             SetList(CampaignsStore.OfficialCampaigns.Where(c => c.CampaignName != Strings.StartRoomsCampaignName), _officialCampaignsParent);
             SetList(CampaignsStore.CustomCampaigns, _customCampaignsParent);
-            await base.SetActiveAsync(isActive);
+            base.SetActive(isActive);
         }
         
         private void SetList(IEnumerable<Campaign> campaigns, Transform buttonParent)

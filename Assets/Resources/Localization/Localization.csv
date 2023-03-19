@@ -6,6 +6,7 @@ AddNewSubscriber,Add New Subscriber
 AddOpenMap,Add/Open Map
 AddWaypoint,Add Waypoint
 AutoSave,Auto Save
+AvailableItems,Available Items
 AvailablePrefabs,Available Prefabs
 Campaign,Campaign
 Cancel,Cancel
@@ -39,6 +40,12 @@ ExitGame,Exit Game
 Floors,Floors
 InvalidNumberOfPrefabsFound,Invalid number of prefabs found.
 IsWalkable,Eligible for Walking
+#REGION, Items
+Item/Dagger,Dagger
+ItemDetail/Dagger,Common dagger sturdy enough for combat
+Item/SmallRock,Small Rock
+ItemDetail/SmallRock,Small rock that can be thrown
+#END REGION, Items
 Load,Load
 LoadingFileFailed,Loading File Failed
 LoadLastEditedMap,Load Last Edited Map
@@ -59,6 +66,7 @@ NewMapName,Map Name
 NewMapNamePrompt,Enter map name...
 NoChangesToSave,No changes to the map were made.
 NoFilesToShow,No files found
+NoItemSelected,Select Item
 NoMapToPlayLoaded,There is no map to Play
 NoPrefabsAvailable,No valid prefabs were found.
 NoPrefabSelected,No prefab selected

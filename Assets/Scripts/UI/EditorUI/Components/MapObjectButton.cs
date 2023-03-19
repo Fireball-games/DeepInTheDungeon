@@ -17,16 +17,8 @@ namespace Scripts.UI.EditorUI.Components
             _itemImage ??= transform.Find("Button/Frame/ItemImage").GetComponent<Image>();
             _itemImage.sprite = item.Icon;
             _itemImage.color = Colors.FullOpaqueWhite;
-            
-            Text.text = displayedItem.DisplayName;
         }
 
         public void SetParentList(MapObjectList mapObjectList) => _parentList = mapObjectList;
-
-        protected override void OnClick_internal()
-        {
-            Logger.Log($"Clicked on {displayedItem.DisplayName}");
-            base.OnClick_internal();
-        }
     }
 }

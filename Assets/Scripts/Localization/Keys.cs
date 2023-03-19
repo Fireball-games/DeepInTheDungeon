@@ -4,15 +4,13 @@ namespace Scripts.Localization
 {
     public static class Keys
     {
-        private const string TooltipPrefix = "Tooltip/";
-        private const string TooltipDefault = "Tooltip is missing";
-        
         public const string AddCampaign = "AddCampaign";
         public const string AddEndPoint = "AddEndPoint";
         public const string AddMap = "AddMap";
         public const string AddNewSubscriber = "AddNewSubscriber";
         public const string AddOpenMap = "AddOpenMap";
         public const string AddWaypoint = "AddWaypoint";
+        public const string AvailableItems = "AvailableItems";
         public const string AvailablePrefabs = "AvailablePrefabs";
         public const string AutoSave = "AutoSave";
         public const string Campaign = "Campaign";
@@ -66,6 +64,7 @@ namespace Scripts.Localization
         public const string NewMapNamePrompt = "NewMapNamePrompt";
         public const string NoChangesToSave = "NoChangesToSave";
         public const string NoFilesToShow = "NoFilesToShow";
+        public const string NoItemSelected = "NoItemSelected";
         public const string NoMapSelected = "NoMapSelected";
         public const string NoMapToPlayLoaded = "NoMapToPlayLoaded";
         public const string NoNameSet = "NoNameSet";
@@ -129,12 +128,6 @@ namespace Scripts.Localization
             //     
             //     if (value.Contains("Tooltip/")) Tooltips.Add(key, value);
             // }
-        }
-
-        public static string GetTooltipText(string key)
-        {
-            string text = t.Get($"{TooltipPrefix}{key}");
-            return string.IsNullOrEmpty(text) ? TooltipDefault : text;
         }
     }
 }

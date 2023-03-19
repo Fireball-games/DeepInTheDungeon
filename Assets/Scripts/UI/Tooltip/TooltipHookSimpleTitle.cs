@@ -16,7 +16,7 @@ namespace Scripts.UI.Tooltip
 
         private void Start()
         {
-            _tooltipStrings[0] = Keys.GetTooltipText(OwnerTransform.gameObject.name);
+            _tooltipStrings[0] = t.GetTooltipText(OwnerTransform.gameObject.name);
         }
 
         protected override IEnumerable<string> GetTooltipStrings() => _tooltipStrings;

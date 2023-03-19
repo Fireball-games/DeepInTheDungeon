@@ -30,8 +30,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         
         public abstract void Open();
 
-        public virtual void CloseWithRemovingChanges() => RemoveAndClose();
-
         protected abstract void RemoveAndClose();
 
         public virtual void MoveCameraToPrefab(Vector3 targetPosition) =>

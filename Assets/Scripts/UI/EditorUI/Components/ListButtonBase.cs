@@ -57,7 +57,11 @@ namespace Scripts.UI.EditorUI.Components
             }
         }
 
-        public virtual void SetSelected(bool isSelected) => Text.color = isSelected ? SelectedColor : _normalColor;
+        public virtual void SetSelected(bool isSelected)
+        {
+            if (!Text) return;
+            Text.color = isSelected ? SelectedColor : _normalColor;
+        }
 
         public void SetInteractable(bool isInteractable) => Button.interactable = isInteractable;
 

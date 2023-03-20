@@ -80,42 +80,26 @@ namespace Scripts.UI.Tooltip
             _tooltipTransform.SetAsLastSibling();
             
             Vector3 newPos = new(0, -targetTransform.rect.height, -1);
-            
-            Vector2 screenPoint = CameraManager.Instance.mainCamera.WorldToScreenPoint(newPos);
-            Logger.Log($"Screen point: {screenPoint}");
-            Vector2 offset = Vector2.zero;
-
-            if (screenPoint.x < 0)
-            {
-                offset.x -= screenPoint.x;
-            }
-            else if (screenPoint.x + _titleRect.rect.width > Screen.width)
-            {
-                offset.x -= (screenPoint.x + _titleRect.rect.width - Screen.width);
-            }
-
-            if (screenPoint.y < 0)
-            {
-                offset.y -= screenPoint.y;
-            }
-            else if (screenPoint.y + _titleRect.rect.height > Screen.height)
-            {
-                offset.y -= (screenPoint.y + _titleRect.rect.height - Screen.height);
-            }
-
-// Check if tooltip is outside the top of the screen
-            if (screenPoint.y + offset.y < 0)
-            {
-                offset.y = -screenPoint.y;
-            }
-
-// Check if tooltip is outside the left of the screen
-            if (screenPoint.x + offset.x < 0)
-            {
-                offset.x = -screenPoint.x;
-            }
-
-            newPos += new Vector3(offset.x, offset.y, 0);
+            // TODO: Fix tooltip position when it's out of screen bounds.
+            // Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(CameraManager.Instance.mainCamera, _tooltipRect.TransformPoint(newPos));
+            // Logger.Log($"Screen point: {screenPoint}");
+            // Vector2 offset = Vector2.zero;
+            //
+            // if (screenPoint.x < 0)
+            //     offset.x -= screenPoint.x;
+            // else if (screenPoint.x + _titleRect.rect.width > Screen.width)
+            //     offset.x -= screenPoint.x + _titleRect.rect.width - Screen.width;
+            //
+            // if (screenPoint.y < 0)
+            //     offset.y -= screenPoint.y;
+            // else if (screenPoint.y + _titleRect.rect.height > Screen.height)
+            //     offset.y -= screenPoint.y + _titleRect.rect.height - Screen.height;
+            //
+            // if (screenPoint.y + offset.y < 0) offset.y = -screenPoint.y;
+            //
+            // if (screenPoint.x + offset.x < 0) offset.x = -screenPoint.x;
+            //
+            // newPos += new Vector3(offset.x, offset.y, 0);
 
             _tooltipRect.anchoredPosition = newPos;
         }

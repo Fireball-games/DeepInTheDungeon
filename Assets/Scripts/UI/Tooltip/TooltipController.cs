@@ -6,6 +6,8 @@ using Scripts.Helpers.Extensions;
 using Scripts.System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Logger = Scripts.Helpers.Logger;
 
@@ -23,6 +25,7 @@ namespace Scripts.UI.Tooltip
 
         private Transform _homeTransform;
         private RectTransform _tooltipRect;
+        private RectTransform _titleRect;
         private Transform _tooltipTransform;
         private GameObject _tooltipGameObject;
         private TooltipSettings _defaultSettings;
@@ -77,25 +80,42 @@ namespace Scripts.UI.Tooltip
             _tooltipTransform.SetAsLastSibling();
             
             Vector3 newPos = new(0, -targetTransform.rect.height, -1);
-            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(CameraManager.Instance.mainCamera, newPos);
             
+            Vector2 screenPoint = CameraManager.Instance.mainCamera.WorldToScreenPoint(newPos);
+            Logger.Log($"Screen point: {screenPoint}");
+            Vector2 offset = Vector2.zero;
+
             if (screenPoint.x < 0)
             {
-                newPos.x -= screenPoint.x;
+                offset.x -= screenPoint.x;
             }
-            else if (screenPoint.x + _tooltipRect.rect.width > Screen.width)
+            else if (screenPoint.x + _titleRect.rect.width > Screen.width)
             {
-                newPos.x -= (screenPoint.x + _tooltipRect.rect.width - Screen.width);
+                offset.x -= (screenPoint.x + _titleRect.rect.width - Screen.width);
             }
-            
+
             if (screenPoint.y < 0)
             {
-                newPos.y -= screenPoint.y;
+                offset.y -= screenPoint.y;
             }
-            else if (screenPoint.y + _tooltipRect.rect.height > Screen.height)
+            else if (screenPoint.y + _titleRect.rect.height > Screen.height)
             {
-                newPos.y -= (screenPoint.y + _tooltipRect.rect.height - Screen.height);
+                offset.y -= (screenPoint.y + _titleRect.rect.height - Screen.height);
             }
+
+// Check if tooltip is outside the top of the screen
+            if (screenPoint.y + offset.y < 0)
+            {
+                offset.y = -screenPoint.y;
+            }
+
+// Check if tooltip is outside the left of the screen
+            if (screenPoint.x + offset.x < 0)
+            {
+                offset.x = -screenPoint.x;
+            }
+
+            newPos += new Vector3(offset.x, offset.y, 0);
 
             _tooltipRect.anchoredPosition = newPos;
         }
@@ -109,6 +129,7 @@ namespace Scripts.UI.Tooltip
             _titleBackground = _tooltipTransform.Find("Body/Title").GetComponent<Image>();
             _tooltipRect = _tooltipGameObject.GetComponent<RectTransform>();
             _title = _titleBackground.transform.Find("TitleText").GetComponent<TMP_Text>();
+            _titleRect = _title.GetComponent<RectTransform>();
             _descriptionBackground = _titleBackground.transform.Find("Description").GetComponent<Image>();
             _description = _descriptionBackground.transform.Find("DescriptionText").GetComponent<TMP_Text>();
         }

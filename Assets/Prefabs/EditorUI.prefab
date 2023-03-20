@@ -2837,6 +2837,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94fa09f3b8fd9544fafe166fce5c58f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2358886435581978548 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 215563411161624352, guid: ac5a209fa5fac9f4ebf31dace93d6529,
+    type: 3}
+  m_PrefabInstance: {fileID: 2468438173987227796}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2618701035952511534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2358886435581978548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d99b9c81a774cf7b3ee7f9b66751c77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &4744402922035922411 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7175964987117211007, guid: ac5a209fa5fac9f4ebf31dace93d6529,
+    type: 3}
+  m_PrefabInstance: {fileID: 2468438173987227796}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4834289793916608082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4744402922035922411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d99b9c81a774cf7b3ee7f9b66751c77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &7655901954801388540 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5223785461199274856, guid: ac5a209fa5fac9f4ebf31dace93d6529,
+    type: 3}
+  m_PrefabInstance: {fileID: 2468438173987227796}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &287134834620086016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7655901954801388540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d99b9c81a774cf7b3ee7f9b66751c77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2775819701808603201
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13541,6 +13595,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2447713149274392831}
     m_Modifications:
+    - target: {fileID: 3483869700169373490, guid: 28181d323fbe59d4e820e297385722e9,
+        type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 4981801819299170017, guid: 28181d323fbe59d4e820e297385722e9,
         type: 3}
       propertyPath: m_SizeDelta.x

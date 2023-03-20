@@ -3564,12 +3564,12 @@ PrefabInstance:
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Pivot.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
@@ -3579,22 +3579,22 @@ PrefabInstance:
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
@@ -3644,12 +3644,12 @@ PrefabInstance:
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -238
+      value: 199.6
       objectReference: {fileID: 0}
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 11
+      value: -57.7
       objectReference: {fileID: 0}
     - target: {fileID: 4479683936416676333, guid: 47fbd13509d918648ad43221a89ac17d,
         type: 3}
@@ -3757,6 +3757,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.r
       value: 0.6784314
+      objectReference: {fileID: 0}
+    - target: {fileID: 8826757866036319641, guid: 47fbd13509d918648ad43221a89ac17d,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47fbd13509d918648ad43221a89ac17d, type: 3}

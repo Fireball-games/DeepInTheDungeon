@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c6513a5767e496ebdde633b357d763e, type: 3}
   m_Name: Dagger
   m_EditorClassIdentifier: 
+  itemID: fed4de7f-1d8c-429e-85d7-b5a7e604d316
   displayName: Dagger
-  description: Simple old dagger
   icon: {fileID: 21300000, guid: d7bfdc8716278a049835264376489d5b, type: 3}
   pickup: {fileID: 4237739966334078905, guid: 7a5415c53f88f534294cd12acf3742f1, type: 3}
+  showcasePrefab: {fileID: 919132149155446097, guid: 60c447981f912d74da0b7d50500958dd,
+    type: 3}
+  description: Simple old dagger
   stackable: 0
   allowedEquipLocation: 5

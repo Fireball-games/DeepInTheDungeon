@@ -1,11 +1,12 @@
 ﻿using Scripts.Helpers;
 using Scripts.Inventory.Inventories.Items;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Scripts.UI.EditorUI.Components
 {
-    public class MapObjectButton : ListButtonBase<MapObject>
+    public class MapObjectButton : ListButtonBase<MapObject>, IPointerEnterHandler, IPointerExitHandler
     {
         private MapObjectList _parentList;
         private Image _itemImage;
@@ -20,5 +21,14 @@ namespace Scripts.UI.EditorUI.Components
         }
 
         public void SetParentList(MapObjectList mapObjectList) => _parentList = mapObjectList;
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            // Show Tooltip
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            // Hide Tooltip
+        }
     }
 }

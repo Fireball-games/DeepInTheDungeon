@@ -23,12 +23,18 @@ namespace Scripts.UI.EditorUI.Components
         public void SetParentList(MapObjectList mapObjectList) => _parentList = mapObjectList;
         public void OnPointerEnter(PointerEventData eventData)
         {
-            // Show Tooltip
+            if (_parentList)
+            {
+                _parentList.ShowItemPreview(displayedItem);
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            // Hide Tooltip
+            if (_parentList)
+            {
+                _parentList.HideItemPreview();
+            }
         }
     }
 }

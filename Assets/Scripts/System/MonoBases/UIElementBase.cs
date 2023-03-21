@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DG.Tweening;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace Scripts.System.MonoBases
@@ -9,7 +10,7 @@ namespace Scripts.System.MonoBases
     {
         [SerializeField] protected GameObject body;
         [SerializeField] private ETransitionType transitionType = ETransitionType.None;
-        [SerializeField] private float transitionDuration = 0.5f;
+        [SerializeField, HideIf(nameof(transitionType), ETransitionType.None)] private float transitionDuration = 0.5f;
 
         private CanvasGroup _canvasGroup;
         protected CanvasGroup CanvasGroup

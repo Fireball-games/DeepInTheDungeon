@@ -3,12 +3,13 @@ using System.Collections;
 using DG.Tweening;
 using NaughtyAttributes;
 using Scripts.Helpers.Extensions;
+using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using UnityEngine;
 
 namespace Scripts
 {
-    public class Preview3D : MonoBehaviour
+    public class Preview3D : SingletonNotPersisting<Preview3D>
     {
         [SerializeField, ReadOnly] private bool isActive;
         private GameObject _body;
@@ -20,14 +21,17 @@ namespace Scripts
         private Vector3 _itemStartPosition;
         private Vector3 _tileStartPosition;
         
+        private Tween _zoomTween;
+        
         public enum EPreviewType
         {
             Item,
             Tile
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             
             _body = transform.Find("Body").gameObject;
             _camera = transform.Find("Body/PreviewCamera").GetComponent<Camera>();
@@ -40,15 +44,15 @@ namespace Scripts
             _camera.targetTexture = _previewTexture;
             
             _body.SetActive(false);
-            // TODO: For debug only
-            // ShowPreview(null, EPreviewType.Item);
         }
 
-        public RenderTexture ShowPreview(GameObject prefab, EPreviewType previewType)
+        public RenderTexture Show(GameObject prefab, EPreviewType previewType)
         {
             _previewAnchor.DismissAllChildrenToPool();
             
-            ObjectPool.Instance.Get(prefab, _previewAnchor);
+            GameObject go = ObjectPool.Instance.Get(prefab, _previewAnchor);
+            go.transform.localPosition = Vector3.zero;
+            go.transform.localRotation = Quaternion.identity;
 
             _camera.transform.position = previewType switch
             {
@@ -60,7 +64,10 @@ namespace Scripts
             _body.SetActive(true);
             isActive = true;
             
-            _camera.transform.DOMove(previewType switch
+            if (_zoomTween != null && _zoomTween.IsActive())
+                _zoomTween.Kill();
+            
+            _zoomTween = _camera.transform.DOMove(previewType switch
             {
                 EPreviewType.Item => _itemStartPosition,
                 EPreviewType.Tile => _tileStartPosition,
@@ -71,7 +78,7 @@ namespace Scripts
             return _previewTexture;
         }
         
-        public void HidePreview()
+        public void Hide()
         {
             isActive = false;
             _body.SetActive(false);

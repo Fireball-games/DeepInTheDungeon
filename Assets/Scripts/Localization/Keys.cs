@@ -70,6 +70,7 @@ namespace Scripts.Localization
         public const string NoNameSet = "NoNameSet";
         public const string NoPrefabsAvailable = "NoPrefabsAvailable";
         public const string NoPrefabSelected = "NoPrefabSelected";
+        public const string NoPreviewAvailable = "NoPreviewAvailable";
         public const string NothingToEditForConfiguration = "NothingToEditForConfiguration";
         public const string North = "North";
         public const string OpenMapEditor = "OpenMapEditor";

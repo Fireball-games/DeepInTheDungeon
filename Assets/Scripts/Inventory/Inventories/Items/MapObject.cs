@@ -19,8 +19,9 @@ namespace Scripts.Inventory.Inventories.Items
         [SerializeField] protected Sprite icon;
         [Tooltip("The prefab that should be spawned when this item appear in the map.")]
         [SerializeField] protected Pickup pickup;
-        [SerializeField] private GameObject showcasePrefab;
+        [SerializeField] private GameObject displayPrefab;
         public string DisplayName => displayName;
+        public GameObject DisplayPrefab => displayPrefab;
         public Sprite Icon => icon;
 
         // STATE

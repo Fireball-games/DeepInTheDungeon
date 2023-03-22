@@ -18,6 +18,11 @@ namespace Scripts.Helpers
         [SerializeField] private Color buttonIdle;
         [SerializeField] private Color buttonEntered;
         [SerializeField] private Color buttonClicked;
+        [SerializeField] private Color lightGray;
+        [SerializeField] private Color lightRed;
+        [SerializeField] private Color darkRed;
+        [SerializeField] private Color lightYellow;
+        [SerializeField] private Color darkGreen;
 
         public static Color White { get; private set; }
         public static Color Positive { get; private set; }
@@ -29,11 +34,16 @@ namespace Scripts.Helpers
         public static Color ButtonIdle { get; private set; }
         public static Color ButtonEntered { get; private set; }
         public static Color ButtonClicked { get; private set; }
+        public static Color LightGray { get; private set; }
+        public static Color LightRed { get; private set; }
+        public static Color DarkRed { get; private set; }
+        public static Color LightYellow { get; private set; }
+        public static Color DarkGreen { get; private set; }
+        public static Color LightBlue { get; private set; }
+        public static Color DeepBlue { get; private set; }
 
         public static Color Black => Color.black;
         public static Color Clear => Color.clear;
-        public static Color DeepBlue { get; private set; }
-        public static Color LightBlue { get; private set; }
         public static Color Yellow { get; } = new(1.0f, 1.0f, 0.0f);
         public static Color Beige { get; } = new(0.96f, 0.96f, 0.86f);
         public static Color Orange = new(1.0f, 0.5f, 0.0f);
@@ -44,9 +54,14 @@ namespace Scripts.Helpers
         public enum EColor
         {
             White = 1,
-            DeepBlue = 2,
             LightBlue = 3,
+            DeepBlue = 2,
             Orange = 4,
+            LightGray = 14,
+            LightRed = 15,
+            DarkRed = 16,
+            LightYellow = 17,
+            DarkGreen = 18,
             Positive = 5,
             Negative = 6,
             Warning = 7,
@@ -72,6 +87,11 @@ namespace Scripts.Helpers
             White = white;
             DeepBlue = deepBlue;
             LightBlue = lightBlue;
+            LightGray = lightGray;
+            LightRed = lightRed;
+            DarkRed = darkRed;
+            LightYellow = lightYellow;
+            DarkGreen = darkGreen;
             Orange = orange;
             Positive = positive;
             Negative = negative;
@@ -88,6 +108,11 @@ namespace Scripts.Helpers
                 {EColor.White, White},
                 {EColor.DeepBlue, DeepBlue},
                 {EColor.LightBlue, LightBlue},
+                {EColor.LightGray, LightGray},
+                {EColor.LightRed, LightRed},
+                {EColor.DarkRed, DarkRed},
+                {EColor.LightYellow, LightYellow},
+                {EColor.DarkGreen, DarkGreen},
                 {EColor.Orange, Orange},
                 {EColor.Positive, Positive},
                 {EColor.Negative, Negative},

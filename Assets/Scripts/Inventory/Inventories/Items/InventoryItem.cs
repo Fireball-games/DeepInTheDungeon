@@ -18,6 +18,7 @@ namespace Scripts.Inventory.Inventories.Items
         [SerializeField][TextArea] private string description;
         [Tooltip("If true, multiple items of this type can be stacked in the same inventory slot.")]
         [SerializeField] private bool stackable;
+        [SerializeField] private ItemModifier[] modifiers;
 
         // STATE
         private static Dictionary<string, InventoryItem> _itemLookupCache;

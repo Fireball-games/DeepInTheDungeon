@@ -4,7 +4,7 @@ using Scripts.Localization;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.Components;
 
-namespace Scripts.UI.EditorUI.PrefabEditors
+namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
 {
     public class ItemEditor : MapPartsEditorWindowBase
     {

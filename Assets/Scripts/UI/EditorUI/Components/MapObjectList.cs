@@ -1,5 +1,6 @@
 ﻿using Scripts.Inventory.Inventories.Items;
 using Scripts.UI.EditorUI.PrefabEditors;
+using Scripts.UI.EditorUI.PrefabEditors.ItemEditing;
 
 namespace Scripts.UI.EditorUI.Components
 {

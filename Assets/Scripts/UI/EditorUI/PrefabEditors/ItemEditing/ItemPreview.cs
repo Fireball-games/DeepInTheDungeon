@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Scripts.UI.EditorUI.PrefabEditors
+namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
 {
     public class ItemPreview : UIElementBase
     {
@@ -37,7 +37,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors
                 _previewText.text = t.Get(Keys.NoPreviewAvailable);
                 _previewText.gameObject.SetActive(true);
             } 
-                
             
             body.SetActive(true);
         }

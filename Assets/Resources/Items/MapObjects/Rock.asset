@@ -20,4 +20,10 @@ MonoBehaviour:
     type: 3}
   description: Normal rock
   stackable: 1
+  modifiers:
+  - modifierOperation: 2
+    stat: 29
+    value: 0
+    valueMin: 3
+    valueMax: 4
   allowedEquipLocation: 5

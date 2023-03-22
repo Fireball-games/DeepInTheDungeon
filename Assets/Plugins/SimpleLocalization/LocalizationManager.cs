@@ -74,7 +74,7 @@ namespace Assets.SimpleLocalization
 					var columns = lines[i].Split(',').Select(j => j.Trim()).Select(j => j.Replace("[_quote_]", "\"").Replace("[_comma_]", ",").Replace("[_newline_]", "\n")).ToList();
 					var key = columns[0];
 
-                    if (key == "") continue;
+                    if (key is "" or "#REGION" or "#END REGION") continue;
 
                     for (var j = 1; j < languages.Count; j++)
                     {

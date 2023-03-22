@@ -13,17 +13,16 @@ namespace Scripts.Inventory.Inventories.Items
     /// </remarks>
     public abstract class InventoryItem : MapObject
     {
-        // CONFIG DATA
         [Tooltip("Item description to be displayed in UI.")]
         [SerializeField][TextArea] private string description;
         [Tooltip("If true, multiple items of this type can be stacked in the same inventory slot.")]
         [SerializeField] private bool stackable;
         [SerializeField] private ItemModifier[] modifiers;
+        
+        public ItemModifier[] Modifiers => modifiers;
 
-        // STATE
         private static Dictionary<string, InventoryItem> _itemLookupCache;
 
-        // PUBLIC
 
         /// <summary>
         /// Spawn the pickup GameObject into the world.

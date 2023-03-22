@@ -20,4 +20,15 @@ MonoBehaviour:
     type: 3}
   description: Simple old dagger
   stackable: 0
+  modifiers:
+  - modifierOperation: 2
+    stat: 29
+    value: 0
+    valueMin: 6
+    valueMax: 8
+  - modifierOperation: 1
+    stat: 4
+    value: 2
+    valueMin: 6
+    valueMax: 8
   allowedEquipLocation: 5

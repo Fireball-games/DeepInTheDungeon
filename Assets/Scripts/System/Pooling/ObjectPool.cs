@@ -30,6 +30,10 @@ namespace Scripts.System.Pooling
             }
         }
 
+        public GameObject Get(GameObject go, Transform parent) => Get(go, Vector3.zero, Quaternion.identity, parent.gameObject);
+        
+        public GameObject Get(GameObject go) => Get(go, null as GameObject);
+        
         public GameObject Get(GameObject go, GameObject parent) => Get(go, Vector3.zero, Quaternion.identity, parent);
         
         public GameObject Get(GameObject go, Vector3 position, Quaternion rotation, GameObject parent = null) 

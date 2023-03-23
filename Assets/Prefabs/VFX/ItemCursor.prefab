@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5587873106902686883}
   - component: {fileID: 2045604170420289022}
   - component: {fileID: 410953330768243313}
+  - component: {fileID: 564325663087584271}
   m_Layer: 0
   m_Name: ItemCursor
   m_TagString: Untagged
@@ -116,7 +117,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2
+      scalar: 0.5
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -284,9 +285,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     startSize:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0.05
-      minScalar: 1
+      minScalar: 0.1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -337,7 +338,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeY:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -390,7 +391,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeZ:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -679,7 +680,7 @@ ParticleSystem:
       speed:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 0.5
+        scalar: 2
         minScalar: 1
         maxCurve:
           serializedVersion: 2
@@ -868,7 +869,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 200
+      scalar: 400
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -4814,3 +4815,24 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &564325663087584271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1649737531128936059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aee515c74754030be1ab8f91c35cd42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateX: 0
+  rotateY: 1
+  rotateZ: 0
+  xSpeed: 0
+  ySpeed: 100
+  zSpeed: 0
+  useUniformSpeed: 0
+  uniformSpeed: 0
+  isActive: 1

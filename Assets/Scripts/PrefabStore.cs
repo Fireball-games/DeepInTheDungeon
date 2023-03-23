@@ -18,7 +18,7 @@ namespace Scripts
 
         private static readonly HashSet<EPrefabType> PrefabTypes = new()
         {
-            EPrefabType.Wall, EPrefabType.Enemy, EPrefabType.Item, EPrefabType.Prop, EPrefabType.PrefabTile,
+            EPrefabType.Wall, EPrefabType.Enemy, EPrefabType.Prop, EPrefabType.PrefabTile,
             EPrefabType.WallBetween, EPrefabType.WallForMovement, EPrefabType.WallOnWall, EPrefabType.TriggerOnWall,
             EPrefabType.TriggerTile, EPrefabType.Service,
         };
@@ -58,11 +58,11 @@ namespace Scripts
             
             if (component == null)
             {
-                Logger.LogWarning("Requested UI component found in store.");
+                Logger.LogWarning("Requested UI component not found in store.");
                 return component;
             }
             
-            component = ObjectPool.Instance.Get(component.gameObject, null).GetComponent<ConfigurableElement>();
+            component = ObjectPool.Instance.Get(component.gameObject).GetComponent<ConfigurableElement>();
             return component;
         }
 

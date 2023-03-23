@@ -3,56 +3,31 @@ using Scripts.Helpers.Extensions;
 using Scripts.Inventory;
 using Scripts.Inventory.Inventories.Items;
 using Scripts.Localization;
-using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
-using TMPro;
+using Scripts.UI.Components;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
 {
-    public class ItemPreview : UIElementBase
+    public class ItemPreview : PreviewWindowBase
     {
-        [SerializeField] private Texture2D defaultTexture;
         [SerializeField] private StatText statTextPrefab;
         
-        private RawImage _previewTargetImage;
-        private TMP_Text _previewText;
         private Transform _statsParent;
+        private Title _title;
 
-        private void Awake()
-        {
-            AssignReferences();
-
-            Hide();
-        }
-        
         public void Show(MapObject item)
         {
             _statsParent.gameObject.DismissAllChildrenToPool();
             
-            _previewTargetImage.texture =
-                item.DisplayPrefab 
-                    ? Preview3D.Instance.Show(item.DisplayPrefab, Preview3D.EPreviewType.Item) 
-                    : defaultTexture;
-            
-            if (item.DisplayPrefab)
-            {
-                _previewText.gameObject.SetActive(false);
-                _previewText.text = item.DisplayPrefab.name;
-            }
-            else
-            {
-                _previewText.text = t.Get(Keys.NoPreviewAvailable);
-                _previewText.gameObject.SetActive(true);
-            }
+            _title.SetTitle(t.GetItemText(item.DisplayName));
 
             if (item is InventoryItem inventoryItem)
             {
                 ShowStats(inventoryItem.Modifiers);
             }
-
-            body.SetActive(true);
+            
+            Show(item.DisplayPrefab, item.DisplayName);
         }
 
         private void ShowStats(IEnumerable<ItemModifier> modifiers)
@@ -65,19 +40,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             }
         }
 
-        public void Hide()
+        protected override void AssignReferences()
         {
-            body.SetActive(false);
-            _previewTargetImage.texture = defaultTexture;
-            Preview3D.Instance.Hide();
-        }
-        
-        private void AssignReferences()
-        {
-            Transform frame = transform.Find("Body/Background/Frame");
-            _previewTargetImage = frame.Find("PreviewImage").GetComponent<RawImage>();
-            _previewText = _previewTargetImage.transform.Find("PreviewText").GetComponent<TMP_Text>();
-            _statsParent = frame.Find("Stats");
+            base.AssignReferences();
+            
+            _title = transform.Find("Body/Title").GetComponent<Title>();
+            _statsParent = Frame.Find("Stats");
         }
     }
 }

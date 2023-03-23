@@ -4,7 +4,6 @@ using Scripts.Inventory;
 using Scripts.Inventory.Inventories.Items;
 using Scripts.Localization;
 using Scripts.System.Pooling;
-using Scripts.UI.Components;
 using UnityEngine;
 
 namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
@@ -14,20 +13,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         [SerializeField] private StatText statTextPrefab;
         
         private Transform _statsParent;
-        private Title _title;
 
         public void Show(MapObject item)
         {
             _statsParent.gameObject.DismissAllChildrenToPool();
-            
-            _title.SetTitle(t.GetItemText(item.DisplayName));
 
             if (item is InventoryItem inventoryItem)
             {
                 ShowStats(inventoryItem.Modifiers);
             }
             
-            Show(item.DisplayPrefab, item.DisplayName);
+            Show(item.DisplayPrefab, t.GetItemText(item.DisplayName), Preview3D.EPreviewType.Item);
         }
 
         private void ShowStats(IEnumerable<ItemModifier> modifiers)
@@ -44,7 +40,6 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         {
             base.AssignReferences();
             
-            _title = transform.Find("Body/Title").GetComponent<Title>();
             _statsParent = Frame.Find("Stats");
         }
     }

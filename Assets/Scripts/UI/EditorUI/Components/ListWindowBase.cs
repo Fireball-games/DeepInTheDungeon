@@ -14,6 +14,7 @@ namespace Scripts.UI.EditorUI.Components
         [SerializeField] private GameObject listContent;
         [SerializeField] private GameObject itemPrefab;
         public bool SetClickedItemSelected = true;
+        public bool HasItems => Buttons is {Count: > 0};
         
         protected TButton LastAddedButton; 
 

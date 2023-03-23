@@ -81,6 +81,9 @@ namespace Scripts
         public void Hide()
         {
             isActive = false;
+            
+            if (!_body) return;
+            
             _body.SetActive(false);
         }
 

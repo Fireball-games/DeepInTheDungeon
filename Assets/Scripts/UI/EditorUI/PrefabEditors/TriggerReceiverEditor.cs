@@ -121,7 +121,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
             if (_originalConfiguration == null)
             {
-                SetStatusText(t.Get(Keys.SelectConfiguration));
+                SetStatusText(_existingReceivers.HasItems ? t.Get(Keys.SelectConfiguration) : t.Get(Keys.NoReceiversAvailable));
                 return;
             }
 

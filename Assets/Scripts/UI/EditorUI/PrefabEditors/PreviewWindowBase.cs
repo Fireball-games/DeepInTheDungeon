@@ -1,8 +1,10 @@
 ﻿using Scripts.Localization;
 using Scripts.System.MonoBases;
+using Scripts.UI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Scripts.Preview3D;
 
 namespace Scripts.UI.EditorUI.PrefabEditors
 {
@@ -18,6 +20,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         
         private RawImage _previewTargetImage;
         private TMP_Text _previewText;
+        private Title _title;
         
         private void Awake()
         {
@@ -26,11 +29,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Hide();
         }
 
-        protected void Show(GameObject previewObject, string previewText = null)
+        protected void Show(GameObject previewObject, string previewText = null, EPreviewType previewType = EPreviewType.Tile)
         {
+            _title.SetTitle(previewText);
+            
             _previewTargetImage.texture =
                 previewObject
-                    ? Preview3D.Instance.Show(previewObject, Preview3D.EPreviewType.Item) 
+                    ? SingletonNotPersisting<Preview3D>.Instance.Show(previewObject, previewType) 
                     : defaultTexture;
             
             if (previewObject)
@@ -51,7 +56,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             body.SetActive(false);
             _previewTargetImage.texture = defaultTexture;
-            Preview3D.Instance.Hide();
+            SingletonNotPersisting<Preview3D>.Instance.Hide();
         }
     
         protected virtual void AssignReferences()
@@ -59,6 +64,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             Frame = transform.Find("Body/Background/Frame");
             _previewTargetImage = Frame.Find("PreviewImage").GetComponent<RawImage>();
             _previewText = _previewTargetImage.transform.Find("PreviewText").GetComponent<TMP_Text>();
+            _title = transform.Find("Body/Title").GetComponent<Title>();
         }
     }
 }

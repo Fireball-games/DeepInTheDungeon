@@ -7,7 +7,7 @@ namespace Scripts.UI.EditorUI.Components
     public class ConfigurationList : ListWindowBase<PrefabConfiguration, ConfigurationListButton>
     {
         public bool isCameraStayingOnNavigatedPosition;
-        
+
         public void Open(string listTitle,
             IEnumerable<PrefabConfiguration> items,
             UnityAction<PrefabConfiguration> onItemClicked,

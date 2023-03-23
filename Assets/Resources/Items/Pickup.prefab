@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6443740857708398607}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 8902997958513801002}
   - component: {fileID: 6475489727110574629}
   - component: {fileID: 3958124465228477354}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Pickup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,5 +101,5 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.2
   m_Center: {x: 0, y: 0, z: 0}

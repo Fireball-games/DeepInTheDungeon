@@ -12,6 +12,7 @@ namespace Scripts.Helpers.Extensions
         
         public static readonly Vector3 Positive90InY= new(0, 90f, 0);
         public static readonly Vector3 Negative90InY = new(0, -90f, 0);
+        public static readonly Vector3 Zero = new(0, 0, 0);
 
         static V3Extensions()
         {

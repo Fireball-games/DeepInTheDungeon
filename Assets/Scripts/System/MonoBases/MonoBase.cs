@@ -31,6 +31,7 @@ namespace Scripts.System.MonoBases
             get
             {
                 _body ??= transform.Find("Body").gameObject;
+                
                 return _body;
             }
         }

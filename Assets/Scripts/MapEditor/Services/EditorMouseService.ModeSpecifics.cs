@@ -1,55 +1,107 @@
-﻿using Scripts.Building.PrefabsSpawning;
+﻿using System;
+using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.Tile;
 using Scripts.Helpers.Extensions;
+using Scripts.System;
 using UnityEngine;
+using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MouseCursorManager;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor.Services
 {
     public partial class EditorMouseService
     {
-        private void SetCursorByType(EGridPositionType type)
+        private void ProcessMouseButtonUp(int mouseButtonUpped)
         {
-            EWorkMode workMode = Manager.WorkMode;
-            
-            switch (workMode)
+            LastLeftButtonUpWorldPosition = MouseGridPosition.ToWorldPositionV3Int();
+
+            switch (Manager.WorkMode)
+            {
+                case EWorkMode.None:
+                    break;
+                case EWorkMode.Build:
+                    if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
+                    {
+                        _buildService.ProcessBuildTileClick();
+                    }
+
+                    break;
+                case EWorkMode.Select:
+                    break;
+                case EWorkMode.Walls:
+                    if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
+                    {
+                        if (_lastEnteredWall is {WallEligibleForEditing: true}) _lastEnteredWall.OnClickInEditor();
+                    }
+
+                    break;
+                case EWorkMode.PrefabTiles:
+                    OpenEditorForTiledPrefab<TilePrefab>(mouseButtonUpped, EPrefabType.PrefabTile);
+                    break;
+                case EWorkMode.Prefabs:
+                case EWorkMode.Items:
+                case EWorkMode.Enemies:
+                case EWorkMode.Triggers:
+                    break;
+                case EWorkMode.TriggerReceivers:
+                    break;
+                case EWorkMode.SetWalls:
+                    break;
+                case EWorkMode.EditEntryPoints:
+                    OpenEditorForTiledPrefab<EntryPointPrefab>(mouseButtonUpped, EPrefabType.Service);
+                    break;
+                case EWorkMode.EditEditorStart:
+                    if (mouseButtonUpped == 0 && GridPositionType == EGridPositionType.EditableTile)
+                    {
+                        UIManager.OpenEditorWindow(EPrefabType.Service,
+                        new PositionRotation(MouseGridPosition.ToWorldPositionV3Int(), Quaternion.identity));
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        private void SetCursorByCurrentType()
+        {
+            switch (Manager.WorkMode)
             {
                 case EWorkMode.Walls or EWorkMode.Triggers:
                     SetDefaultCursor();
                     break;
                 case EWorkMode.PrefabTiles:
-                    SetCursorForTiledPrefabType<TilePrefab>(type);
+                    SetCursorForTiledPrefabType<TilePrefab>();
                     break;
                 case EWorkMode.EditEntryPoints:
-                    SetCursorForTiledPrefabType<EntryPointPrefab>(type);
+                    SetCursorForTiledPrefabType<EntryPointPrefab>();
                     break;
                 case EWorkMode.Items:
-                    SetCursorForItemsMode(type);
+                    SetCursorForItemsMode();
                     break;
                 case EWorkMode.EditEditorStart:
-                    SetCursorForEditEditorStartMode(type);
+                    SetCursorForEditEditorStartMode();
                     break;
                 case EWorkMode.Build:
-                    SetCursorForBuildMode(type);
+                    SetCursorForBuildMode();
                     break;
             }
         }
 
-        private void SetCursorForItemsMode(EGridPositionType type)
+        private void SetCursorForItemsMode()
         {
-            if (type == EGridPositionType.NullTile)
+            if (GridPositionType is EGridPositionType.NullTile)
             {
                 SetDefaultCursor();
             }
             else
             {
-                Show3DCursor(MouseGridPosition);
                 SetCursor(ECursorType.Add);
             }
         }
 
-        private void SetCursorForEditEditorStartMode(EGridPositionType type)
+        private void SetCursorForEditEditorStartMode()
         {
             if (GridPositionType is EGridPositionType.NullTile)
             {
@@ -62,9 +114,9 @@ namespace Scripts.MapEditor.Services
             }
         }
 
-        private void SetCursorForBuildMode(EGridPositionType type)
+        private void SetCursorForBuildMode()
         {
-            switch (type)
+            switch (GridPositionType)
             {
                 case EGridPositionType.None:
                     Hide3DCursor();
@@ -100,12 +152,12 @@ namespace Scripts.MapEditor.Services
             }
         }
         
-        private void SetCursorForTiledPrefabType<TPrefab>(EGridPositionType type) where TPrefab : PrefabBase
+        private void SetCursorForTiledPrefabType<TPrefab>() where TPrefab : PrefabBase
         {
             GameObject prefabOnPosition = Manager.MapBuilder.GetPrefabByGridPosition(MouseGridPosition);
             bool isDesiredPrefab = prefabOnPosition && prefabOnPosition.GetComponent<TPrefab>();
             
-            if (type == EGridPositionType.NullTile || prefabOnPosition && !isDesiredPrefab)
+            if (GridPositionType == EGridPositionType.NullTile || prefabOnPosition && !isDesiredPrefab)
             {
                 _lastPrefabOnPosition = null;
                 cursor3D.Hide();

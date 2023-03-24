@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Scripts.Inventory.Inventories.Items;
 using Scripts.Localization;
+using Scripts.MapEditor;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.Components;
 
@@ -22,12 +23,14 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         {
             body.SetActive(true);
             IEnumerable<MapObject> items = MapObject.GetAllItems();
-            _itemList.Open(t.Get(Keys.AvailableItems), items, OnItemClicked);
+            _itemList.Open(t.Get(Keys.AvailableItems), items, OnItemSelected);
+            ItemCursor.Instance.Show();
         }
 
-        private void OnItemClicked(MapObject selectedItem)
+        private void OnItemSelected(MapObject selectedItem)
         {
             _selectedItem = selectedItem;
+            ItemCursor.Instance.AddItem(selectedItem.DisplayPrefab);
             VisualizeComponents();
         }
 
@@ -37,6 +40,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             
             body.SetActive(false);
             _itemList.SetActive(false);
+            ItemCursor.Instance.Hide();
             
             VisualizeComponents();
         }

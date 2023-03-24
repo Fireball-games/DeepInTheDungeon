@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Walls;
@@ -28,7 +27,9 @@ namespace Scripts.MapEditor.Services
 
         public Vector3Int MouseGridPosition => _lastGridPosition;
         public Vector3Int LastLeftButtonUpWorldPosition { get; private set; }
+        public Vector3 MousePositionOnPlane { get; private set; }
         public EGridPositionType GridPositionType { get; private set; } = EGridPositionType.None;
+        public bool IsOverUI { get; private set; }
 
         private MapBuildService _buildService;
         private Plane _layerPlane;
@@ -45,6 +46,7 @@ namespace Scripts.MapEditor.Services
             EWorkMode.SetWalls,
             EWorkMode.Walls,
             EWorkMode.EditEditorStart,
+            EWorkMode.Items,
         };
 
         protected override void Awake()
@@ -66,6 +68,8 @@ namespace Scripts.MapEditor.Services
 
         private void Update()
         {
+            IsOverUI = EventSystem.current.IsPointerOverGameObject();
+            
             if (!Manager || !Manager.MapIsPresented || Manager.MapIsBeingBuilt) return;
 
             CheckMouseOverWall();
@@ -73,7 +77,7 @@ namespace Scripts.MapEditor.Services
             ValidateClicks();
             cameraService.HandleMouseMovement();
 
-            if (EventSystem.current.IsPointerOverGameObject())
+            if (IsOverUI)
             {
                 UIIsBlocking = true;
                 SetDefaultCursor();
@@ -162,57 +166,6 @@ namespace Scripts.MapEditor.Services
         private void RecreateMousePlane() => _layerPlane = _layerPlane = new Plane(Vector3.up,
             new Vector3(0f, 0.5f - Manager.CurrentFloor, 0f));
 
-        private void ProcessMouseButtonUp(int mouseButtonUpped)
-        {
-            LastLeftButtonUpWorldPosition = MouseGridPosition.ToWorldPositionV3Int();
-
-            switch (Manager.WorkMode)
-            {
-                case EWorkMode.None:
-                    break;
-                case EWorkMode.Build:
-                    if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
-                    {
-                        _buildService.ProcessBuildTileClick();
-                    }
-
-                    break;
-                case EWorkMode.Select:
-                    break;
-                case EWorkMode.Walls:
-                    if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
-                    {
-                        if (_lastEnteredWall is {WallEligibleForEditing: true}) _lastEnteredWall.OnClickInEditor();
-                    }
-
-                    break;
-                case EWorkMode.PrefabTiles:
-                    OpenEditorForTiledPrefab<TilePrefab>(mouseButtonUpped, EPrefabType.PrefabTile);
-                    break;
-                case EWorkMode.Prefabs:
-                case EWorkMode.Items:
-                case EWorkMode.Enemies:
-                case EWorkMode.Triggers:
-                    break;
-                case EWorkMode.TriggerReceivers:
-                    break;
-                case EWorkMode.SetWalls:
-                    break;
-                case EWorkMode.EditEntryPoints:
-                    OpenEditorForTiledPrefab<EntryPointPrefab>(mouseButtonUpped, EPrefabType.Service);
-                    break;
-                case EWorkMode.EditEditorStart:
-                    if (mouseButtonUpped == 0 && GridPositionType == EGridPositionType.EditableTile)
-                    {
-                        UIManager.OpenEditorWindow(EPrefabType.Service,
-                        new PositionRotation(MouseGridPosition.ToWorldPositionV3Int(), Quaternion.identity));
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
         private void OpenEditorForTiledPrefab<TPrefab>(int mouseButtonUpped, EPrefabType ePrefabType) where TPrefab : PrefabBase
         {
             if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
@@ -260,6 +213,7 @@ namespace Scripts.MapEditor.Services
             if (_layerPlane.Raycast(ray, out float distance))
             {
                 mousePlanePosition = ray.GetPoint(distance);
+                MousePositionOnPlane = mousePlanePosition;
                 return true;
             }
 
@@ -284,8 +238,8 @@ namespace Scripts.MapEditor.Services
 
             ResolveBuildModePosition(isNullTile, newGridPosition, layout);
             ResolveCommonSimpleModePosition(isNullTile);
-
-            SetCursorByType(GridPositionType);
+            
+            SetCursorByCurrentType();
         }
 
         private void ResolveCommonSimpleModePosition(bool isNullTile)

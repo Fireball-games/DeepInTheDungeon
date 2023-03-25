@@ -18,12 +18,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         protected MapEditorManager MapEditorManager => MapEditorManager.Instance;
         protected CageController SelectedCursor => EditorUIManager.Instance.SelectedCage;
         
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             EditorEvents.OnWorkModeChanged += Close;
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             EditorEvents.OnWorkModeChanged -= Close;
             StopAllCoroutines();
@@ -31,6 +31,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         
         public abstract void Open();
 
+        /// <summary>
+        /// Called when editor is closed.
+        /// </summary>
         protected abstract void RemoveAndClose();
 
         public virtual void MoveCameraToPrefab(Vector3 targetPosition) =>

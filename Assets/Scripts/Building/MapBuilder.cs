@@ -53,23 +53,10 @@ namespace Scripts.Building
             if (!LayoutParent)
             {
                 LayoutParent = new GameObject("Layout").transform;
-                LayoutParent.transform.parent = levelPartsParent.transform;
-
-                PrefabsParent = new GameObject("Prefabs")
-                {
-                    transform =
-                    {
-                        parent = levelPartsParent.transform
-                    }
-                };
+                PrefabsParent = new GameObject("Prefabs");
+                ItemsParent = new GameObject("Items");
                 
-                ItemsParent = new GameObject("Items")
-                {
-                    transform =
-                    {
-                        parent = levelPartsParent.transform
-                    }
-                };
+                LayoutParent.transform.parent = PrefabsParent.transform.parent = ItemsParent.transform.parent = levelPartsParent.transform;
             }
         }
 
@@ -92,10 +79,8 @@ namespace Scripts.Building
 
         public void DemolishMap()
         {
-            foreach (GameObject tile in PhysicalTiles.Values)
-            {
-                ObjectPool.Instance.Dismiss(tile);
-            }
+            PhysicalTiles.Values.ForEach(ObjectPool.Instance.Dismiss);
+            _itemSpawner.DemolishItems();
 
             foreach (GameObject prefab in Prefabs)
             {
@@ -341,5 +326,7 @@ namespace Scripts.Building
             => _prefabBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, prefabName, out configuration);
 
         public void RemoveConfiguration(string guid) => _prefabBuilder.RemoveConfiguration(guid);
+
+        public void SpawnItem(MapObjectConfiguration configuration) => _itemSpawner.SpawnItem(configuration);
     }
 }

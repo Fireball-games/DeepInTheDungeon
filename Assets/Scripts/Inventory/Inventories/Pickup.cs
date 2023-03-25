@@ -1,5 +1,10 @@
-﻿using Scripts.Inventory.Inventories.Items;
+﻿using Scripts.Building.ItemSpawning;
+using Scripts.Inventory.Inventories.Items;
+using Scripts.System;
+using Scripts.System.MonoBases;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Android;
 
 namespace Scripts.Inventory.Inventories
 {
@@ -7,24 +12,21 @@ namespace Scripts.Inventory.Inventories
     /// To be placed at the root of a Pickup prefab. Contains the data about the
     /// pickup such as the type of item and the number.
     /// </summary>
-    public class Pickup : MonoBehaviour
+    public class Pickup : MapObjectInstance
     {
-        // STATE
+        public int StackSize => _number;
+        
         private InventoryItem _item;
         private int _number = 1;
 
-        // CACHED REFERENCE
         private Inventory _inventory;
-
-        // LIFECYCLE METHODS
 
         private void Awake()
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
-            _inventory = player.GetComponent<Inventory>();
+            // TODO: till player has inventory
+            // _inventory = player.GetComponent<Inventory>();
         }
-
-        // PUBLIC
 
         /// <summary>
         /// Set the vital data after creating the prefab.
@@ -33,17 +35,14 @@ namespace Scripts.Inventory.Inventories
         /// <param name="number">The number of items represented.</param>
         public void Setup(InventoryItem item, int number)
         {
-            _item = item;
+            base.Setup(item);
+            
             if (!item.IsStackable())
             {
                 number = 1;
             }
+            
             _number = number;
-        }
-
-        public InventoryItem GetItem()
-        {
-            return _item;
         }
 
         public int GetNumber()

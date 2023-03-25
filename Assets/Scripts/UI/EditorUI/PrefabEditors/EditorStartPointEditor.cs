@@ -40,13 +40,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             AssignComponents();
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             EditorEvents.OnMapBuilt.AddListener(OnMapBuilt);
         }
-        
-        private void OnDisable()
+
+        protected override void OnDisable()
         {
+            base.OnDisable();
             EditorEvents.OnMapBuilt.RemoveListener(OnMapBuilt);
         }
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using Scripts.Building.ItemSpawning;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Inventory.Inventories.Items;
 using Scripts.Localization;
@@ -22,12 +24,25 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         private Title _itemTitle;
         
         private MapObject _selectedItem;
+        private MapObjectConfiguration _selectedItemConfiguration;
         
         private Func<SpriteRenderer, Tween> _tweenFunc;
 
         private void Awake()
         {
             AssignComponents();
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            EditorEvents.OnAddItemToMap.AddListener(OnAddItemToMap);
+        }
+        
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            EditorEvents.OnAddItemToMap.RemoveListener(OnAddItemToMap);
         }
 
         public override void Open()
@@ -42,10 +57,20 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         {
             MapEditorManager.SetEditMode(EEditMode.Add);
             _selectedItem = selectedItem;
+            _selectedItemConfiguration = MapObjectConfiguration.Create(selectedItem);
             ItemCursor.Instance.Show(selectedItem.DisplayPrefab)
                 .SetDetailImage(addCursorSetup.Image, Colors.GetColor(addCursorSetup.Color), _tweenFunc);
             
             VisualizeComponents();
+        }
+        
+        private void OnAddItemToMap(Vector3 clickPosition)
+        {
+            if (!_selectedItem) return;
+            
+            _selectedItemConfiguration.PositionRotation.Position = clickPosition;
+            
+            MapBuilder.SpawnItem(_selectedItemConfiguration);
         }
 
         protected override void RemoveAndClose()
@@ -57,6 +82,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             _itemList.Close();
             ItemCursor.Instance.Hide();
             _selectedItem = null;
+            _selectedItemConfiguration = null;
             MapEditorManager.SetEditMode(EEditMode.Normal);
             
             VisualizeComponents();

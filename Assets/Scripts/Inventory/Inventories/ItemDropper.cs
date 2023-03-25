@@ -79,7 +79,7 @@ namespace Scripts.Inventory.Inventories
             DropRecord[] droppedItemsList = new DropRecord[_droppedItems.Count];
             for (int i = 0; i < droppedItemsList.Length; i++)
             {
-                droppedItemsList[i].itemID = _droppedItems[i].GetItem().GetItemID();
+                droppedItemsList[i].itemID = _droppedItems[i].ItemID;
                 droppedItemsList[i].position = _droppedItems[i].transform.position;
                 droppedItemsList[i].number = _droppedItems[i].GetNumber();
             }

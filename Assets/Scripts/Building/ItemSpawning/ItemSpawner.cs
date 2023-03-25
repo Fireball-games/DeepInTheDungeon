@@ -1,18 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.Inventory.Inventories;
 using Scripts.Inventory.Inventories.Items;
 using Scripts.System;
+using Scripts.System.Pooling;
+using Scripts.System.Saving;
 using UnityEngine;
 using static Scripts.Building.ItemSpawning.MapObjectConfiguration;
 
 namespace Scripts.Building.ItemSpawning
 {
-    public class ItemSpawner
+    public class ItemSpawner : ISavable
     {
+        private readonly Dictionary<int, GameObject> _spawnedItems;
         private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
         public static GameObject Parent => MapBuilder.ItemsParent;
+        
+        public ItemSpawner()
+        {
+            _spawnedItems = new Dictionary<int, GameObject>();
+        }
         
         public void SpawnItem(MapObjectConfiguration item)
         {
@@ -20,9 +30,11 @@ namespace Scripts.Building.ItemSpawning
 
             if (mapObject is InventoryItem pickup)
             {
-                Pickup spawnedItem = pickup.SpawnPickup(item.PositionRotation.Position, item.CustomData[ECustomDataKey.StackSize] as int? ?? 1);
-                spawnedItem.transform.SetParent(Parent.transform);
-                spawnedItem.transform.localRotation = item.PositionRotation.Rotation;
+                int stackSize = item.CustomData.TryGetValue(ECustomDataKey.StackSize, out object size) ? (int) size : 1;
+                
+                Pickup spawnedItem = pickup.SpawnPickup(item.PositionRotation.Position, stackSize);
+                _spawnedItems.Add(spawnedItem.GetInstanceID(), spawnedItem.gameObject);
+                spawnedItem.SetTransform(item.PositionRotation);
             }
             
             
@@ -51,9 +63,31 @@ namespace Scripts.Building.ItemSpawning
         
         private async Task SpawnItemAsync(MapObjectConfiguration item)
         {
-            SpawnItem(item);
-            
             await Task.Yield();
+            
+            SpawnItem(item);
+        }
+
+        public void DemolishItems()
+        {
+            _spawnedItems.Values.ForEach(item => item.DismissToPool());
+            _spawnedItems.Clear();
+        }
+
+        public string Guid { get; set; } = "ItemSpawner";
+        
+        public object CaptureState() => _spawnedItems.Values
+            .Select(item => Create(item.GetComponent<MapObjectInstance>()));
+
+        public async void RestoreState(object state)
+        {
+            if (state is not List<MapObjectConfiguration> items)
+            {
+                Helpers.Logger.LogWarning("State is not List<MapObjectConfiguration>".WrapInColor(Colors.Orange));
+                return;
+            }
+            
+            await SpawnItemsAsync(items);
         }
     }
 }

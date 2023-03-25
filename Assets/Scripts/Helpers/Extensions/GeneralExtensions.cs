@@ -111,7 +111,9 @@ namespace Scripts.Helpers.Extensions
             => source.HasIndex(gridPosition.x, gridPosition.y, gridPosition.z);
         
         public static List<T> Clone<T>(this IEnumerable<T> source) where T : ICloneable =>
-            source.Select(element => (T) element.Clone()).ToList();
+            source == null 
+                ? new List<T>() 
+                : source.Select(element => (T) element.Clone()).ToList();
 
         public static bool HasIndex<T>(this List<List<T>> source, int row, int column)
         {

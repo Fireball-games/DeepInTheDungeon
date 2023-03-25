@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Scripts.Building.ItemSpawning;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
@@ -34,9 +35,11 @@ namespace Scripts.Building
         internal Dictionary<int, List<NullTile>> NullTilesMap;
         internal MapDescription MapDescription;
         internal GameObject PrefabsParent;
+        internal GameObject ItemsParent;
 
         private static MapEditorManager EditorManager => MapEditorManager.Instance;
         private PrefabBuilder _prefabBuilder;
+        private ItemSpawner _itemSpawner;
         internal HashSet<GameObject> Prefabs;
 
         private void Awake()
@@ -45,6 +48,7 @@ namespace Scripts.Building
             NullTilesMap = new Dictionary<int, List<NullTile>>();
             Prefabs = new HashSet<GameObject>();
             _prefabBuilder = new PrefabBuilder();
+            _itemSpawner = new ItemSpawner();
 
             if (!LayoutParent)
             {
@@ -52,6 +56,14 @@ namespace Scripts.Building
                 LayoutParent.transform.parent = levelPartsParent.transform;
 
                 PrefabsParent = new GameObject("Prefabs")
+                {
+                    transform =
+                    {
+                        parent = levelPartsParent.transform
+                    }
+                };
+                
+                ItemsParent = new GameObject("Items")
                 {
                     transform =
                     {

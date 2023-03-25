@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Scripts.Building.ItemSpawning;
+using Scripts.System.Pooling;
 using UnityEngine;
 
 namespace Scripts.Inventory.Inventories.Items
@@ -32,7 +34,7 @@ namespace Scripts.Inventory.Inventories.Items
         /// <returns>Reference to the pickup object spawned.</returns>
         public Pickup SpawnPickup(Vector3 position, int number)
         {
-            Pickup newPickup = Instantiate(this.pickup);
+            Pickup newPickup = pickup.GetFromPool(ItemSpawner.Parent);
             newPickup.transform.position = position;
             newPickup.Setup(this, number);
             return newPickup;

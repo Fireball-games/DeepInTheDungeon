@@ -10,7 +10,7 @@ namespace Scripts.Building.ItemSpawning
     {
         public string ID;
         public PositionRotation PositionRotation;
-        public Dictionary<string, object> CustomData;
+        public Dictionary<ECustomDataKey, object> CustomData;
 
         public enum ECustomDataKey
         {

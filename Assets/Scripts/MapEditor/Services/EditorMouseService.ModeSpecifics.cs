@@ -7,7 +7,6 @@ using UnityEngine;
 using static Scripts.Enums;
 using static Scripts.MapEditor.Enums;
 using static Scripts.System.MouseCursorManager;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.MapEditor.Services
 {
@@ -56,14 +55,16 @@ namespace Scripts.MapEditor.Services
                     if (mouseButtonUpped == 0 && GridPositionType == EGridPositionType.EditableTile)
                     {
                         UIManager.OpenEditorWindow(EPrefabType.Service,
-                        new PositionRotation(MouseGridPosition.ToWorldPositionV3Int(), Quaternion.identity));
+                            new PositionRotation(MouseGridPosition.ToWorldPositionV3Int(),
+                                Quaternion.identity));
                     }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
-        
+
         private void SetCursorByCurrentType()
         {
             switch (Manager.WorkMode)
@@ -97,7 +98,7 @@ namespace Scripts.MapEditor.Services
             }
             else
             {
-                SetCursor(ECursorType.Add);
+                SetCursor(Manager.EditMode is EEditMode.Edit ? ECursorType.Default : ECursorType.Hidden);
             }
         }
 
@@ -151,12 +152,12 @@ namespace Scripts.MapEditor.Services
                     break;
             }
         }
-        
+
         private void SetCursorForTiledPrefabType<TPrefab>() where TPrefab : PrefabBase
         {
             GameObject prefabOnPosition = Manager.MapBuilder.GetPrefabByGridPosition(MouseGridPosition);
             bool isDesiredPrefab = prefabOnPosition && prefabOnPosition.GetComponent<TPrefab>();
-            
+
             if (GridPositionType == EGridPositionType.NullTile || prefabOnPosition && !isDesiredPrefab)
             {
                 _lastPrefabOnPosition = null;
@@ -168,7 +169,7 @@ namespace Scripts.MapEditor.Services
             if (prefabOnPosition)
             {
                 _lastPrefabOnPosition = prefabOnPosition;
-                    
+
                 if (isDesiredPrefab)
                 {
                     SetCursor(ECursorType.Edit);
@@ -182,7 +183,7 @@ namespace Scripts.MapEditor.Services
                 Show3DCursor(MouseGridPosition);
             }
         }
-        
+
         private void ResolveBuildModePosition(bool isNullTile, Vector3Int newGridPosition,
             TileDescription[,,] layout)
         {

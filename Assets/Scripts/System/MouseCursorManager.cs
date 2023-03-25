@@ -42,12 +42,14 @@ namespace Scripts.System
             Move = 3,
             Edit = 4,
             Add = 5,
+            Hidden = 6,
         }
 
         public enum EHotspotType
         {
             Default = 0,
             Middle = 1,
+            TopMiddle = 2,
         }
 
         private void Awake()
@@ -82,6 +84,13 @@ namespace Scripts.System
         
         public static void SetCursor(ECursorType type)
         {
+            if (type is ECursorType.Hidden)
+            {
+                _isDefaultCursorSet = false;
+                Hide();
+                return;
+            }
+            
             if (type is ECursorType.Default)
             {
                 SetDefaultCursor();
@@ -100,6 +109,7 @@ namespace Scripts.System
             {
                 EHotspotType.Default => Vector2.zero,
                 EHotspotType.Middle => new Vector2(texture.height / 2, texture.width / 2),
+                EHotspotType.TopMiddle => new Vector2(texture.height, texture.width / 2),
                 _ => throw new ArgumentOutOfRangeException()
             };
             
@@ -108,9 +118,12 @@ namespace Scripts.System
         
         private static void SetCursor(Texture2D image, Vector3 hotspot)
         {
+            Cursor.visible = true;
             Cursor.SetCursor(image, hotspot, CursorMode.Auto);
             _isDefaultCursorSet = false;
         }
+
+        private static void Hide() => Cursor.visible = false;
         
         public static void Hide3DCursor()
         {

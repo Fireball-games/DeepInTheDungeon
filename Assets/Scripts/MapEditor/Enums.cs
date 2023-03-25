@@ -25,6 +25,14 @@
             Upper = 1,
             Lower = 2
         }
+        
+        public enum EEditMode
+        {
+            Normal = 0,
+            Edit = 1,
+            Add = 2,
+            Remove = 3,
+        }
 
         public enum EGridPositionType
         {

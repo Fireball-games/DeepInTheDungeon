@@ -15,6 +15,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         [SerializeField] private EWorkMode workMode;
         
         protected MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
+        protected MapEditorManager MapEditorManager => MapEditorManager.Instance;
         protected CageController SelectedCursor => EditorUIManager.Instance.SelectedCage;
         
         private void OnEnable()

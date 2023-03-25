@@ -37,6 +37,7 @@ namespace Scripts.MapEditor
 
         public ELevel WorkLevel { get; private set; }
         public EWorkMode WorkMode { get; private set; }
+        public EEditMode EditMode { get; private set; }
         public bool MapIsPresented { get; private set; }
         public bool MapIsChanged { get; private set; }
         public bool PrefabIsEdited { get; private set; }
@@ -140,14 +141,26 @@ namespace Scripts.MapEditor
 
         public void SetWorkMode(EWorkMode newWorkMode)
         {
+            if (newWorkMode == WorkMode) return;
+            
             WorkMode = newWorkMode;
             EditorEvents.TriggerOnWorkModeChanged(WorkMode);
         }
 
         public void SetWorkingLevel(ELevel newLevel)
         {
+            if (newLevel == WorkLevel) return;
+            
             WorkLevel = newLevel;
             EditorEvents.TriggerOnWorkingLevelChanged(WorkLevel);
+        }
+        
+        public void SetEditMode(EEditMode newEditMode)
+        {
+            if (newEditMode == EditMode) return;
+            
+            EditMode = newEditMode;
+            EditorEvents.TriggerOnEditModeChanged(EditMode);
         }
 
         public void LoadMainSceneClear()

@@ -15,8 +15,8 @@ namespace Scripts.UI.EditorUI.Components
         [SerializeField] private GameObject itemPrefab;
         public bool SetClickedItemSelected = true;
         public bool HasItems => Buttons is {Count: > 0};
-        
-        protected TButton LastAddedButton; 
+
+        protected TButton LastAddedButton;
 
         private HashSet<TButton> Buttons;
         private UnityEvent<T> OnItemClicked { get; } = new();
@@ -29,7 +29,7 @@ namespace Scripts.UI.EditorUI.Components
             OnItemClicked.RemoveAllListeners();
             OnItemClicked.AddListener(onItemClicked);
             OnCancelClicked.RemoveAllListeners();
-            
+
             if (onClose != null)
             {
                 OnCancelClicked.AddListener(onClose);
@@ -42,7 +42,7 @@ namespace Scripts.UI.EditorUI.Components
 
             if (items == null) return;
 
-            foreach (T item in items)  
+            foreach (T item in items)
             {
                 TButton newButton = ObjectPool.Instance.Get(itemPrefab, listContent).GetComponent<TButton>();
 
@@ -75,17 +75,9 @@ namespace Scripts.UI.EditorUI.Components
         {
             if (SetClickedItemSelected)
             {
-                string identification = GetItemIdentification(item);
-            
-                foreach (TButton button in Buttons)
-                {
-                    if (GetItemIdentification(button.displayedItem) != identification)
-                    {
-                        button.SetSelected(false);
-                    }
-                }
+                Buttons.ForEach(button => button.SetSelected(GetItemIdentification(button.displayedItem) == GetItemIdentification(item)));
             }
-            
+
             OnItemClicked.Invoke(item);
         }
 

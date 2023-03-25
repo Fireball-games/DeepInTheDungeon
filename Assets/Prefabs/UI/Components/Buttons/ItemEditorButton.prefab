@@ -215,6 +215,9 @@ MonoBehaviour:
   MarkSelectedOnClick: 1
   iconPrefab: {fileID: 0}
   displayedItem: {fileID: 0}
+  normalFrame: {fileID: 21300000, guid: 212dc8f8b00c230489f2bc0b79008ebe, type: 3}
+  highlightedFrame: {fileID: 21300000, guid: 7b7c9ca200199524287cb9b09919feda, type: 3}
+  selectedFrame: {fileID: 21300000, guid: 0175344b91118f14eb4a86ac131b55eb, type: 3}
 --- !u!1 &4237467182475878800
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,7 +277,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}

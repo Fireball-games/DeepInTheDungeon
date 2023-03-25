@@ -24,13 +24,12 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             body.SetActive(true);
             IEnumerable<MapObject> items = MapObject.GetAllItems();
             _itemList.Open(t.Get(Keys.AvailableItems), items, OnItemSelected);
-            ItemCursor.Instance.Show();
         }
 
         private void OnItemSelected(MapObject selectedItem)
         {
             _selectedItem = selectedItem;
-            ItemCursor.Instance.AddItem(selectedItem.DisplayPrefab);
+            ItemCursor.Instance.Show(selectedItem.DisplayPrefab);
             VisualizeComponents();
         }
 

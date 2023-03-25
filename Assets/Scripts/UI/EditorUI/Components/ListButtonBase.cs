@@ -16,14 +16,14 @@ namespace Scripts.UI.EditorUI.Components
         [SerializeField] private Image iconPrefab;
         [ReadOnly] public T displayedItem;
 
+        protected bool IsSelected;
+
         protected TMP_Text Text;
-        
         protected Button Button;
         private Color SelectedColor => Colors.Selected;
-        
         private readonly Color _normalColor = Color.white;
 
-        protected UnityEvent<T> OnClick { get; } = new();
+        private UnityEvent<T> OnClick { get; } = new();
 
         protected virtual void Awake()
         {
@@ -59,6 +59,7 @@ namespace Scripts.UI.EditorUI.Components
 
         public virtual void SetSelected(bool isSelected)
         {
+            IsSelected = isSelected;
             if (!Text) return;
             Text.color = isSelected ? SelectedColor : _normalColor;
         }

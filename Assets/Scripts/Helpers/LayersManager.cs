@@ -1,4 +1,5 @@
-﻿using Scripts.System;
+﻿using System;
+using Scripts.System;
 using UnityEngine;
 
 namespace Scripts.Helpers
@@ -7,13 +8,20 @@ namespace Scripts.Helpers
     {
         public const string WallMaskName = "Wall";
         public const string WallGizmoMaskName = "WallGizmo";
-        
-        private static float rayHitDistance = 100f;
+        private const string UpperFloorMaskName = "UpperFloor"; 
+        public static int UpperFloor { get; private set; }
+
+        private const float RayHitDistance = 100f;
         private static Ray MouseRay => CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        private void Awake()
+        {
+            UpperFloor = LayerMask.NameToLayer(UpperFloorMaskName);
+        }
 
         public static bool CheckRayHit(string layerName, out GameObject hitObject)
         {
-            if (Physics.Raycast(MouseRay, out RaycastHit hit, rayHitDistance, LayerMask.GetMask(layerName)))
+            if (Physics.Raycast(MouseRay, out RaycastHit hit, RayHitDistance, LayerMask.GetMask(layerName)))
             {
                 hitObject = hit.collider.gameObject;
                 return true;

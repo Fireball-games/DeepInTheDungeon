@@ -1,4 +1,5 @@
 using System;
+using Scripts.Helpers;
 using Scripts.MapEditor;
 using Scripts.System.Pooling;
 using UnityEngine;
@@ -30,12 +31,11 @@ namespace Scripts.Building
         private void OnTriggerEnter(Collider other)
         {
             _myFloor = Mathf.RoundToInt(transform.position.y);
-        
-            if (IsOnUpperFloor)
-            {
-                bodyRenderer.enabled = true;
-                SetMaterial(transparentMaterial);
-            }
+
+            if (!IsOnUpperFloor || other.gameObject.layer != LayersManager.UpperFloor) return;
+
+            bodyRenderer.enabled = true;
+            SetMaterial(transparentMaterial);
         }
 
         private void OnTriggerExit(Collider other)

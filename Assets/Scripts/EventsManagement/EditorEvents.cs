@@ -18,6 +18,7 @@ namespace Scripts.EventsManagement
         public static event Action<bool> OnPrefabEdited;
         public static event Action OnMapSaved;
         public static event Action<bool> OnCameraPerspectiveChanged;
+        public static readonly UnityEvent<Vector3> OnAddItemToMap = new();
 
         // ***********    Triggers    ***********
 
@@ -33,5 +34,6 @@ namespace Scripts.EventsManagement
         public static void TriggerOnPrefabEdited(bool isEdited) => OnPrefabEdited?.Invoke(isEdited);
         public static void TriggerOnMapSaved() => OnMapSaved?.Invoke();
         public static void TriggerOnCameraPerspectiveChanged(bool isOrthographic) => OnCameraPerspectiveChanged?.Invoke(isOrthographic);
+        public static void TriggerOnAddItemToMap(Vector3 position) => OnAddItemToMap.Invoke(position);
     }
 }

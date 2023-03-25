@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building.ItemSpawning;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.Tile;
 using Scripts.Helpers.Extensions;
@@ -23,6 +24,7 @@ namespace Scripts.Building
         public string SceneName;
         public TileDescription[,,] Layout;
         public List<PrefabConfiguration> PrefabConfigurations;
+        public List<MapObjectConfiguration> MapObjects;
         public List<EntryPoint> EntryPoints;
 
         public MapDescription()
@@ -59,6 +61,7 @@ namespace Scripts.Building
             MapName = MapName,
             Layout = GeneralExtensions.Clone(Layout),
             PrefabConfigurations = PrefabConfigurations.Clone(),
+            MapObjects = MapObjects.Clone(),
             EntryPoints = EntryPoints.Clone(),
         };
     }

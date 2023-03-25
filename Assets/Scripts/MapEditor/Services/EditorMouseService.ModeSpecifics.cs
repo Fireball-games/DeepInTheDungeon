@@ -1,6 +1,7 @@
 ﻿using System;
 using Scripts.Building.PrefabsSpawning;
 using Scripts.Building.Tile;
+using Scripts.EventsManagement;
 using Scripts.Helpers.Extensions;
 using Scripts.System;
 using UnityEngine;
@@ -41,6 +42,14 @@ namespace Scripts.MapEditor.Services
                     break;
                 case EWorkMode.Prefabs:
                 case EWorkMode.Items:
+                    if (mouseButtonUpped == 0 
+                        &&Manager.EditMode is EEditMode.Add 
+                        && GridPositionType is EGridPositionType.EditableTile)
+                    {
+                        EditorEvents.TriggerOnAddItemToMap(MousePositionOnPlane);
+                    }
+                    
+                    break;
                 case EWorkMode.Enemies:
                 case EWorkMode.Triggers:
                     break;

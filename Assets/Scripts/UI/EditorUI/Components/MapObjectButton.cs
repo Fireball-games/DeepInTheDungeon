@@ -1,5 +1,5 @@
 ﻿using Scripts.Helpers;
-using Scripts.Inventory.Inventories.Items;
+using Scripts.InventoryManagement.Inventories.Items;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;

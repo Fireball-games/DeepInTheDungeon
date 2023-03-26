@@ -1,6 +1,6 @@
 ﻿using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
-using Scripts.Inventory;
+using Scripts.InventoryManagement;
 using Scripts.Localization;
 using TMPro;
 using UnityEngine;

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Helpers.Extensions;
-using Scripts.Inventory.Inventories;
-using Scripts.Inventory.Inventories.Items;
+using Scripts.InventoryManagement.Inventories;
+using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.System;
 using UnityEngine;
 

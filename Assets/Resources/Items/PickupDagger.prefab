@@ -98,6 +98,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3958124465228477354, guid: ff7086ab65aea0b44bed8abd664a984c,
         type: 3}
+      propertyPath: m_Radius
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958124465228477354, guid: ff7086ab65aea0b44bed8abd664a984c,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0.203125
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958124465228477354, guid: ff7086ab65aea0b44bed8abd664a984c,
+        type: 3}
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}

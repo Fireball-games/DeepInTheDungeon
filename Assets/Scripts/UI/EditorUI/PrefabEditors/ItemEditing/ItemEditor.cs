@@ -5,7 +5,7 @@ using Scripts.Building.ItemSpawning;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
-using Scripts.Inventory.Inventories.Items;
+using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.Localization;
 using Scripts.MapEditor;
 using Scripts.UI.Components;

@@ -172,7 +172,7 @@ namespace Scripts.System.Pooling
                 result = newParentGo.transform;
             }
 
-            return !result ? storeParent : result;
+            return result ? result : storeParent;
         }
 
         [Serializable]

@@ -1,4 +1,5 @@
-﻿using NaughtyAttributes;
+﻿using System;
+using NaughtyAttributes;
 using UnityEngine;
 using static Scripts.Enums;
 
@@ -13,44 +14,55 @@ namespace Scripts.Helpers
         [SerializeField, HideIf(nameof(allInteractions))] private bool useTag;
         [SerializeField, HideIf(nameof(allInteractions)), ShowIf(nameof(useTag))] ETag acceptedTag;
 
+        public void SetProxyTarget(MonoBehaviour newTarget) => target = newTarget;
+
+        private void Update()
+        {
+            if (!target) return;
+            
+            transform.position = target.transform.position;
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (ConditionsMet(other.gameObject))
-                target.SendMessageUpwards("OnTriggerEnter", other, SendMessageOptions.DontRequireReceiver);
+                target.SendMessage("OnTriggerEnter", other, SendMessageOptions.DontRequireReceiver);
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (ConditionsMet(other.gameObject))
-                target.SendMessageUpwards("OnTriggerExit", other, SendMessageOptions.DontRequireReceiver);
+                target.SendMessage("OnTriggerExit", other, SendMessageOptions.DontRequireReceiver);
         }
 
         private void OnTriggerStay(Collider other)
         {
             if (ConditionsMet(other.gameObject))
-                target.SendMessageUpwards("OnTriggerStay", other, SendMessageOptions.DontRequireReceiver);
+                target.SendMessage("OnTriggerStay", other, SendMessageOptions.DontRequireReceiver);
         }
 
         private void OnCollisionEnter(Collision other)
         {
             if (ConditionsMet(other.gameObject))
-                target.SendMessageUpwards("OnCollisionEnter", other, SendMessageOptions.DontRequireReceiver);
+                target.SendMessage("OnCollisionEnter", other, SendMessageOptions.DontRequireReceiver);
         }
 
         private void OnCollisionExit(Collision other)
         {
             if (ConditionsMet(other.gameObject))
-                target.SendMessageUpwards("OnCollisionExit", other, SendMessageOptions.DontRequireReceiver);
+                target.SendMessage("OnCollisionExit", other, SendMessageOptions.DontRequireReceiver);
         }
 
         private void OnCollisionStay(Collision other)
         {
             if (ConditionsMet(other.gameObject))
-                target.SendMessageUpwards("OnCollisionStay", other, SendMessageOptions.DontRequireReceiver);
+                target.SendMessage("OnCollisionStay", other, SendMessageOptions.DontRequireReceiver);
         }
 
         private bool ConditionsMet(GameObject other)
         {
+            if (!target) return false;
+            
             if (allInteractions) return true;
             
             if (!useLayerMask && !useTag) return false;

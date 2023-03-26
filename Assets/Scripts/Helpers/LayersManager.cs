@@ -9,7 +9,9 @@ namespace Scripts.Helpers
         public const string WallMaskName = "Wall";
         public const string WallGizmoMaskName = "WallGizmo";
         private const string UpperFloorMaskName = "UpperFloor"; 
+        private const string ItemMaskName = "Item";
         public static int UpperFloor { get; private set; }
+        public static int Item { get; private set; }
 
         private const float RayHitDistance = 100f;
         private static Ray MouseRay => CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -17,6 +19,7 @@ namespace Scripts.Helpers
         private void Awake()
         {
             UpperFloor = LayerMask.NameToLayer(UpperFloorMaskName);
+            Item = LayerMask.NameToLayer(ItemMaskName);
         }
 
         public static bool CheckRayHit(string layerName, out GameObject hitObject)

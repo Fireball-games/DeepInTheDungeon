@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Scripts.Helpers.Extensions;
-using Scripts.Inventory;
-using Scripts.Inventory.Inventories.Items;
+using Scripts.InventoryManagement;
+using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.Localization;
 using Scripts.System.Pooling;
 using UnityEngine;

@@ -20,11 +20,13 @@ namespace Scripts.Player
         public KeyCode leanForward = KeyCode.W;
         public KeyCode leanLeft = KeyCode.A;
         public KeyCode leanRight = KeyCode.D;
+        public KeyCode inventory = KeyCode.I;
 
         private PlayerMovement _playerMovement;
         private bool _lookModeOnBeforeLean;
 
         private static PlayerCameraController PlayerCamera => PlayerCameraController.Instance;
+        private static PlayerController Player => PlayerController.Instance;
 
         private void Awake()
         {
@@ -77,6 +79,11 @@ namespace Scripts.Player
             if (!PlayerCamera.isLeaning && Input.GetKeyUp(toggleLookingMode))
             {
                 PlayerCamera.HandleLookModeOnKeyClick();
+            }
+            
+            if (Input.GetKeyUp(inventory))
+            {
+                Player.InventoryManager.Inventory.ToggleInventory();
             }
         }
     }

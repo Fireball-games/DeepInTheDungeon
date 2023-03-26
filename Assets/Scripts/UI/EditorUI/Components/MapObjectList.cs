@@ -1,4 +1,4 @@
-﻿using Scripts.Inventory.Inventories.Items;
+﻿using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.UI.EditorUI.PrefabEditors.ItemEditing;
 
 namespace Scripts.UI.EditorUI.Components

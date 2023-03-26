@@ -50,7 +50,7 @@ namespace Scripts.MapEditor
 
             if (detailAction != null)
             {
-                _detailTween = detailAction.Invoke(_detailImage);
+                _detailTween = detailAction.Invoke(_detailImage).Play();
             }
         }
         

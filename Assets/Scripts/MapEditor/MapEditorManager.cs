@@ -233,6 +233,7 @@ namespace Scripts.MapEditor
 
             campaignDirectoryPath.CreateDirectoryIfNotExists();
             GameManager.CurrentMap.EntryPoints = EntryPointService.ConvertEntryPointConfigurationsToEntryPoints();
+            GameManager.CurrentMap.MapObjects = MapBuilder.CollectMapObjects();
             currentCampaign.ReplaceMap(GameManager.CurrentMap);
             _originalMap = GameManager.CurrentMap.ClonedCopy();
             

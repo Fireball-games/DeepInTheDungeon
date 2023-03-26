@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Scripts.Building.ItemSpawning;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning;
@@ -67,10 +68,11 @@ namespace Scripts.Building
             DemolishMap();
 
             MapDescription = mapDescription;
-
+            // TODO: Try to convert this to async/await, just mind, that ProcessPostBuildLayoutPrefabs() must run after layout is build
             yield return StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
             yield return _prefabBuilder.BuildPrefabs(mapDescription.PrefabConfigurations);
             yield return StartCoroutine(_prefabBuilder.ProcessPostBuildLayoutPrefabs());
+            yield return _itemSpawner.SpawnItemsAsync(mapDescription.MapObjects);
 
             OnLayoutBuilt?.Invoke();
         }
@@ -328,5 +330,9 @@ namespace Scripts.Building
         public void RemoveConfiguration(string guid) => _prefabBuilder.RemoveConfiguration(guid);
 
         public void SpawnItem(MapObjectConfiguration configuration) => _itemSpawner.SpawnItem(configuration);
+
+        public List<MapObjectConfiguration> CollectMapObjects() => _itemSpawner.CollectMapObjects();
+
+        public async Task RebuildItems() => await _itemSpawner.RebuildItems();
     }
 }

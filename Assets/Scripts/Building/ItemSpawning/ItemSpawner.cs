@@ -60,13 +60,6 @@ namespace Scripts.Building.ItemSpawning
             
             await Task.WhenAll(tasks);
         }
-        
-        private async Task SpawnItemAsync(MapObjectConfiguration item)
-        {
-            await Task.Yield();
-            
-            SpawnItem(item);
-        }
 
         public void DemolishItems()
         {
@@ -76,8 +69,7 @@ namespace Scripts.Building.ItemSpawning
 
         public string Guid { get; set; } = "ItemSpawner";
         
-        public object CaptureState() => _spawnedItems.Values
-            .Select(item => Create(item.GetComponent<MapObjectInstance>()));
+        public object CaptureState() => ItemInstancesToMapObjectConfigurations();
 
         public async void RestoreState(object state)
         {
@@ -88,6 +80,24 @@ namespace Scripts.Building.ItemSpawning
             }
             
             await SpawnItemsAsync(items);
+        }
+
+        public List<MapObjectConfiguration> CollectMapObjects() => ItemInstancesToMapObjectConfigurations().ToList();
+
+        private IEnumerable<MapObjectConfiguration> ItemInstancesToMapObjectConfigurations() 
+            => _spawnedItems.Values.Select(item => Create(item.GetComponent<MapObjectInstance>()));
+        
+        private async Task SpawnItemAsync(MapObjectConfiguration item)
+        {
+            await Task.Yield();
+            
+            SpawnItem(item);
+        }
+
+        public async Task RebuildItems()
+        {
+            DemolishItems();
+            await SpawnItemsAsync(MapBuilder.MapDescription.MapObjects);
         }
     }
 }

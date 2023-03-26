@@ -1,7 +1,7 @@
-﻿using Scripts.System;
+﻿using Scripts.Helpers;
+using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Saving;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Player
 {
@@ -16,7 +16,7 @@ namespace Scripts.Player
             
             _playerMovement = GetComponent<PlayerMovement>();
         }
-        
+
         /// <summary>
         /// Used to store player data for saving.
         /// </summary>

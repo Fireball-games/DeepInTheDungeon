@@ -25,6 +25,9 @@ namespace Scripts.System
         [SerializeField] private PlayerController playerPrefab;
         
         private MapTraversal _mapTraversal;
+        
+        public static bool IsInEditor => Instance.GameMode is EGameMode.Editor;
+        public static bool IsInPlayMode => Instance.GameMode is EGameMode.Play;
 
         public GameConfiguration GameConfiguration => gameConfiguration;
         public PlayerController Player => player;

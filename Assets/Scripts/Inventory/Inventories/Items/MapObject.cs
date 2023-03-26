@@ -56,28 +56,27 @@ namespace Scripts.Inventory.Inventories.Items
 
         private static Dictionary<string, MapObject> BuildItemLookupCache()
         {
-            if (_itemLookupCache == null)
+            if (_itemLookupCache != null) return _itemLookupCache;
+            
+            _itemLookupCache = new Dictionary<string, MapObject>();
+            MapObject[] itemList = Resources.LoadAll<MapObject>($"Items/MapObjects");
+                
+            if (!itemList.Any())
             {
-                _itemLookupCache = new Dictionary<string, MapObject>();
-                MapObject[] itemList = Resources.LoadAll<MapObject>($"Items/MapObjects");
+                Logger.LogError("No MapObjects found in Resources folder.");
+                return _itemLookupCache;
+            }
                 
-                if (!itemList.Any())
+            foreach (MapObject item in itemList)
+            {
+                if (_itemLookupCache.ContainsKey(item.itemID))
                 {
-                    Logger.LogError("No MapObjects found in Resources folder.");
-                    return _itemLookupCache;
+                    Debug.LogError(
+                        $"Looks like there's a duplicate ID for MapObjects: {_itemLookupCache[item.itemID]} and {item}");
+                    continue;
                 }
-                
-                foreach (MapObject item in itemList)
-                {
-                    if (_itemLookupCache.ContainsKey(item.itemID))
-                    {
-                        Debug.LogError(
-                            $"Looks like there's a duplicate ID for MapObjects: {_itemLookupCache[item.itemID]} and {item}");
-                        continue;
-                    }
 
-                    _itemLookupCache[item.itemID] = item;
-                }
+                _itemLookupCache[item.itemID] = item;
             }
 
             return _itemLookupCache;

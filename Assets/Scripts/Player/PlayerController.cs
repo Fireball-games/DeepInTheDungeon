@@ -1,7 +1,8 @@
-﻿using Scripts.Helpers;
-using Scripts.System;
+﻿using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Saving;
+using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Player
 {
@@ -10,11 +11,19 @@ namespace Scripts.Player
         public PlayerMovement PlayerMovement => _playerMovement;
         private PlayerMovement _playerMovement;
 
+        public PlayerInventoryManager InventoryManager { get; private set; }
+
         protected override void Awake()
         {
             base.Awake();
             
             _playerMovement = GetComponent<PlayerMovement>();
+            InventoryManager = GetComponentInChildren<PlayerInventoryManager>();
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            Logger.Log($"Player entered trigger: {other.name}");
         }
 
         /// <summary>

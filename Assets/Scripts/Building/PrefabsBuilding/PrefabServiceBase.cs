@@ -13,7 +13,7 @@ namespace Scripts.Building.PrefabsBuilding
         where TPrefab : PrefabBase
     {
         protected static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
-        protected static bool IsInEditMode => GameManager.Instance.GameMode == GameManager.EGameMode.Editor;
+        protected static bool IsInEditMode => GameManager.IsInEditor;
 
         private static readonly Dictionary<string, PrefabStoreItem<TC, TPrefab>> Store;
 

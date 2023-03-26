@@ -1,6 +1,7 @@
 ﻿using Scripts.Inventory.Inventories;
 using Scripts.Inventory.Inventories.Items;
 using Scripts.Inventory.Utils.UI.Dragging;
+using Scripts.Player;
 using UnityEngine;
 
 namespace Scripts.Inventory.UI.Inventories
@@ -10,21 +11,18 @@ namespace Scripts.Inventory.UI.Inventories
     /// </summary>
     public class ActionSlotUI : MonoBehaviour, IItemHolder, IDragContainer<InventoryItem>
     {
-        // CONFIG DATA
         [SerializeField] private InventoryItemIcon icon;
         [SerializeField] private int index;
 
-        // CACHE
+        private PlayerController Player => PlayerController.Instance;
+        
         private ActionStore _store;
 
-        // LIFECYCLE METHODS
         private void Awake()
         {
-            _store = GameObject.FindGameObjectWithTag("Player").GetComponent<ActionStore>();
+            _store = Player.InventoryManager.ActionStore;
             _store.storeUpdated += UpdateIcon;
         }
-
-        // PUBLIC
 
         public void AddItems(InventoryItem item, int number)
         {
@@ -50,8 +48,6 @@ namespace Scripts.Inventory.UI.Inventories
         {
             _store.RemoveItems(index, number);
         }
-
-        // PRIVATE
 
         private void UpdateIcon()
         {

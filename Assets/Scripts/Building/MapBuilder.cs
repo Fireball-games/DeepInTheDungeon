@@ -108,7 +108,7 @@ namespace Scripts.Building
         /// <param name="floor"></param>
         public void RebuildTile(int floor, int row, int column)
         {
-            if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
+            if (GameManager.IsInPlayMode)
             {
                 _playBuilder.BuildTile(floor, row, column);
             }
@@ -228,7 +228,7 @@ namespace Scripts.Building
         {
             for (int column = 0; column < layout.GetLength(2); column++)
             {
-                if (GameManager.Instance.GameMode is GameManager.EGameMode.Play)
+                if (GameManager.IsInPlayMode)
                 {
                     _playBuilder.BuildTile(floor, row, column);
                 }
@@ -268,7 +268,7 @@ namespace Scripts.Building
                     tileController.HideWall(TileDirections.WallDirectionByVector[direction]);
             }
 
-            if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
+            if (GameManager.IsInEditor)
             {
                 tileController.HideWall(TileDescription.ETileDirection.Ceiling);
             }

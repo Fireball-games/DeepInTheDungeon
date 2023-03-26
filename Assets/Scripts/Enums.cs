@@ -58,5 +58,14 @@
             SwitchedOn = 1,
             SwitchedOff = 2,
         }
+        
+        public enum ETag
+        {
+            Player = 1,
+            Wall = 2,
+            Transport = 3,
+            Hazard = 4,
+            PickupCollider = 5,
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace Scripts.System.MonoBases
                 if (cancelTextIsNull) cancelText.text = t.Get(Keys.Cancel);
             }
 
-            if (GameManager.Instance.GameMode == GameManager.EGameMode.Editor)
+            if (GameManager.IsInEditor)
             {
                 EditorMouseService.Instance.ResetCursor();
             }

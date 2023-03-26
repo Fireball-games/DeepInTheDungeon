@@ -24,8 +24,11 @@ namespace Scripts.Inventory.Inventories
         private void Awake()
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
-            // TODO: till player has inventory
-            // _inventory = player.GetComponent<Inventory>();
+            
+            if (GameManager.IsInPlayMode)
+            {
+                _inventory = player.GetComponent<Inventory>();
+            }
         }
 
         /// <summary>

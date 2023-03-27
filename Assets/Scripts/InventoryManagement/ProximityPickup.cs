@@ -15,6 +15,11 @@ namespace Scripts.InventoryManagement
             _pickup = GetComponent<Pickup>();
         }
 
+        private void OnEnable()
+        {
+            _isPickedUp = false;
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (_isPickedUp || !other.gameObject.CompareTag(TagsManager.PickupCollider)) return;

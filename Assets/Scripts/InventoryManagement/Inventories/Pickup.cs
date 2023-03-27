@@ -17,9 +17,9 @@ namespace Scripts.InventoryManagement.Inventories
 
         private Inventory _inventory;
 
-        private void Awake()
+        private void OnEnable()
         {
-            if (GameManager.IsInPlayMode)
+            if (GameManager.IsInPlayMode && !_inventory)
             {
                 _inventory = PlayerController.Instance.InventoryManager.Inventory;
             }

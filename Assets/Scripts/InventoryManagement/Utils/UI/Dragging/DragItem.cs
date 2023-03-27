@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Scripts.System.MonoBases;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Scripts.InventoryManagement.Utils.UI.Dragging
@@ -9,7 +10,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
     /// Create a subclass for the type you want to be draggable. Then place on
     /// the UI element you want to make draggable.
     /// 
-    /// During dragging, the item is reparented to the parent canvas.
+    /// During dragging, the item is re-parented to the parent canvas.
     /// 
     /// After the item is dropped it will be automatically return to the
     /// original UI parent. It is the job of components implementing `IDragContainer`,
@@ -17,7 +18,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
     /// has occurred.
     /// </summary>
     /// <typeparam name="T">The type that represents the item being dragged.</typeparam>
-    public class DragItem<T> : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class DragItem<T> : MonoBase, IBeginDragHandler, IDragHandler, IEndDragHandler
         where T : class
     {
         Vector3 startPosition;
@@ -52,15 +53,9 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             GetComponent<CanvasGroup>().blocksRaycasts = true;
             transform.SetParent(originalParent, true);
 
-            IDragDestination<T> container;
-            if (!EventSystem.current.IsPointerOverGameObject())
-            {
-                container = parentCanvas.GetComponent<IDragDestination<T>>();
-            }
-            else
-            {
-                container = GetContainer(eventData);
-            }
+            IDragDestination<T> container = !EventSystem.current.IsPointerOverGameObject() 
+                ? parentCanvas.GetComponent<IDragDestination<T>>() 
+                : GetContainer(eventData);
 
             if (container != null)
             {
@@ -74,7 +69,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         {
             if (eventData.pointerEnter)
             {
-                var container = eventData.pointerEnter.GetComponentInParent<IDragDestination<T>>();
+                IDragDestination<T> container = eventData.pointerEnter.GetComponentInParent<IDragDestination<T>>();
 
                 return container;
             }
@@ -85,8 +80,8 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         {
             if (ReferenceEquals(destination, source)) return;
 
-            var destinationContainer = destination as IDragContainer<T>;
-            var sourceContainer = source as IDragContainer<T>;
+            IDragContainer<T> destinationContainer = destination as IDragContainer<T>;
+            IDragContainer<T> sourceContainer = source as IDragContainer<T>;
 
             // Swap won't be possible
             if (destinationContainer == null || sourceContainer == null ||
@@ -100,19 +95,19 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             AttemptSwap(destinationContainer, sourceContainer);
         }
 
-        private void AttemptSwap(IDragContainer<T> destination, IDragContainer<T> source)
+        private static void AttemptSwap(IDragContainer<T> destination, IDragContainer<T> source)
         {
             // Provisionally remove item from both sides. 
-            var removedSourceNumber = source.GetNumber();
-            var removedSourceItem = source.GetItem();
-            var removedDestinationNumber = destination.GetNumber();
-            var removedDestinationItem = destination.GetItem();
+            int removedSourceNumber = source.GetNumber();
+            T removedSourceItem = source.GetItem();
+            int removedDestinationNumber = destination.GetNumber();
+            T removedDestinationItem = destination.GetItem();
 
             source.RemoveItems(removedSourceNumber);
             destination.RemoveItems(removedDestinationNumber);
 
-            var sourceTakeBackNumber = CalculateTakeBack(removedSourceItem, removedSourceNumber, source, destination);
-            var destinationTakeBackNumber = CalculateTakeBack(removedDestinationItem, removedDestinationNumber, destination, source);
+            int sourceTakeBackNumber = CalculateTakeBack(removedSourceItem, removedSourceNumber, source, destination);
+            int destinationTakeBackNumber = CalculateTakeBack(removedDestinationItem, removedDestinationNumber, destination, source);
 
             // Do take backs (if needed)
             if (sourceTakeBackNumber > 0)
@@ -155,32 +150,30 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
 
         private bool AttemptSimpleTransfer(IDragDestination<T> destination)
         {
-            var draggingItem = source.GetItem();
-            var draggingNumber = source.GetNumber();
+            T draggingItem = source.GetItem();
+            int draggingNumber = source.GetNumber();
 
-            var acceptable = destination.MaxAcceptable(draggingItem);
-            var toTransfer = Mathf.Min(acceptable, draggingNumber);
+            int acceptable = destination.MaxAcceptable(draggingItem);
+            int toTransfer = Mathf.Min(acceptable, draggingNumber);
 
-            if (toTransfer > 0)
-            {
-                source.RemoveItems(toTransfer);
-                destination.AddItem(draggingItem, toTransfer);
-                return false;
-            }
-
-            return true;
+            if (toTransfer <= 0) return true;
+            
+            source.RemoveItems(toTransfer);
+            destination.AddItem(draggingItem, toTransfer);
+            
+            return false;
         }
 
-        private int CalculateTakeBack(T removedItem, int removedNumber, IDragContainer<T> removeSource, IDragContainer<T> destination)
+        private static int CalculateTakeBack(T removedItem, int removedNumber, IDragContainer<T> removeSource, IDragContainer<T> destination)
         {
-            var takeBackNumber = 0;
-            var destinationMaxAcceptable = destination.MaxAcceptable(removedItem);
+            int takeBackNumber = 0;
+            int destinationMaxAcceptable = destination.MaxAcceptable(removedItem);
 
             if (destinationMaxAcceptable < removedNumber)
             {
                 takeBackNumber = removedNumber - destinationMaxAcceptable;
 
-                var sourceTakeBackAcceptable = removeSource.MaxAcceptable(removedItem);
+                int sourceTakeBackAcceptable = removeSource.MaxAcceptable(removedItem);
 
                 // Abort and reset
                 if (sourceTakeBackAcceptable < takeBackNumber)

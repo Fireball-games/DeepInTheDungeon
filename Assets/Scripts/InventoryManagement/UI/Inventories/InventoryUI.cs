@@ -1,4 +1,5 @@
-﻿using Scripts.Helpers.Extensions;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Scripts.InventoryManagement.Inventories;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
@@ -42,12 +43,26 @@ namespace Scripts.InventoryManagement.UI.Inventories
 
         private void Redraw()
         {
-            _itemsParent.gameObject.DismissAllChildrenToPool();
-
+            // _itemsParent.gameObject.DismissAllChildrenToPool();
+            
+            IEnumerable<InventorySlotUI> slots = _itemsParent.GetComponentsInChildren<InventorySlotUI>();
+            
+            if (slots.Count() > _playerInventory.GetSize())
+            {
+                for (int i = _playerInventory.GetSize(); i < slots.Count(); i++)
+                {
+                    slots.ElementAt(i).gameObject.DismissToPool();
+                }
+            }
+            
             for (int i = 0; i < _playerInventory.GetSize(); i++)
             {
-                InventorySlotUI itemUI = inventoryItemPrefab.GetFromPool(_itemsParent);
-                itemUI.Setup(_playerInventory, i);
+                if (i >= slots.Count())
+                {
+                    slots = slots.Append(inventoryItemPrefab.GetFromPool(_itemsParent));
+                }
+                
+                slots.ElementAt(i).Setup(_playerInventory, i);
             }
         }
     }

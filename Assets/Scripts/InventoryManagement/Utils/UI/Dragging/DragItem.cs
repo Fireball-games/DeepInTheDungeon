@@ -1,4 +1,7 @@
-﻿using Scripts.System.MonoBases;
+﻿using Scripts.InventoryManagement.Inventories.Items;
+using Scripts.Player;
+using Scripts.System.MonoBases;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -37,14 +40,29 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         {
             startPosition = transform.position;
             originalParent = transform.parent;
-            // Else won't get the drop event.
             GetComponent<CanvasGroup>().blocksRaycasts = false;
+            // Set the parent to the canvas so that it's rendered on top of other objects.
             transform.SetParent(parentCanvas.transform, true);
+            GetComponent<RectTransform>().sizeDelta = PlayerInventoryManager.DragSize;
         }
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
             transform.position = eventData.position;
+            
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                // TODO: continue here, ths does not work
+                if (source.GetItem() is InventoryItem inventoryItem)
+                {
+                    //Spawn item pickup on mouse position 0.2 in front of camera
+                    Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    mousePos.z = 0.2f;
+                    InventoryItem pickup = Instantiate(inventoryItem, mousePos, Quaternion.identity);
+                }
+                
+                Helpers.Logger.Log("Not over game object");
+            }
         }
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)

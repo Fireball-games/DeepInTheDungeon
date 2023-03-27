@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &1624890794461122550
+--- !u!1001 &2030463547300907240
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -90,12 +90,12 @@ PrefabInstance:
     - target: {fileID: 1523570855728752338, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1523570855728752338, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1523570855728752338, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
@@ -160,7 +160,7 @@ PrefabInstance:
     - target: {fileID: 1602997939324067808, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_Name
-      value: ActionSlot
+      value: EquipmentSlot
       objectReference: {fileID: 0}
     - target: {fileID: 2808740917936513140, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
@@ -190,11 +190,6 @@ PrefabInstance:
     - target: {fileID: 2808740917936513140, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4054064868225600880, guid: c1ff5708ed984372806e70af50342a7c,
-        type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7763549518759150732, guid: c1ff5708ed984372806e70af50342a7c,
@@ -230,55 +225,23 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 2568938807729891204, guid: c1ff5708ed984372806e70af50342a7c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c1ff5708ed984372806e70af50342a7c, type: 3}
---- !u!114 &31517310861631743 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1649229243508764425, guid: c1ff5708ed984372806e70af50342a7c,
-    type: 3}
-  m_PrefabInstance: {fileID: 1624890794461122550}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 708a7095a2d2498999ff09b4701a5158, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &50168174962823190 stripped
+--- !u!1 &726022883928184584 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1602997939324067808, guid: c1ff5708ed984372806e70af50342a7c,
     type: 3}
-  m_PrefabInstance: {fileID: 1624890794461122550}
+  m_PrefabInstance: {fileID: 2030463547300907240}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4725937397858921389
+--- !u!114 &5450615511814720456
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 50168174962823190}
+  m_GameObject: {fileID: 726022883928184584}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 843a6418fa5940519ce9fe695c2d4338, type: 3}
+  m_Script: {fileID: 11500000, guid: 5981c6eb5564422b959b54ad69f18463, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 31517310861631743}
-  index: 0
---- !u!114 &4843097941129211220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 50168174962823190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: 65
-  m_MinHeight: 65
-  m_PreferredWidth: 65
-  m_PreferredHeight: 65
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
+  icon: {fileID: 0}
+  equipLocation: 5

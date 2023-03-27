@@ -39,11 +39,6 @@ namespace Scripts.Player
             }
         }
 
-        private void OnTriggerEnter(Collider other)
-        {
-            Logger.Log($"Player entered trigger: {other.name}");
-        }
-
         /// <summary>
         /// Used to store player data for saving.
         /// </summary>

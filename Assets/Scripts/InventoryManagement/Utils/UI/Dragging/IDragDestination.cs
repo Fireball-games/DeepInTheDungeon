@@ -19,6 +19,6 @@
         /// </summary>
         /// <param name="item">The item type.</param>
         /// <param name="number">The quantity of items.</param>
-        void AddItems(T item, int number);
+        void AddItem(T item, int number);
     }
 }

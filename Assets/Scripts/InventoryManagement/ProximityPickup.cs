@@ -8,6 +8,7 @@ namespace Scripts.InventoryManagement
     public class ProximityPickup : MonoBehaviour
     {
         private Pickup _pickup;
+        private bool _isPickedUp;
         
         private void Awake()
         {
@@ -16,10 +17,10 @@ namespace Scripts.InventoryManagement
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.CompareTag(TagsManager.PickupCollider))
-            {
-                _pickup.PickupItem();
-            }
+            if (_isPickedUp || !other.gameObject.CompareTag(TagsManager.PickupCollider)) return;
+            
+            _pickup.PickupItem();
+            _isPickedUp = true;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Scripts.InventoryManagement.UI.Inventories
     /// </summary>
     public class InventoryDropTarget : MonoBehaviour, IDragDestination<InventoryItem>
     {
-        public void AddItems(InventoryItem item, int number)
+        public void AddItem(InventoryItem item, int number)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             player.GetComponent<ItemDropper>().DropItem(item, number);

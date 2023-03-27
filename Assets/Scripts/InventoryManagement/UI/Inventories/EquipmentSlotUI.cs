@@ -44,7 +44,7 @@ namespace Scripts.InventoryManagement.UI.Inventories
             return 1;
         }
 
-        public void AddItems(InventoryItem item, int number)
+        public void AddItem(InventoryItem item, int number)
         {
             _playerEquipment.AddItem(equipLocation, (EquipableItem) item);
         }

@@ -1,4 +1,5 @@
-﻿using Scripts.InventoryManagement.Inventories;
+﻿using NaughtyAttributes;
+using Scripts.InventoryManagement.Inventories;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.InventoryManagement.Utils.UI.Dragging;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace Scripts.InventoryManagement.UI.Inventories
         [SerializeField] private InventoryItemIcon icon;
 
         // STATE
-        private int _index;
+        [ReadOnly] public int _index;
         private InventoryItem _item;
         private Inventory _inventory;
 
@@ -33,7 +34,7 @@ namespace Scripts.InventoryManagement.UI.Inventories
             return 0;
         }
 
-        public void AddItems(InventoryItem item, int number)
+        public void AddItem(InventoryItem item, int number)
         {
             _inventory.AddItemToSlot(_index, item, number);
         }

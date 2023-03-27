@@ -83,7 +83,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
 
         private void DropItemIntoContainer(IDragDestination<T> destination)
         {
-            if (object.ReferenceEquals(destination, source)) return;
+            if (ReferenceEquals(destination, source)) return;
 
             var destinationContainer = destination as IDragContainer<T>;
             var sourceContainer = source as IDragContainer<T>;
@@ -91,7 +91,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             // Swap won't be possible
             if (destinationContainer == null || sourceContainer == null ||
                 destinationContainer.GetItem() == null ||
-                object.ReferenceEquals(destinationContainer.GetItem(), sourceContainer.GetItem()))
+                ReferenceEquals(destinationContainer.GetItem(), sourceContainer.GetItem()))
             {
                 AttemptSimpleTransfer(destination);
                 return;
@@ -117,12 +117,12 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             // Do take backs (if needed)
             if (sourceTakeBackNumber > 0)
             {
-                source.AddItems(removedSourceItem, sourceTakeBackNumber);
+                source.AddItem(removedSourceItem, sourceTakeBackNumber);
                 removedSourceNumber -= sourceTakeBackNumber;
             }
             if (destinationTakeBackNumber > 0)
             {
-                destination.AddItems(removedDestinationItem, destinationTakeBackNumber);
+                destination.AddItem(removedDestinationItem, destinationTakeBackNumber);
                 removedDestinationNumber -= destinationTakeBackNumber;
             }
 
@@ -133,11 +133,11 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             {
                 if (removedDestinationNumber > 0)
                 {
-                    destination.AddItems(removedDestinationItem, removedDestinationNumber);
+                    destination.AddItem(removedDestinationItem, removedDestinationNumber);
                 }
                 if (removedSourceNumber > 0)
                 {
-                    source.AddItems(removedSourceItem, removedSourceNumber);
+                    source.AddItem(removedSourceItem, removedSourceNumber);
                 }
                 return;
             }
@@ -145,11 +145,11 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             // Do swaps
             if (removedDestinationNumber > 0)
             {
-                source.AddItems(removedDestinationItem, removedDestinationNumber);
+                source.AddItem(removedDestinationItem, removedDestinationNumber);
             }
             if (removedSourceNumber > 0)
             {
-                destination.AddItems(removedSourceItem, removedSourceNumber);
+                destination.AddItem(removedSourceItem, removedSourceNumber);
             }
         }
 
@@ -164,7 +164,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             if (toTransfer > 0)
             {
                 source.RemoveItems(toTransfer);
-                destination.AddItems(draggingItem, toTransfer);
+                destination.AddItem(draggingItem, toTransfer);
                 return false;
             }
 

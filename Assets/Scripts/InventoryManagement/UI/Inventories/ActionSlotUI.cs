@@ -24,7 +24,7 @@ namespace Scripts.InventoryManagement.UI.Inventories
             _store.storeUpdated += UpdateIcon;
         }
 
-        public void AddItems(InventoryItem item, int number)
+        public void AddItem(InventoryItem item, int number)
         {
             _store.AddAction(item, index, number);
         }

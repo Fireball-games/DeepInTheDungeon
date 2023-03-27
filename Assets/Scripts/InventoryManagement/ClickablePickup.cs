@@ -1,5 +1,4 @@
 using Scripts.InventoryManagement.Inventories;
-using Scripts.Player;
 using UnityEngine;
 
 namespace Scripts.InventoryManagement
@@ -14,6 +13,14 @@ namespace Scripts.InventoryManagement
             pickup = GetComponent<Pickup>();
         }
 
+        private void OnMouseUp()
+        {
+            if (pickup.CanBePickedUp())
+            {
+                pickup.PickupItem();
+            }
+        }
+
         // public CursorType GetCursorType()
         // {
         //     if (pickup.CanBePickedUp())
@@ -26,13 +33,13 @@ namespace Scripts.InventoryManagement
         //     }
         // }
 
-        public bool HandleRaycast(PlayerController callingController)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                pickup.PickupItem();
-            }
-            return true;
-        }
+        // public bool HandleRaycast(PlayerController callingController)
+        // {
+        //     if (Input.GetMouseButtonDown(0))
+        //     {
+        //         pickup.PickupItem();
+        //     }
+        //     return true;
+        // }
     }
 }

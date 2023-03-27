@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.InventoryManagement.Inventories;
@@ -10,20 +11,22 @@ using Scripts.System.Pooling;
 using Scripts.System.Saving;
 using UnityEngine;
 using static Scripts.Building.ItemSpawning.MapObjectConfiguration;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.Building.ItemSpawning
 {
     public class ItemSpawner : ISavable
     {
-        private readonly Dictionary<int, GameObject> _spawnedItems;
+        private readonly Dictionary<int, GameObject> _spawnedObjects;
         private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
         public static GameObject Parent => MapBuilder.ItemsParent;
         
         public ItemSpawner()
         {
-            _spawnedItems = new Dictionary<int, GameObject>();
+            _spawnedObjects = new Dictionary<int, GameObject>();
+            EventsManager.OnMapObjectRemovedFromMap.AddListener(OnInstanceRemovedFromMap);
         }
-        
+
         public void SpawnItem(MapObjectConfiguration item)
         {
             MapObject mapObject = MapObject.GetFromID<MapObject>(item.ID);
@@ -33,7 +36,7 @@ namespace Scripts.Building.ItemSpawning
                 int stackSize = item.CustomData.TryGetValue(ECustomDataKey.StackSize, out object size) ? (int) size : 1;
                 
                 Pickup spawnedItem = pickup.SpawnPickup(item.PositionRotation.Position, stackSize);
-                _spawnedItems.Add(spawnedItem.GetInstanceID(), spawnedItem.gameObject);
+                _spawnedObjects.Add(spawnedItem.GetInstanceID(), spawnedItem.gameObject);
                 spawnedItem.SetTransform(item.PositionRotation);
             }
             
@@ -63,8 +66,8 @@ namespace Scripts.Building.ItemSpawning
 
         public void DemolishItems()
         {
-            _spawnedItems.Values.ForEach(item => item.DismissToPool());
-            _spawnedItems.Clear();
+            _spawnedObjects.Values.ForEach(item => item.DismissToPool());
+            _spawnedObjects.Clear();
         }
 
         public string Guid { get; set; } = "ItemSpawner";
@@ -75,17 +78,23 @@ namespace Scripts.Building.ItemSpawning
         {
             if (state is not List<MapObjectConfiguration> items)
             {
-                Helpers.Logger.LogWarning("State is not List<MapObjectConfiguration>".WrapInColor(Colors.Orange));
+                Logger.LogWarning("State is not List<MapObjectConfiguration>".WrapInColor(Colors.Orange));
                 return;
             }
             
             await SpawnItemsAsync(items);
         }
+        
+        public async Task RebuildItems()
+        {
+            DemolishItems();
+            await SpawnItemsAsync(MapBuilder.MapDescription.MapObjects);
+        }
 
         public List<MapObjectConfiguration> CollectMapObjects() => ItemInstancesToMapObjectConfigurations().ToList();
 
         private IEnumerable<MapObjectConfiguration> ItemInstancesToMapObjectConfigurations() 
-            => _spawnedItems.Values.Select(item => Create(item.GetComponent<MapObjectInstance>()));
+            => _spawnedObjects.Values.Select(item => Create(item.GetComponent<MapObjectInstance>()));
         
         private async Task SpawnItemAsync(MapObjectConfiguration item)
         {
@@ -93,11 +102,10 @@ namespace Scripts.Building.ItemSpawning
             
             SpawnItem(item);
         }
-
-        public async Task RebuildItems()
+        
+        private void OnInstanceRemovedFromMap(MapObjectInstance pickedUpItem)
         {
-            DemolishItems();
-            await SpawnItemsAsync(MapBuilder.MapDescription.MapObjects);
+            _spawnedObjects.Remove(pickedUpItem.GetInstanceID());
         }
     }
 }

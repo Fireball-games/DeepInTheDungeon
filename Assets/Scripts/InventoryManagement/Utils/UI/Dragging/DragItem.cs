@@ -61,32 +61,26 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             {
                 DropItemIntoContainer(container);
             }
-
-
         }
 
         private IDragDestination<T> GetContainer(PointerEventData eventData)
         {
-            if (eventData.pointerEnter)
-            {
-                IDragDestination<T> container = eventData.pointerEnter.GetComponentInParent<IDragDestination<T>>();
+            if (!eventData.pointerEnter) return null;
+            
+            IDragDestination<T> container = eventData.pointerEnter.GetComponentInParent<IDragDestination<T>>();
 
-                return container;
-            }
-            return null;
+            return container;
         }
 
         private void DropItemIntoContainer(IDragDestination<T> destination)
         {
             if (ReferenceEquals(destination, source)) return;
 
-            IDragContainer<T> destinationContainer = destination as IDragContainer<T>;
-            IDragContainer<T> sourceContainer = source as IDragContainer<T>;
-
             // Swap won't be possible
-            if (destinationContainer == null || sourceContainer == null ||
-                destinationContainer.GetItem() == null ||
-                ReferenceEquals(destinationContainer.GetItem(), sourceContainer.GetItem()))
+            if (destination is not IDragContainer<T> destinationContainer 
+                || source is not IDragContainer<T> sourceContainer 
+                || destinationContainer.GetItem() == null 
+                || ReferenceEquals(destinationContainer.GetItem(), sourceContainer.GetItem()))
             {
                 AttemptSimpleTransfer(destination);
                 return;

@@ -1,4 +1,5 @@
 using System;
+using Scripts.Building.ItemSpawning;
 using Scripts.Triggers;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +17,7 @@ namespace Scripts.EventsManagement
         public static event Action<Trigger> OnTriggerNext;
         public static event Action OnMapDemolished;
         public static event Action<string> OnMapTraversalTriggered;
+        public static UnityEvent<MapObjectInstance> OnMapObjectRemovedFromMap = new();
 
         // ***********    Triggers    ***********
 
@@ -28,5 +30,6 @@ namespace Scripts.EventsManagement
         public static void TriggerOnTriggerNext(Trigger source ) => OnTriggerNext?.Invoke(source);
         public static void TriggerOnMapDemolished() => OnMapDemolished?.Invoke();
         public static void TriggerOnMapTraversalTriggered(string guid) => OnMapTraversalTriggered?.Invoke(guid);
+        public static void TriggerOnMapObjectRemovedFromMap(MapObjectInstance item) => OnMapObjectRemovedFromMap.Invoke(item);
     }
 }

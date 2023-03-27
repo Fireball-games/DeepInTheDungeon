@@ -1,8 +1,10 @@
 ﻿using NaughtyAttributes;
 using Scripts.Building.ItemSpawning;
+using Scripts.EventsManagement;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.Player;
 using Scripts.System;
+using UnityEngine;
 
 namespace Scripts.InventoryManagement.Inventories
 {
@@ -15,10 +17,14 @@ namespace Scripts.InventoryManagement.Inventories
         [ShowNativeProperty]
         public int StackSize { get; private set; } = 1;
 
+        [ReadOnly, SerializeField] private bool IsPickedUp;
         private Inventory _inventory;
+        private PlayerController _player => PlayerController.Instance;
 
         private void OnEnable()
         {
+            IsPickedUp = false;
+            
             if (GameManager.IsInPlayMode && !_inventory)
             {
                 _inventory = PlayerController.Instance.InventoryManager.Inventory;
@@ -51,17 +57,25 @@ namespace Scripts.InventoryManagement.Inventories
         {
             if (!_inventory) return;
             
+            IsPickedUp = true;
+            
             bool foundSlot = _inventory.AddToFirstEmptySlot(Item as InventoryItem, StackSize);
             
             if (foundSlot)
             {
+                EventsManager.TriggerOnMapObjectRemovedFromMap(this);
                 Destroy(gameObject);
             }
         }
 
         public bool CanBePickedUp()
         {
-            return _inventory.HasSpaceFor(Item as InventoryItem);
+            return !IsPickedUp && IsPlayerInRange() && _inventory.HasSpaceFor(Item as InventoryItem);
+        }
+        
+        private bool IsPlayerInRange()
+        {
+            return Vector3.SqrMagnitude(_player.transform.position - transform.position) < PlayerInventoryManager.MaxClickPickupDistance;
         }
     }
 }

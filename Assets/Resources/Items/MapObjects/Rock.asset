@@ -19,7 +19,9 @@ MonoBehaviour:
   displayPrefab: {fileID: 105760543276219150, guid: 53746d52b2cc7ad4690c17d0d22ec5ab,
     type: 3}
   description: Normal rock
+  useType: 10
   stackable: 1
+  maxStackSize: 10
   modifiers:
   - modifierOperation: 2
     stat: 29

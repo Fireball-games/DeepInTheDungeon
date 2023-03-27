@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Scripts.InventoryManagement.Inventories.Items;
+using Scripts.InventoryManagement.UI.Inventories;
 using Scripts.System.Saving;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace Scripts.InventoryManagement.Inventories
         private readonly Dictionary<int, DockedItemSlot> _dockedItems = new();
         private class DockedItemSlot 
         {
-            public ActionItem Item;
+            public InventoryItem Item;
             public int Number;
         }
 
@@ -37,7 +38,7 @@ namespace Scripts.InventoryManagement.Inventories
         /// <summary>
         /// Get the action at the given index.
         /// </summary>
-        public ActionItem GetAction(int index)
+        public InventoryItem GetAction(int index)
         {
             if (_dockedItems.ContainsKey(index))
             {
@@ -81,15 +82,13 @@ namespace Scripts.InventoryManagement.Inventories
             {
                 DockedItemSlot slot = new()
                 {
-                    Item = item as ActionItem,
+                    Item = item,
                     Number = number
                 };
                 _dockedItems[index] = slot;
             }
-            if (storeUpdated != null)
-            {
-                storeUpdated();
-            }
+
+            storeUpdated?.Invoke();
         }
 
         /// <summary>
@@ -103,10 +102,14 @@ namespace Scripts.InventoryManagement.Inventories
         {
             if (_dockedItems.ContainsKey(index))
             {
-                _dockedItems[index].Item.Use(user);
-                if (_dockedItems[index].Item.IsConsumable())
+                InventoryItem item = _dockedItems[index].Item;
+                if (item is ActionItem actionItem)
                 {
-                    RemoveItems(index, 1);
+                    actionItem.Use(user);
+                    if (actionItem.IsConsumable())
+                    {
+                        RemoveItems(index, 1);
+                    }
                 }
                 return true;
             }
@@ -143,17 +146,18 @@ namespace Scripts.InventoryManagement.Inventories
         /// <returns>Will return int.MaxValue when there is not effective bound.</returns>
         public int MaxAcceptable(InventoryItem item, int index)
         {
-            ActionItem actionItem = item as ActionItem;
-            if (!actionItem) return 0;
+            if (!item.UseType.HasFlag(InventoryItem.EUseType.Use)) return 0;
 
             if (_dockedItems.ContainsKey(index) && !ReferenceEquals(item, _dockedItems[index].Item))
             {
                 return 0;
             }
-            if (actionItem.IsConsumable())
+            
+            if (item.IsStackable())
             {
-                return int.MaxValue;
+                return item.MaxStackSize;
             }
+            
             if (_dockedItems.ContainsKey(index))
             {
                 return 0;
@@ -195,6 +199,13 @@ namespace Scripts.InventoryManagement.Inventories
             {
                 AddAction(MapObject.GetFromID<InventoryItem>(pair.Value.itemID), pair.Key, pair.Value.number);
             }
+        }
+
+        public int RegisterSlot(ActionSlotUI actionSlotUI)
+        {
+            int index = _dockedItems.Count;
+            _dockedItems[index] = new DockedItemSlot();
+            return index;
         }
     }
 }

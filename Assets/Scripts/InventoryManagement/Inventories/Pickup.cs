@@ -1,10 +1,12 @@
-﻿using NaughtyAttributes;
+﻿using System.Threading.Tasks;
+using NaughtyAttributes;
 using Scripts.Building.ItemSpawning;
 using Scripts.EventsManagement;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.Player;
 using Scripts.System;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.InventoryManagement.Inventories
 {
@@ -19,16 +21,21 @@ namespace Scripts.InventoryManagement.Inventories
 
         [ReadOnly, SerializeField] private bool IsPickedUp;
         private Inventory _inventory;
-        private PlayerController _player => PlayerController.Instance;
+        private static PlayerController Player => PlayerController.Instance;
+        private bool _gracePeriodPassed;
 
-        private void OnEnable()
+        private async void OnEnable()
         {
             IsPickedUp = false;
+            _gracePeriodPassed = false;
             
             if (GameManager.IsInPlayMode && !_inventory)
             {
                 _inventory = PlayerController.Instance.InventoryManager.Inventory;
             }
+
+            await Task.Delay(PlayerInventoryManager.PickupSpawnGracePeriod);
+            _gracePeriodPassed = true;
         }
 
         /// <summary>
@@ -70,12 +77,12 @@ namespace Scripts.InventoryManagement.Inventories
 
         public bool CanBePickedUp()
         {
-            return !IsPickedUp && IsPlayerInRange() && _inventory.HasSpaceFor(Item as InventoryItem);
+            return !IsPickedUp && _gracePeriodPassed && IsPlayerInRange() && _inventory.HasSpaceFor(Item as InventoryItem);
         }
         
         private bool IsPlayerInRange()
         {
-            return Vector3.SqrMagnitude(_player.transform.position - transform.position) < PlayerInventoryManager.MaxClickPickupDistance;
+            return Vector3.SqrMagnitude(Player.transform.position - transform.position) < PlayerInventoryManager.MaxClickPickupDistance;
         }
     }
 }

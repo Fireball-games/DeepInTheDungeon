@@ -343,6 +343,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0375ca4bd34d838670c3043e67c081, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxPickupDistance: 1.1
+  pickupSpawnGracePeriod: 1
+  dragSize: {x: 100, y: 100}
+  pickupColliderPrefab: {fileID: 6608740427167023905, guid: 2ddbbeef458fadd43b6f926ca92777f2,
+    type: 3}
 --- !u!1 &5562948617168804265
 GameObject:
   m_ObjectHideFlags: 0
@@ -396,8 +401,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 801f767f650a48c4a693b5f339653ef6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupColliderPrefab: {fileID: 6608740427167023905, guid: 2ddbbeef458fadd43b6f926ca92777f2,
-    type: 3}
 --- !u!114 &5562948617168804262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -443,6 +446,7 @@ MonoBehaviour:
   leanForward: 119
   leanLeft: 97
   leanRight: 100
+  inventory: 105
 --- !u!114 &2126531506181812384
 MonoBehaviour:
   m_ObjectHideFlags: 0

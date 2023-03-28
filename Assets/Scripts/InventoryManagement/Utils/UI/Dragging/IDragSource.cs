@@ -1,11 +1,13 @@
-﻿namespace Scripts.InventoryManagement.Utils.UI.Dragging
+﻿using Scripts.InventoryManagement.Inventories.Items;
+
+namespace Scripts.InventoryManagement.Utils.UI.Dragging
 {
     /// <summary>
     /// Components that implement this interfaces can act as the source for
     /// dragging a `DragItem`.
     /// </summary>
     /// <typeparam name="T">The type that represents the item being dragged.</typeparam>
-    public interface IDragSource<T> where T : class
+    public interface IDragSource<T> where T : MapObject
     {
         /// <summary>
         /// What item type currently resides in this source?

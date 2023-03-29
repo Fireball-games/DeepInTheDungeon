@@ -5,11 +5,11 @@ namespace Scripts.UI.EditorUI.Components
 {
     public class MapObjectList : ListWindowBase<MapObject, MapObjectButton>
     {
-        private ItemPreview _itemPreview;
-        
+        public static ItemPreview ItemPreview { get; private set; }
+
         protected void Awake()
         {
-            _itemPreview = body.transform.Find("ItemPreview").GetComponent<ItemPreview>();
+            ItemPreview = body.transform.Find("ItemPreview").GetComponent<ItemPreview>();
         }
         
         protected override string GetItemIdentification(MapObject item) => item.GetItemID();
@@ -21,8 +21,8 @@ namespace Scripts.UI.EditorUI.Components
             button.SetParentList(this);
         }
 
-        public void ShowItemPreview(MapObject displayedItem) => _itemPreview.Show(displayedItem);
+        public void ShowItemPreview(MapObject displayedItem) => ItemPreview.Show(displayedItem);
 
-        public void HideItemPreview() => _itemPreview.Hide();
+        public void HideItemPreview() => ItemPreview.Hide();
     }
 }

@@ -8,8 +8,8 @@ namespace Scripts.Helpers
     {
         public const string WallMaskName = "Wall";
         public const string WallGizmoMaskName = "WallGizmo";
+        public const string ItemMaskName = "Item";
         private const string UpperFloorMaskName = "UpperFloor"; 
-        private const string ItemMaskName = "Item";
         public static int UpperFloor { get; private set; }
         public static int Item { get; private set; }
 

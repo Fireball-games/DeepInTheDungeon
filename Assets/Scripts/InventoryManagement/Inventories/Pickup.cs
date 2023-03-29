@@ -36,12 +36,6 @@ namespace Scripts.InventoryManagement.Inventories
 
             await Task.Delay(PlayerInventoryManager.PickupSpawnGracePeriod);
             _gracePeriodPassed = true;
-            
-            // Mounts PickupEditorHandle if used in editor, PickupEditorHandle will destroy itself in play mode.
-            if (GameManager.IsInEditMode && !GetComponent<PickupEditorHandle>())
-            {
-                gameObject.AddComponent<PickupEditorHandle>();
-            }
         }
 
         /// <summary>

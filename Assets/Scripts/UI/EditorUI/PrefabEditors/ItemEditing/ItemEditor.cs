@@ -28,6 +28,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         public static DetailCursorSetup RemoveCursorSetup { get; private set; }
 
         private MapObjectList _itemList;
+        private static ItemPreview ItemPreview => MapObjectList.ItemPreview;
         private Title _itemTitle;
         private Button _saveButton;
         private Button _cancelButton;
@@ -49,13 +50,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             base.OnEnable();
             EditorEvents.OnAddItemToMap.AddListener(OnAddItemToMap);
             EditorEvents.OnMapSaved += OnMapSaved;
+            EditorEvents.OnMouseEnterMapObject.AddListener(OnMouseEnterMapObject);
+            EditorEvents.OnMouseExitMapObject.AddListener(OnMouseExitMapObject);
         }
-        
+
         protected override void OnDisable()
         {
             base.OnDisable();
             EditorEvents.OnAddItemToMap.RemoveListener(OnAddItemToMap);
             EditorEvents.OnMapSaved -= OnMapSaved;
+            EditorEvents.OnMouseEnterMapObject.RemoveListener(OnMouseEnterMapObject);
+            EditorEvents.OnMouseExitMapObject.RemoveListener(OnMouseExitMapObject);
         }
 
         public override void Open()
@@ -65,6 +70,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             _itemList.Open(t.Get(Keys.AvailableItems), items, OnItemSelected);
             MapEditorManager.SetEditMode(EEditMode.Edit);
         }
+        
+        private static void OnMouseEnterMapObject(MapObjectInstance mapObject) => ItemPreview.Show(mapObject.Item);
+
+        private static void OnMouseExitMapObject(MapObjectInstance mapObject) => ItemPreview.Hide();
 
         private void OnMapSaved() => SetEdited(false);
 
@@ -159,7 +168,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             _itemList = GetComponentInChildren<MapObjectList>(true);
             Transform frame = body.transform.Find("Background/Frame");
             _itemTitle = frame.Find("Header/ItemTitle").GetComponent<Title>();
-            
+
             Transform content = frame.Find("ScrollingContent/Viewport/Content");
             Transform buttons = frame.Find("Buttons");
             

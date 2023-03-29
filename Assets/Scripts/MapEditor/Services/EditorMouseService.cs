@@ -32,6 +32,7 @@ namespace Scripts.MapEditor.Services
         public bool IsOverUI { get; private set; }
 
         private MapBuildService _buildService;
+        private ItemsMouseService _itemsService;
         private Plane _layerPlane;
         private Vector3Int _lastGridPosition;
         private readonly Vector3Int _invalidGridPosition = new(-10000, -10000, -10000);
@@ -54,6 +55,7 @@ namespace Scripts.MapEditor.Services
             base.Awake();
 
             _buildService = new MapBuildService();
+            _itemsService = new ItemsMouseService();
 
             _lastGridPosition = new Vector3Int(-1000, -1000, -1000);
         }
@@ -73,6 +75,7 @@ namespace Scripts.MapEditor.Services
             if (!Manager || !Manager.MapIsPresented || Manager.MapIsBeingBuilt) return;
 
             CheckMouseOverWall();
+            _itemsService.CheckMouseOverItem();
 
             ValidateClicks();
             cameraService.HandleMouseMovement();
@@ -153,12 +156,6 @@ namespace Scripts.MapEditor.Services
             _lastEnteredWall = null;
             cursor3D.Hide();
             EditorUIManager.Instance.TileGizmo.Reset();
-        }
-
-        private void CheckItemOverWall()
-        {
-            if (Manager.WorkMode is not EWorkMode.Items 
-                || Manager.EditMode is not EEditMode.Edit or EEditMode.Remove) return;
         }
 
         private void OnNewMapStartedCreation() => RecreateMousePlane();

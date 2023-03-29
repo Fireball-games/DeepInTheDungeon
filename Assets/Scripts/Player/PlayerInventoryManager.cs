@@ -18,6 +18,7 @@ namespace Scripts.Player
         public ActionStore ActionStore { get; private set; }
         public Equipment Equipment { get; private set; }
         public static int PickupSpawnGracePeriod { get; private set; }
+        public static Vector3 ItemEditCursorOffset => new(0, 0.1f, 0);
 
         private void Awake()
         {

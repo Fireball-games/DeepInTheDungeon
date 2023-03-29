@@ -117,6 +117,10 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             _source.RemoveItems(int.MaxValue);
         }
 
+        /// <summary>
+        /// Drops new Pickup into the world. Return value is only so this method can be conveniently used in ternary operator.
+        /// </summary>
+        /// <returns></returns>
         private IDragDestination<T> DropObjectIntoWorld()
         {
             if (!_draggedItem) return null;

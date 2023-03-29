@@ -40,7 +40,7 @@ namespace Scripts.Building.PrefabsBuilding
 
         internal IEnumerator BuildPrefabs(IEnumerable<PrefabConfiguration> configurations)
         {
-            if (GameManager.IsInEditor)
+            if (GameManager.IsInEditMode)
             {
                 DestroyAllPaths();
             }
@@ -83,7 +83,7 @@ namespace Scripts.Building.PrefabsBuilding
                 _triggerService.ProcessAllEmbedded(newPrefab, isEditorBuild);
                 _wallService.ProcessAllEmbedded(newPrefab, isEditorBuild);
 
-                if (GameManager.IsInEditor && Mathf.RoundToInt(-newPrefab.transform.position.y) < MapEditorManager.Instance.CurrentFloor)
+                if (GameManager.IsInEditMode && Mathf.RoundToInt(-newPrefab.transform.position.y) < MapEditorManager.Instance.CurrentFloor)
                 {
                     newPrefab.SetActive(false);
                 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using DG.Tweening;
+using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.MapEditor.Services;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
+using Scripts.UI.EditorUI.PrefabEditors.ItemEditing;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -12,7 +14,7 @@ namespace Scripts.MapEditor
 {
     public class ItemCursor : SingletonNotPersisting<ItemCursor>
     {
-        [SerializeField] private Vector3 offset = new(0, -0.8f, 0);
+        [SerializeField] private Vector3 defaultOffset = new(0, -0.8f, 0);
         private GameObject _body;
         private GameObject _highlight;
         private SpriteRenderer _detailImage;
@@ -20,6 +22,7 @@ namespace Scripts.MapEditor
         private bool _isActive;
         
         private Tween _detailTween;
+        private Vector3 _offset;
 
         protected override void Awake()
         {
@@ -31,17 +34,40 @@ namespace Scripts.MapEditor
             SetBodyActive(false);
         }
 
-        public ItemCursor Show(GameObject item = null)
+        private void OnDestroy()
         {
-            if (item) ShowItem(item);
-            
-            _isActive = true;
+            StopAllCoroutines();
+            RemoveDetailImage();
+        }
+
+        public ItemCursor ShowAndFollowMouse(GameObject item = null)
+        {
+            Show(transform.position, item);
+
             StartCoroutine(PositionByMouseCoroutine());
+            return this;
+        }
+        
+        public ItemCursor Show(Vector3 position, GameObject item = null)
+        {
+            ShowItem(item);
+            StopAllCoroutines();
+            _isActive = true;
             SetBodyActive(true);
+            transform.position = position + _offset;
 
             return this;
         }
         
+        public ItemCursor WithOffset(Vector3 newOffset)
+        {
+            _offset = newOffset;
+            
+            return this;
+        }
+
+        public void SetDetailImage(DetailCursorSetup setup) => SetDetailImage(setup.Image, Colors.Get(setup.Color), setup.DetailTweenFunc);
+
         public void SetDetailImage(Sprite sprite, Color color, Func<SpriteRenderer, Tween> detailAction = null)
         {
             _detailImage.gameObject.SetActive(true);
@@ -54,13 +80,12 @@ namespace Scripts.MapEditor
             }
         }
         
-
         private IEnumerator PositionByMouseCoroutine()
         {
             while (_isActive)
             {
                 SetBodyActive(!EditorMouseService.Instance.IsOverUI && EditorMouseService.Instance.GridPositionType is Enums.EGridPositionType.EditableTile);
-                transform.position = EditorMouseService.Instance.MousePositionOnPlane + offset;
+                transform.position = EditorMouseService.Instance.MousePositionOnPlane + _offset;
                 yield return null;
             }
         }
@@ -70,18 +95,31 @@ namespace Scripts.MapEditor
             _isActive = false;
             if (_item) _item.DismissToPool();
             _highlight.SetActive(false);
-            _detailImage.gameObject.SetActive(false);
-            _detailTween?.Kill();
+            _offset = defaultOffset;
+            RemoveDetailImage();
             SetBodyActive(false);
         }
         
         private void ShowItem(GameObject item)
         {
-            if (_item) _item.DismissToPool();
+            if (_item)
+            {
+                _item.DismissToPool();
+                _item = null;
+            }
+            
+            if (!item) return;
+            
             _highlight.SetActive(true);
             _item = ObjectPool.Instance.Get(item, _body);
             _item.transform.localPosition = V3Extensions.Zero;
             _item.transform.localRotation = quaternion.identity;
+        }
+        
+        private void RemoveDetailImage()
+        {
+            _detailImage.gameObject.SetActive(false);
+            _detailTween?.Kill();
         }
 
         private void SetBodyActive(bool value) => _body.SetActive(value);

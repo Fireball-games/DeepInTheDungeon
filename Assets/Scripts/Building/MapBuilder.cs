@@ -63,20 +63,6 @@ namespace Scripts.Building
 
         public void BuildMap(MapDescription mapDescription) => StartCoroutine(BuildMapCoroutine(mapDescription));
 
-        public IEnumerator BuildMapCoroutine(MapDescription mapDescription)
-        {
-            DemolishMap();
-
-            MapDescription = mapDescription;
-            // TODO: Try to convert this to async/await, just mind, that ProcessPostBuildLayoutPrefabs() must run after layout is build
-            yield return StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
-            yield return _prefabBuilder.BuildPrefabs(mapDescription.PrefabConfigurations);
-            yield return StartCoroutine(_prefabBuilder.ProcessPostBuildLayoutPrefabs());
-            yield return _itemSpawner.SpawnItemsAsync(mapDescription.MapObjects);
-
-            OnLayoutBuilt?.Invoke();
-        }
-
         public void SetLayout(TileDescription[,,] layout) => Layout = layout;
 
         public void DemolishMap()
@@ -190,6 +176,20 @@ namespace Scripts.Building
         
         public void SetTileForMovement(Vector3 worldPosition, bool isWalkable) 
             => Layout.ByGridV3Int(worldPosition.ToGridPosition()).IsForMovement = isWalkable;
+        
+        private IEnumerator BuildMapCoroutine(MapDescription mapDescription)
+        {
+            DemolishMap();
+
+            MapDescription = mapDescription;
+            // TODO: Try to convert this to async/await, just mind, that ProcessPostBuildLayoutPrefabs() must run after layout is build
+            yield return StartCoroutine(BuildLayoutCoroutine(mapDescription.Layout));
+            yield return _prefabBuilder.BuildPrefabs(mapDescription.PrefabConfigurations);
+            yield return StartCoroutine(_prefabBuilder.ProcessPostBuildLayoutPrefabs());
+            yield return _itemSpawner.SpawnItemsAsync(mapDescription.MapObjects);
+
+            OnLayoutBuilt?.Invoke();
+        }
 
         private int _runningFloorBuilds;
 
@@ -268,7 +268,7 @@ namespace Scripts.Building
                     tileController.HideWall(TileDirections.WallDirectionByVector[direction]);
             }
 
-            if (GameManager.IsInEditor)
+            if (GameManager.IsInEditMode)
             {
                 tileController.HideWall(TileDescription.ETileDirection.Ceiling);
             }

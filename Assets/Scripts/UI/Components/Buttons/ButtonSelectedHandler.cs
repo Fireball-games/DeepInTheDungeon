@@ -20,12 +20,12 @@ namespace Scripts.UI.Components.Buttons
 
         public void OnSelect(BaseEventData eventData)
         {
-            _button.SetTextColor(Colors.GetColor(selectedColor));
+            _button.SetTextColor(Colors.Get(selectedColor));
         }
 
         public void OnDeselect(BaseEventData eventData)
         {
-            _button.SetTextColor(Colors.GetColor(unselectedColor));
+            _button.SetTextColor(Colors.Get(unselectedColor));
         }
     }
 }

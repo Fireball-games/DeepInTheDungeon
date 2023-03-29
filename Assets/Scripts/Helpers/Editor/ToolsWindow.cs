@@ -73,7 +73,7 @@ namespace Helpers.Editor
 
             if (!GameManager.Instance || !MapEditorManager.Instance) return;
 
-            if (GameManager.IsInEditor && MapEditorManager.Instance.MapIsPresented)
+            if (GameManager.IsInEditMode && MapEditorManager.Instance.MapIsPresented)
             {
                 GUILayout.BeginVertical();
 

@@ -15,7 +15,7 @@ namespace Scripts.System
         private static bool _isDefaultCursorSet = true;
 
         private static EditorUIManager UIManager => EditorUIManager.Instance;
-        private static bool IsInEditMode => GameManager.IsInEditor;
+        private static bool IsInEditMode => GameManager.IsInEditMode;
         private static Cursor3D _cursor3D;
         private static Cursor3D Cursor3D
         {

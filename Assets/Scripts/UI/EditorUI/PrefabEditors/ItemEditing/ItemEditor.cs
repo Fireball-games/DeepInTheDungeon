@@ -8,6 +8,7 @@ using Scripts.Helpers.Extensions;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.Localization;
 using Scripts.MapEditor;
+using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.Components;
 using UnityEngine;
@@ -22,6 +23,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         [SerializeField] private DetailCursorSetup editCursorSetup;
         [SerializeField] private DetailCursorSetup removeCursorSetup;
         
+        public static DetailCursorSetup AddCursorSetup { get; private set; }
+        public static DetailCursorSetup EditCursorSetup { get; private set; }
+        public static DetailCursorSetup RemoveCursorSetup { get; private set; }
+
         private MapObjectList _itemList;
         private Title _itemTitle;
         private Button _saveButton;
@@ -31,8 +36,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         private MapObjectConfiguration _selectedItemConfiguration;
 
         private bool _areItemsChanged;
-        
-        private Func<SpriteRenderer, Tween> _tweenFunc;
+
+        public Func<SpriteRenderer, Tween> DetailTweenFunc { get; private set; }
 
         private void Awake()
         {
@@ -60,7 +65,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             _itemList.Open(t.Get(Keys.AvailableItems), items, OnItemSelected);
             MapEditorManager.SetEditMode(EEditMode.Edit);
         }
-        
+
         private void OnMapSaved() => SetEdited(false);
 
         private void OnItemSelected(MapObject selectedItem)
@@ -68,8 +73,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             MapEditorManager.SetEditMode(EEditMode.Add);
             _selectedItem = selectedItem;
             _selectedItemConfiguration = MapObjectConfiguration.Create(selectedItem);
-            ItemCursor.Instance.Show(selectedItem.DisplayPrefab)
-                .SetDetailImage(addCursorSetup.Image, Colors.GetColor(addCursorSetup.Color), _tweenFunc);
+            ItemCursor.Instance.ShowAndFollowMouse(selectedItem.DisplayPrefab)
+                .SetDetailImage(addCursorSetup.Image, Colors.Get(addCursorSetup.Color), DetailTweenFunc);
             
             VisualizeComponents();
         }
@@ -95,19 +100,21 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         {
             if (!_areItemsChanged) return;
             
+            MapObject tempSelectedItem = _selectedItem;
+            
             _itemList.SetButtonsInteractable(false);
             await MapBuilder.RebuildItems();
             _itemList.SetButtonsInteractable(true);
-            OnItemSelected(_selectedItem);
+            OnItemSelected(tempSelectedItem);
             
             SetEdited(false);
         }
 
         protected override async void RemoveAndClose()
         {
-            if (_areItemsChanged)
+            if (_areItemsChanged && await MapEditorManager.CheckToSaveMapChanges() is DialogBase.EConfirmResult.Cancel)
             {
-                await MapEditorManager.CheckToSaveMapChanges();
+                RemoveChanges();
             }
             
             if (!_itemList) AssignComponents();
@@ -164,9 +171,18 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             _cancelButton.onClick.AddListener(RemoveChanges);
             _cancelButton.SetTextColor(Colors.Negative);
             
-            _tweenFunc = image => image.DOFade(0.5f, 0.5f)
+            DetailTweenFunc = image => image.DOFade(0.5f, 0.5f)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetAutoKill(false);
+            
+            addCursorSetup.DetailTweenFunc = DetailTweenFunc;
+            AddCursorSetup = addCursorSetup;
+            
+            editCursorSetup.DetailTweenFunc = DetailTweenFunc;
+            EditCursorSetup = editCursorSetup;
+            
+            removeCursorSetup.DetailTweenFunc = DetailTweenFunc;
+            RemoveCursorSetup = removeCursorSetup;
         }
     }
 }

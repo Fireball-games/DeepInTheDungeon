@@ -80,7 +80,7 @@ namespace Scripts.Helpers
             SetColors();
         }
         
-        public static Color GetColor(EColor color) => _colorsMap.ContainsKey(color) ? _colorsMap[color] : White;
+        public static Color Get(EColor color) => _colorsMap.ContainsKey(color) ? _colorsMap[color] : White;
 
         private void SetColors()
         {

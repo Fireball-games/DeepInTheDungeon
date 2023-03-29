@@ -59,5 +59,23 @@ namespace Scripts.Helpers.Extensions
             source.z = (float)Math.Round(source.z * multiplier, MidpointRounding.AwayFromZero) / multiplier;
             return source;
         }
+        
+        public static Vector3 SetX(this Vector3 source, float x)
+        {
+            source.x = x;
+            return source;
+        }
+        
+        public static Vector3 SetY(this Vector3 source, float y)
+        {
+            source.y = y;
+            return source;
+        }
+        
+        public static Vector3 SetZ(this Vector3 source, float z)
+        {
+            source.z = z;
+            return source;
+        }
     }
 }

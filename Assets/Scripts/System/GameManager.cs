@@ -26,7 +26,7 @@ namespace Scripts.System
         
         private MapTraversal _mapTraversal;
         
-        public static bool IsInEditor => Instance.GameMode is EGameMode.Editor;
+        public static bool IsInEditMode => Instance.GameMode is EGameMode.Editor;
         public static bool IsInPlayMode => Instance.GameMode is EGameMode.Play;
 
         public GameConfiguration GameConfiguration => gameConfiguration;

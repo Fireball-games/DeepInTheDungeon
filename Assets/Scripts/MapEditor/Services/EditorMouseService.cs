@@ -134,7 +134,7 @@ namespace Scripts.MapEditor.Services
 
         private void CheckMouseOverWall()
         {
-            if (Manager.WorkMode != EWorkMode.Walls || EditorUIManager.Instance.IsAnyObjectEdited) return;
+            if (Manager.WorkMode is not EWorkMode.Walls || EditorUIManager.Instance.IsAnyObjectEdited) return;
 
             if (LayersManager.CheckRayHit(LayersManager.WallMaskName, out GameObject hitWall))
             {
@@ -153,6 +153,12 @@ namespace Scripts.MapEditor.Services
             _lastEnteredWall = null;
             cursor3D.Hide();
             EditorUIManager.Instance.TileGizmo.Reset();
+        }
+
+        private void CheckItemOverWall()
+        {
+            if (Manager.WorkMode is not EWorkMode.Items 
+                || Manager.EditMode is not EEditMode.Edit or EEditMode.Remove) return;
         }
 
         private void OnNewMapStartedCreation() => RecreateMousePlane();

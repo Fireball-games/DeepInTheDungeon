@@ -13,6 +13,85 @@ namespace Scripts.MapEditor.Services
 {
     public partial class EditorMouseService
     {
+
+        private void ProcessMouseButtonDown(int mouseButtonDowned)
+        {
+            switch (Manager.WorkMode)
+            {
+                case EWorkMode.None:
+                    break;
+                case EWorkMode.Build:
+                    break;
+                case EWorkMode.Select:
+                    break;
+                case EWorkMode.Walls:
+                    break;
+                case EWorkMode.PrefabTiles:
+                    break;
+                case EWorkMode.Prefabs:
+                    break;
+                case EWorkMode.Items:
+                    if (Manager.EditMode is EEditMode.Edit or EEditMode.Remove)
+                    {
+                        _itemsService.OnMouseButtonDown(mouseButtonDowned);
+                    }
+                    break;
+                case EWorkMode.Enemies:
+                    break;
+                case EWorkMode.Triggers:
+                    break;
+                case EWorkMode.TriggerReceivers:
+                    break;
+                case EWorkMode.SetWalls:
+                    break;
+                case EWorkMode.EditEntryPoints:
+                    break;
+                case EWorkMode.EditEditorStart:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void ProcessMouseButton(int mouseButton)
+        {
+            switch (Manager.WorkMode)
+            {
+                case EWorkMode.None:
+                    break;
+                case EWorkMode.Build:
+                    break;
+                case EWorkMode.Select:
+                    break;
+                case EWorkMode.Walls:
+                    break;
+                case EWorkMode.PrefabTiles:
+                    break;
+                case EWorkMode.Prefabs:
+                    break;
+                case EWorkMode.Items:
+                    if (Manager.EditMode is EEditMode.Edit or EEditMode.Remove)
+                    {
+                        _itemsService.OnMouseButton(mouseButton);
+                    }
+                    break;
+                case EWorkMode.Enemies:
+                    break;
+                case EWorkMode.Triggers:
+                    break;
+                case EWorkMode.TriggerReceivers:
+                    break;
+                case EWorkMode.SetWalls:
+                    break;
+                case EWorkMode.EditEntryPoints:
+                    break;
+                case EWorkMode.EditEditorStart:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
         private void ProcessMouseButtonUp(int mouseButtonUpped)
         {
             LastLeftButtonUpWorldPosition = MouseGridPosition.ToWorldPositionV3Int();
@@ -22,7 +101,7 @@ namespace Scripts.MapEditor.Services
                 case EWorkMode.None:
                     break;
                 case EWorkMode.Build:
-                    if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
+                    if (mouseButtonUpped == 0 && GridPositionType is not EGridPositionType.None)
                     {
                         _buildService.ProcessBuildTileClick();
                     }
@@ -31,11 +110,16 @@ namespace Scripts.MapEditor.Services
                 case EWorkMode.Select:
                     break;
                 case EWorkMode.Walls:
-                    if (mouseButtonUpped == 0 && GridPositionType != EGridPositionType.None)
+                    if (mouseButtonUpped == 0 && GridPositionType is not EGridPositionType.None)
                     {
                         if (_lastEnteredWall is {WallEligibleForEditing: true}) _lastEnteredWall.OnClickInEditor();
                     }
-
+                    
+                    if (Manager.EditMode is EEditMode.Edit or EEditMode.Remove)
+                    {
+                        _itemsService.OnMouseButtonUp(mouseButtonUpped);
+                    }
+                    
                     break;
                 case EWorkMode.PrefabTiles:
                     OpenEditorForTiledPrefab<TilePrefab>(mouseButtonUpped, EPrefabType.PrefabTile);
@@ -43,7 +127,7 @@ namespace Scripts.MapEditor.Services
                 case EWorkMode.Prefabs:
                 case EWorkMode.Items:
                     if (mouseButtonUpped == 0 
-                        &&Manager.EditMode is EEditMode.Add 
+                        && Manager.EditMode is EEditMode.Add 
                         && GridPositionType is EGridPositionType.EditableTile)
                     {
                         EditorEvents.TriggerOnAddItemToMap(MousePositionOnPlane);

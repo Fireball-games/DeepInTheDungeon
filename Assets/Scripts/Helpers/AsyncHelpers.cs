@@ -16,6 +16,7 @@ namespace Scripts.Helpers
                 yield return new WaitForEndOfFrame();
                 tcs.SetResult(true);
             }
+            
             CoroutineRunner.Run(Coroutine());
 
             // Wait for the task to complete

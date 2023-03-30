@@ -1,11 +1,11 @@
-﻿using Scripts.Building.ItemSpawning;
+﻿using System.Collections;
+using Scripts.Building.ItemSpawning;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Player;
 using Scripts.UI.EditorUI.PrefabEditors.ItemEditing;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using static Scripts.MapEditor.Enums;
 using Logger = Scripts.Helpers.Logger;
 
@@ -15,9 +15,9 @@ namespace Scripts.MapEditor.Services
     {
         private static EditorMouseService MouseService => EditorMouseService.Instance;
         private static MapEditorManager Manager => MapEditorManager.Instance;
-        
-        public static MapObjectInstance ActivatedMapObject { get; private set; }
-        public static MapObjectInstance MouseOverMapObject { get; set; }
+
+        private static MapObjectInstance ActivatedMapObject { get; set; }
+        private static MapObjectInstance MouseOverMapObject { get; set; }
         
         private static ItemCursor ItemCursor => ItemCursor.Instance;
 
@@ -29,6 +29,8 @@ namespace Scripts.MapEditor.Services
 
         private Vector3 _lastValidPosition;
         private bool _isDragging;
+        private bool _isRotating;
+        private bool _isMouseDownGracePeriodOver;
 
         internal void CheckMouseOverItem()
         {
@@ -56,6 +58,46 @@ namespace Scripts.MapEditor.Services
                 OnMouseExit();
             }
         }
+
+        internal void OnMouseButtonDown(int button)
+        {
+            if (MouseOverMapObject)
+            {
+                ActivatedMapObject = MouseOverMapObject;
+                ItemCursor.Highlight(true);
+            }
+            else
+            {
+                ActivatedMapObject = null;
+                ItemCursor.Hide();
+                return;
+            }
+            
+            CoroutineRunner.Run(ClickGracePeriodCoroutine());
+        }
+        
+        internal void OnMouseButton(int mouseButton)
+        {
+            // TODO: disable map manipulations while button is down
+            if (mouseButton == 0 && _isMouseDownGracePeriodOver)
+            {
+                OnDrag();
+            }
+            else if (mouseButton == 1 && _isMouseDownGracePeriodOver)
+            {
+                // TODO: Rotate
+            }
+        }
+        
+        internal void OnMouseButtonUp(int button)
+        {
+            _isRotating = false;
+            ItemCursor.Highlight(false);
+            
+            if (_isDragging) OnEndDrag();
+            
+            CoroutineRunner.Stop(ClickGracePeriodCoroutine());
+        }
         
         private void OnMouseEnter()
         {
@@ -65,13 +107,13 @@ namespace Scripts.MapEditor.Services
             MouseOverMapObject = MouseOverMapObject;
         }
         
-        private void ActivateItemCursor()
+        private static void ActivateItemCursor()
         {
             ItemCursor.WithOffset(PlayerInventoryManager.ItemEditCursorOffset).Show(MouseOverMapObject.position);
             ItemCursor.SetDetailImage(ItemEditor.EditCursorSetup);
         }
 
-        public static void OnMouseExit()
+        private static void OnMouseExit()
         {
             EditorEvents.TriggerOnMouseExitMapObject(MouseOverMapObject);
             Logger.Log($"Mouse {"exit".WrapInColor(Colors.Orange)} {MouseOverMapObject.Item.DisplayName.WrapInColor(Colors.Yellow)}");
@@ -79,22 +121,19 @@ namespace Scripts.MapEditor.Services
             MouseOverMapObject = null;
         }
 
-        private void OnMouseDown()
-        {
-            ActivatedMapObject = MouseOverMapObject;
-        }
-
-        public void OnBeginDrag(PointerEventData eventData)
+        private void OnBeginDrag()
         {
             _lastValidPosition = Position;
         }
 
-        public void OnDrag()
+        private void OnDrag()
         {
+            if (!_isDragging) OnBeginDrag();
+            
             if (IsPositionValid)
             {
                 _isDragging = true;
-                Position = EditorMouseService.Instance.MousePositionOnPlane.SetY(Position.y);
+                Position = MouseService.MousePositionOnPlane.SetY(Position.y);
                 ActivateItemCursor();
                 _lastValidPosition = Position;
             }
@@ -104,7 +143,7 @@ namespace Scripts.MapEditor.Services
             }
         }
 
-        public void OnEndDrag()
+        private void OnEndDrag()
         {
             _isDragging = false;
             Position = IsPositionValid ? Position : _lastValidPosition;
@@ -112,8 +151,15 @@ namespace Scripts.MapEditor.Services
 
         private bool IsPositionValid
             => ActivatedMapObject == MouseOverMapObject
-               && MapEditorManager.Instance.WorkMode is EWorkMode.Items
-               && EditorMouseService.Instance.GridPositionType is EGridPositionType
+               && Manager.WorkMode is EWorkMode.Items
+               && MouseService.GridPositionType is EGridPositionType
                    .EditableTile;
+        
+        private IEnumerator ClickGracePeriodCoroutine()
+        {
+            _isMouseDownGracePeriodOver = false;
+            yield return new WaitForSeconds(0.1f);
+            _isMouseDownGracePeriodOver = true;
+        }
     }
 }

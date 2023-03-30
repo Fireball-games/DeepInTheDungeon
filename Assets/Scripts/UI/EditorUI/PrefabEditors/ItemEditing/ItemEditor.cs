@@ -28,7 +28,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         public static DetailCursorSetup RemoveCursorSetup { get; private set; }
 
         private MapObjectList _itemList;
-        private static ItemPreview ItemPreview => MapObjectList.ItemPreview;
+        public static ItemPreview ItemPreview { get; private set; }
         private Title _itemTitle;
         private Button _saveButton;
         private Button _cancelButton;
@@ -165,6 +165,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         
         private void AssignComponents()
         {
+            ItemPreview = GetComponentInChildren<ItemPreview>(true);
+            
             _itemList = GetComponentInChildren<MapObjectList>(true);
             Transform frame = body.transform.Find("Background/Frame");
             _itemTitle = frame.Find("Header/ItemTitle").GetComponent<Title>();

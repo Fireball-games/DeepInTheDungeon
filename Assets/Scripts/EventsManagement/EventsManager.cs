@@ -17,7 +17,7 @@ namespace Scripts.EventsManagement
         public static event Action<Trigger> OnTriggerNext;
         public static event Action OnMapDemolished;
         public static event Action<string> OnMapTraversalTriggered;
-        public static UnityEvent<MapObjectInstance> OnMapObjectRemovedFromMap = new();
+        public static readonly UnityEvent<MapObjectInstance> OnMapObjectRemovedFromMap = new();
 
         // ***********    Triggers    ***********
 

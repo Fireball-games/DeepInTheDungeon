@@ -5,13 +5,8 @@ namespace Scripts.UI.EditorUI.Components
 {
     public class MapObjectList : ListWindowBase<MapObject, MapObjectButton>
     {
-        public static ItemPreview ItemPreview { get; private set; }
+        private static ItemPreview ItemPreview => ItemEditor.ItemPreview;
 
-        protected void Awake()
-        {
-            ItemPreview = body.transform.Find("ItemPreview").GetComponent<ItemPreview>();
-        }
-        
         protected override string GetItemIdentification(MapObject item) => item.GetItemID();
 
         protected override void SetButton(MapObjectButton button, MapObject item)

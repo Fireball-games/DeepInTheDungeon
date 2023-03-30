@@ -80,15 +80,7 @@ namespace Scripts.MapEditor
             }
         }
         
-        private IEnumerator PositionByMouseCoroutine()
-        {
-            while (_isActive)
-            {
-                SetBodyActive(!EditorMouseService.Instance.IsOverUI && EditorMouseService.Instance.GridPositionType is Enums.EGridPositionType.EditableTile);
-                transform.position = EditorMouseService.Instance.MousePositionOnPlane + _offset;
-                yield return null;
-            }
-        }
+        public void Highlight(bool isHighlighted) => _highlight.SetActive(isHighlighted);
 
         public void Hide()
         {
@@ -100,6 +92,16 @@ namespace Scripts.MapEditor
             SetBodyActive(false);
         }
         
+        private IEnumerator PositionByMouseCoroutine()
+        {
+            while (_isActive)
+            {
+                SetBodyActive(!EditorMouseService.Instance.IsOverUI && EditorMouseService.Instance.GridPositionType is Enums.EGridPositionType.EditableTile);
+                transform.position = EditorMouseService.Instance.MousePositionOnPlane + _offset;
+                yield return null;
+            }
+        }
+
         private void ShowItem(GameObject item)
         {
             if (_item)

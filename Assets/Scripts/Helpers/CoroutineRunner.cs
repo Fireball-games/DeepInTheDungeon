@@ -26,7 +26,7 @@ namespace Scripts.Helpers
             return _instance.StartCoroutine(coroutine);
         }
 
-        public static void Stop(Coroutine coroutine)
+        public static void Stop(IEnumerator coroutine)
         {
             _instance.StopCoroutine(coroutine);
         }

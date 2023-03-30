@@ -96,10 +96,12 @@ namespace Scripts.MapEditor.Services
                 UIIsBlocking = false;
             }
 
-            if (Input.GetMouseButtonUp(0))
-            {
-                RefreshMousePosition();
-            }
+            if (Input.GetMouseButtonDown(0)) ProcessMouseButtonDown(0);
+            if (Input.GetMouseButtonDown(1)) ProcessMouseButtonDown(1);
+            if (Input.GetMouseButton(0)) ProcessMouseButton(0);
+            if (Input.GetMouseButton(1)) ProcessMouseButton(1);
+
+            if (Input.GetMouseButtonUp(0)) RefreshMousePosition();
 
             if (!LeftClickExpired && Input.GetMouseButtonUp(0))
             {
@@ -107,7 +109,6 @@ namespace Scripts.MapEditor.Services
             }
             else
             {
-                // cameraService.HandleMouseWheel();
                 SetGridPosition();
                 cameraService.HandleMouseMovement();
             }

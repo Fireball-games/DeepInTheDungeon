@@ -7,7 +7,7 @@ namespace Scripts.Player
     public class PlayerInventoryManager : MonoBehaviour
     {
         [SerializeField] private float maxPickupDistance = 1.1f;
-        [SerializeField] private float pickupSpawnGracePeriod = 2f;
+        [SerializeField] private float pickupSpawnGracePeriod = 0.2f;
         [SerializeField] private Vector2 dragSize = new(100, 100);
         [SerializeField] private GameObject pickupColliderPrefab;
 
@@ -40,7 +40,7 @@ namespace Scripts.Player
 
         private void OnDisable()
         {
-            if (pickupColliderPrefab)
+            if (pickupColliderPrefab && ObjectPool.Instance)
             {
                 pickupColliderPrefab.gameObject.DismissToPool();
             }

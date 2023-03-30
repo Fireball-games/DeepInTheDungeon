@@ -80,7 +80,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
                 {
                     Player.InventoryManager.SetPickupColliderActive(false);
                     _draggedItem = inventoryItem.SpawnPickup(GetMouseScreenPosition(), 1).gameObject;
-                    _draggedItem.transform.SetParent(null, true);
+                    _draggedItem.transform.SetParent(Player.transform, true);
                 }
             }
             else
@@ -127,7 +127,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             
             if (_source.GetItem() is InventoryItem item) 
             {
-                item.SpawnPickup(GetMouseScreenPosition(), _source.GetNumber());
+                item.SpawnPickup(GetMouseScreenPosition(), _draggedItem.transform.rotation, _source.GetNumber());
             }
                 
             RemoveDraggedItem();

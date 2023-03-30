@@ -12,46 +12,44 @@ namespace Scripts.InventoryManagement.UI.Inventories
         [SerializeField] private InventoryItemIcon icon;
 
         // STATE
-        [ReadOnly] public int _index;
+        [ReadOnly] public int index;
         private InventoryItem _item;
         private Inventory _inventory;
 
         // PUBLIC
 
-        public void Setup(Inventory inventory, int index)
+        public void Setup(Inventory inventory, int slotIndex)
         {
             _inventory = inventory;
-            _index = index;
-            icon.SetItem(inventory.GetItemInSlot(index), inventory.GetNumberInSlot(index));
+            index = slotIndex;
+            icon.SetItem(inventory.GetItemInSlot(slotIndex), inventory.GetNumberInSlot(slotIndex));
         }
 
         public int MaxAcceptable(InventoryItem item)
         {
-            if (_inventory.HasSpaceFor(item))
-            {
-                return int.MaxValue;
-            }
-            return 0;
+            return _inventory.HasSpaceFor(item) 
+                ? int.MaxValue 
+                : 0;
         }
 
         public void AddItem(InventoryItem item, int number)
         {
-            _inventory.AddItemToSlot(_index, item, number);
+            _inventory.AddItemToSlot(index, item, number);
         }
 
         public InventoryItem GetItem()
         {
-            return _inventory.GetItemInSlot(_index);
+            return _inventory.GetItemInSlot(index);
         }
 
         public int GetNumber()
         {
-            return _inventory.GetNumberInSlot(_index);
+            return _inventory.GetNumberInSlot(index);
         }
 
         public void RemoveItems(int number)
         {
-            _inventory.RemoveFromSlot(_index, number);
+            _inventory.RemoveFromSlot(index, number);
         }
     }
 }

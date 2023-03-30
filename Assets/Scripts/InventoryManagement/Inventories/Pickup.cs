@@ -6,7 +6,6 @@ using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.Player;
 using Scripts.System;
 using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.InventoryManagement.Inventories
 {

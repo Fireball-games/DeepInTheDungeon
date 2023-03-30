@@ -53,6 +53,13 @@ namespace Scripts.InventoryManagement.Inventories.Items
             newPickup.Setup(this, number);
             return newPickup;
         }
+        
+        public Pickup SpawnPickup(Vector3 position, Quaternion rotation, int number)
+        {
+            Pickup newPickup = SpawnPickup(position, number);
+            newPickup.transform.rotation = rotation;
+            return newPickup;
+        }
 
         public Sprite GetIcon()
         {

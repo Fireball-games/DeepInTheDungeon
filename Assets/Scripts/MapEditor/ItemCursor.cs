@@ -81,6 +81,13 @@ namespace Scripts.MapEditor
         }
         
         public void Highlight(bool isHighlighted) => _highlight.SetActive(isHighlighted);
+        
+        public ItemCursor WithPosition(Vector3 position)
+        {
+            transform.position = position;
+
+            return this;
+        }
 
         public void Hide()
         {

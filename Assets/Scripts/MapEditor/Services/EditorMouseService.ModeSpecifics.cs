@@ -114,12 +114,7 @@ namespace Scripts.MapEditor.Services
                     {
                         if (_lastEnteredWall is {WallEligibleForEditing: true}) _lastEnteredWall.OnClickInEditor();
                     }
-                    
-                    if (Manager.EditMode is EEditMode.Edit or EEditMode.Remove)
-                    {
-                        _itemsService.OnMouseButtonUp(mouseButtonUpped);
-                    }
-                    
+
                     break;
                 case EWorkMode.PrefabTiles:
                     OpenEditorForTiledPrefab<TilePrefab>(mouseButtonUpped, EPrefabType.PrefabTile);
@@ -131,6 +126,11 @@ namespace Scripts.MapEditor.Services
                         && GridPositionType is EGridPositionType.EditableTile)
                     {
                         EditorEvents.TriggerOnAddItemToMap(MousePositionOnPlane);
+                    }
+                    
+                    if (Manager.EditMode is EEditMode.Edit or EEditMode.Remove)
+                    {
+                        _itemsService.OnMouseButtonUp(mouseButtonUpped);
                     }
                     
                     break;

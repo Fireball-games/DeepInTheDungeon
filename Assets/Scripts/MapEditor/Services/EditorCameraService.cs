@@ -1,10 +1,10 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using UnityEngine;
+using static Scripts.System.MouseCursorManager;
 
 namespace Scripts.MapEditor.Services
 {
@@ -23,7 +23,21 @@ namespace Scripts.MapEditor.Services
         [SerializeField] private float prefabMoveCameraXOffset = -2f;
         [SerializeField] private Transform cameraHolder;
 
-        [NonSerialized] public static bool IsOrthographic = true;
+        public static bool IsOrthographic = true;
+        
+        private static bool _canManipulateView = true;
+        public static bool CanManipulateView {
+            get => _canManipulateView;
+            set
+            {
+                if (!value)
+                {
+                    ResetCursor();
+                }
+                
+                _canManipulateView = value;
+            }
+    }
 
         private EditorMouseService Mouse => EditorMouseService.Instance;
         private MapEditorManager Manager => MapEditorManager.Instance;
@@ -49,53 +63,66 @@ namespace Scripts.MapEditor.Services
 
         internal void HandleMouseMovement()
         {
-            if (Mouse.LeftClickExpired && Input.GetMouseButtonUp(0)
-                || Mouse.RightClickExpired && Input.GetMouseButtonUp(1))
+            if (!CanManipulateView) return;
+            
+            if (Mouse.LeftClickExpired && !Input.GetMouseButton(0)
+                || Mouse.RightClickExpired && !Input.GetMouseButton(1))
             {
                 Mouse.IsManipulatingCameraPosition = false;
                 Mouse.RefreshMousePosition(true);
+                SetDefaultCursor();
             }
-
+            
             if (!Mouse.LeftClickedOnUI && Mouse.LeftClickExpired && Input.GetMouseButton(0))
             {
-                Mouse.IsManipulatingCameraPosition = true;
-                Mouse.SetCursorToCameraMovement();
-
-                float xDelta = Input.GetAxis(Strings.MouseXAxis);
-                float yDelta = Input.GetAxis(Strings.MouseYAxis);
-
-                if (xDelta == 0f && yDelta == 0f) return;
-
-                float minMaxHeightAlpha = Mathf.InverseLerp(FloorYPosition + minZoomHeight, FloorYPosition + maxZoomHeight,
-                    cameraHolder.transform.position.y);
-                float zoomDependantPanSpeed = Mathf.Lerp(minPanSpeed, maxPanSpeed, minMaxHeightAlpha);
-                
-                Matrix4x4 worldToLocalMatrix = transform.worldToLocalMatrix;
-                Vector3 localForward = worldToLocalMatrix.MultiplyVector(-cameraHolder.forward);
-                Vector3 localRight = worldToLocalMatrix.MultiplyVector(cameraHolder.right);
-                Vector3 moveVector = localRight * (yDelta * Time.deltaTime * zoomDependantPanSpeed);
-                moveVector += localForward * (xDelta * Time.deltaTime * zoomDependantPanSpeed);
-
-                cameraHolder.position += moveVector;
+               MoveCameraOnMouseDrag();
             }
 
             if (Mouse.RightClickExpired && Input.GetMouseButton(1))
             {
-                Mouse.IsManipulatingCameraPosition = true;
-                Mouse.SetCursorToCameraMovement();
-
-                float xDelta = Input.GetAxis(Strings.MouseXAxis);
-                float yDelta = Input.GetAxis(Strings.MouseYAxis);
-
-                if (xDelta == 0f && yDelta == 0f) return;
-
-                Vector3 cameraRotation = cameraHolder.localRotation.eulerAngles;
-                _cameraMoveVector.x = cameraRotation.x;
-                _cameraMoveVector.y = cameraRotation.y + (xDelta * Time.deltaTime * cameraRotationSpeed);
-                _cameraMoveVector.z = cameraRotation.z - (yDelta * Time.deltaTime * cameraRotationSpeed);
-
-                cameraHolder.localRotation = Quaternion.Euler(_cameraMoveVector);
+                RotateViewOnMouseDrag();
             }
+        }
+
+        private void MoveCameraOnMouseDrag()
+        {
+            Mouse.IsManipulatingCameraPosition = true;
+            Mouse.SetCursorToCameraMovement();
+
+            float xDelta = Input.GetAxis(Strings.MouseXAxis);
+            float yDelta = Input.GetAxis(Strings.MouseYAxis);
+
+            if (xDelta == 0f && yDelta == 0f) return;
+
+            float minMaxHeightAlpha = Mathf.InverseLerp(FloorYPosition + minZoomHeight, FloorYPosition + maxZoomHeight,
+                cameraHolder.transform.position.y);
+            float zoomDependantPanSpeed = Mathf.Lerp(minPanSpeed, maxPanSpeed, minMaxHeightAlpha);
+                
+            Matrix4x4 worldToLocalMatrix = transform.worldToLocalMatrix;
+            Vector3 localForward = worldToLocalMatrix.MultiplyVector(-cameraHolder.forward);
+            Vector3 localRight = worldToLocalMatrix.MultiplyVector(cameraHolder.right);
+            Vector3 moveVector = localRight * (yDelta * Time.deltaTime * zoomDependantPanSpeed);
+            moveVector += localForward * (xDelta * Time.deltaTime * zoomDependantPanSpeed);
+
+            cameraHolder.position += moveVector;
+        }
+
+        private void RotateViewOnMouseDrag()
+        {
+            Mouse.IsManipulatingCameraPosition = true;
+            Mouse.SetCursorToCameraMovement();
+
+            float xDelta = Input.GetAxis(Strings.MouseXAxis);
+            float yDelta = Input.GetAxis(Strings.MouseYAxis);
+
+            if (xDelta == 0f && yDelta == 0f) return;
+
+            Vector3 cameraRotation = cameraHolder.localRotation.eulerAngles;
+            _cameraMoveVector.x = cameraRotation.x;
+            _cameraMoveVector.y = cameraRotation.y + (xDelta * Time.deltaTime * cameraRotationSpeed);
+            _cameraMoveVector.z = cameraRotation.z - (yDelta * Time.deltaTime * cameraRotationSpeed);
+
+            cameraHolder.localRotation = Quaternion.Euler(_cameraMoveVector);
         }
 
         internal void HandleMouseWheel()

@@ -23,11 +23,12 @@ namespace Scripts.MapEditor.Services
 
         private static Vector3 Position 
         {
-            get => MouseOverMapObject.position;
-            set => MouseOverMapObject.position = value;
+            get => ActivatedMapObject.position;
+            set => ActivatedMapObject.position = value;
         }
 
-        private Vector3 _lastValidPosition;
+        private Vector3 _lastValidDragPosition;
+        
         private bool _isDragging;
         private bool _isRotating;
         private bool _isMouseDownGracePeriodOver;
@@ -78,12 +79,15 @@ namespace Scripts.MapEditor.Services
         
         internal void OnMouseButton(int mouseButton)
         {
-            // TODO: disable map manipulations while button is down
-            if (mouseButton == 0 && _isMouseDownGracePeriodOver)
+            if (!_isMouseDownGracePeriodOver) return;
+            
+            EditorCameraService.CanManipulateView = false;
+            
+            if (mouseButton == 0 && ActivatedMapObject)
             {
                 OnDrag();
             }
-            else if (mouseButton == 1 && _isMouseDownGracePeriodOver)
+            else if (mouseButton == 1)
             {
                 // TODO: Rotate
             }
@@ -96,6 +100,8 @@ namespace Scripts.MapEditor.Services
             
             if (_isDragging) OnEndDrag();
             
+            EditorCameraService.CanManipulateView = true;
+            
             CoroutineRunner.Stop(ClickGracePeriodCoroutine());
         }
         
@@ -103,7 +109,10 @@ namespace Scripts.MapEditor.Services
         {
             EditorEvents.TriggerOnMouseEnterMapObject(MouseOverMapObject);
             Logger.Log($"Mouse {"enter".WrapInColor(Colors.LightBlue)} {MouseOverMapObject.Item.DisplayName.WrapInColor(Colors.Yellow)}");
-            ActivateItemCursor();
+            if (!ActivatedMapObject)
+            {
+                ActivateItemCursor();
+            }
             MouseOverMapObject = MouseOverMapObject;
         }
         
@@ -117,40 +126,52 @@ namespace Scripts.MapEditor.Services
         {
             EditorEvents.TriggerOnMouseExitMapObject(MouseOverMapObject);
             Logger.Log($"Mouse {"exit".WrapInColor(Colors.Orange)} {MouseOverMapObject.Item.DisplayName.WrapInColor(Colors.Yellow)}");
-            ItemCursor.Hide();
+            if (!ActivatedMapObject) ItemCursor.Hide();
             MouseOverMapObject = null;
         }
 
         private void OnBeginDrag()
         {
-            _lastValidPosition = Position;
+            _lastValidDragPosition = Position;
         }
 
         private void OnDrag()
         {
-            if (!_isDragging) OnBeginDrag();
+            if (!IsActuallyDragging()) return;
             
             if (IsPositionValid)
             {
                 _isDragging = true;
                 Position = MouseService.MousePositionOnPlane.SetY(Position.y);
-                ActivateItemCursor();
-                _lastValidPosition = Position;
+                ItemCursor.WithPosition(Position).WithOffset(PlayerInventoryManager.ItemEditCursorOffset);
+                _lastValidDragPosition = Position;
             }
             else if (_isDragging)
             {
-                Position = _lastValidPosition;
+                Position = _lastValidDragPosition;
             }
+        }
+        
+        private bool IsActuallyDragging()
+        {
+            if (!MouseService.GetMousePlanePosition(out Vector3 _)) return false;
+            
+            if (!_isDragging)
+            {
+                OnBeginDrag();
+            }
+
+            return Input.GetAxis(Strings.MouseXAxis) != 0 || Input.GetAxis(Strings.MouseYAxis) != 0;
         }
 
         private void OnEndDrag()
         {
             _isDragging = false;
-            Position = IsPositionValid ? Position : _lastValidPosition;
+            if (ActivatedMapObject) Position = IsPositionValid ? Position : _lastValidDragPosition;
         }
 
         private bool IsPositionValid
-            => ActivatedMapObject == MouseOverMapObject
+            => ActivatedMapObject 
                && Manager.WorkMode is EWorkMode.Items
                && MouseService.GridPositionType is EGridPositionType
                    .EditableTile;

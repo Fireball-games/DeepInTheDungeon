@@ -128,6 +128,20 @@ namespace Scripts.MapEditor.Services
 
             SetGridPosition(invalidateLastPosition);
         }
+        
+        public bool GetMousePlanePosition(out Vector3 mousePlanePosition)
+        {
+            Ray ray = CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (_layerPlane.Raycast(ray, out float distance))
+            {
+                mousePlanePosition = ray.GetPoint(distance);
+                MousePositionOnPlane = mousePlanePosition;
+                return true;
+            }
+
+            mousePlanePosition = Vector3.negativeInfinity;
+            return false;
+        }
 
         public override void ResetCursor()
         {
@@ -209,20 +223,6 @@ namespace Scripts.MapEditor.Services
                 _lastGridPosition = newGridPosition;
                 OnMouseGridPositionChanged(newGridPosition);
             }
-        }
-
-        private bool GetMousePlanePosition(out Vector3 mousePlanePosition)
-        {
-            Ray ray = CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (_layerPlane.Raycast(ray, out float distance))
-            {
-                mousePlanePosition = ray.GetPoint(distance);
-                MousePositionOnPlane = mousePlanePosition;
-                return true;
-            }
-
-            mousePlanePosition = Vector3.negativeInfinity;
-            return false;
         }
 
         private void OnMouseGridPositionChanged(Vector3Int newGridPosition)

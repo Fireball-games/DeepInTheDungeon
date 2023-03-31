@@ -10,7 +10,7 @@ namespace Scripts.MapEditor.Services
         private EditorCameraService CameraService => EditorCameraService.Instance;
         private void Update()
         {
-            if (!Mouse) return;
+            if (!Mouse || !Input.GetKey(KeyCode.LeftControl)) return;
             
             if (!Mouse.IsManipulatingCameraPosition)
             {

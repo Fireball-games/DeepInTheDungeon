@@ -47,6 +47,18 @@ namespace Scripts.MapEditor.Services
         
         private Sequence _moveSequence;
 
+        private void OnEnable()
+        {
+            EditorEvents.OnWorkModeChanged += ResetState;
+            EditorEvents.OnEditModeChanged.AddListener(ResetState);
+        }
+        
+        private void OnDisable()
+        {
+            EditorEvents.OnWorkModeChanged -= ResetState;
+            EditorEvents.OnEditModeChanged.RemoveListener(ResetState);
+        }
+
         public PositionRotation GetCameraTransformData() => new(cameraHolder.transform.position, cameraHolder.transform.rotation);
 
         internal void ResetCamera()
@@ -63,15 +75,15 @@ namespace Scripts.MapEditor.Services
 
         internal void HandleMouseMovement()
         {
-            if (!CanManipulateView) return;
-            
-            if (Mouse.LeftClickExpired && !Input.GetMouseButton(0)
-                || Mouse.RightClickExpired && !Input.GetMouseButton(1))
+            if (Mouse.LeftClickExpired && Input.GetMouseButtonUp(0)
+                || Mouse.RightClickExpired && Input.GetMouseButtonUp(1))
             {
                 Mouse.IsManipulatingCameraPosition = false;
                 Mouse.RefreshMousePosition(true);
                 SetDefaultCursor();
             }
+            
+            if (!CanManipulateView) return;
             
             if (!Mouse.LeftClickedOnUI && Mouse.LeftClickExpired && Input.GetMouseButton(0))
             {
@@ -159,6 +171,10 @@ namespace Scripts.MapEditor.Services
             _moveSequence.Insert(0, cameraHolder.DOMove(positionRotation.Position, 0.5f).SetEase(Ease.OutFlash));
             _moveSequence.Play();
         }
+
+        private void ResetState(Enums.EEditMode _) => ResetState();
+        private void ResetState(Enums.EWorkMode _) => ResetState();
+        private void ResetState() => CanManipulateView = true;
 
         private void MoveCameraTo(Vector3 worldPosition, bool smooth = true, bool resetCameraAngle = false)
         {

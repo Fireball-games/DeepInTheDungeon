@@ -59,6 +59,11 @@ namespace Scripts.MapEditor
             return this;
         }
         
+        /// <summary>
+        /// Offset of ItemCursor to the normal position, should be used before setting the position.
+        /// </summary>
+        /// <param name="newOffset"></param>
+        /// <returns></returns>
         public ItemCursor WithOffset(Vector3 newOffset)
         {
             _offset = newOffset;
@@ -84,7 +89,7 @@ namespace Scripts.MapEditor
         
         public ItemCursor WithPosition(Vector3 position)
         {
-            transform.position = position;
+            transform.position = position + _offset;
 
             return this;
         }

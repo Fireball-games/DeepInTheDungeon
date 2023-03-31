@@ -149,6 +149,25 @@ namespace Scripts.MapEditor.Services
             
             RefreshMousePosition(true);
         }
+        
+        public object GetGridPositionTypeOnMousePosition(Vector3 lastMousePosition)
+        {
+            Vector3Int newGridPosition = Vector3Int.RoundToInt(lastMousePosition);
+            newGridPosition.y = newGridPosition.x;
+            newGridPosition.x = Manager.CurrentFloor;
+
+            TileDescription[,,] layout = GameManager.Instance.CurrentMap.Layout;
+
+            if (!layout.HasIndex(newGridPosition)) return null;
+
+            bool isNullTile = layout.ByGridV3Int(newGridPosition) == null;
+
+            if (isNullTile) return EGridPositionType.NullTile;
+
+            return IsPositionOccupied(newGridPosition) 
+                ? EGridPositionType.OccupiedTile 
+                : EGridPositionType.EditableTile;
+        }
 
         private void CheckMouseOverWall()
         {

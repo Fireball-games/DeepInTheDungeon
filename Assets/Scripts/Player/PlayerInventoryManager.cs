@@ -8,7 +8,14 @@ namespace Scripts.Player
     {
         [SerializeField] private float maxPickupDistance = 1.1f;
         [SerializeField] private float pickupSpawnGracePeriod = 0.2f;
+        /// <summary>
+        /// Size of image when item is dragged out from inventory
+        /// </summary>
         [SerializeField] private Vector2 dragSize = new(100, 100);
+        /// <summary>
+        /// Offset of ItemCursor while editing an item
+        /// </summary>
+        [SerializeField] private Vector3 itemEditCursorOffset = new(0, 0.3f, 0);
         [SerializeField] private GameObject pickupColliderPrefab;
 
         public static float MaxClickPickupDistance { get; private set; }
@@ -18,7 +25,9 @@ namespace Scripts.Player
         public ActionStore ActionStore { get; private set; }
         public Equipment Equipment { get; private set; }
         public static int PickupSpawnGracePeriod { get; private set; }
-        public static Vector3 ItemEditCursorOffset => new(0, 0.1f, 0);
+        public static Vector3 ItemEditCursorOffset => _itemEditCursorOffset;
+        
+        private static Vector3 _itemEditCursorOffset;
 
         private void Awake()
         {
@@ -28,6 +37,7 @@ namespace Scripts.Player
             
             MaxClickPickupDistance = maxPickupDistance * maxPickupDistance;
             PickupSpawnGracePeriod = (int) (pickupSpawnGracePeriod * 1000);
+            _itemEditCursorOffset = itemEditCursorOffset;
             DragSize = dragSize;
         }
         

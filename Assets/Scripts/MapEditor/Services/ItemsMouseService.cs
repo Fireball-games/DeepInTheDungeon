@@ -13,13 +13,15 @@ namespace Scripts.MapEditor.Services
 {
     public class ItemsMouseService
     {
+        private const float MouseDeltaToAcceptDragging = 0;
         private static EditorMouseService MouseService => EditorMouseService.Instance;
         private static MapEditorManager Manager => MapEditorManager.Instance;
-
         private static MapObjectInstance ActivatedMapObject { get; set; }
         private static MapObjectInstance MouseOverMapObject { get; set; }
-        
         private static ItemCursor ItemCursor => ItemCursor.Instance;
+        
+        private Vector3 _lastMousePosition;
+        private float _dragItemOriginalHeight;
 
         private static Vector3 Position 
         {
@@ -80,10 +82,16 @@ namespace Scripts.MapEditor.Services
         internal void OnMouseButton(int mouseButton)
         {
             if (!_isMouseDownGracePeriodOver) return;
+
+            if (!ActivatedMapObject)
+            {
+                EditorCameraService.CanManipulateView = true;
+                return;
+            }
             
             EditorCameraService.CanManipulateView = false;
             
-            if (mouseButton == 0 && ActivatedMapObject)
+            if (mouseButton == 0)
             {
                 OnDrag();
             }
@@ -133,6 +141,8 @@ namespace Scripts.MapEditor.Services
         private void OnBeginDrag()
         {
             _lastValidDragPosition = Position;
+            _dragItemOriginalHeight = Position.y;
+            ActivatedMapObject.GetComponent<Rigidbody>().freezeRotation = true;
         }
 
         private void OnDrag()
@@ -143,38 +153,46 @@ namespace Scripts.MapEditor.Services
             {
                 _isDragging = true;
                 Position = MouseService.MousePositionOnPlane.SetY(Position.y);
-                ItemCursor.WithPosition(Position).WithOffset(PlayerInventoryManager.ItemEditCursorOffset);
+                ItemCursor.WithOffset(PlayerInventoryManager.ItemEditCursorOffset).WithPosition(Position);
                 _lastValidDragPosition = Position;
             }
             else if (_isDragging)
             {
-                Position = _lastValidDragPosition;
+                Position = _lastValidDragPosition.SetY(_dragItemOriginalHeight);
             }
         }
         
         private bool IsActuallyDragging()
         {
-            if (!MouseService.GetMousePlanePosition(out Vector3 _)) return false;
+            if (!MouseService.GetMousePlanePosition(out Vector3 newPosition)) return false;
             
-            if (!_isDragging)
+            _lastMousePosition = newPosition;
+
+            bool didMouseMovedEnough = Input.GetAxis(Strings.MouseXAxis) >= MouseDeltaToAcceptDragging 
+                                       || Input.GetAxis(Strings.MouseYAxis) >= MouseDeltaToAcceptDragging;
+            
+            if (didMouseMovedEnough && !_isDragging)
             {
                 OnBeginDrag();
             }
-
-            return Input.GetAxis(Strings.MouseXAxis) != 0 || Input.GetAxis(Strings.MouseYAxis) != 0;
+            
+            return didMouseMovedEnough;
         }
 
         private void OnEndDrag()
         {
             _isDragging = false;
-            if (ActivatedMapObject) Position = IsPositionValid ? Position : _lastValidDragPosition;
+            
+            if (!ActivatedMapObject) return;
+            
+            Position = IsPositionValid ? Position : _lastValidDragPosition;
+            ActivatedMapObject.GetComponent<Rigidbody>().freezeRotation = false;
         }
 
         private bool IsPositionValid
             => ActivatedMapObject 
                && Manager.WorkMode is EWorkMode.Items
-               && MouseService.GridPositionType is EGridPositionType
-                   .EditableTile;
+               && MouseService.GetGridPositionTypeOnMousePosition(_lastMousePosition) is EGridPositionType.EditableTile;
         
         private IEnumerator ClickGracePeriodCoroutine()
         {

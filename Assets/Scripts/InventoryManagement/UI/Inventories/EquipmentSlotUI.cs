@@ -1,6 +1,7 @@
 ﻿using Scripts.InventoryManagement.Inventories;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.InventoryManagement.Utils.UI.Dragging;
+using Scripts.Player;
 using UnityEngine;
 
 namespace Scripts.InventoryManagement.UI.Inventories
@@ -10,38 +11,29 @@ namespace Scripts.InventoryManagement.UI.Inventories
     /// </summary>
     public class EquipmentSlotUI : MonoBehaviour, IItemHolder, IDragContainer<InventoryItem>
     {
-        // CONFIG DATA
-
         [SerializeField] private InventoryItemIcon icon;
-        [SerializeField] private EquipLocation equipLocation = EquipLocation.Weapon;
+        [SerializeField] private EquipLocation equipLocation = EquipLocation.WeaponLeft;
 
-        // CACHE
         private Equipment _playerEquipment;
 
-        // LIFECYCLE METHODS
-       
         private void Awake() 
-        {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            _playerEquipment = player.GetComponent<Equipment>();
+        { 
+            _playerEquipment = PlayerController.Instance.InventoryManager.Equipment;
             _playerEquipment.equipmentUpdated += RedrawUI;
         }
 
         private void Start() 
         {
+            _playerEquipment ??= PlayerController.Instance.InventoryManager.Equipment;
             RedrawUI();
         }
-
-        // PUBLIC
 
         public int MaxAcceptable(InventoryItem item)
         {
             EquipableItem equipableItem = item as EquipableItem;
             if (equipableItem == null) return 0;
-            if (equipableItem.GetAllowedEquipLocation() != equipLocation) return 0;
-            if (GetItem() != null) return 0;
-
-            return 1;
+            if (!equipableItem.GetAllowedEquipLocation().HasFlag(equipLocation)) return 0;
+            return GetItem() != null ? 0 : 1;
         }
 
         public void AddItem(InventoryItem item, int number)
@@ -56,14 +48,7 @@ namespace Scripts.InventoryManagement.UI.Inventories
 
         public int GetNumber()
         {
-            if (GetItem() != null)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+            return GetItem() != null ? 1 : 0;
         }
 
         public void RemoveItems(int number)

@@ -37,7 +37,6 @@ namespace Scripts.Player
             if (!Inventory) Initialize();
             
             Inventory.Close();
-            ActionStore.Close();
             Equipment.Close();
         }
 

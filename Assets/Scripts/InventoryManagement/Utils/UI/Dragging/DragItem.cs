@@ -141,7 +141,6 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             
             _draggedItem.DismissToPool();
             _draggedItem = null;
-            Logger.Log("Removed dragged item");
         }
 
         private void SetToMousePosition(Transform targetTransform)

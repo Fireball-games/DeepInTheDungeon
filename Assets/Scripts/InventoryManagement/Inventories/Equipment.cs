@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Scripts.InventoryManagement.Inventories.Items;
+using Scripts.InventoryManagement.UI.Inventories;
 using Scripts.System.Saving;
 using UnityEngine;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.InventoryManagement.Inventories
 {
@@ -13,9 +13,10 @@ namespace Scripts.InventoryManagement.Inventories
     /// 
     /// This component should be placed on the GameObject tagged "Player".
     /// </summary>
-    public class Equipment : MonoBehaviour, ISavable
+    public class Equipment : InventoryBase<EquipmentUI>, ISavable
     {
         private Dictionary<EquipLocation, EquipableItem> _equippedItems = new();
+        private EquipmentUI _equipmentUI;
         
         public string Guid { get; set; }
 
@@ -48,7 +49,7 @@ namespace Scripts.InventoryManagement.Inventories
         /// </summary>
         public void AddItem(EquipLocation slot, EquipableItem item)
         {
-            Debug.Assert(item.GetAllowedEquipLocation() == slot);
+            Debug.Assert(item.GetAllowedEquipLocation().HasFlag(slot));
 
             _equippedItems[slot] = item;
 
@@ -64,10 +65,7 @@ namespace Scripts.InventoryManagement.Inventories
         public void RemoveItem(EquipLocation slot)
         {
             _equippedItems.Remove(slot);
-            if (equipmentUpdated != null)
-            {
-                equipmentUpdated();
-            }
+            equipmentUpdated?.Invoke();
         }
 
         /// <summary>
@@ -76,11 +74,6 @@ namespace Scripts.InventoryManagement.Inventories
         public IEnumerable<EquipLocation> GetAllPopulatedSlots()
         {
             return _equippedItems.Keys;
-        }
-        
-        public void Close()
-        {
-            Logger.LogNotImplemented();
         }
 
         object ISavable.CaptureState()

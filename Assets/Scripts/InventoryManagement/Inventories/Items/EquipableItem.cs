@@ -9,16 +9,10 @@ namespace Scripts.InventoryManagement.Inventories.Items
     [CreateAssetMenu(menuName = ("Items/Equipable Item"))]
     public class EquipableItem : InventoryItem
     {
-        // CONFIG DATA
         [Tooltip("Where are we allowed to put this item.")]
         [SerializeField]
-        private EquipLocation allowedEquipLocation = EquipLocation.Weapon;
+        private EquipLocation allowedEquipLocation = EquipLocation.WeaponLeft;
 
-        // PUBLIC
-
-        public EquipLocation GetAllowedEquipLocation()
-        {
-            return allowedEquipLocation;
-        }
+        public EquipLocation GetAllowedEquipLocation() => allowedEquipLocation;
     }
 }

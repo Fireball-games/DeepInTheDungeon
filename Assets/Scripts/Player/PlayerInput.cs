@@ -21,6 +21,7 @@ namespace Scripts.Player
         public KeyCode leanLeft = KeyCode.A;
         public KeyCode leanRight = KeyCode.D;
         public KeyCode inventory = KeyCode.I;
+        public KeyCode equipment = KeyCode.C;
 
         private PlayerMovement _playerMovement;
         private bool _lookModeOnBeforeLean;
@@ -76,15 +77,10 @@ namespace Scripts.Player
                 PlayerCamera.IsLookModeOn = _lookModeOnBeforeLean;
             }
 
-            if (!PlayerCamera.isLeaning && Input.GetKeyUp(toggleLookingMode))
-            {
-                PlayerCamera.HandleLookModeOnKeyClick();
-            }
-            
-            if (Input.GetKeyUp(inventory))
-            {
-                Player.InventoryManager.Inventory.ToggleInventory();
-            }
+            if (!PlayerCamera.isLeaning && Input.GetKeyUp(toggleLookingMode)) PlayerCamera.HandleLookModeOnKeyClick();
+
+            if (Input.GetKeyUp(inventory)) Player.InventoryManager.Inventory.ToggleInventory();
+            if (Input.GetKeyUp(equipment)) Player.InventoryManager.Equipment.ToggleInventory();
         }
     }
 }

@@ -14,15 +14,13 @@ namespace Scripts.InventoryManagement.Inventories
     ///
     /// This component should be placed on the GameObject tagged "Player".
     /// </summary>
-    public class Inventory : MonoBehaviour, ISavable
+    public class Inventory : InventoryBase<InventoryUI>, ISavable
     {
         [Tooltip("Allowed size")]
         [SerializeField]
         private int inventorySize = 16;
         
         public string Guid { get; set; }
-
-        private InventoryUI _inventoryUI;
 
         private InventorySlot[] _slots;
 
@@ -36,11 +34,6 @@ namespace Scripts.InventoryManagement.Inventories
         /// Broadcasts when the items in the slots are added/removed.
         /// </summary>
         public UnityEvent OnInventoryUpdated = new();
-        
-        private void Awake()
-        {
-            AssignComponents();
-        }
 
         /// <summary>
         /// Convenience for getting the player's inventory.
@@ -162,21 +155,6 @@ namespace Scripts.InventoryManagement.Inventories
             
             return true;
         }
-        
-        public void ToggleInventory()
-        {
-            if (!_inventoryUI) AssignComponents();
-            _inventoryUI.ToggleOpen();
-        }
-        
-        public void Close()
-        {
-            // Can happen f.ex. in main screen, it's valid state
-            if (!_inventoryUI) AssignComponents();
-            if (!_inventoryUI) return;
-            
-            _inventoryUI.Close();
-        }
 
         /// <summary>
         /// Find a slot that can accomodate the given item.
@@ -255,10 +233,11 @@ namespace Scripts.InventoryManagement.Inventories
             OnInventoryUpdated.Invoke();
         }
 
-        private void AssignComponents()
+        protected override void AssignComponents()
         {
+            base.AssignComponents();
+            
             _slots = new InventorySlot[inventorySize];
-            _inventoryUI = FindObjectOfType<InventoryUI>();
         }
         
         [Serializable]

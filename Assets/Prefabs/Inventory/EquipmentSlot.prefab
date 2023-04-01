@@ -10,17 +10,32 @@ PrefabInstance:
     - target: {fileID: 477849121642493534, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 477849121642493534, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 477849121642493534, guid: c1ff5708ed984372806e70af50342a7c,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 477849121642493534, guid: c1ff5708ed984372806e70af50342a7c,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 477849121642493534, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 89
+      objectReference: {fileID: 0}
+    - target: {fileID: 477849121642493534, guid: c1ff5708ed984372806e70af50342a7c,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 888795099425488221, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
@@ -162,34 +177,49 @@ PrefabInstance:
       propertyPath: m_Name
       value: EquipmentSlot
       objectReference: {fileID: 0}
+    - target: {fileID: 1647605777360350275, guid: c1ff5708ed984372806e70af50342a7c,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 5.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1647605777360350275, guid: c1ff5708ed984372806e70af50342a7c,
+        type: 3}
+      propertyPath: m_fontSizeMin
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2808740917936513140, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2808740917936513140, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2808740917936513140, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2808740917936513140, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2808740917936513140, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2808740917936513140, guid: c1ff5708ed984372806e70af50342a7c,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4054064868225600880, guid: c1ff5708ed984372806e70af50342a7c,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7763549518759150732, guid: c1ff5708ed984372806e70af50342a7c,
@@ -243,5 +273,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5981c6eb5564422b959b54ad69f18463, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: 778729750033508321}
   equipLocation: 5
+--- !u!114 &778729750033508321 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1649229243508764425, guid: c1ff5708ed984372806e70af50342a7c,
+    type: 3}
+  m_PrefabInstance: {fileID: 2030463547300907240}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 708a7095a2d2498999ff09b4701a5158, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -300,7 +300,7 @@ namespace Scripts.Helpers
 
         public static IEnumerable<Campaign> LoadCampaignsFromResources()
         {
-            string[] allCampaigns = Directory.GetFiles(FullCampaignsResourcesPath, $"*{CampaignFileExtension}");
+            IEnumerable<string> allCampaigns = Resources.LoadAll(CampaignDirectoryName).Select(c => c.name);
 
             if (!allCampaigns.Any())
             {
@@ -312,9 +312,7 @@ namespace Scripts.Helpers
 
             try
             {
-                loadedCampaigns = allCampaigns.Select(campaignPath =>
-                        LoadCampaignFromResources(Path.GetFileNameWithoutExtension(campaignPath)))
-                    .Where(campaign => campaign != null);
+                loadedCampaigns = allCampaigns.Select(LoadCampaignFromResources).Where(campaign => campaign != null);
             }
             catch (Exception e)
             {

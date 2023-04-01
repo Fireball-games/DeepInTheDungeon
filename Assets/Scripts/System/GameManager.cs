@@ -196,9 +196,13 @@ namespace Scripts.System
         }
         
 
-        private void OnStartGameRequested(bool fadeIn = true)
+        private async void OnStartGameRequested(bool fadeIn = true)
         {
             CanSave = false;
+            if (MainUIManager.Instance)
+            {
+                await MainUIManager.Instance.ShowMainMenu(false);
+            }
             SceneLoader.Instance.LoadScene(CurrentMap.SceneName, fadeIn, 1f);
         }
         

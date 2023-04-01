@@ -37,6 +37,7 @@ namespace Scripts.Localization
         public const string EnterCampaignName = "EnterCampaignName";
         public const string EnterName = "EnterName";
         public const string EntryPoint = "EntryPoint";
+        public const string EquipmentTitle = "EquipmentTitle";
         public const string ErrorBuildingPrefab = "ErrorBuildingPref";
         public const string ExistingPrefabs = "ExistingPrefabs";
         public const string Exit = "Exit";
@@ -45,6 +46,7 @@ namespace Scripts.Localization
         public const string Floors = "Floors";
         public const string IsWalkable = "IsWalkable";
         public const string InvalidNumberOfPrefabsFound = "InvalidNumberOfPrefabsFound";
+        public const string InventoryTitle = "InventoryTitle";
         public const string Load = "Load";
         public const string LoadingFileFailed = "LoadingFileFailed";
         public const string LoadSavedPosition = "LoadSavedPosition";
@@ -113,23 +115,5 @@ namespace Scripts.Localization
         public const string West = "West";
 
         private static readonly Dictionary<string, string> Tooltips;
-
-        static Keys()
-        {
-            // Tooltips = new Dictionary<string, string> { { Default, "Tooltip is missing" } };
-            //
-            // FieldInfo[] fields = typeof(Keys).GetFields(BindingFlags.Public | BindingFlags.Static);
-            //
-            // foreach (FieldInfo field in fields)
-            // {
-            //     if (field.FieldType != typeof(string)) continue;
-            //     
-            //     string key = field.Name;
-            //
-            //     string value = (string)field.GetValue(null);
-            //     
-            //     if (value.Contains("Tooltip/")) Tooltips.Add(key, value);
-            // }
-        }
     }
 }

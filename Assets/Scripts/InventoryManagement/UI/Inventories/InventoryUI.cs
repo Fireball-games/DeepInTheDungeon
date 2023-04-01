@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.InventoryManagement.Inventories;
+using Scripts.Localization;
 using Scripts.System.Pooling;
 using UnityEngine;
 
@@ -17,11 +18,15 @@ namespace Scripts.InventoryManagement.UI.Inventories
         private Inventory _playerInventory;
         private Transform _itemsParent;
 
-        private void Awake() 
+        protected override void Awake() 
         {
+            base.Awake();
+            
             _playerInventory = Inventory.GetPlayerInventory();
             _itemsParent = transform.Find("Background/Frame/ScrollView/Viewport/Content");
         }
+
+        protected override void SetTitle() => title.text = t.Get(Keys.InventoryTitle);
 
         private void OnEnable()
         {

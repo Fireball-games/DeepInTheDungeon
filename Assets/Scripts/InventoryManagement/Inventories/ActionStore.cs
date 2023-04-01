@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Scripts.InventoryManagement.Inventories.Items;
-using Scripts.InventoryManagement.UI.Inventories;
 using Scripts.System.Saving;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.InventoryManagement.Inventories
 {
@@ -177,6 +177,11 @@ namespace Scripts.InventoryManagement.Inventories
 
         public string Guid { get; set; }
 
+        public void Close()
+        {
+            Logger.LogNotImplemented();
+        }
+
         object ISavable.CaptureState()
         {
             Dictionary<int, DockedItemRecord> state = new();
@@ -199,13 +204,6 @@ namespace Scripts.InventoryManagement.Inventories
             {
                 AddAction(MapObject.GetFromID<InventoryItem>(pair.Value.itemID), pair.Key, pair.Value.number);
             }
-        }
-
-        public int RegisterSlot(ActionSlotUI actionSlotUI)
-        {
-            int index = _dockedItems.Count;
-            _dockedItems[index] = new DockedItemSlot();
-            return index;
         }
     }
 }

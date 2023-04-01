@@ -27,18 +27,25 @@ namespace Scripts.Player
         public static int PickupSpawnGracePeriod { get; private set; }
         public static Vector3 ItemEditCursorOffset => _itemEditCursorOffset;
         
+        public void SetPickupColliderActive(bool isActive)
+        {
+            pickupColliderPrefab.SetActive(isActive);
+        }
+
+        public void CloseInventories()
+        {
+            if (!Inventory) Initialize();
+            
+            Inventory.Close();
+            ActionStore.Close();
+            Equipment.Close();
+        }
+
         private static Vector3 _itemEditCursorOffset;
 
         private void Awake()
         {
-            Inventory = GetComponent<Inventory>();
-            ActionStore = GetComponent<ActionStore>();
-            Equipment = GetComponent<Equipment>();
-            
-            MaxClickPickupDistance = maxPickupDistance * maxPickupDistance;
-            PickupSpawnGracePeriod = (int) (pickupSpawnGracePeriod * 1000);
-            _itemEditCursorOffset = itemEditCursorOffset;
-            DragSize = dragSize;
+            Initialize();
         }
         
         private void OnEnable()
@@ -55,10 +62,17 @@ namespace Scripts.Player
                 pickupColliderPrefab.gameObject.DismissToPool();
             }
         }
-
-        public void SetPickupColliderActive(bool isActive)
+        
+        private void Initialize()
         {
-            pickupColliderPrefab.SetActive(isActive);
+            Inventory = GetComponent<Inventory>();
+            ActionStore = GetComponent<ActionStore>();
+            Equipment = GetComponent<Equipment>();
+            
+            MaxClickPickupDistance = maxPickupDistance * maxPickupDistance;
+            PickupSpawnGracePeriod = (int) (pickupSpawnGracePeriod * 1000);
+            _itemEditCursorOffset = itemEditCursorOffset;
+            DragSize = dragSize;
         }
     }
 }

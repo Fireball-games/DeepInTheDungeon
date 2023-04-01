@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.System.Saving;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.InventoryManagement.Inventories
 {
@@ -14,10 +15,9 @@ namespace Scripts.InventoryManagement.Inventories
     /// </summary>
     public class Equipment : MonoBehaviour, ISavable
     {
-        // STATE
         private Dictionary<EquipLocation, EquipableItem> _equippedItems = new();
-
-        // PUBLIC
+        
+        public string Guid { get; set; }
 
         /// <summary>
         /// Broadcasts when the items in the slots are added/removed.
@@ -77,10 +77,11 @@ namespace Scripts.InventoryManagement.Inventories
         {
             return _equippedItems.Keys;
         }
-
-        // PRIVATE
-
-        public string Guid { get; set; }
+        
+        public void Close()
+        {
+            Logger.LogNotImplemented();
+        }
 
         object ISavable.CaptureState()
         {

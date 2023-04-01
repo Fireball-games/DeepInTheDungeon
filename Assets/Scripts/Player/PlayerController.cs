@@ -18,6 +18,11 @@ namespace Scripts.Player
             InventoryManager = GetComponentInChildren<PlayerInventoryManager>();
         }
 
+        private void OnEnable()
+        {
+            InventoryManager.CloseInventories();
+        }
+
         /// <summary>
         /// Used to store player data for saving.
         /// </summary>

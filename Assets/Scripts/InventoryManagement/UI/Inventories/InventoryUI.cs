@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.InventoryManagement.Inventories;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using UnityEngine;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.InventoryManagement.UI.Inventories
 {
@@ -19,6 +22,12 @@ namespace Scripts.InventoryManagement.UI.Inventories
         private Transform _itemsParent;
 
         public void ToggleOpen() => SetActive(!body.activeSelf);
+        
+        public void Close()
+        {
+            Logger.Log($">>>> {"Close".WrapInColor(Colors.Orange)} <<<<");
+            SetActive(false);
+        }
         
         private void Awake() 
         {

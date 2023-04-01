@@ -19,6 +19,8 @@ namespace Scripts.InventoryManagement.Inventories
         [Tooltip("Allowed size")]
         [SerializeField]
         private int inventorySize = 16;
+        
+        public string Guid { get; set; }
 
         private InventoryUI _inventoryUI;
 
@@ -166,6 +168,15 @@ namespace Scripts.InventoryManagement.Inventories
             if (!_inventoryUI) AssignComponents();
             _inventoryUI.ToggleOpen();
         }
+        
+        public void Close()
+        {
+            // Can happen f.ex. in main screen, it's valid state
+            if (!_inventoryUI) AssignComponents();
+            if (!_inventoryUI) return;
+            
+            _inventoryUI.Close();
+        }
 
         /// <summary>
         /// Find a slot that can accomodate the given item.
@@ -218,15 +229,6 @@ namespace Scripts.InventoryManagement.Inventories
             return -1;
         }
 
-        [Serializable]
-        private struct InventorySlotRecord
-        {
-            public string itemID;
-            public int number;
-        }
-
-        public string Guid { get; set; }
-
         object ISavable.CaptureState()
         {
             InventorySlotRecord[] slotStrings = new InventorySlotRecord[inventorySize];
@@ -257,6 +259,13 @@ namespace Scripts.InventoryManagement.Inventories
         {
             _slots = new InventorySlot[inventorySize];
             _inventoryUI = FindObjectOfType<InventoryUI>();
+        }
+        
+        [Serializable]
+        private struct InventorySlotRecord
+        {
+            public string itemID;
+            public int number;
         }
     }
 }

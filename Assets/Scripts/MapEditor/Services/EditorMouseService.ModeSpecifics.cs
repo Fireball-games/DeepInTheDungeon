@@ -121,18 +121,7 @@ namespace Scripts.MapEditor.Services
                     break;
                 case EWorkMode.Prefabs:
                 case EWorkMode.Items:
-                    if (mouseButtonUpped == 0 
-                        && Manager.EditMode is EEditMode.Add 
-                        && GridPositionType is EGridPositionType.EditableTile)
-                    {
-                        EditorEvents.TriggerOnAddItemToMap(MousePositionOnPlane);
-                    }
-                    
-                    if (Manager.EditMode is EEditMode.Edit or EEditMode.Remove)
-                    {
-                        _itemsService.OnMouseButtonUp(mouseButtonUpped);
-                    }
-                    
+                    ItemsModeButtonUp(mouseButtonUpped);
                     break;
                 case EWorkMode.Enemies:
                 case EWorkMode.Triggers:
@@ -158,6 +147,17 @@ namespace Scripts.MapEditor.Services
             }
         }
 
+        private void ProcessExpiredButtonUp(int mouseButtonUpped)
+        {
+            switch (Manager.WorkMode)   
+            {
+                case EWorkMode.Items:
+                    ItemsModeButtonUp(mouseButtonUpped);
+                    break;
+            }
+            
+        }
+
         private void SetCursorByCurrentType()
         {
             switch (Manager.WorkMode)
@@ -180,6 +180,21 @@ namespace Scripts.MapEditor.Services
                 case EWorkMode.Build:
                     SetCursorForBuildMode();
                     break;
+            }
+        }
+        
+        private void ItemsModeButtonUp(int mouseButtonUpped)
+        {
+            if (mouseButtonUpped == 0 
+                && Manager.EditMode is EEditMode.Add 
+                && GridPositionType is EGridPositionType.EditableTile)
+            {
+                EditorEvents.TriggerOnAddItemToMap(MousePositionOnPlane);
+            }
+                    
+            if (Manager.EditMode is EEditMode.Edit or EEditMode.Remove)
+            {
+                _itemsService.OnMouseButtonUp(mouseButtonUpped);
             }
         }
 

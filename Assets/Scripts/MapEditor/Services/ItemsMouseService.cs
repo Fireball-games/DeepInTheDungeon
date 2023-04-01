@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using Scripts.Building.ItemSpawning;
-using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Player;
+using Scripts.System;
 using Scripts.UI.EditorUI.PrefabEditors.ItemEditing;
 using UnityEngine;
+using UnityEngine.Events;
 using static Scripts.MapEditor.Enums;
 using Logger = Scripts.Helpers.Logger;
 
@@ -14,19 +15,27 @@ namespace Scripts.MapEditor.Services
     public class ItemsMouseService
     {
         private const float MouseDeltaToAcceptDragging = 0;
+        private const float RotationSpeed = 1000;
         private static EditorMouseService MouseService => EditorMouseService.Instance;
         private static MapEditorManager Manager => MapEditorManager.Instance;
-        private static MapObjectInstance ActivatedMapObject { get; set; }
+        private static MapObjectInstance ActiveMapObject { get; set; }
         private static MapObjectInstance MouseOverMapObject { get; set; }
         private static ItemCursor ItemCursor => ItemCursor.Instance;
         
         private Vector3 _lastMousePosition;
-        private float _dragItemOriginalHeight;
+        private float _activeObjectOriginalHeight;
+        private Rigidbody _activeObjectRigidbody;
+        
+        public static UnityEvent<MapObjectInstance> OnMouseEnterMapObject { get; } = new();
+        public static UnityEvent<MapObjectInstance> OnMouseExitMapObject { get; } = new();
+        public static UnityEvent<MapObjectInstance> OnObjectActivated { get; } = new();
+        public static UnityEvent<MapObjectInstance> OnObjectDeactivated { get; } = new();
+        public static UnityEvent<MapObjectInstance> OnObjectChanged { get; } = new();
 
         private static Vector3 Position 
         {
-            get => ActivatedMapObject.position;
-            set => ActivatedMapObject.position = value;
+            get => ActiveMapObject.position;
+            set => ActiveMapObject.position = value;
         }
 
         private Vector3 _lastValidDragPosition;
@@ -66,12 +75,14 @@ namespace Scripts.MapEditor.Services
         {
             if (MouseOverMapObject)
             {
-                ActivatedMapObject = MouseOverMapObject;
+                ActiveMapObject = MouseOverMapObject;
+                _activeObjectRigidbody = ActiveMapObject.GetComponent<Rigidbody>();
                 ItemCursor.Highlight(true);
             }
             else
             {
-                ActivatedMapObject = null;
+                ActiveMapObject = null;
+                _activeObjectRigidbody = null;
                 ItemCursor.Hide();
                 return;
             }
@@ -83,7 +94,7 @@ namespace Scripts.MapEditor.Services
         {
             if (!_isMouseDownGracePeriodOver) return;
 
-            if (!ActivatedMapObject)
+            if (!ActiveMapObject)
             {
                 EditorCameraService.CanManipulateView = true;
                 return;
@@ -91,33 +102,38 @@ namespace Scripts.MapEditor.Services
             
             EditorCameraService.CanManipulateView = false;
             
+            MouseCursorManager.SetCursor(MouseCursorManager.ECursorType.Hidden);
+            
             if (mouseButton == 0)
             {
                 OnDrag();
             }
             else if (mouseButton == 1)
             {
-                // TODO: Rotate
+                OnRotate();
             }
         }
         
         internal void OnMouseButtonUp(int button)
         {
             _isRotating = false;
+            
+            if (_activeObjectRigidbody)
+                _activeObjectRigidbody.constraints = RigidbodyConstraints.None;
+            
             ItemCursor.Highlight(false);
             
             if (_isDragging) OnEndDrag();
             
             EditorCameraService.CanManipulateView = true;
-            
-            CoroutineRunner.Stop(ClickGracePeriodCoroutine());
+            MouseCursorManager.SetCursor(MouseCursorManager.ECursorType.Default);
         }
         
         private void OnMouseEnter()
         {
-            EditorEvents.TriggerOnMouseEnterMapObject(MouseOverMapObject);
-            Logger.Log($"Mouse {"enter".WrapInColor(Colors.LightBlue)} {MouseOverMapObject.Item.DisplayName.WrapInColor(Colors.Yellow)}");
-            if (!ActivatedMapObject)
+            OnMouseEnterMapObject.Invoke(MouseOverMapObject);
+            
+            if (!ActiveMapObject)
             {
                 ActivateItemCursor();
             }
@@ -132,17 +148,25 @@ namespace Scripts.MapEditor.Services
 
         private static void OnMouseExit()
         {
-            EditorEvents.TriggerOnMouseExitMapObject(MouseOverMapObject);
-            Logger.Log($"Mouse {"exit".WrapInColor(Colors.Orange)} {MouseOverMapObject.Item.DisplayName.WrapInColor(Colors.Yellow)}");
-            if (!ActivatedMapObject) ItemCursor.Hide();
+            OnMouseExitMapObject.Invoke(MouseOverMapObject);
+            
+            if (!ActiveMapObject) ItemCursor.Hide();
+            
             MouseOverMapObject = null;
         }
 
         private void OnBeginDrag()
         {
             _lastValidDragPosition = Position;
-            _dragItemOriginalHeight = Position.y;
-            ActivatedMapObject.GetComponent<Rigidbody>().freezeRotation = true;
+            _activeObjectOriginalHeight = Position.y;
+            _activeObjectRigidbody.freezeRotation = true;
+        }
+        
+        private void OnBeginRotate()
+        {
+            _activeObjectOriginalHeight = Position.y;
+            ActiveMapObject.position = Position.SetY(_activeObjectOriginalHeight + PlayerInventoryManager.ItemEditCursorOffset.y);
+            _activeObjectRigidbody.constraints = RigidbodyConstraints.FreezePositionY;
         }
 
         private void OnDrag()
@@ -151,6 +175,7 @@ namespace Scripts.MapEditor.Services
             
             if (IsPositionValid)
             {
+                OnObjectChanged.Invoke(ActiveMapObject);
                 _isDragging = true;
                 Position = MouseService.MousePositionOnPlane.SetY(Position.y);
                 ItemCursor.WithOffset(PlayerInventoryManager.ItemEditCursorOffset).WithPosition(Position);
@@ -158,7 +183,27 @@ namespace Scripts.MapEditor.Services
             }
             else if (_isDragging)
             {
-                Position = _lastValidDragPosition.SetY(_dragItemOriginalHeight);
+                Position = _lastValidDragPosition.SetY(_activeObjectOriginalHeight);
+            }
+        }
+        
+        private void OnRotate()
+        {
+            float moveInX = Input.GetAxis(Strings.MouseXAxis);
+            float moveInY = Input.GetAxis(Strings.MouseYAxis);
+            
+            if (moveInX != 0 && moveInY != 0) 
+            {
+                OnObjectChanged.Invoke(ActiveMapObject);
+                
+                ActiveMapObject.transform.Rotate(Vector3.up, moveInX * RotationSpeed * Time.deltaTime);
+                ActiveMapObject.transform.Rotate(Vector3.forward, moveInY * RotationSpeed * Time.deltaTime);
+                
+                ItemCursor.WithOffset(PlayerInventoryManager.ItemEditCursorOffset).WithPosition(Position);
+                
+                if (!_isRotating) OnBeginRotate();
+                
+                _isRotating = true;
             }
         }
         
@@ -183,14 +228,14 @@ namespace Scripts.MapEditor.Services
         {
             _isDragging = false;
             
-            if (!ActivatedMapObject) return;
+            if (!ActiveMapObject) return;
             
             Position = IsPositionValid ? Position : _lastValidDragPosition;
-            ActivatedMapObject.GetComponent<Rigidbody>().freezeRotation = false;
+            _activeObjectRigidbody.freezeRotation = false;
         }
 
         private bool IsPositionValid
-            => ActivatedMapObject 
+            => ActiveMapObject 
                && Manager.WorkMode is EWorkMode.Items
                && MouseService.GetGridPositionTypeOnMousePosition(_lastMousePosition) is EGridPositionType.EditableTile;
         

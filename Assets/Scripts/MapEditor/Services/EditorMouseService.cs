@@ -112,6 +112,9 @@ namespace Scripts.MapEditor.Services
                 SetGridPosition();
                 cameraService.HandleMouseMovement();
             }
+            
+            if (LeftClickExpired && Input.GetMouseButtonUp(0)) ProcessExpiredButtonUp(0);
+            if (RightClickExpired && Input.GetMouseButtonUp(1)) ProcessExpiredButtonUp(1);
         }
 
         private void OnDisable()

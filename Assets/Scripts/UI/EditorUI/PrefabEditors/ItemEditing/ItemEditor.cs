@@ -8,6 +8,7 @@ using Scripts.Helpers.Extensions;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.Localization;
 using Scripts.MapEditor;
+using Scripts.MapEditor.Services;
 using Scripts.System.MonoBases;
 using Scripts.UI.Components;
 using Scripts.UI.EditorUI.Components;
@@ -29,11 +30,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
 
         private MapObjectList _itemList;
         public static ItemPreview ItemPreview { get; private set; }
+        private static ItemCursor ItemCursor => ItemCursor.Instance;
         private Title _itemTitle;
         private Button _saveButton;
         private Button _cancelButton;
         
-        private MapObject _selectedItem;
+        private MapObject _selectedItemToSpawn;
+        private MapObjectInstance _selectedItemInstance;
         private MapObjectConfiguration _selectedItemConfiguration;
 
         private bool _areItemsChanged;
@@ -50,8 +53,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             base.OnEnable();
             EditorEvents.OnAddItemToMap.AddListener(OnAddItemToMap);
             EditorEvents.OnMapSaved += OnMapSaved;
-            EditorEvents.OnMouseEnterMapObject.AddListener(OnMouseEnterMapObject);
-            EditorEvents.OnMouseExitMapObject.AddListener(OnMouseExitMapObject);
+            ItemsMouseService.OnMouseEnterMapObject.AddListener(OnMouseEnterMapObject);
+            ItemsMouseService.OnMouseExitMapObject.AddListener(OnMouseExitMapObject);
+            ItemsMouseService.OnObjectActivated.AddListener(OnObjectActivated);
+            ItemsMouseService.OnObjectDeactivated.AddListener(OnObjectDeactivated);
+            ItemsMouseService.OnObjectChanged.AddListener(OnObjectChanged);
         }
 
         protected override void OnDisable()
@@ -59,8 +65,11 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             base.OnDisable();
             EditorEvents.OnAddItemToMap.RemoveListener(OnAddItemToMap);
             EditorEvents.OnMapSaved -= OnMapSaved;
-            EditorEvents.OnMouseEnterMapObject.RemoveListener(OnMouseEnterMapObject);
-            EditorEvents.OnMouseExitMapObject.RemoveListener(OnMouseExitMapObject);
+            ItemsMouseService.OnMouseEnterMapObject.RemoveListener(OnMouseEnterMapObject);
+            ItemsMouseService.OnMouseExitMapObject.RemoveListener(OnMouseExitMapObject);
+            ItemsMouseService.OnObjectActivated.RemoveListener(OnObjectActivated);
+            ItemsMouseService.OnObjectDeactivated.RemoveListener(OnObjectDeactivated);
+            ItemsMouseService.OnObjectChanged.RemoveListener(OnObjectChanged);
         }
 
         public override void Open()
@@ -74,15 +83,29 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         private static void OnMouseEnterMapObject(MapObjectInstance mapObject) => ItemPreview.Show(mapObject.Item);
 
         private static void OnMouseExitMapObject(MapObjectInstance mapObject) => ItemPreview.Hide();
+        
+        private void OnObjectActivated(MapObjectInstance activatedInstance)
+        {
+            _selectedItemInstance = activatedInstance;
+            VisualizeComponents();
+        }
+
+        private void OnObjectDeactivated(MapObjectInstance deactivatedInstance)
+        {
+            _selectedItemInstance = null;
+            VisualizeComponents();
+        }
+
+        private void OnObjectChanged(MapObjectInstance changedInstance) => SetEdited(true);
 
         private void OnMapSaved() => SetEdited(false);
 
         private void OnItemSelected(MapObject selectedItem)
         {
             MapEditorManager.SetEditMode(EEditMode.Add);
-            _selectedItem = selectedItem;
+            _selectedItemToSpawn = selectedItem;
             _selectedItemConfiguration = MapObjectConfiguration.Create(selectedItem);
-            ItemCursor.Instance.ShowAndFollowMouse(selectedItem.DisplayPrefab)
+            ItemCursor.ShowAndFollowMouse(selectedItem.DisplayPrefab)
                 .SetDetailImage(addCursorSetup.Image, Colors.Get(addCursorSetup.Color), DetailTweenFunc);
             
             VisualizeComponents();
@@ -90,7 +113,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         
         private void OnAddItemToMap(Vector3 clickPosition)
         {
-            if (!_selectedItem) return;
+            if (!_selectedItemToSpawn) return;
             
             _selectedItemConfiguration.PositionRotation.Position = clickPosition;
             
@@ -109,13 +132,15 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         {
             if (!_areItemsChanged) return;
             
-            MapObject tempSelectedItem = _selectedItem;
+            MapObject tempSelectedItem = _selectedItemToSpawn;
             
             _itemList.SetButtonsInteractable(false);
             await MapBuilder.RebuildItems();
             _itemList.SetButtonsInteractable(true);
-            OnItemSelected(tempSelectedItem);
-            
+            ItemCursor.Hide();
+
+            if (tempSelectedItem) OnItemSelected(tempSelectedItem);
+
             SetEdited(false);
         }
 
@@ -131,8 +156,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             body.SetActive(false);
             _itemList.DeselectButtons();
             _itemList.Close();
-            ItemCursor.Instance.Hide();
-            _selectedItem = null;
+            ItemCursor.Hide();
+            _selectedItemToSpawn = null;
             _selectedItemConfiguration = null;
             MapEditorManager.SetEditMode(EEditMode.Normal);
             
@@ -153,8 +178,8 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         
         private void VisualizeComponents()
         {
-            _itemTitle.SetTitle(_selectedItem 
-                ? t.GetItemText(_selectedItem.DisplayName) 
+            _itemTitle.SetTitle(_selectedItemToSpawn 
+                ? t.GetItemText(_selectedItemToSpawn.DisplayName) 
                 : t.Get(Keys.NoItemSelected));
             
             _saveButton.SetText(t.Get(Keys.Save));

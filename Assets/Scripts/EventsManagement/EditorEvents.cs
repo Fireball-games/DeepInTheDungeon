@@ -1,6 +1,5 @@
 ﻿using System;
 using Scripts.Building.ItemSpawning;
-using Scripts.InventoryManagement.Inventories;
 using UnityEngine;
 using UnityEngine.Events;
 using static Scripts.MapEditor.Enums;
@@ -21,8 +20,6 @@ namespace Scripts.EventsManagement
         public static event Action OnMapSaved;
         public static event Action<bool> OnCameraPerspectiveChanged;
         public static readonly UnityEvent<Vector3> OnAddItemToMap = new();
-        public static readonly UnityEvent<MapObjectInstance> OnMouseEnterMapObject = new();
-        public static readonly UnityEvent<MapObjectInstance> OnMouseExitMapObject = new();
 
         // ***********    Triggers    ***********
 
@@ -39,7 +36,5 @@ namespace Scripts.EventsManagement
         public static void TriggerOnMapSaved() => OnMapSaved?.Invoke();
         public static void TriggerOnCameraPerspectiveChanged(bool isOrthographic) => OnCameraPerspectiveChanged?.Invoke(isOrthographic);
         public static void TriggerOnAddItemToMap(Vector3 position) => OnAddItemToMap.Invoke(position);
-        public static void TriggerOnMouseEnterMapObject(MapObjectInstance mapObject) => OnMouseEnterMapObject.Invoke(mapObject);
-        public static void TriggerOnMouseExitMapObject(MapObjectInstance mapObject) => OnMouseExitMapObject.Invoke(mapObject);
     }
 }

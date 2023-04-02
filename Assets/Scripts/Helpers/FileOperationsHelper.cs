@@ -325,21 +325,23 @@ namespace Scripts.Helpers
 
         public static IEnumerable<Campaign> LoadCampaignsFromPersistentDataPath()
         {
-            string[] allCampaigns = GetFilesInDirectory(CampaignDirectoryName, CampaignFileExtension);
+            string[] allCampaigns = Directory.Exists(CampaignDirectoryName) 
+                ? GetFilesInDirectory(CampaignDirectoryName, CampaignFileExtension)
+                : Array.Empty<string>();
 
             if (!allCampaigns.Any())
             {
                 Logger.Log("No campaigns found.", Logger.ELogSeverity.Release);
-                return null;
+                return Enumerable.Empty<Campaign>();
             }
 
-            Campaign[] loadedCampaigns;
+            IEnumerable<Campaign> loadedCampaigns;
 
             try
             {
                 loadedCampaigns = allCampaigns.Select(campaignPath =>
                         ES3.Load<Campaign>(Path.GetFileNameWithoutExtension(campaignPath), campaignPath))
-                    .Where(campaign => campaign != null).ToArray();
+                    .Where(campaign => campaign != null);
             }
             catch (Exception e)
             {

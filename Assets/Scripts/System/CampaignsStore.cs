@@ -22,5 +22,8 @@ namespace Scripts.System
             
             return MainCampaign != null && StartRoomsCampaign != null;
         }
+
+        public static void AddCustomCampaign(Campaign campaign) => CustomCampaigns = CustomCampaigns.Append(campaign);
+        public static void RemoveCustomCampaign(Campaign campaign) => CustomCampaigns = CustomCampaigns.Except(new[] {campaign});
     }
 }

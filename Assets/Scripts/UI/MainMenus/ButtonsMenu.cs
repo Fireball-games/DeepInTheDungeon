@@ -47,12 +47,6 @@ namespace Scripts.UI.MainMenus
 
         private void CustomCampaignClicked() => UIManager.OpenCustomCampaignMenu();
 
-        private void LastEditedMapClicked()
-        {
-            OnSceneChangingButtonClicked();
-            GameManager.LoadLastEditedMap();
-        }
-
         private void CreateNewCharacterClicked() => Logger.LogNotImplemented();
 
         private void SettingsClicked() => Logger.LogNotImplemented();

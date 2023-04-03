@@ -29,11 +29,9 @@ namespace Scripts.UI.MainMenus
             }
             else
             {
-                Task load = LoadMenu.SetActiveAsync(false);
-                Task campaign = startCampaignMenu.SetActiveAsync(false);
-                Task buttons = _buttonsMenu.SetActiveAsync(false);
-                
-                await Task.WhenAll(load, campaign, buttons);
+                LoadMenu.SetActive(false);
+                startCampaignMenu.SetActive(false);
+                await _buttonsMenu.SetActiveAsync(false);
             }
             
             CanvasGroup.blocksRaycasts = active;

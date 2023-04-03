@@ -108,6 +108,7 @@ namespace Scripts.UI.Components
             _existingCampaigns.Add(campaign);
 
             SaveCampaign(campaign);
+            CampaignsStore.AddCustomCampaign(campaign);
 
             _selectedCampaign = campaign;
             GameManager.Instance.SetCurrentCampaign(campaign);

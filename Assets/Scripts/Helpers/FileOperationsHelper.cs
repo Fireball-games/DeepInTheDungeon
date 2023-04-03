@@ -325,8 +325,8 @@ namespace Scripts.Helpers
 
         public static IEnumerable<Campaign> LoadCampaignsFromPersistentDataPath()
         {
-            string[] allCampaigns = Directory.Exists(CampaignDirectoryName) 
-                ? GetFilesInDirectory(CampaignDirectoryName, CampaignFileExtension)
+            string[] allCampaigns = Directory.Exists(CampaignsLocalDirectoryPath) 
+                ? GetFilesInDirectory(CampaignsLocalDirectoryPath, CampaignFileExtension)
                 : Array.Empty<string>();
 
             if (!allCampaigns.Any())

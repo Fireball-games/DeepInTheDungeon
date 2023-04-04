@@ -1,14 +1,20 @@
 ﻿using System.Collections.Generic;
 using Scripts.Helpers.Extensions;
+using Scripts.MapEditor;
+using Scripts.MapEditor.Services;
+using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using Scripts.UI.Components;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 namespace Scripts.UI.EditorUI.Components
 {
-    public abstract class ListWindowBase<T, TButton> : EditorWindowBase where TButton : ListButtonBase<T>
+    public abstract class ListWindowBase<T, TButton> : EditorWindowBase,
+        IListWindow, IPointerEnterHandler, IPointerExitHandler
+        where TButton : ListButtonBase<T>
     {
         [SerializeField] private Title title;
         [SerializeField] private GameObject listContent;
@@ -21,6 +27,25 @@ namespace Scripts.UI.EditorUI.Components
         private HashSet<TButton> Buttons;
         private UnityEvent<T> OnItemClicked { get; } = new();
         private UnityEvent OnCancelClicked { get; } = new();
+        
+        public PositionRotation OriginalCameraPositionRotation { get; set; }
+        public int OriginalFloor { get; set; }
+        private bool _navigatedAway;
+        
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            OriginalCameraPositionRotation = EditorCameraService.Instance.GetCameraTransformData();
+            OriginalFloor = MapEditorManager.Instance.CurrentFloor;
+            _navigatedAway = false;
+        }
+        
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!_navigatedAway) return;
+            
+            MapEditorManager.Instance.SetFloor(OriginalFloor);
+            EditorCameraService.Instance.MoveCameraTo(OriginalCameraPositionRotation);
+        }
 
         public void Open(string listTitle, IEnumerable<T> items, UnityAction<T> onItemClicked, UnityAction onClose = null)
         {
@@ -47,11 +72,14 @@ namespace Scripts.UI.EditorUI.Components
                 TButton newButton = ObjectPool.Instance.Get(itemPrefab, listContent).GetComponent<TButton>();
 
                 SetButton(newButton, item);
-
+                newButton.ParentList = this;
+                
                 Buttons.Add(newButton);
                 LastAddedButton = newButton;
             }
         }
+        
+        public void SetNavigatedAway() => _navigatedAway = true;
 
         /// <summary>
         /// Button set is separated from Open method to allow for custom button settings.

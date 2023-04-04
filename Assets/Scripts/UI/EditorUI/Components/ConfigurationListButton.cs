@@ -72,27 +72,20 @@ namespace Scripts.UI.EditorUI.Components
             
             Cursor3D.ShowAt(position, cursorScale, rotation);
 
-            MouseOverCoroutine();
+            OnMouseOver();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             Cursor3D.Hide();
-
-            if (_originalCameraTransformData != null)
-            {
-                MapEditorManager.Instance.SetFloor(_originalFloor);
-                EditorCameraService.Instance.MoveCameraTo(_originalCameraTransformData);
-            }
-
-            _originalCameraTransformData = null;
         }
 
-        private void MouseOverCoroutine()
+        private void OnMouseOver()
         {
-            _originalFloor = MapEditorManager.Instance.CurrentFloor;
-            _originalCameraTransformData = CameraService.GetCameraTransformData();
+            if (EditorMouseService.Instance.IsManipulatingCameraPosition) return;
+            
             UIManager.OpenedEditor.MoveCameraToPrefab(Vector3Int.RoundToInt(displayedItem.TransformData.Position));
+            ParentList.SetNavigatedAway();
         }
     }
 }

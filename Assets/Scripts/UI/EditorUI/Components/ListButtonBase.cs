@@ -1,4 +1,5 @@
-﻿using NaughtyAttributes;
+﻿using System;
+using NaughtyAttributes;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.System.Pooling;
@@ -13,6 +14,7 @@ namespace Scripts.UI.EditorUI.Components
     public abstract class ListButtonBase<T> : MonoBehaviour
     {
         public bool MarkSelectedOnClick = true;
+        [NonSerialized] public IListWindow ParentList;
         [SerializeField] private Image iconPrefab;
         [ReadOnly] public T displayedItem;
 

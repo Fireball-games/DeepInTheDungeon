@@ -57,9 +57,10 @@ namespace Scripts.Helpers
             return name;
         }
 
-        public static string FromCamelCase(this string camelCaseString)
-        {
-            return string.Concat(camelCaseString.Select((x, i) => i > 0 && char.IsUpper(x) ? " " + x : x.ToString()));
-        }
+        public static string FromCamelCase(this string camelCaseString) =>
+            string.Concat(camelCaseString.Select((x, i) => i > 0 && char.IsUpper(x) ? " " + x : x.ToString()));
+        
+        public static string PrivateToPublicName(this string privateName) =>
+            privateName.Replace("_", "").First().ToString().ToUpper() + privateName.Replace("_", "")[1..];
     }
 }

@@ -585,11 +585,10 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         {
             if (field.FieldType != componentType) return;
             
-            ConfigurableElement uiComponent = PrefabStore.CloneUIComponent(componentType);
+            ConfigurableElement uiComponent = attribute.UseLocalPrefabInstance 
+                ? Content.Find(field.Name.PrivateToPublicName()).GetComponent<ConfigurableElement>()
+                : CreateConfigurableComponent(componentType, attribute);
             
-            uiComponent.transform.SetParent(Content);
-            uiComponent.SetCollapsed(true);
-            uiComponent.SetLabel(t.Get(attribute.LabelText));
             uiComponent.SetOnValueChanged(value =>
             {
                 SetEdited();
@@ -602,6 +601,17 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             });
             
             _configurableComponents.Add(uiComponent, attribute);
+        }
+        
+        private ConfigurableElement CreateConfigurableComponent(Type componentType, ConfigurablePropertyAttribute attribute)
+        {
+            ConfigurableElement uiComponent = PrefabStore.CloneUIComponent(componentType);
+            
+            uiComponent.transform.SetParent(Content);
+            uiComponent.SetCollapsed(true);
+            uiComponent.SetLabel(t.Get(attribute.LabelText));
+
+            return uiComponent;
         }
     }
 }

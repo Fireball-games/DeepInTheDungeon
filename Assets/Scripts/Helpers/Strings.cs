@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.System;
+using Unity.VisualScripting;
 
 namespace Scripts.Helpers
 {
@@ -61,6 +62,6 @@ namespace Scripts.Helpers
             string.Concat(camelCaseString.Select((x, i) => i > 0 && char.IsUpper(x) ? " " + x : x.ToString()));
         
         public static string PrivateToPublicName(this string privateName) =>
-            privateName.Replace("_", "").First().ToString().ToUpper() + privateName.Replace("_", "")[1..];
+            privateName.Replace("_", "").FirstCharacterToUpper();
     }
 }

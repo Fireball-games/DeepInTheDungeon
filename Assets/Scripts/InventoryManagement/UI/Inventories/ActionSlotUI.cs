@@ -1,4 +1,5 @@
-﻿using Scripts.InventoryManagement.Inventories;
+﻿using System;
+using Scripts.InventoryManagement.Inventories;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.InventoryManagement.Utils.UI.Dragging;
 using Scripts.Player;
@@ -11,17 +12,18 @@ namespace Scripts.InventoryManagement.UI.Inventories
     /// </summary>
     public class ActionSlotUI : MonoBehaviour, IItemHolder, IDragContainer<InventoryItem>
     {
-        [SerializeField] private InventoryItemIcon icon;
         [SerializeField] private int index;
+        private InventoryItemIcon _icon;
 
         private PlayerController Player => PlayerController.Instance;
         
         private ActionStore _store;
 
-        private void Awake()
+        private void OnEnable()
         {
             _store = Player.InventoryManager.ActionStore;
-            _store.storeUpdated += UpdateIcon;
+            _store.storeUpdated.AddListener(UpdateIcon);
+            _icon ??= GetComponentInChildren<InventoryItemIcon>();
         }
 
         public void AddItem(InventoryItem item, int number)
@@ -51,7 +53,7 @@ namespace Scripts.InventoryManagement.UI.Inventories
 
         private void UpdateIcon()
         {
-            icon.SetItem(GetItem(), GetNumber());
+            _icon.SetItem(GetItem(), GetNumber());
         }
     }
 }

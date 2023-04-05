@@ -1,5 +1,7 @@
-﻿using Scripts.InventoryManagement.UI.Inventories;
+﻿using System;
+using Scripts.InventoryManagement.UI.Inventories;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Scripts.InventoryManagement.Inventories
 {
@@ -7,11 +9,21 @@ namespace Scripts.InventoryManagement.Inventories
     {
         private InventoryUIBase _inventoryUi;
         
+        /// <summary>
+        /// Broadcasts when the items in the slots are added/removed.
+        /// </summary>
+        public UnityEvent OnInventoryUpdated = new();
+        
         private void Awake()
         {
             AssignComponents();
         }
-        
+
+        private void OnEnable()
+        {
+            OnInventoryUpdated.RemoveAllListeners();
+        }
+
         public void ToggleInventory()
         {
             if (!_inventoryUi) AssignComponents();

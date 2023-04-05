@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.System.Saving;
 using UnityEngine;
+using UnityEngine.Events;
 using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.InventoryManagement.Inventories
@@ -28,11 +29,12 @@ namespace Scripts.InventoryManagement.Inventories
         /// <summary>
         /// Broadcasts when the items in the slots are added/removed.
         /// </summary>
-        public event Action storeUpdated;
+        public UnityEvent storeUpdated = new();
 
         private void Awake()
         {
-            Guid = global::System.Guid.NewGuid().ToString();
+            Guid = "ActionStore";
+            storeUpdated.RemoveAllListeners();
         }
 
         /// <summary>
@@ -119,7 +121,7 @@ namespace Scripts.InventoryManagement.Inventories
         /// <summary>
         /// Remove a given number of items from the given slot.
         /// </summary>
-        public void RemoveItems(int index, int number)
+        public void RemoveItems(int index, int number, bool fireUpdateEvent = true)
         {
             if (_dockedItems.ContainsKey(index))
             {
@@ -128,9 +130,10 @@ namespace Scripts.InventoryManagement.Inventories
                 {
                     _dockedItems.Remove(index);
                 }
-                if (storeUpdated != null)
+
+                if (fireUpdateEvent)
                 {
-                    storeUpdated();
+                    storeUpdated?.Invoke();
                 }
             }
             
@@ -166,20 +169,19 @@ namespace Scripts.InventoryManagement.Inventories
             return 1;
         }
 
-        /// PRIVATE
-
-        [Serializable]
-        private struct DockedItemRecord
-        {
-            public string itemID;
-            public int number;
-        }
-
         public string Guid { get; set; }
 
         public void Close()
         {
             Logger.LogNotImplemented();
+        }
+        
+        public void Clear()
+        {
+            for (int i = 0; i < _dockedItems.Count; i++)
+            {
+                _dockedItems.Remove(i);
+            }
         }
 
         object ISavable.CaptureState()
@@ -204,6 +206,13 @@ namespace Scripts.InventoryManagement.Inventories
             {
                 AddAction(MapObject.GetFromID<InventoryItem>(pair.Value.itemID), pair.Key, pair.Value.number);
             }
+        }
+        
+        [Serializable]
+        private struct DockedItemRecord
+        {
+            public string itemID;
+            public int number;
         }
     }
 }

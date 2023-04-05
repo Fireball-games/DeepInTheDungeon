@@ -19,7 +19,7 @@ namespace Scripts.InventoryManagement.UI.Inventories
         private void Awake() 
         { 
             _playerEquipment = PlayerController.Instance.InventoryManager.Equipment;
-            _playerEquipment.equipmentUpdated += RedrawUI;
+            _playerEquipment.OnInventoryUpdated.AddListener(RedrawUI);
         }
 
         private void Start() 

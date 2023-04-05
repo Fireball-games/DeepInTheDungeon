@@ -1,4 +1,5 @@
-﻿using Scripts.Helpers;
+﻿using System;
+using Scripts.Helpers;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Saving;
@@ -20,6 +21,12 @@ namespace Scripts.Player
 
         private void OnEnable()
         {
+            InventoryManager.CloseInventories();
+        }
+
+        private void OnDisable()
+        {
+            InventoryManager.ClearInventory();
             InventoryManager.CloseInventories();
         }
 

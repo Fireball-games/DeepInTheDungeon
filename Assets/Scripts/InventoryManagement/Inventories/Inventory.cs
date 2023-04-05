@@ -4,7 +4,6 @@ using Scripts.InventoryManagement.UI.Inventories;
 using Scripts.Player;
 using Scripts.System.Saving;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Scripts.InventoryManagement.Inventories
 {
@@ -29,11 +28,6 @@ namespace Scripts.InventoryManagement.Inventories
             public InventoryItem Item;
             public int Number;
         }
-
-        /// <summary>
-        /// Broadcasts when the items in the slots are added/removed.
-        /// </summary>
-        public UnityEvent OnInventoryUpdated = new();
 
         /// <summary>
         /// Convenience for getting the player's inventory.
@@ -114,7 +108,7 @@ namespace Scripts.InventoryManagement.Inventories
         /// Remove a number of items from the given slot. Will never remove more
         /// that there are.
         /// </summary>
-        public void RemoveFromSlot(int slot, int number)
+        public void RemoveFromSlot(int slot, int number, bool fireUpdateEvent = true)
         {
             _slots[slot].Number -= number;
             if (_slots[slot].Number <= 0)
@@ -122,8 +116,11 @@ namespace Scripts.InventoryManagement.Inventories
                 _slots[slot].Number = 0;
                 _slots[slot].Item = null;
             }
-            
-            OnInventoryUpdated?.Invoke();
+
+            if (fireUpdateEvent)
+            {
+                OnInventoryUpdated?.Invoke();
+            }
         }
 
         /// <summary>
@@ -154,6 +151,16 @@ namespace Scripts.InventoryManagement.Inventories
             OnInventoryUpdated.Invoke();
             
             return true;
+        }
+        
+        public void Clear()
+        {
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                RemoveFromSlot(i, int.MaxValue, false);
+            }
+            
+            OnInventoryUpdated.Invoke();
         }
 
         /// <summary>

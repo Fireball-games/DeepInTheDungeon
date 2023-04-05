@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Scripts.Helpers.Extensions;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.InventoryManagement.UI.Inventories;
 using Scripts.System.Saving;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Scripts.InventoryManagement.Inventories
 {
@@ -20,15 +22,12 @@ namespace Scripts.InventoryManagement.Inventories
         
         public string Guid { get; set; }
 
-        /// <summary>
-        /// Broadcasts when the items in the slots are added/removed.
-        /// </summary>
-        public event Action equipmentUpdated;
-
         private void Awake()
         {
-            Guid = global::System.Guid.NewGuid().ToString();
+            Guid = "Equipment";
         }
+        
+        
 
         /// <summary>
         /// Return the item in the given equip location.
@@ -53,19 +52,20 @@ namespace Scripts.InventoryManagement.Inventories
 
             _equippedItems[slot] = item;
 
-            if (equipmentUpdated != null)
-            {
-                equipmentUpdated();
-            }
+            OnInventoryUpdated.Invoke();
         }
 
         /// <summary>
         /// Remove the item for the given slot.
         /// </summary>
-        public void RemoveItem(EquipLocation slot)
+        public void RemoveItem(EquipLocation slot, bool fireUpdateEvent = true)
         {
             _equippedItems.Remove(slot);
-            equipmentUpdated?.Invoke();
+            
+            if (fireUpdateEvent)
+            {
+                OnInventoryUpdated?.Invoke();
+            }
         }
 
         /// <summary>
@@ -74,6 +74,11 @@ namespace Scripts.InventoryManagement.Inventories
         public IEnumerable<EquipLocation> GetAllPopulatedSlots()
         {
             return _equippedItems.Keys;
+        }
+        
+        public void Clear()
+        {
+            new List<EquipLocation>(GetAllPopulatedSlots()).ForEach(location => RemoveItem(location, false));
         }
 
         object ISavable.CaptureState()

@@ -21,6 +21,7 @@ namespace Scripts.Player
 
         private void OnEnable()
         {
+            InventoryManager.Initialize();
             InventoryManager.CloseInventories();
         }
 

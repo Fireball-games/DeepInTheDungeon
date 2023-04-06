@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Scripts.Building;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
+using Scripts.EventsManagement;
 using Scripts.Helpers;
 using Scripts.Helpers.Extensions;
 using Scripts.Localization;
@@ -37,11 +38,16 @@ namespace Scripts.System
             set => GameManager.player = value;
         }
 
-        private bool MovementEnabled
+        private static bool MovementEnabled
         {
-            set => GameManager.movementEnabled = value;
+            set {
+                if (GameManager)
+                {
+                    GameManager.movementEnabled = value;
+                }
+            }
         }
-        
+
         private readonly PlayerController _playerPrefab;
 
         private Campaign _currentCampaign;
@@ -208,6 +214,7 @@ namespace Scripts.System
                 _currentEntryPoint.playerGridPosition,
                 Quaternion.Euler(0f, _currentEntryPoint.playerRotationY, 0f));
             Player.PlayerMovement.SetCamera();
+            EventsManager.TriggerOnPlayerSpawned();
 
             // To allow playing StartRooms from Editor
             MovementEnabled = true;

@@ -18,6 +18,7 @@ namespace Scripts.EventsManagement
         public static event Action OnMapDemolished;
         public static event Action<string> OnMapTraversalTriggered;
         public static readonly UnityEvent<MapObjectInstance> OnMapObjectRemovedFromMap = new();
+        public static readonly UnityEvent OnPlayerSpawned = new();
 
         // ***********    Triggers    ***********
 
@@ -31,5 +32,6 @@ namespace Scripts.EventsManagement
         public static void TriggerOnMapDemolished() => OnMapDemolished?.Invoke();
         public static void TriggerOnMapTraversalTriggered(string guid) => OnMapTraversalTriggered?.Invoke(guid);
         public static void TriggerOnMapObjectRemovedFromMap(MapObjectInstance item) => OnMapObjectRemovedFromMap.Invoke(item);
+        public static void TriggerOnPlayerSpawned() => OnPlayerSpawned.Invoke();
     }
 }

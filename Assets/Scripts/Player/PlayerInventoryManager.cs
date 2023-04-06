@@ -1,7 +1,6 @@
 ﻿using Scripts.InventoryManagement.Inventories;
 using Scripts.System.Pooling;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Player
 {
@@ -30,11 +29,6 @@ namespace Scripts.Player
         
         private static Vector3 _itemEditCursorOffset;
 
-        private void Awake()
-        {
-            Initialize();
-        }
-        
         private void OnEnable()
         {
             pickupColliderPrefab = pickupColliderPrefab.GetFromPool(null);
@@ -58,6 +52,7 @@ namespace Scripts.Player
         public void CloseInventories()
         {
             if (!Inventory) Initialize();
+            if (!Inventory) return;
             
             Inventory.Close();
             Equipment.Close();
@@ -70,12 +65,17 @@ namespace Scripts.Player
             Equipment.Clear();
         }
         
-        private void Initialize()
+        public void Initialize()
         {
             Inventory = GetComponent<Inventory>();
+            if (Inventory) Inventory.Initialize();
+
             ActionStore = GetComponent<ActionStore>();
+            if (ActionStore) ActionStore.Initialize();
+
             Equipment = GetComponent<Equipment>();
-            
+            if (Equipment) Equipment.Initialize();
+
             MaxClickPickupDistance = maxPickupDistance * maxPickupDistance;
             PickupSpawnGracePeriod = (int) (pickupSpawnGracePeriod * 1000);
             _itemEditCursorOffset = itemEditCursorOffset;

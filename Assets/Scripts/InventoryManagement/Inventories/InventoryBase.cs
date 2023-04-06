@@ -13,16 +13,21 @@ namespace Scripts.InventoryManagement.Inventories
         /// Broadcasts when the items in the slots are added/removed.
         /// </summary>
         public UnityEvent OnInventoryUpdated = new();
+        public UnityEvent OnInventoryInitialized = new();
         
         private void Awake()
         {
             AssignComponents();
         }
 
-        private void OnEnable()
+        public virtual void Initialize()
         {
+            Clear();
             OnInventoryUpdated.RemoveAllListeners();
+            OnInventoryInitialized.Invoke();
         }
+
+        public abstract void Clear();
 
         public void ToggleInventory()
         {

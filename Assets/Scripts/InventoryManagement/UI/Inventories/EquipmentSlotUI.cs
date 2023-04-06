@@ -14,12 +14,14 @@ namespace Scripts.InventoryManagement.UI.Inventories
         [SerializeField] private InventoryItemIcon icon;
         [SerializeField] private EquipLocation equipLocation = EquipLocation.WeaponLeft;
 
-        private Equipment _playerEquipment;
+        private static Equipment _playerEquipment;
 
-        private void Awake() 
-        { 
-            _playerEquipment = PlayerController.Instance.InventoryManager.Equipment;
-            _playerEquipment.OnInventoryUpdated.AddListener(RedrawUI);
+        private void OnDestroy()
+        {
+            if (_playerEquipment)
+            {
+                _playerEquipment.OnInventoryUpdated.RemoveListener(RedrawUI);
+            }
         }
 
         private void Start() 
@@ -56,7 +58,11 @@ namespace Scripts.InventoryManagement.UI.Inventories
             _playerEquipment.RemoveItem(equipLocation);
         }
 
-        // PRIVATE
+        public void OnInitialize()
+        {
+            _playerEquipment ??= PlayerController.Instance.InventoryManager.Equipment;
+            _playerEquipment.OnInventoryUpdated.AddListener(RedrawUI);
+        }
 
         private void RedrawUI()
         {

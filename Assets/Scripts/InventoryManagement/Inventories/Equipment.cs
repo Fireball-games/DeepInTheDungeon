@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Scripts.Helpers.Extensions;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.InventoryManagement.UI.Inventories;
 using Scripts.System.Saving;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Scripts.InventoryManagement.Inventories
 {
@@ -27,7 +25,12 @@ namespace Scripts.InventoryManagement.Inventories
             Guid = "Equipment";
         }
         
-        
+        public override void Initialize()
+        {
+            base.Initialize();
+            
+            FindObjectsOfType<EquipmentSlotUI>(true).ForEach(slot => slot.OnInitialize());
+        }
 
         /// <summary>
         /// Return the item in the given equip location.
@@ -67,18 +70,20 @@ namespace Scripts.InventoryManagement.Inventories
                 OnInventoryUpdated?.Invoke();
             }
         }
+        
+        public override void Clear()
+        {
+            if (_equippedItems == null || _equippedItems.Count == 0) return;
+            
+            new List<EquipLocation>(GetAllPopulatedSlots()).ForEach(location => RemoveItem(location, false));
+        }
 
         /// <summary>
         /// Enumerate through all the slots that currently contain items.
         /// </summary>
-        public IEnumerable<EquipLocation> GetAllPopulatedSlots()
+        private IEnumerable<EquipLocation> GetAllPopulatedSlots()
         {
             return _equippedItems.Keys;
-        }
-        
-        public void Clear()
-        {
-            new List<EquipLocation>(GetAllPopulatedSlots()).ForEach(location => RemoveItem(location, false));
         }
 
         object ISavable.CaptureState()

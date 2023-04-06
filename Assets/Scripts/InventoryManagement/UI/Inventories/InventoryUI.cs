@@ -30,7 +30,7 @@ namespace Scripts.InventoryManagement.UI.Inventories
 
         private void OnEnable()
         {
-            _playerInventory.OnInventoryUpdated.AddListener(Redraw);
+            _playerInventory.OnInventoryInitialized.AddListener(OnInitialize);
         }
 
         private void Start()
@@ -41,6 +41,12 @@ namespace Scripts.InventoryManagement.UI.Inventories
         private void OnDisable()
         {
             _playerInventory.OnInventoryUpdated.RemoveListener(Redraw);
+            _playerInventory.OnInventoryInitialized.RemoveListener(OnInitialize);
+        }
+
+        private void OnInitialize()
+        {
+            _playerInventory.OnInventoryUpdated.AddListener(Redraw);
         }
 
         private void Redraw()

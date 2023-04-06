@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Scripts.InventoryManagement.Inventories.Items;
+using Scripts.InventoryManagement.UI.Inventories;
 using Scripts.System.Saving;
 using UnityEngine;
 using UnityEngine.Events;
@@ -29,12 +30,18 @@ namespace Scripts.InventoryManagement.Inventories
         /// <summary>
         /// Broadcasts when the items in the slots are added/removed.
         /// </summary>
-        public UnityEvent storeUpdated = new();
+        public UnityEvent OnStoreUpdated = new();
 
         private void Awake()
         {
             Guid = "ActionStore";
-            storeUpdated.RemoveAllListeners();
+        }
+        
+        public void Initialize()
+        {
+            Clear();
+            OnStoreUpdated.RemoveAllListeners();
+            ActionSlotUI.TriggerInitialization();
         }
 
         /// <summary>
@@ -90,7 +97,7 @@ namespace Scripts.InventoryManagement.Inventories
                 _dockedItems[index] = slot;
             }
 
-            storeUpdated?.Invoke();
+            OnStoreUpdated.Invoke();
         }
 
         /// <summary>
@@ -133,7 +140,7 @@ namespace Scripts.InventoryManagement.Inventories
 
                 if (fireUpdateEvent)
                 {
-                    storeUpdated?.Invoke();
+                    OnStoreUpdated.Invoke();
                 }
             }
             
@@ -178,6 +185,8 @@ namespace Scripts.InventoryManagement.Inventories
         
         public void Clear()
         {
+            if (_dockedItems == null || _dockedItems.Count == 0) return;
+            
             for (int i = 0; i < _dockedItems.Count; i++)
             {
                 _dockedItems.Remove(i);

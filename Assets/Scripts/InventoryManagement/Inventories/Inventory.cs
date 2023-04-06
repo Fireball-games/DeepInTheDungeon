@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.InventoryManagement.UI.Inventories;
 using Scripts.Player;
@@ -119,7 +120,7 @@ namespace Scripts.InventoryManagement.Inventories
 
             if (fireUpdateEvent)
             {
-                OnInventoryUpdated?.Invoke();
+                OnInventoryUpdated.Invoke();
             }
         }
 
@@ -153,8 +154,10 @@ namespace Scripts.InventoryManagement.Inventories
             return true;
         }
         
-        public void Clear()
+        public override void Clear()
         {
+            if (_slots == null || !_slots.Any()) return;
+            
             for (int i = 0; i < _slots.Length; i++)
             {
                 RemoveFromSlot(i, int.MaxValue, false);

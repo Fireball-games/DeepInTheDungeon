@@ -54,6 +54,8 @@ namespace Scripts.Building.ItemSpawning
         
         public async Task SpawnItemsAsync(List<MapObjectConfiguration> items)
         {
+            if (items == null) return;
+            
             Task[] tasks = new Task[items.Count];
             
             foreach (MapObjectConfiguration item in items)

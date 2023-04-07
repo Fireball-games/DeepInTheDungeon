@@ -1,6 +1,9 @@
-﻿using Scripts.InventoryManagement.Inventories;
+﻿using System.Collections.Generic;
+using Scripts.InventoryManagement.Inventories;
 using Scripts.System.Pooling;
+using Scripts.System.Saving;
 using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Player
 {
@@ -81,5 +84,7 @@ namespace Scripts.Player
             _itemEditCursorOffset = itemEditCursorOffset;
             DragSize = dragSize;
         }
+
+        public IEnumerable<ISavable> GetInventorySavables() => new ISavable[]{ Inventory, ActionStore, Equipment };
     }
 }

@@ -210,10 +210,12 @@ namespace Scripts.System.Saving
         // in MapStateRecords.
         private static List<MapStateRecord> CaptureCurrentMapState()
         {
-            IEnumerable<ISavable> savables = TriggerService.GetPrefabScripts().ToList();
-            savables = savables.Concat(TriggerService.TriggerReceivers.Values);
-            List<MapStateRecord> result = savables.Select(CaptureSavaData).ToList();
-            return result;
+            // IEnumerable<ISavable> savables = TriggerService.GetPrefabScripts().ToList();
+            // savables = savables.Concat(TriggerService.TriggerReceivers.Values);
+            // savables = savables.Concat(PlayerController.Instance.InventoryManager.GetInventorySavables());
+            // List<MapStateRecord> result = GatherSavables().Select(CaptureSavaData).ToList();
+            // return result;
+            return GatherSavables().Select(CaptureSavaData).ToList();
         }
 
         private static MapStateRecord CaptureSavaData(ISavable savable)
@@ -256,10 +258,7 @@ namespace Scripts.System.Saving
 
         private static void RestoreMapData(List<MapStateRecord> mapState)
         {
-            IEnumerable<ISavable> savables = TriggerService.GetPrefabScripts().ToList();
-            savables = savables.Concat(TriggerService.TriggerReceivers.Values);
-
-            foreach (ISavable savable in savables)
+            foreach (ISavable savable in GatherSavables())
             {
                 MapStateRecord record = mapState.FirstOrDefault(r => r.guid == savable.Guid);
                 if (record != null)
@@ -277,6 +276,15 @@ namespace Scripts.System.Saving
             return currentNames == null || !currentNames.Any() 
                 ? $"{rootFileName}1" 
                 : rootFileName.IncrementName(currentNames);
+        }
+
+        private static IEnumerable<ISavable> GatherSavables()
+        {
+            IEnumerable<ISavable> savables = TriggerService.GetPrefabScripts().ToList();
+            savables = savables.Concat(TriggerService.TriggerReceivers.Values);
+            savables = savables.Concat(PlayerController.Instance.InventoryManager.GetInventorySavables());
+
+            return savables;
         }
     }
 }

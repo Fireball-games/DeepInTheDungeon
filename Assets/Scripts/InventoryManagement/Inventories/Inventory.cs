@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.InventoryManagement.UI.Inventories;
@@ -28,6 +29,13 @@ namespace Scripts.InventoryManagement.Inventories
         {
             public InventoryItem Item;
             public int Number;
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            Guid = "Inventory";
         }
 
         /// <summary>
@@ -219,13 +227,24 @@ namespace Scripts.InventoryManagement.Inventories
 
         object ISavable.CaptureState()
         {
-            InventorySlotRecord[] slotStrings = new InventorySlotRecord[inventorySize];
+            Dictionary<string, int> slotStrings = new();
+            int emptySlotIndex = 0;
             for (int i = 0; i < inventorySize; i++)
             {
-                if (_slots[i].Item != null)
+                // if (_slots[i].Item)
+                // {
+                //     slotStrings = slotStrings.Append(new InventorySlotRecord(_slots[i].Item.GetItemID(), _slots[i].Number));
+                //     // slotStrings[i].itemID = _slots[i].Item.GetItemID();
+                //     // slotStrings[i].number = _slots[i].Number;
+                // }
+                if (_slots[i].Item)
                 {
-                    slotStrings[i].itemID = _slots[i].Item.GetItemID();
-                    slotStrings[i].number = _slots[i].Number;
+                    slotStrings.Add(_slots[i].Item.GetItemID(), _slots[i].Number);
+                }
+                else
+                {
+                    slotStrings.Add($"Empty{emptySlotIndex}", 0);
+                    emptySlotIndex++;
                 }
             }
             return slotStrings;
@@ -233,11 +252,11 @@ namespace Scripts.InventoryManagement.Inventories
 
         void ISavable.RestoreState(object state)
         {
-            InventorySlotRecord[] slotStrings = (InventorySlotRecord[])state;
+            Dictionary<string, int> slotStrings = (Dictionary<string, int>)state;
             for (int i = 0; i < inventorySize; i++)
             {
-                _slots[i].Item = InventoryItem.GetFromID<InventoryItem>(slotStrings[i].itemID);
-                _slots[i].Number = slotStrings[i].number;
+                _slots[i].Item = InventoryItem.GetFromID<InventoryItem>(slotStrings.ElementAt(i).Key);
+                _slots[i].Number = slotStrings.ElementAt(i).Value;
             }
 
             OnInventoryUpdated.Invoke();
@@ -255,6 +274,12 @@ namespace Scripts.InventoryManagement.Inventories
         {
             public string itemID;
             public int number;
+
+            public InventorySlotRecord(string itemID, int number)
+            {
+                this.itemID = itemID;
+                this.number = number;
+            }
         }
     }
 }

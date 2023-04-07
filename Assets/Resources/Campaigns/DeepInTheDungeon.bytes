@@ -279,51 +279,7 @@
 									"IsForMovement" : true
 								},null,null
 							],[
-								null,null,null,null,null,null,null,{
-									"TileWalls" : {
-										"Floor" : {
-											"MeshInfo" : null
-										},
-										"Ceiling" : {
-											"MeshInfo" : null
-										},
-										"North" : {
-											"MeshInfo" : null
-										},
-										"East" : {
-											"MeshInfo" : null
-										},
-										"South" : {
-											"MeshInfo" : null
-										},
-										"West" : {
-											"MeshInfo" : null
-										}
-									},
-									"IsForMovement" : true
-								},{
-									"TileWalls" : {
-										"Floor" : {
-											"MeshInfo" : null
-										},
-										"Ceiling" : {
-											"MeshInfo" : null
-										},
-										"North" : {
-											"MeshInfo" : null
-										},
-										"East" : {
-											"MeshInfo" : null
-										},
-										"South" : {
-											"MeshInfo" : null
-										},
-										"West" : {
-											"MeshInfo" : null
-										}
-									},
-									"IsForMovement" : true
-								},{
+								null,null,null,null,null,null,null,null,null,{
 									"TileWalls" : {
 										"Floor" : {
 											"MeshInfo" : null
@@ -2052,6 +2008,104 @@
 							"Guid" : "f7cde833-aead-4800-9c62-3ccd7201e3c1",
 							"SpawnPrefabOnBuild" : true,
 							"OwnerGuid" : null
+						}
+					],
+					"MapObjects" : [
+						{
+							"ID" : "fed4de7f-1d8c-429e-85d7-b5a7e604d316",
+							"PositionRotation" : {
+								"Position" : {
+									"x" : 3.950329,
+									"y" : -3.47002554,
+									"z" : 3.56450486
+								},
+								"Rotation" : {
+									"x" : -0.7794993,
+									"y" : -0.00112444849,
+									"z" : -0.0006800003,
+									"w" : 0.6264018
+								}
+							},
+							"CustomData" : {1:{
+									"__type" : "int"1
+								}
+							}
+						},{
+							"ID" : "fed4de7f-1d8c-429e-85d7-b5a7e604d316",
+							"PositionRotation" : {
+								"Position" : {
+									"x" : 4.19305325,
+									"y" : -269.4041,
+									"z" : 2.577573
+								},
+								"Rotation" : {
+									"x" : -0.6523283,
+									"y" : -0.5855847,
+									"z" : -0.430865854,
+									"w" : 0.214273065
+								}
+							},
+							"CustomData" : {1:{
+									"__type" : "int"1
+								}
+							}
+						},{
+							"ID" : "fed4de7f-1d8c-429e-85d7-b5a7e604d316",
+							"PositionRotation" : {
+								"Position" : {
+									"x" : 4.27066231,
+									"y" : -3.50960684,
+									"z" : 4.644043
+								},
+								"Rotation" : {
+									"x" : -2.14468923E-06,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"CustomData" : {1:{
+									"__type" : "int"1
+								}
+							}
+						},{
+							"ID" : "5b4c7204-22bb-498f-818b-b71ee1db5f10",
+							"PositionRotation" : {
+								"Position" : {
+									"x" : 4.76373625,
+									"y" : -3.49999976,
+									"z" : 4.70567846
+								},
+								"Rotation" : {
+									"x" : 3.391519E-05,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"CustomData" : {1:{
+									"__type" : "int"1
+								}
+							}
+						},{
+							"ID" : "5b4c7204-22bb-498f-818b-b71ee1db5f10",
+							"PositionRotation" : {
+								"Position" : {
+									"x" : 5.89370155,
+									"y" : -3.49999976,
+									"z" : 4.82894945
+								},
+								"Rotation" : {
+									"x" : 3.40555744E-05,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"CustomData" : {1:{
+									"__type" : "int"1
+								}
+							}
 						}
 					],
 					"EntryPoints" : [
@@ -4218,6 +4272,9 @@
 							"OwnerGuid" : null
 						}
 					],
+					"MapObjects" : [
+						
+					],
 					"EntryPoints" : [
 						{
 							"name" : "Main Entry",
@@ -4227,6 +4284,1629 @@
 								"z" : 2
 							},
 							"playerRotationY" : 0,
+							"isMovingForwardOnStart" : true
+						}
+					]
+				},{
+					"MapName" : "EntryLevel",
+					"EditorStartPosition" : {
+						"x" : 3,
+						"y" : 5,
+						"z" : 5
+					},
+					"EditorPlayerStartRotation" : {
+						"x" : 0,
+						"y" : 0,
+						"z" : 0,
+						"w" : 1
+					},
+					"SceneName" : "PlayIndoor",
+					"Layout" : [
+						[
+							[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							]
+						],[
+							[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null,null,null,null,null,null
+							],[
+								null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							]
+						],[
+							[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : false
+								},null,null,null,null,null,null,null,null
+							],[
+								null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null
+							],[
+								null,null,null,null,null,null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null
+							],[
+								null,null,null,null,null,null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null
+							],[
+								null,null,null,null,null,null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null
+							],[
+								null,null,null,null,null,null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							]
+						],[
+							[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null
+							],[
+								null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : false
+								},null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : false
+								},null
+							],[
+								null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null,null
+							],[
+								null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : false
+								},null
+							],[
+								null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null,null
+							],[
+								null,null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : false
+								},null
+							],[
+								null,null,null,null,null,{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},{
+									"TileWalls" : {
+										"Floor" : {
+											"MeshInfo" : null
+										},
+										"Ceiling" : {
+											"MeshInfo" : null
+										},
+										"North" : {
+											"MeshInfo" : null
+										},
+										"East" : {
+											"MeshInfo" : null
+										},
+										"South" : {
+											"MeshInfo" : null
+										},
+										"West" : {
+											"MeshInfo" : null
+										}
+									},
+									"IsForMovement" : true
+								},null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							]
+						],[
+							[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							]
+						],[
+							[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							]
+						],[
+							[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							],[
+								null,null,null,null,null,null,null,null,null,null,null
+							]
+						]
+					],
+					"PrefabConfigurations" : [
+						{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : false,
+							"PrefabType" : 8,
+							"PrefabName" : "WideStairs",
+							"TransformData" : {
+								"Position" : {
+									"x" : 3,
+									"y" : -3,
+									"z" : 2
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0.7071068,
+									"z" : 0,
+									"w" : 0.7071068
+								}
+							},
+							"Guid" : "35f2dcfd-0af6-4e29-9bd0-0265ce24411a",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : false,
+							"PrefabType" : 8,
+							"PrefabName" : "WideStairs",
+							"TransformData" : {
+								"Position" : {
+									"x" : 2,
+									"y" : -2,
+									"z" : 2
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0.7071068,
+									"z" : 0,
+									"w" : 0.7071068
+								}
+							},
+							"Guid" : "9780588d-5733-44d4-ae39-b0d554ca4c56",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0,
+							"WayPoints" : [
+								{
+									"position" : {
+										"x" : 1,
+										"y" : -1,
+										"z" : 2
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 1.5,
+										"y" : -1,
+										"z" : 2
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 3.5,
+										"y" : -3,
+										"z" : 2
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 4,
+										"y" : -3,
+										"z" : 2
+									},
+									"moveSpeedModifier" : 0.3
+								}
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "MoveWall",
+							"TransformData" : {
+								"Position" : {
+									"x" : 1.5,
+									"y" : -1,
+									"z" : 2
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "ac76e671-9b20-4e5b-a90f-a8a24040d3ab",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.EntryPointConfiguration,Assembly-CSharp",
+							"IsMovingForwardOnStart" : true,
+							"Name" : "Start",
+							"PlayerRotationY" : 90,
+							"PrefabType" : 11,
+							"PrefabName" : "StartPoint",
+							"TransformData" : {
+								"Position" : {
+									"x" : 1,
+									"y" : -1,
+									"z" : 2
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "6d829e49-2d69-4370-a851-ab10040bfbb4",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0.05,
+							"WayPoints" : [
+								
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "DoorGate",
+							"TransformData" : {
+								"Position" : {
+									"x" : 6.5,
+									"y" : -3,
+									"z" : 5
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "2e18f432-c47a-4102-a90b-5a5cf6e3c719",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerReceiverConfiguration,Assembly-CSharp",
+							"CurrentPosition" : 0,
+							"Identification" : "Door Gate",
+							"PrefabType" : 10,
+							"PrefabName" : "Door Gate",
+							"TransformData" : {
+								"Position" : {
+									"x" : 6.5,
+									"y" : -3,
+									"z" : 5
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1
+								}
+							},
+							"Guid" : "f56101df-e84f-45f4-8759-c41d71e8deae",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "2e18f432-c47a-4102-a90b-5a5cf6e3c719"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0.05,
+							"WayPoints" : [
+								
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "DoorGateWButton",
+							"TransformData" : {
+								"Position" : {
+									"x" : 3.5,
+									"y" : -3,
+									"z" : 5
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 1,
+									"z" : 0,
+									"w" : -4.371139E-08
+								}
+							},
+							"Guid" : "08e47b88-3ac1-4fc9-a7c9-807e00ba19ab",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerReceiverConfiguration,Assembly-CSharp",
+							"CurrentPosition" : 0,
+							"Identification" : "Door Gate \/w Buttons",
+							"PrefabType" : 10,
+							"PrefabName" : "Door Gate \/w Buttons",
+							"TransformData" : {
+								"Position" : {
+									"x" : 3.5,
+									"y" : -3,
+									"z" : 5
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 1,
+									"z" : 0,
+									"w" : -4.371139E-08
+								}
+							},
+							"Guid" : "42a95987-f9cb-40c1-b4f9-5e733ef80c88",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "08e47b88-3ac1-4fc9-a7c9-807e00ba19ab"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerConfiguration,Assembly-CSharp",
+							"Subscribers" : [
+								"42a95987-f9cb-40c1-b4f9-5e733ef80c88"
+							],
+							"TriggerType" : 2,
+							"Count" : 0,
+							"CurrentPosition" : 0,
+							"TargetMapName" : null,
+							"TargetMapEntranceName" : null,
+							"ExitDelay" : 0,
+							"PrefabType" : 9,
+							"PrefabName" : "GateButton",
+							"TransformData" : {
+								"Position" : {
+									"x" : 3.45,
+									"y" : -2.96,
+									"z" : 4.54
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : -4.371139E-08,
+									"z" : 0,
+									"w" : -1
+								}
+							},
+							"Guid" : "a4f17aff-0b11-4424-9ea3-b1a6900e7453",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "08e47b88-3ac1-4fc9-a7c9-807e00ba19ab"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TriggerConfiguration,Assembly-CSharp",
+							"Subscribers" : [
+								"42a95987-f9cb-40c1-b4f9-5e733ef80c88"
+							],
+							"TriggerType" : 2,
+							"Count" : 0,
+							"CurrentPosition" : 0,
+							"TargetMapName" : null,
+							"TargetMapEntranceName" : null,
+							"ExitDelay" : 0,
+							"PrefabType" : 9,
+							"PrefabName" : "GateButton2",
+							"TransformData" : {
+								"Position" : {
+									"x" : 3.55,
+									"y" : -2.96,
+									"z" : 5.46
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 1,
+									"z" : 0,
+									"w" : -4.371139E-08
+								}
+							},
+							"Guid" : "21c1f356-36be-4757-a558-d14e48ecb51e",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "08e47b88-3ac1-4fc9-a7c9-807e00ba19ab"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : false,
+							"PrefabType" : 8,
+							"PrefabName" : "StairsWPath1up1fwd",
+							"TransformData" : {
+								"Position" : {
+									"x" : 3,
+									"y" : -3,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : -0.7071068,
+									"z" : 0,
+									"w" : 0.7071068
+								}
+							},
+							"Guid" : "829a1e3a-70ab-4d94-81a4-9b0d5aa1587e",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0,
+							"WayPoints" : [
+								{
+									"position" : {
+										"x" : 2,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 2.5,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 3.5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 4,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								}
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "MoveWallUp",
+							"TransformData" : {
+								"Position" : {
+									"x" : 2.50000048,
+									"y" : -3,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1.00000012
+								}
+							},
+							"Guid" : "ae6eac7a-b1ac-4155-9ed8-1fcbeced2d1d",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "829a1e3a-70ab-4d94-81a4-9b0d5aa1587e"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0,
+							"WayPoints" : [
+								{
+									"position" : {
+										"x" : 4,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 3.5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 2.5,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 2,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								}
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "MoveWallDown",
+							"TransformData" : {
+								"Position" : {
+									"x" : 3.49999952,
+									"y" : -2,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0,
+									"z" : 0,
+									"w" : 1.00000012
+								}
+							},
+							"Guid" : "1912ecad-263a-49c0-8b2e-4073d069fe43",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "829a1e3a-70ab-4d94-81a4-9b0d5aa1587e"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : false,
+							"PrefabType" : 8,
+							"PrefabName" : "StairsWPath1up1fwd",
+							"TransformData" : {
+								"Position" : {
+									"x" : 7,
+									"y" : -3,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0.7071068,
+									"z" : 0,
+									"w" : 0.7071068
+								}
+							},
+							"Guid" : "7c79ae93-d15d-4b25-8940-1906f21c1cee",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0,
+							"WayPoints" : [
+								{
+									"position" : {
+										"x" : 8,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 7.5,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 6.5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 6,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								}
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "MoveWallUp",
+							"TransformData" : {
+								"Position" : {
+									"x" : 7.5,
+									"y" : -3,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 1.00000012,
+									"z" : 0,
+									"w" : 0
+								}
+							},
+							"Guid" : "2699fca8-01d9-4831-9c6c-6043b11607d9",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "7c79ae93-d15d-4b25-8940-1906f21c1cee"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.WallConfiguration,Assembly-CSharp",
+							"Offset" : 0,
+							"WayPoints" : [
+								{
+									"position" : {
+										"x" : 6,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 6.5,
+										"y" : -2,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 7.5,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								},{
+									"position" : {
+										"x" : 8,
+										"y" : -3,
+										"z" : 9
+									},
+									"moveSpeedModifier" : 0.3
+								}
+							],
+							"PrefabType" : 3,
+							"PrefabName" : "MoveWallDown",
+							"TransformData" : {
+								"Position" : {
+									"x" : 6.5,
+									"y" : -2,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 1.00000012,
+									"z" : 0,
+									"w" : 0
+								}
+							},
+							"Guid" : "3812c555-edd6-4985-9595-e3045b0855cd",
+							"SpawnPrefabOnBuild" : false,
+							"OwnerGuid" : "7c79ae93-d15d-4b25-8940-1906f21c1cee"
+						},{
+							"__type" : "Scripts.Building.PrefabsSpawning.Configurations.TilePrefabConfiguration,Assembly-CSharp",
+							"IsWalkable" : false,
+							"PrefabType" : 8,
+							"PrefabName" : "CeilingCorner",
+							"TransformData" : {
+								"Position" : {
+									"x" : 5,
+									"y" : -3,
+									"z" : 9
+								},
+								"Rotation" : {
+									"x" : 0,
+									"y" : 0.7071068,
+									"z" : 0,
+									"w" : 0.7071068
+								}
+							},
+							"Guid" : "b67450cf-5b38-4da7-80ab-e1a51377898c",
+							"SpawnPrefabOnBuild" : true,
+							"OwnerGuid" : null
+						}
+					],
+					"MapObjects" : [
+						{
+							"ID" : "fed4de7f-1d8c-429e-85d7-b5a7e604d316",
+							"PositionRotation" : {
+								"Position" : {
+									"x" : -1.10125387,
+									"y" : -7725.23438,
+									"z" : -43.4011955
+								},
+								"Rotation" : {
+									"x" : 0.8206452,
+									"y" : 0.4438421,
+									"z" : -0.04295555,
+									"w" : 0.357352048
+								}
+							},
+							"CustomData" : {1:{
+									"__type" : "int"1
+								}
+							}
+						},{
+							"ID" : "fed4de7f-1d8c-429e-85d7-b5a7e604d316",
+							"PositionRotation" : {
+								"Position" : {
+									"x" : 10.0616617,
+									"y" : -7836.09375,
+									"z" : -46.2313156
+								},
+								"Rotation" : {
+									"x" : 0.013471866,
+									"y" : -0.421074122,
+									"z" : 0.120195493,
+									"w" : 0.898926139
+								}
+							},
+							"CustomData" : {1:{
+									"__type" : "int"1
+								}
+							}
+						}
+					],
+					"EntryPoints" : [
+						{
+							"name" : "Start",
+							"playerGridPosition" : {
+								"x" : 1,
+								"y" : 1,
+								"z" : 2
+							},
+							"playerRotationY" : 90,
 							"isMovingForwardOnStart" : true
 						}
 					]

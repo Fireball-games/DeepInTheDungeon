@@ -20,8 +20,10 @@ namespace Scripts.InventoryManagement.Inventories
         
         public string Guid { get; set; }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             Guid = "Equipment";
         }
         
@@ -88,6 +90,7 @@ namespace Scripts.InventoryManagement.Inventories
 
         object ISavable.CaptureState()
         {
+            // TODO: make it so EquipLocation stores as string, causes error in ES3 serialization, maybe not store it as dictionary?
             Dictionary<EquipLocation, string> equippedItemsForSerialization = new();
             foreach (KeyValuePair<EquipLocation, EquipableItem> pair in _equippedItems)
             {

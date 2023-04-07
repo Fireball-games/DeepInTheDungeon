@@ -15,7 +15,7 @@ namespace Scripts.InventoryManagement.Inventories
         public UnityEvent OnInventoryUpdated = new();
         public UnityEvent OnInventoryInitialized = new();
         
-        private void Awake()
+        protected virtual void Awake()
         {
             AssignComponents();
         }

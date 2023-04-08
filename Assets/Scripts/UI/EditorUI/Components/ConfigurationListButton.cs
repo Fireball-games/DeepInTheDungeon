@@ -16,12 +16,8 @@ namespace Scripts.UI.EditorUI.Components
     {
         public bool isCameraStayingOnNavigatedPosition;
         
-        private PositionRotation _originalCameraTransformData;
-        private int _originalFloor;
-
-        private EditorUIManager UIManager => EditorUIManager.Instance;
-        private Cursor3D Cursor3D => UIManager ? UIManager.Cursor3D : null;
-        private EditorCameraService CameraService => EditorCameraService.Instance;
+        private static EditorUIManager UIManager => EditorUIManager.Instance;
+        private static Cursor3D Cursor3D => UIManager ? UIManager.Cursor3D : null;
 
         public void Set(PrefabConfiguration item, UnityAction<PrefabConfiguration> onClick, bool setSelectedOnClick = true, bool _isCameraStayingOnNavigatedPosition = false)
         {
@@ -48,10 +44,7 @@ namespace Scripts.UI.EditorUI.Components
 
             if (isCameraStayingOnNavigatedPosition)
             {
-                _originalCameraTransformData =
-                    new PositionRotation(CameraService.MoveCameraToPrefab(Vector3Int.RoundToInt(displayedItem.TransformData.Position)),
-                        Quaternion.Euler(Vector3.zero));
-                _originalFloor = Mathf.RoundToInt(-displayedItem.TransformData.Position.y);
+                ParentList.NavigateToClickedButtonItem();
             }
             else
             {

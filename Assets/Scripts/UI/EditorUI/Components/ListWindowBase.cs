@@ -80,6 +80,12 @@ namespace Scripts.UI.EditorUI.Components
         }
         
         public void SetNavigatedAway() => _navigatedAway = true;
+        
+        public void NavigateToClickedButtonItem()
+        {
+            OriginalFloor = MapEditorManager.Instance.CurrentFloor;
+            OriginalCameraPositionRotation = EditorCameraService.Instance.GetCameraTransformData();
+        }
 
         /// <summary>
         /// Button set is separated from Open method to allow for custom button settings.

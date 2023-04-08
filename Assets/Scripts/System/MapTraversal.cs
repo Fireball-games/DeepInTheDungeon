@@ -221,7 +221,7 @@ namespace Scripts.System
 
             if (!SceneLoader.IsInMainScene && !GameManager.IsPlayingFromEditor)
             {
-                SaveManager.RestoreMapDataFromCurrentSave(CurrentMap.MapName);
+                await SaveManager.RestoreMapDataFromCurrentSave(CurrentMap.MapName);
             }
             
             ScreenFader.FadeOut(1.2f);

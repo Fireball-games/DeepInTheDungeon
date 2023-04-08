@@ -227,36 +227,26 @@ namespace Scripts.InventoryManagement.Inventories
 
         object ISavable.CaptureState()
         {
-            Dictionary<string, int> slotStrings = new();
-            int emptySlotIndex = 0;
+            List<InventorySlotRecord> slotStrings = new();
             for (int i = 0; i < inventorySize; i++)
             {
-                // if (_slots[i].Item)
-                // {
-                //     slotStrings = slotStrings.Append(new InventorySlotRecord(_slots[i].Item.GetItemID(), _slots[i].Number));
-                //     // slotStrings[i].itemID = _slots[i].Item.GetItemID();
-                //     // slotStrings[i].number = _slots[i].Number;
-                // }
-                if (_slots[i].Item)
-                {
-                    slotStrings.Add(_slots[i].Item.GetItemID(), _slots[i].Number);
-                }
-                else
-                {
-                    slotStrings.Add($"Empty{emptySlotIndex}", 0);
-                    emptySlotIndex++;
-                }
+                slotStrings.Add(_slots[i].Item
+                    ? new InventorySlotRecord(_slots[i].Item.GetItemID(), _slots[i].Number)
+                    : new InventorySlotRecord("Empty", 0));
             }
-            return slotStrings;
+            return new InventoryRecord(_slots.Length, slotStrings);
         }
 
         void ISavable.RestoreState(object state)
         {
-            Dictionary<string, int> slotStrings = (Dictionary<string, int>)state;
+            InventoryRecord record = (InventoryRecord)state;
+            
+            inventorySize = record.inventorySize;
+            
             for (int i = 0; i < inventorySize; i++)
             {
-                _slots[i].Item = InventoryItem.GetFromID<InventoryItem>(slotStrings.ElementAt(i).Key);
-                _slots[i].Number = slotStrings.ElementAt(i).Value;
+                _slots[i].Item = InventoryItem.GetFromID<InventoryItem>(record.slots[i].itemID);
+                _slots[i].Number = record.slots[i].number;
             }
 
             OnInventoryUpdated.Invoke();
@@ -270,15 +260,15 @@ namespace Scripts.InventoryManagement.Inventories
         }
         
         [Serializable]
-        private struct InventorySlotRecord
+        private struct InventoryRecord
         {
-            public string itemID;
-            public int number;
-
-            public InventorySlotRecord(string itemID, int number)
+            public int inventorySize;
+            public List<InventorySlotRecord> slots;
+            
+            public InventoryRecord(int inventorySize, List<InventorySlotRecord> slots)
             {
-                this.itemID = itemID;
-                this.number = number;
+                this.inventorySize = inventorySize;
+                this.slots = slots;
             }
         }
     }

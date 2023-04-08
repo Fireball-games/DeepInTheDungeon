@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Scripts.Building;
+using Scripts.Building.ItemSpawning;
 using Scripts.Building.PrefabsBuilding;
 using Scripts.EventsManagement;
 using Scripts.Helpers;
@@ -23,7 +24,8 @@ namespace Scripts.System.Saving
         // TODO: Make sure, that _currentSave is always up to date and is null when creating new character.
         public static Save CurrentSave { get; set; }
         public static IEnumerable<Save> Saves => _saves;
-
+        
+        private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
         private static IEnumerable<Save> _saves = Enumerable.Empty<Save>();
         private static Save _tempSave;
 
@@ -57,7 +59,8 @@ namespace Scripts.System.Saving
         /// <param name="updatePlayerOnly">If we want to update only player position, like on arrival from previously visited map</param>
         /// <param name="overrideCampaign">Overrides current campaign from GameManager.</param>
         /// <param name="overrideMap">Overrides current map from GameManager</param>
-        public static async Task SaveToDisc(string saveName, string fileName, bool isAutoSave = false, bool updatePlayerOnly = false, Campaign overrideCampaign = null,
+        public static async Task SaveToDisc(string saveName, string fileName, bool isAutoSave = false, bool updatePlayerOnly = false,
+            Campaign overrideCampaign = null,
             MapDescription overrideMap = null)
         {
             if (!GameManager.Instance.CanSave && !isAutoSave) return;
@@ -71,12 +74,12 @@ namespace Scripts.System.Saving
         {
             _tempSave = await CreateSave(saveName, saveName, false, overrideCampaign, overrideMap);
         }
-        
+
         public static async void QuickSave()
         {
             if (SceneLoader.IsInMainScene || GameManager.Instance.IsPlayingFromEditor) return;
 
-            await SaveToDisc(Keys.QuickSave,Keys.QuickSave, true);
+            await SaveToDisc(Keys.QuickSave, Keys.QuickSave, true);
         }
 
         /// <summary>
@@ -94,7 +97,7 @@ namespace Scripts.System.Saving
             byte[] screenshot = await ScreenShotService.Instance.GetCurrentScreenshotBytes();
 
             fileName = ManagePreviousSavesForName(fileName);
-            
+
             Save save = new()
             {
                 fileName = fileName,
@@ -144,15 +147,12 @@ namespace Scripts.System.Saving
 
                 if (currentMapSave != null)
                 {
-                    currentMapSave.mapState = CaptureCurrentMapState();
+                    currentMapSave.mapState = CaptureCurrentMapSavables();
+                    currentMapSave.mapObjects = CaptureCurrentMapObjects();
                 }
                 else
                 {
-                    currentCampaignSave.mapsSaves.Add(new MapSave
-                    {
-                        mapName = currentMapName,
-                        mapState = CaptureCurrentMapState()
-                    });
+                    currentCampaignSave.mapsSaves.Add(CaptureCurrentMapState());
                 }
             }
             else
@@ -160,19 +160,19 @@ namespace Scripts.System.Saving
                 campaignSaves = campaignSaves.Append(new CampaignSave
                 {
                     campaignName = currentCampaignName,
-                    mapsSaves = new List<MapSave>
-                    {
-                        new()
-                        {
-                            mapName = currentMapName,
-                            mapState = CaptureCurrentMapState()
-                        }
-                    }
+                    mapsSaves = new List<MapSave>{ CaptureCurrentMapState() }
                 });
             }
 
             return campaignSaves;
         }
+
+        private static MapSave CaptureCurrentMapState() => new()
+        {
+            mapName = GameManager.Instance.CurrentMap.MapName,
+            mapState = CaptureCurrentMapSavables(),
+            mapObjects = CaptureCurrentMapObjects(),
+        };
 
         private void OnNewCampaignStarted()
         {
@@ -181,7 +181,8 @@ namespace Scripts.System.Saving
 
         private static void SaveToDisc()
         {
-            Logger.Log($"Saving to disc >  File name: {CurrentSave.fileName.WrapInColor(Colors.Beige)}, Save name: {CurrentSave.saveName.WrapInColor(Colors.Positive)}");
+            Logger.Log(
+                $"Saving to disc >  File name: {CurrentSave.fileName.WrapInColor(Colors.Beige)}, Save name: {CurrentSave.saveName.WrapInColor(Colors.Positive)}");
             FileOperationsHelper.SavePositionToLocale(CurrentSave);
             UpdateSaves();
         }
@@ -189,11 +190,11 @@ namespace Scripts.System.Saving
         private static void UpdateSaves()
         {
             FileOperationsHelper.LoadAllSaves(out _saves);
-            
+
             _saves ??= new List<Save>();
-            
+
             if (!_saves.Any()) return;
-            
+
             _saves = _saves.OrderByDescending(s => s.timeStamp);
         }
 
@@ -208,25 +209,16 @@ namespace Scripts.System.Saving
 
         // Gather all data from all ISavable objects in the scene that need to be saved and stores those data
         // in MapStateRecords.
-        private static List<MapStateRecord> CaptureCurrentMapState()
-        {
-            // IEnumerable<ISavable> savables = TriggerService.GetPrefabScripts().ToList();
-            // savables = savables.Concat(TriggerService.TriggerReceivers.Values);
-            // savables = savables.Concat(PlayerController.Instance.InventoryManager.GetInventorySavables());
-            // List<MapStateRecord> result = GatherSavables().Select(CaptureSavaData).ToList();
-            // return result;
-            return GatherSavables().Select(CaptureSavaData).ToList();
-        }
+        private static List<MapStateRecord> CaptureCurrentMapSavables() => GatherSavables().Select(CaptureSavaData).ToList();
 
-        private static MapStateRecord CaptureSavaData(ISavable savable)
-        {
-            return new MapStateRecord {guid = savable.Guid, saveData = savable.CaptureState()};
-        }
+        private static MapStateRecord CaptureSavaData(ISavable savable) => new() {guid = savable.Guid, saveData = savable.CaptureState()};
+        
+        private static List<MapObjectConfiguration> CaptureCurrentMapObjects() => GameManager.Instance.MapBuilder.CollectMapObjects();
 
         /// <summary>
         /// If player has traversed the map and current save has data about current map, restores map state from the time of traversal trigger activation.
         /// </summary>
-        public static void RestoreMapDataFromCurrentSave(string mapName)
+        public static async Task RestoreMapDataFromCurrentSave(string mapName)
         {
             if (CurrentSave == null)
             {
@@ -234,10 +226,10 @@ namespace Scripts.System.Saving
                 return;
             }
 
-            RestoreMapDataFromSave(CurrentSave, mapName);
+            await RestoreMapDataFromSave(CurrentSave, mapName);
         }
 
-        private static void RestoreMapDataFromSave(Save save, string mapName)
+        private static async Task RestoreMapDataFromSave(Save save, string mapName)
         {
             CampaignSave campaignSave = save.campaignsSaves.FirstOrDefault(c => c.campaignName == save.CurrentCampaign);
             if (campaignSave == null)
@@ -254,6 +246,12 @@ namespace Scripts.System.Saving
             }
 
             RestoreMapData(currentMapSave.mapState);
+
+            if (currentMapSave.mapObjects != null)
+            {
+                GameManager.Instance.CurrentMap.MapObjects = currentMapSave.mapObjects;
+                await MapBuilder.RebuildItems();
+            }
         }
 
         private static void RestoreMapData(List<MapStateRecord> mapState)
@@ -273,8 +271,8 @@ namespace Scripts.System.Saving
             IEnumerable<string> currentNames = FileOperationsHelper.GetFileNamesAndRemoveOldestSaveForName(rootFileName);
             UpdateSaves();
 
-            return currentNames == null || !currentNames.Any() 
-                ? $"{rootFileName}1" 
+            return currentNames == null || !currentNames.Any()
+                ? $"{rootFileName}1"
                 : rootFileName.IncrementName(currentNames);
         }
 

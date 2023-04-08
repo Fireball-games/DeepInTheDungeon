@@ -180,6 +180,16 @@ namespace Scripts.Helpers.Extensions
 
             return (T) Enum.ToObject(typeof(T), value);
         }
+        
+        public static T GetEnumValue<T>(this string value) where T : struct, IConvertible
+        {
+            if (!typeof(T).IsEnum)
+            {
+                throw new ArgumentException("T must be an enumerated type");
+            }
+
+            return (T) Enum.Parse(typeof(T), value);
+        }
 
         public static void SetTextColor(this Button button, Color color) => button.GetComponentInChildren<TMP_Text>().color = color;
         public static void SetText(this Button button, string text) => button.GetComponentInChildren<TMP_Text>().text = text;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Scripts.Building.ItemSpawning;
 
 namespace Scripts.System.Saving
 {
@@ -8,5 +9,6 @@ namespace Scripts.System.Saving
     {
         public string mapName;
         public List<MapStateRecord> mapState;
+        public List<MapObjectConfiguration> mapObjects;
     }
 }

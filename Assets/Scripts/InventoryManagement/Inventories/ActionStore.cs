@@ -195,33 +195,43 @@ namespace Scripts.InventoryManagement.Inventories
 
         object ISavable.CaptureState()
         {
-            Dictionary<int, DockedItemRecord> state = new();
-            foreach (KeyValuePair<int, DockedItemSlot> pair in _dockedItems)
+            ActionStoreRecord record = new();
+            foreach (KeyValuePair<int,DockedItemSlot> slot in _dockedItems)
             {
-                DockedItemRecord record = new()
-                {
-                    itemID = pair.Value.Item.GetItemID(),
-                    number = pair.Value.Number
-                };
-                state[pair.Key] = record;
+                record.slots.Add(new ActionSlotRecord(slot.Key, slot.Value));
             }
-            return state;
+            return record;
         }
 
         void ISavable.RestoreState(object state)
         {
-            Dictionary<int, DockedItemRecord> stateDict = (Dictionary<int, DockedItemRecord>)state;
-            foreach (KeyValuePair<int, DockedItemRecord> pair in stateDict)
+            ActionStoreRecord record = (ActionStoreRecord)state;
+            
+            if (record.slots == null) return;
+
+            foreach (ActionSlotRecord slotRecord in record.slots)
             {
-                AddAction(MapObject.GetFromID<InventoryItem>(pair.Value.itemID), pair.Key, pair.Value.number);
+                AddAction(MapObject.GetFromID<InventoryItem>(slotRecord.slot.itemID), slotRecord.index, slotRecord.slot.number);
             }
         }
         
         [Serializable]
-        private struct DockedItemRecord
+        private struct ActionStoreRecord
         {
-            public string itemID;
-            public int number;
+            public List<ActionSlotRecord> slots;
+        }
+        
+        [Serializable]
+        private struct ActionSlotRecord
+        {
+            public int index;
+            public InventorySlotRecord slot;
+            
+            public ActionSlotRecord(int index, DockedItemSlot slot)
+            {
+                this.index = index;
+                this.slot = new InventorySlotRecord(slot.Item.GetItemID(), slot.Number);
+            }
         }
     }
 }

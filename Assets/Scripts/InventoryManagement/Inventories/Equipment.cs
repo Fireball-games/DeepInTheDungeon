@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Scripts.Helpers.Extensions;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.InventoryManagement.UI.Inventories;
 using Scripts.System.Saving;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Scripts.InventoryManagement.Inventories
 {
@@ -90,28 +93,46 @@ namespace Scripts.InventoryManagement.Inventories
 
         object ISavable.CaptureState()
         {
-            // TODO: make it so EquipLocation stores as string, causes error in ES3 serialization, maybe not store it as dictionary?
-            Dictionary<EquipLocation, string> equippedItemsForSerialization = new();
-            foreach (KeyValuePair<EquipLocation, EquipableItem> pair in _equippedItems)
-            {
-                equippedItemsForSerialization[pair.Key] = pair.Value.GetItemID();
-            }
-            return equippedItemsForSerialization;
+            return new EquipmentRecord(_equippedItems.Select(item => new EquipableSlotRecord(item.Key, item.Value)).ToList());
         }
 
         void ISavable.RestoreState(object state)
         {
             _equippedItems = new Dictionary<EquipLocation, EquipableItem>();
 
-            Dictionary<EquipLocation, string> equippedItemsForSerialization = (Dictionary<EquipLocation, string>)state;
+            EquipmentRecord equipmentRecord = (EquipmentRecord)state;
 
-            foreach (KeyValuePair<EquipLocation, string> pair in equippedItemsForSerialization)
+            foreach (EquipableSlotRecord slotRecord in equipmentRecord.equippedItems)
             {
-                EquipableItem item = MapObject.GetFromID<EquipableItem>(pair.Value);
+                EquipableItem item = MapObject.GetFromID<EquipableItem>(slotRecord.itemID);
                 if (item != null)
                 {
-                    _equippedItems[pair.Key] = item;
+                    AddItem(slotRecord.equipLocation, item);
                 }
+            }
+        }
+        
+        [Serializable]
+        private struct EquipmentRecord
+        {
+            public List<EquipableSlotRecord> equippedItems;
+
+            public EquipmentRecord(List<EquipableSlotRecord> equippedItems)
+            {
+                this.equippedItems = equippedItems;
+            }
+        }
+        
+        [Serializable]
+        private struct EquipableSlotRecord
+        {
+            [FormerlySerializedAs("slot")] public EquipLocation equipLocation;
+            public string itemID;
+
+            public EquipableSlotRecord(EquipLocation equipLocation, EquipableItem item)
+            {
+                this.equipLocation = equipLocation;
+                itemID = item.GetItemID();
             }
         }
     }

@@ -32,6 +32,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
         public static ItemPreview ItemPreview { get; private set; }
         private static ItemCursor ItemCursor => ItemCursor.Instance;
         private Title _itemTitle;
+        private Transform _buttons;
         private Button _saveButton;
         private Button _cancelButton;
         
@@ -183,9 +184,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
                 : t.Get(Keys.NoItemSelected));
             
             _saveButton.SetText(t.Get(Keys.Save));
-            _saveButton.gameObject.SetActive(_areItemsChanged);
+            GameObject saveButtonObject = _saveButton.gameObject;
+            saveButtonObject.SetActive(_areItemsChanged);
             _cancelButton.SetText(t.Get(Keys.Cancel));
-            _cancelButton.gameObject.SetActive(_areItemsChanged);
+            GameObject cancelButtonObject = _cancelButton.gameObject;
+            cancelButtonObject.SetActive(_areItemsChanged);
+            
+            _buttons.gameObject.SetActive(cancelButtonObject.activeSelf || saveButtonObject.activeSelf);
         }
         
         private void AssignComponents()
@@ -197,13 +202,13 @@ namespace Scripts.UI.EditorUI.PrefabEditors.ItemEditing
             _itemTitle = frame.Find("Header/ItemTitle").GetComponent<Title>();
 
             Transform content = frame.Find("ScrollingContent/Viewport/Content");
-            Transform buttons = frame.Find("Buttons");
+            _buttons = frame.Find("Buttons");
             
-            _saveButton = buttons.Find("SaveDelete/SaveButton").GetComponent<Button>();
+            _saveButton = _buttons.Find("SaveDelete/SaveButton").GetComponent<Button>();
             _saveButton.onClick.AddListener(Save);
             _saveButton.SetTextColor(Colors.Positive);
             
-            _cancelButton = buttons.Find("CancelClose/CancelButton").GetComponent<Button>();
+            _cancelButton = _buttons.Find("CancelClose/CancelButton").GetComponent<Button>();
             _cancelButton.onClick.AddListener(RemoveChanges);
             _cancelButton.SetTextColor(Colors.Negative);
             

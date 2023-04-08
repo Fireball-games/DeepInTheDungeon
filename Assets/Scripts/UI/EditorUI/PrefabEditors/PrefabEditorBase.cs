@@ -45,6 +45,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
         private PrefabList _prefabList;
         private ConfigurationList _existingList;
         private GameObject _mainWindow;
+        private GameObject _saveDeleteButtons;
+        private GameObject _cancelCloseButtons;
+        private GameObject _buttons;
         private Button _saveButton;
         private Button _cancelButton;
         private Button _deleteButton;
@@ -425,6 +428,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _closeButton.SetTextColor(IsCurrentConfigurationChanged ? Colors.Negative : Colors.White);
             _closeButton.gameObject.SetActive(!isSingleTypeEditor);
             _prefabsFinderButton.SetInteractable(!IsCurrentConfigurationChanged);
+            _saveDeleteButtons.SetActive(_saveButton.gameObject.activeSelf || _deleteButton.gameObject.activeSelf);
+            _cancelCloseButtons.SetActive(_cancelButton.gameObject.activeSelf || _closeButton.gameObject.activeSelf);
+            _buttons.SetActive(_saveDeleteButtons.activeSelf && _cancelCloseButtons.activeSelf);
         }
 
         private void SetStatusText(string text = null)
@@ -531,6 +537,9 @@ namespace Scripts.UI.EditorUI.PrefabEditors
             _mainWindow = bodyTransform.Find("Background").gameObject;
             
             Transform buttons = frame.Find("Buttons");
+            _buttons = buttons.gameObject;
+            _saveDeleteButtons = buttons.Find("SaveDelete").gameObject;
+            _cancelCloseButtons = buttons.Find("CancelClose").gameObject;
             _saveButton = buttons.Find("SaveDelete/SaveButton").GetComponent<Button>();
             _saveButton.SetTextColor(Colors.Positive);
             _deleteButton = buttons.Find("SaveDelete/DeleteButton").GetComponent<Button>();

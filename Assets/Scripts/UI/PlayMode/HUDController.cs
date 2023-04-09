@@ -21,11 +21,19 @@ namespace Scripts.UI.PlayMode
         private void OnEnable()
         {
             PlayEvents.OnLookModeActiveChanged += OnLookModeActiveChanged;
+            EventsManager.OnLevelStarted += OnLevelStarted;
+            PrepareForTransition();
         }
 
         private void OnDisable()
         {
             PlayEvents.OnLookModeActiveChanged -= OnLookModeActiveChanged;
+            EventsManager.OnLevelStarted -= OnLevelStarted;
+        }
+        
+        private void OnLevelStarted()
+        {
+            SetActive(true);
         }
 
         private void OnLookModeActiveChanged(bool isActive)

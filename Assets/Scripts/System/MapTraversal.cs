@@ -23,6 +23,8 @@ namespace Scripts.System
 {
     public class MapTraversal
     {
+        private const float BreakAfterFadeOutTriggeredInMainScene = 0.2f;
+        private const float BreakAfterFadeOutTriggeredInMap = 0.7f;
         public Campaign CurrentCampaign => _currentCampaign;
         public MapDescription CurrentMap => _currentMap;
         internal bool EntryMovementFinished => _entryMovementFinished;
@@ -214,6 +216,7 @@ namespace Scripts.System
                 _currentEntryPoint.playerGridPosition,
                 Quaternion.Euler(0f, _currentEntryPoint.playerRotationY, 0f));
             Player.PlayerMovement.SetCamera();
+            
             EventsManager.TriggerOnPlayerSpawned();
 
             // To allow playing StartRooms from Editor
@@ -226,8 +229,7 @@ namespace Scripts.System
             
             ScreenFader.FadeOut(1.2f);
 
-            await Task.Delay(200);
-
+            await Task.Delay((int)((SceneLoader.IsInMainScene ? BreakAfterFadeOutTriggeredInMainScene : BreakAfterFadeOutTriggeredInMap) * 1000));
 
             if (_currentEntryPoint.isMovingForwardOnStart)
             {

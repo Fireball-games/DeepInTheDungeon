@@ -199,10 +199,12 @@ namespace Scripts.System
         private async void OnStartGameRequested(bool fadeIn = true)
         {
             CanSave = false;
+            
             if (MainUIManager.Instance)
             {
                 await MainUIManager.Instance.ShowMainMenu(false);
             }
+            
             SceneLoader.Instance.LoadScene(CurrentMap.SceneName, fadeIn, 1f);
         }
         

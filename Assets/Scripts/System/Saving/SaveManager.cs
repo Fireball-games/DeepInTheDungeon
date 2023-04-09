@@ -81,6 +81,16 @@ namespace Scripts.System.Saving
 
             await SaveToDisc(Keys.QuickSave, Keys.QuickSave, true);
         }
+        
+        public static MapStateRecord CaptureSavaData(ISavable savable) => new() {guid = savable.Guid, saveData = savable.CaptureState()};
+        
+        public static void RestoreInventoriesContentFromCurrentSave()
+        {
+            if (CurrentSave == null) return;
+
+            IEnumerable<ISavable> savables = PlayerController.Instance.InventoryManager.GetInventorySavables();
+            RestoreMapData(CurrentSave.InventoriesContent, savables);
+        }
 
         /// <summary>
         /// Creates save file from current save and store that save in _currentSave.
@@ -119,6 +129,12 @@ namespace Scripts.System.Saving
                 save.campaignsSaves = CollectCampaignSaves(CurrentSave ?? save, overrideCampaign, overrideMap).ToList();
             }
 
+            // If type of save is MapEntry, copy inventory from current save to new save.
+            if (save.saveName == Keys.MapEntry && CurrentSave != null)
+            {
+                save.playerSaveData.inventoriesContent = CurrentSave.InventoriesContent;
+            }
+            
             CurrentSave = save;
             return save;
         }
@@ -211,8 +227,6 @@ namespace Scripts.System.Saving
         // in MapStateRecords.
         private static List<MapStateRecord> CaptureCurrentMapSavables() => GatherSavables().Select(CaptureSavaData).ToList();
 
-        private static MapStateRecord CaptureSavaData(ISavable savable) => new() {guid = savable.Guid, saveData = savable.CaptureState()};
-        
         private static List<MapObjectConfiguration> CaptureCurrentMapObjects() => GameManager.Instance.MapBuilder.CollectMapObjects();
 
         /// <summary>
@@ -254,17 +268,20 @@ namespace Scripts.System.Saving
             }
         }
 
-        private static void RestoreMapData(List<MapStateRecord> mapState)
+        private static void RestoreMapData(List<MapStateRecord> mapStates, IEnumerable<ISavable> savables)
         {
-            foreach (ISavable savable in GatherSavables())
+            foreach (ISavable savable in savables)
             {
-                MapStateRecord record = mapState.FirstOrDefault(r => r.guid == savable.Guid);
+                MapStateRecord record = mapStates.FirstOrDefault(r => r.guid == savable.Guid);
                 if (record != null)
                 {
                     savable.RestoreState(record.saveData);
                 }
             }
         }
+        
+        private static void RestoreMapData(List<MapStateRecord> mapStates) =>
+            RestoreMapData(mapStates, GatherSavables().Concat(PlayerController.Instance.InventoryManager.GetInventorySavables()));
 
         private static string ManagePreviousSavesForName(string rootFileName)
         {
@@ -280,7 +297,6 @@ namespace Scripts.System.Saving
         {
             IEnumerable<ISavable> savables = TriggerService.GetPrefabScripts().ToList();
             savables = savables.Concat(TriggerService.TriggerReceivers.Values);
-            savables = savables.Concat(PlayerController.Instance.InventoryManager.GetInventorySavables());
 
             return savables;
         }

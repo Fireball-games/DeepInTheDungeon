@@ -179,10 +179,7 @@ namespace Scripts.InventoryManagement.Inventories
         {
             if (_dockedItems == null || _dockedItems.Count == 0) return;
             
-            for (int i = 0; i < _dockedItems.Count; i++)
-            {
-                _dockedItems.Remove(i);
-            }
+            _dockedItems.Clear();
         }
 
         object ISavable.CaptureState()

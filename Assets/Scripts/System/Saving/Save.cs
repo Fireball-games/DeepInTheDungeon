@@ -25,5 +25,6 @@ namespace Scripts.System.Saving
         public Quaternion PlayerRotation => playerSaveData.playerTransformData.Rotation;
         public string CurrentCampaign => playerSaveData.currentCampaign;
         public string CurrentMap => playerSaveData.currentMap;
+        public List<MapStateRecord> InventoriesContent => playerSaveData.inventoriesContent;
     }
 }

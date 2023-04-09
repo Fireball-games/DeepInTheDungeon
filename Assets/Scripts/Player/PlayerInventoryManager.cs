@@ -75,6 +75,9 @@ namespace Scripts.Player
             ActionStore = GetComponent<ActionStore>();
             if (ActionStore) ActionStore.Initialize();
             
+            ClearInventory();
+            SaveManager.RestoreInventoriesContentFromCurrentSave();
+            
             MaxClickPickupDistance = maxPickupDistance * maxPickupDistance;
             PickupSpawnGracePeriod = (int) (pickupSpawnGracePeriod * 1000);
             ItemEditCursorOffset = itemEditCursorOffset;

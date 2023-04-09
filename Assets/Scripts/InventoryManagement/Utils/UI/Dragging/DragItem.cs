@@ -1,11 +1,12 @@
-﻿using Scripts.InventoryManagement.Inventories.Items;
+﻿using Scripts.Building.ItemSpawning;
+using Scripts.InventoryManagement.Inventories;
+using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.Player;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.InventoryManagement.Utils.UI.Dragging
 {
@@ -125,16 +126,37 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         {
             if (!_draggedItem) return null;
             
+            Pickup spawnedPickup = _draggedItem.GetComponent<Pickup>();
+            
             if (_source.GetItem() is InventoryItem item) 
             {
-                item.SpawnPickup(GetMouseScreenPosition(), _draggedItem.transform.rotation, _source.GetNumber());
+                spawnedPickup = item.SpawnPickup(GetMouseScreenPosition(), _draggedItem.transform.rotation, _source.GetNumber());
+            }
+
+            if (spawnedPickup)
+            {
+                // if item has height from floor 0.5 or lower, it will drop, if its higher, it will throw it with every 0.1 of height above 0.5 more far away
+                float height = spawnedPickup.transform.position.y;
+                float throwForce = height > 0.5f ? (height - 0.5f) * 10 : 0;
+                Throw(spawnedPickup, throwForce);
             }
                 
             RemoveDraggedItem();
 
             return null;
         }
-        
+
+        private void Throw(MapObjectInstance spawnedPickup, float throwForce)
+        {
+            Rigidbody rb = spawnedPickup.GetComponent<Rigidbody>();
+            if (rb)
+            {
+                Vector3 direction = /*Vector3.up + */spawnedPickup.transform.forward; // Change this to the direction you want to throw the pickup
+                float force = throwForce * 100; // Adjust this multiplier to control the strength of the throw
+                rb.AddForce(direction * force, ForceMode.Impulse);
+            }
+        }
+
         private void RemoveDraggedItem()
         {
             if (!_draggedItem) return;

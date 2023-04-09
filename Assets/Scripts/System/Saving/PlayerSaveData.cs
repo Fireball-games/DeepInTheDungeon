@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Scripts.System.Saving
 {
@@ -11,5 +12,6 @@ namespace Scripts.System.Saving
         public string currentCampaign;
         public string currentMap;
         public PositionRotation playerTransformData;
+        public List<MapStateRecord> inventoriesContent;
     }
 }

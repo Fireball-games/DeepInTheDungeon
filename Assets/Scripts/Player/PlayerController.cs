@@ -1,5 +1,4 @@
-﻿using System;
-using Scripts.Helpers;
+﻿using System.Linq;
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Saving;
@@ -37,7 +36,7 @@ namespace Scripts.Player
         /// <returns></returns>
         public PlayerSaveData CaptureState()
         {
-            Logger.Log($"Captured player position: {PlayerMovement.PreviousPosition}");
+            // Logger.Log($"Captured player position: {PlayerMovement.PreviousPosition}");
             return new PlayerSaveData
             {
                 currentCampaign = GameManager.Instance.CurrentCampaign.CampaignName,
@@ -46,7 +45,8 @@ namespace Scripts.Player
                 {
                     Position = PlayerMovement.PreviousPosition,
                     Rotation = transform.rotation
-                }
+                },
+                inventoriesContent = InventoryManager.GetInventorySavables().Select(SaveManager.CaptureSavaData).ToList(),
             };
         }
     }

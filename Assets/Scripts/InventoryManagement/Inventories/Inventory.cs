@@ -22,6 +22,7 @@ namespace Scripts.InventoryManagement.Inventories
         private int inventorySize = 16;
         
         public string Guid { get; set; }
+        public int InventorySize => inventorySize;
 
         private InventorySlot[] _slots;
 
@@ -41,7 +42,7 @@ namespace Scripts.InventoryManagement.Inventories
         /// <summary>
         /// Convenience for getting the player's inventory.
         /// </summary>
-        public static Inventory GetPlayerInventory() => PlayerController.Instance.InventoryManager.Inventory;
+        public static Inventory PlayerInventory => PlayerController.Instance.InventoryManager.Inventory;
 
         /// <summary>
         /// Could this item fit anywhere in the inventory?
@@ -49,14 +50,6 @@ namespace Scripts.InventoryManagement.Inventories
         public bool HasSpaceFor(InventoryItem item)
         {
             return FindSlot(item) >= 0;
-        }
-
-        /// <summary>
-        /// How many slots are in the inventory?
-        /// </summary>
-        public int GetSize()
-        {
-            return _slots.Length;
         }
 
         /// <summary>
@@ -234,7 +227,7 @@ namespace Scripts.InventoryManagement.Inventories
                     ? new InventorySlotRecord(_slots[i].Item.GetItemID(), _slots[i].Number)
                     : new InventorySlotRecord("Empty", 0));
             }
-            return new InventoryRecord(_slots.Length, slotStrings);
+            return new InventoryRecord(inventorySize, slotStrings);
         }
 
         void ISavable.RestoreState(object state)

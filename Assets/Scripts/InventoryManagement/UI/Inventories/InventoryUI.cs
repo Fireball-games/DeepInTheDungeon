@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Scripts.InventoryManagement.Inventories;
-using Scripts.Localization;
 using Scripts.System.Pooling;
 using UnityEngine;
 
@@ -22,48 +21,37 @@ namespace Scripts.InventoryManagement.UI.Inventories
         {
             base.Awake();
             
-            _playerInventory = Inventory.GetPlayerInventory();
+            _playerInventory = Inventory.PlayerInventory;
             _itemsParent = transform.Find("Background/Frame/ScrollView/Viewport/Content");
         }
 
-        protected override void SetTitle() => title.text = t.Get(Keys.InventoryTitle);
-
-        private void OnEnable()
+        protected override void SetTitle()
         {
-            _playerInventory.OnInventoryInitialized.AddListener(OnInitialize);
         }
 
         private void Start()
         {
             Redraw();
         }
-        
-        private void OnDisable()
-        {
-            _playerInventory.OnInventoryUpdated.RemoveListener(Redraw);
-            _playerInventory.OnInventoryInitialized.RemoveListener(OnInitialize);
-        }
 
-        private void OnInitialize()
+        public override void OnInitialize()
         {
             _playerInventory.OnInventoryUpdated.AddListener(Redraw);
         }
 
         private void Redraw()
         {
-            // _itemsParent.gameObject.DismissAllChildrenToPool();
-            
             IEnumerable<InventorySlotUI> slots = _itemsParent.GetComponentsInChildren<InventorySlotUI>();
             
-            if (slots.Count() > _playerInventory.GetSize())
+            if (slots.Count() > _playerInventory.InventorySize)
             {
-                for (int i = _playerInventory.GetSize(); i < slots.Count(); i++)
+                for (int i = _playerInventory.InventorySize; i < slots.Count(); i++)
                 {
                     slots.ElementAt(i).gameObject.DismissToPool();
                 }
             }
             
-            for (int i = 0; i < _playerInventory.GetSize(); i++)
+            for (int i = 0; i < _playerInventory.InventorySize; i++)
             {
                 if (i >= slots.Count())
                 {

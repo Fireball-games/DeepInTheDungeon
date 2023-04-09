@@ -1,11 +1,10 @@
-﻿using System;
-using Scripts.InventoryManagement.UI.Inventories;
+﻿using Scripts.InventoryManagement.UI.Inventories;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Scripts.InventoryManagement.Inventories
 {
-    public abstract class InventoryBase<TInventory> : MonoBehaviour where TInventory : InventoryUIBase
+    public abstract class InventoryBase<TInventoryUI> : MonoBehaviour where TInventoryUI : InventoryUIBase
     {
         private InventoryUIBase _inventoryUi;
         
@@ -13,7 +12,6 @@ namespace Scripts.InventoryManagement.Inventories
         /// Broadcasts when the items in the slots are added/removed.
         /// </summary>
         public UnityEvent OnInventoryUpdated = new();
-        public UnityEvent OnInventoryInitialized = new();
         
         protected virtual void Awake()
         {
@@ -24,7 +22,12 @@ namespace Scripts.InventoryManagement.Inventories
         {
             Clear();
             OnInventoryUpdated.RemoveAllListeners();
-            OnInventoryInitialized.Invoke();
+            _inventoryUi = FindObjectOfType<TInventoryUI>();
+            
+            if (_inventoryUi)
+            {
+                _inventoryUi.OnInitialize();
+            }
         }
 
         public abstract void Clear();
@@ -46,7 +49,6 @@ namespace Scripts.InventoryManagement.Inventories
 
         protected virtual void AssignComponents()
         {
-            _inventoryUi = FindObjectOfType<TInventory>();
         }
     }
 }

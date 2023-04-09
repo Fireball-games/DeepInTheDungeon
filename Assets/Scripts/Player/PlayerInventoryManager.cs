@@ -3,7 +3,6 @@ using Scripts.InventoryManagement.Inventories;
 using Scripts.System.Pooling;
 using Scripts.System.Saving;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Player
 {
@@ -28,9 +27,7 @@ namespace Scripts.Player
         public ActionStore ActionStore { get; private set; }
         public Equipment Equipment { get; private set; }
         public static int PickupSpawnGracePeriod { get; private set; }
-        public static Vector3 ItemEditCursorOffset => _itemEditCursorOffset;
-        
-        private static Vector3 _itemEditCursorOffset;
+        public static Vector3 ItemEditCursorOffset { get; private set; }
 
         private void OnEnable()
         {
@@ -54,10 +51,9 @@ namespace Scripts.Player
 
         public void CloseInventories()
         {
-            if (!Inventory) Initialize();
-            if (!Inventory) return;
+            if (!Equipment) Initialize();
+            if (!Equipment) return;
             
-            Inventory.Close();
             Equipment.Close();
         }
         
@@ -70,18 +66,18 @@ namespace Scripts.Player
         
         public void Initialize()
         {
+            Equipment = GetComponent<Equipment>();
+            if (Equipment) Equipment.Initialize();
+            
             Inventory = GetComponent<Inventory>();
             if (Inventory) Inventory.Initialize();
 
             ActionStore = GetComponent<ActionStore>();
             if (ActionStore) ActionStore.Initialize();
-
-            Equipment = GetComponent<Equipment>();
-            if (Equipment) Equipment.Initialize();
-
+            
             MaxClickPickupDistance = maxPickupDistance * maxPickupDistance;
             PickupSpawnGracePeriod = (int) (pickupSpawnGracePeriod * 1000);
-            _itemEditCursorOffset = itemEditCursorOffset;
+            ItemEditCursorOffset = itemEditCursorOffset;
             DragSize = dragSize;
         }
 

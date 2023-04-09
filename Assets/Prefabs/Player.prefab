@@ -303,6 +303,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e968612d9e524e539a0fbc5a72677e7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnStoreUpdated:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1667820670549223449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,6 +318,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc16e92437564dcc9c919c5ed4e1c105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnInventoryUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInventoryInitialized:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4356371431434974397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,10 +336,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a020090c59b041deb040b45c1d85a336, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventorySize: 16
   OnInventoryUpdated:
     m_PersistentCalls:
       m_Calls: []
+  OnInventoryInitialized:
+    m_PersistentCalls:
+      m_Calls: []
+  inventorySize: 18
 --- !u!114 &8503713893576067705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,6 +460,7 @@ MonoBehaviour:
   leanLeft: 97
   leanRight: 100
   inventory: 105
+  equipment: 99
 --- !u!114 &2126531506181812384
 MonoBehaviour:
   m_ObjectHideFlags: 0

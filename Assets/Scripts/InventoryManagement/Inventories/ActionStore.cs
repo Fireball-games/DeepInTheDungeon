@@ -47,14 +47,10 @@ namespace Scripts.InventoryManagement.Inventories
         /// <summary>
         /// Get the action at the given index.
         /// </summary>
-        public InventoryItem GetAction(int index)
-        {
-            if (_dockedItems.ContainsKey(index))
-            {
-                return _dockedItems[index].Item;
-            }
-            return null;
-        }
+        public InventoryItem GetAction(int index) =>
+            _dockedItems.TryGetValue(index, out DockedItemSlot item) 
+                ? item.Item 
+                : null;
 
         /// <summary>
         /// Get the number of items left at the given index.
@@ -63,14 +59,10 @@ namespace Scripts.InventoryManagement.Inventories
         /// Will return 0 if no item is in the index or the item has
         /// been fully consumed.
         /// </returns>
-        public int GetNumber(int index)
-        {
-            if (_dockedItems.ContainsKey(index))
-            {
-                return _dockedItems[index].Number;
-            }
-            return 0;
-        }
+        public int GetNumber(int index) =>
+            _dockedItems.TryGetValue(index, out DockedItemSlot item) 
+                ? item.Number 
+                : 0;
 
         /// <summary>
         /// Add an item to the given index.
@@ -216,9 +208,14 @@ namespace Scripts.InventoryManagement.Inventories
         }
         
         [Serializable]
-        private struct ActionStoreRecord
+        private class ActionStoreRecord
         {
             public List<ActionSlotRecord> slots;
+            
+            public ActionStoreRecord()
+            {
+                slots = new List<ActionSlotRecord>();
+            }
         }
         
         [Serializable]

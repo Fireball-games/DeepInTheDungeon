@@ -79,8 +79,10 @@ namespace Scripts.Player
 
             if (!PlayerCamera.isLeaning && Input.GetKeyUp(toggleLookingMode)) PlayerCamera.HandleLookModeOnKeyClick();
 
-            if (Input.GetKeyUp(inventory)) Player.InventoryManager.Inventory.ToggleInventory();
-            if (Input.GetKeyUp(equipment)) Player.InventoryManager.Equipment.ToggleInventory();
+            if (Input.GetKeyUp(inventory) || Input.GetKeyUp(equipment))
+            {
+                Player.InventoryManager.Equipment.ToggleInventory();
+            }
         }
     }
 }

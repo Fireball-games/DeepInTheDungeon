@@ -13,9 +13,11 @@ namespace Scripts.InventoryManagement.UI.Inventories
             SetTitle();
         }
 
-        public void ToggleOpen() => SetActive(!body.activeSelf);
+        public virtual void ToggleOpen() => SetActive(!body.activeSelf);
         
         public void Close() => SetActive(false);
+
+        public abstract void OnInitialize();
         
         protected abstract void SetTitle();
     }

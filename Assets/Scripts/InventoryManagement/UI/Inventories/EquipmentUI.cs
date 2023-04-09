@@ -1,9 +1,35 @@
-﻿using Scripts.Localization;
+﻿using Scripts.Player;
 
 namespace Scripts.InventoryManagement.UI.Inventories
 {
     public class EquipmentUI : InventoryUIBase
     {
-        protected override void SetTitle() => title.text = t.Get(Keys.EquipmentTitle);
+        private bool _lookModeOnBeforeInventory;
+        
+        private static PlayerCameraController PlayerCamera => PlayerCameraController.Instance;
+
+        public override void OnInitialize()
+        {
+            // nothing needed now
+        }
+
+        protected override void SetTitle()
+        {
+        }
+
+        public override void ToggleOpen()
+        {
+            base.ToggleOpen();
+            
+            if (gameObject.activeSelf)
+            {
+                _lookModeOnBeforeInventory = PlayerCamera.IsLookModeOn;
+                PlayerCamera.IsLookModeOn = false;
+            }
+            else
+            {
+                PlayerCamera.IsLookModeOn = _lookModeOnBeforeInventory;
+            }
+        }
     }
 }

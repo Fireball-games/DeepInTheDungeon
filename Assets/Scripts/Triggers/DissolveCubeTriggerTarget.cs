@@ -9,13 +9,15 @@ namespace Scripts.Triggers
 {
     public class DissolveCubeTriggerTarget : StateTriggerTarget
     {
-        [SerializeField] float _effectDuration = 3f;
-        [SerializeField] float _scaleDuration = 1f;
+        [SerializeField] float effectDuration = 3f;
+        [SerializeField] float scaleDuration = 1f;
+        [SerializeField] Material idleMaterial;
         private MeshRenderer _meshRenderer;
         private GameObject _innerCube;
         private ParticleSystem _centerEffect;
         private Sequence _dissolveSequence;
         private Sequence _solidifySequence;
+        private Material _dissolvingMaterial;
 
         private static readonly int Dissolve = Shader.PropertyToID("_Dissolve");
     
@@ -26,7 +28,8 @@ namespace Scripts.Triggers
         private void Awake()
         {
             _meshRenderer = GetComponent<MeshRenderer>();
-            _meshRenderer.material = new Material(_meshRenderer.material);
+            _dissolvingMaterial = new Material(_meshRenderer.material);
+            _meshRenderer.material = idleMaterial;
 
             _innerCube = transform.GetChild(0).gameObject;
             _innerCube.SetActive(false);
@@ -35,11 +38,11 @@ namespace Scripts.Triggers
             _centerEffect.Stop();
 
             _dissolveSequence =
-                DOTween.Sequence(_meshRenderer.material.DOFloat(0.85f, "_Dissolve", _effectDuration));
-            _dissolveSequence.Insert(0, _innerCube.transform.DOScale(0, _scaleDuration).SetDelay(_effectDuration - _scaleDuration));
+                DOTween.Sequence(_meshRenderer.material.DOFloat(0.85f, "_Dissolve", effectDuration));
+            _dissolveSequence.Insert(0, _innerCube.transform.DOScale(0, scaleDuration).SetDelay(effectDuration - scaleDuration));
             _dissolveSequence.Insert(0,
-                _innerCube.transform.DOLocalRotate(Quaternion.Euler(1800, 1800, 0).eulerAngles, _scaleDuration)
-                    .SetDelay(_effectDuration - _scaleDuration));
+                _innerCube.transform.DOLocalRotate(Quaternion.Euler(1800, 1800, 0).eulerAngles, scaleDuration)
+                    .SetDelay(effectDuration - scaleDuration));
             _dissolveSequence.SetAutoKill(false);
         }
 
@@ -47,16 +50,17 @@ namespace Scripts.Triggers
         {
             if (_isWorking) return;
 
+            _meshRenderer.material = _dissolvingMaterial;
             _innerCube.SetActive(true);
             _centerEffect.gameObject.SetActive(true);
             _centerEffect.Play();
 
             TaskCompletionSource<bool> tsc = new();
-            _meshRenderer.material.DOFloat(0.85f, Dissolve, _effectDuration - _scaleDuration).OnComplete(() =>
+            _meshRenderer.material.DOFloat(0.85f, Dissolve, effectDuration - scaleDuration).OnComplete(() =>
             {
                 MapBuilder.SetTileForMovement(transform.position, true);
             
-                _innerCube.transform.DOScale(0.01f, _scaleDuration).SetEase(Ease.OutExpo).OnComplete(() =>
+                _innerCube.transform.DOScale(0.01f, scaleDuration).SetEase(Ease.OutExpo).OnComplete(() =>
                 {
                     _innerCube.SetActive(false);
                     tsc.SetResult(true);
@@ -78,10 +82,11 @@ namespace Scripts.Triggers
 
             TaskCompletionSource<bool> tsc = new();
 
-            _innerCube.transform.DOScale(0.999f, _scaleDuration).SetEase(Ease.InExpo).OnComplete(() =>
+            _innerCube.transform.DOScale(0.999f, scaleDuration).SetEase(Ease.InExpo).OnComplete(() =>
             {
-                _meshRenderer.material.DOFloat(0, Dissolve, _effectDuration).OnComplete(() =>
+                _meshRenderer.material.DOFloat(0, Dissolve, effectDuration).OnComplete(() =>
                 {
+                    _meshRenderer.material = idleMaterial;
                     _innerCube.SetActive(false);
                     tsc.SetResult(true);
                 }).SetAutoKill(true).Play();

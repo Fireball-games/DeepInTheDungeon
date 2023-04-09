@@ -277,11 +277,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 757220259146956195, guid: 16be1b531e484384685481160b62924f,
+        type: 3}
+      propertyPath: idleMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: d2d038bbd584ca44c817ea83a109e41a, type: 2}
     - target: {fileID: 757220259146956196, guid: 16be1b531e484384685481160b62924f,
         type: 3}
       propertyPath: m_Name
       value: DissolveTriggerCube
       objectReference: {fileID: 0}
+    - target: {fileID: 757220259146956197, guid: 16be1b531e484384685481160b62924f,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b6f82c7d6e59906498196d165bd0284b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16be1b531e484384685481160b62924f, type: 3}
 --- !u!4 &3993765385875357274 stripped

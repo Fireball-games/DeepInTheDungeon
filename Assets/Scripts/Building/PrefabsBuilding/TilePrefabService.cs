@@ -44,7 +44,7 @@ namespace Scripts.Building.PrefabsBuilding
             TilePrefab script = GetPrefabScript(configuration.Guid);
             TileController prefabTile = MapBuilder.GetPhysicalTileByWorldPosition(worldPosition).GetComponent<TileController>();
             if (script.disableFloor) prefabTile.ShowWall(ETileDirection.Floor);
-            if (script.disableCeiling) prefabTile.ShowWall(ETileDirection.Ceiling);
+            // In Editor, ceiling is disabled by default, so no need to enable it.
         }
 
         public static void ProcessPostBuild()

@@ -45,10 +45,17 @@ namespace Scripts.InventoryManagement.Inventories.Items
         /// </summary>
         /// <param name="position">Where to spawn the pickup.</param>
         /// <param name="number">How many instances of the item does the pickup represent.</param>
+        /// <param name="registerInSpawnedMapObjects">If to register spawned item in spawned map objects in ItemSpawner.</param>
         /// <returns>Reference to the pickup object spawned.</returns>
-        public Pickup SpawnPickup(Vector3 position, int number)
+        public Pickup SpawnPickup(Vector3 position, int number, bool registerInSpawnedMapObjects = true)
         {
             Pickup newPickup = pickup.GetFromPool(ItemSpawner.Parent);
+            
+            if (registerInSpawnedMapObjects)
+            {
+                ItemSpawner.AddToSpawnedObjects(newPickup.GetInstanceID(), newPickup.gameObject);
+            }
+            
             newPickup.transform.position = position;
             newPickup.Setup(this, number);
             return newPickup;

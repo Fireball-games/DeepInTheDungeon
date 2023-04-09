@@ -80,7 +80,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
                 else if (_source.GetItem() is InventoryItem inventoryItem)
                 {
                     Player.InventoryManager.SetPickupColliderActive(false);
-                    _draggedItem = inventoryItem.SpawnPickup(GetMouseScreenPosition(), 1).gameObject;
+                    _draggedItem = inventoryItem.SpawnPickup(GetMouseScreenPosition(), 1, false).gameObject;
                     _draggedItem.transform.SetParent(Player.transform, true);
                 }
             }

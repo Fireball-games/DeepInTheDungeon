@@ -17,13 +17,19 @@ namespace Scripts.Building.ItemSpawning
 {
     public class ItemSpawner : ISavable
     {
-        private readonly Dictionary<int, GameObject> _spawnedObjects;
+        private static readonly Dictionary<int, GameObject> _spawnedObjects;
         private static MapBuilder MapBuilder => GameManager.Instance.MapBuilder;
         public static GameObject Parent => MapBuilder.ItemsParent;
         
-        public ItemSpawner()
+        public string Guid { get; set; } = "ItemSpawner";
+        
+        static ItemSpawner()
         {
             _spawnedObjects = new Dictionary<int, GameObject>();
+        }
+        
+        public ItemSpawner()
+        {
             EventsManager.OnMapObjectRemovedFromMap.AddListener(OnInstanceRemovedFromMap);
         }
 
@@ -36,7 +42,6 @@ namespace Scripts.Building.ItemSpawning
                 int stackSize = item.CustomData.TryGetValue(ECustomDataKey.StackSize, out object size) ? (int) size : 1;
                 
                 Pickup spawnedItem = pickup.SpawnPickup(item.PositionRotation.Position, stackSize);
-                _spawnedObjects.Add(spawnedItem.GetInstanceID(), spawnedItem.gameObject);
                 spawnedItem.SetTransform(item.PositionRotation);
             }
             
@@ -72,8 +77,6 @@ namespace Scripts.Building.ItemSpawning
             _spawnedObjects.Clear();
         }
 
-        public string Guid { get; set; } = "ItemSpawner";
-        
         public object CaptureState() => ItemInstancesToMapObjectConfigurations();
 
         public async void RestoreState(object state)
@@ -94,9 +97,12 @@ namespace Scripts.Building.ItemSpawning
         }
 
         public List<MapObjectConfiguration> CollectMapObjects() => ItemInstancesToMapObjectConfigurations().ToList();
+        
+        public static void AddToSpawnedObjects(int instanceId, GameObject newPickupGameObject) =>
+            _spawnedObjects.Add(instanceId, newPickupGameObject);
 
-        private IEnumerable<MapObjectConfiguration> ItemInstancesToMapObjectConfigurations() 
-            => _spawnedObjects.Values.Select(item => Create(item.GetComponent<MapObjectInstance>()));
+        private IEnumerable<MapObjectConfiguration> ItemInstancesToMapObjectConfigurations() =>
+            _spawnedObjects.Values.Select(item => Create(item.GetComponent<MapObjectInstance>()));
         
         private async Task SpawnItemAsync(MapObjectConfiguration item)
         {
@@ -105,9 +111,7 @@ namespace Scripts.Building.ItemSpawning
             SpawnItem(item);
         }
         
-        private void OnInstanceRemovedFromMap(MapObjectInstance pickedUpItem)
-        {
+        private void OnInstanceRemovedFromMap(MapObjectInstance pickedUpItem) =>
             _spawnedObjects.Remove(pickedUpItem.GetInstanceID());
-        }
     }
 }

@@ -11,6 +11,8 @@ namespace Scripts.System.MonoBases
         [SerializeField] protected GameObject body;
         [SerializeField] private ETransitionType transitionType = ETransitionType.None;
         [SerializeField, HideIf(nameof(transitionType), ETransitionType.None)] private float transitionDuration = 0.5f;
+        
+        private Tween _transitionTween;
 
         private CanvasGroup _canvasGroup;
         protected CanvasGroup CanvasGroup
@@ -96,8 +98,9 @@ namespace Scripts.System.MonoBases
                 }
                 
                 body.SetActive(true);
-                CanvasGroup.DOFade(isActive ? 1 : 0, transitionDuration)
-                    .SetAutoKill(true).OnComplete(() => body.SetActive(isActive)).Play();
+                RunTransitionTween(CanvasGroup.DOFade(isActive ? 1 : 0, transitionDuration)
+                    .SetAutoKill(true).OnComplete(() => body.SetActive(isActive)));
+                
             }
             else if (transitionType == ETransitionType.Scale)
             {
@@ -109,9 +112,8 @@ namespace Scripts.System.MonoBases
                 }
                 
                 body.SetActive(true);
-                RectTransform.DOScale(isActive ? Vector3.one : Vector3.zero, transitionDuration).SetAutoKill(true)
-                    .OnComplete(() => body.SetActive(isActive))
-                    .Play();
+                RunTransitionTween(RectTransform.DOScale(isActive ? Vector3.one : Vector3.zero, transitionDuration).SetAutoKill(true)
+                    .OnComplete(() => body.SetActive(isActive)));
             }
             else
             {
@@ -146,11 +148,11 @@ namespace Scripts.System.MonoBases
                 }
                 
                 body.SetActive(true);
-                CanvasGroup.DOFade(isActive ? 1 : 0, transitionDuration).SetAutoKill(true).OnComplete(() =>
+                RunTransitionTween(CanvasGroup.DOFade(isActive ? 1 : 0, transitionDuration).SetAutoKill(true).OnComplete(() =>
                 {
                     tcs.SetResult(true);
                     body.SetActive(isActive);
-                }).Play();
+                }));
             }
             else if (transitionType == ETransitionType.Scale)
             {
@@ -163,13 +165,12 @@ namespace Scripts.System.MonoBases
                 }
                 
                 body.SetActive(true);
-                RectTransform.DOScale(isActive ? Vector3.one : Vector3.zero, transitionDuration).SetAutoKill(true)
+                RunTransitionTween(RectTransform.DOScale(isActive ? Vector3.one : Vector3.zero, transitionDuration).SetAutoKill(true)
                     .OnComplete(() =>
                     {
                         tcs.SetResult(true);
                         body.SetActive(isActive);
-                    })
-                    .Play();
+                    }));
             }
             else
             {
@@ -223,5 +224,11 @@ namespace Scripts.System.MonoBases
         }
 
         public bool IsActive => body.activeSelf;
+        
+        private void RunTransitionTween(Tween tween)
+        {
+            _transitionTween?.Kill();
+            _transitionTween = tween.Play();
+        }
     }
 }

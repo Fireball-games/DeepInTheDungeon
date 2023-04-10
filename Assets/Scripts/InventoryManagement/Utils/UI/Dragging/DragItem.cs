@@ -7,6 +7,7 @@ using Scripts.System.MonoBases;
 using Scripts.System.Pooling;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.InventoryManagement.Utils.UI.Dragging
 {
@@ -27,7 +28,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
     public class DragItem<T> : MonoBase, IBeginDragHandler, IDragHandler, IEndDragHandler
         where T : MapObject
     {
-        private readonly Vector3 _draggedObjectOffset = new(0, 0, 0.6f);
+        private readonly Vector3 _draggedObjectOffset = new(0, 0, 0.7f);
         
         private Vector3 _startPosition;
         private Transform _originalParent;
@@ -98,7 +99,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         {
             transform.position = _startPosition;
             GetComponent<CanvasGroup>().blocksRaycasts = true;
-            // TODO: not when not over UI, it drops/throws the object then, but for now...
+            
             SetCanvasGroupAlpha(1);
             transform.SetParent(_originalParent, true);
 
@@ -136,8 +137,9 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             if (spawnedPickup)
             {
                 // if item has height from floor 0.5 or lower, it will drop, if its higher, it will throw it with every 0.1 of height above 0.5 more far away
-                float height = spawnedPickup.transform.position.y;
-                float throwForce = height > 0.5f ? (height - 0.5f) * 10 : 0;
+                float height = spawnedPickup.transform.position.y - Player.transform.position.y;
+                Logger.Log($"height: {height}");
+                float throwForce = height > 0 ? height * 10 : 0;
                 Throw(spawnedPickup, throwForce);
             }
                 

@@ -45,13 +45,13 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.8763103, b: 0.7216981, a: 1}
-  m_Intensity: 4
+  m_Intensity: 3
   m_Range: 4
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -321,9 +321,6 @@ MonoBehaviour:
   OnInventoryUpdated:
     m_PersistentCalls:
       m_Calls: []
-  OnInventoryInitialized:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &4356371431434974397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,9 +334,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OnInventoryUpdated:
-    m_PersistentCalls:
-      m_Calls: []
-  OnInventoryInitialized:
     m_PersistentCalls:
       m_Calls: []
   inventorySize: 18

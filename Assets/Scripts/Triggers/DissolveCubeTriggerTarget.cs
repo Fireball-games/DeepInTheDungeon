@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using DG.Tweening;
 using Scripts.Building;
@@ -29,7 +30,6 @@ namespace Scripts.Triggers
         {
             _meshRenderer = GetComponent<MeshRenderer>();
             _dissolvingMaterial = new Material(_meshRenderer.material);
-            _meshRenderer.material = idleMaterial;
 
             _innerCube = transform.GetChild(0).gameObject;
             _innerCube.SetActive(false);
@@ -44,6 +44,13 @@ namespace Scripts.Triggers
                 _innerCube.transform.DOLocalRotate(Quaternion.Euler(1800, 1800, 0).eulerAngles, scaleDuration)
                     .SetDelay(effectDuration - scaleDuration));
             _dissolveSequence.SetAutoKill(false);
+            
+            _meshRenderer.material = idleMaterial;
+        }
+
+        private void OnDestroy()
+        {
+            _dissolveSequence.Kill();
         }
 
         private async Task StartDissolve()
@@ -74,6 +81,7 @@ namespace Scripts.Triggers
         {
             if (_isWorking) return;
 
+            _meshRenderer.material = _dissolvingMaterial;
             _innerCube.SetActive(true);
             _centerEffect.gameObject.SetActive(true);
             _centerEffect.Play();

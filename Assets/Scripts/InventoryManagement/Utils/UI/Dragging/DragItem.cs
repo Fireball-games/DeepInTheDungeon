@@ -39,6 +39,11 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         private CanvasGroup _canvasGroup;
 
         private GameObject _draggedItem;
+        private static float ThrowPower => DragHelper.ThrowPower;
+        private static float MaxDragHeight => DragHelper.MaxDragHeight;
+        private static float MinDragHeight => DragHelper.MinDragHeight;
+        private static float MaxDragWidth => DragHelper.MaxDragWidth;
+        private static float MinDragWidth => DragHelper.MinDragWidth;
 
         private bool IsOverUI => EventSystem.current.IsPointerOverGameObject();
 
@@ -64,7 +69,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             GetComponent<CanvasGroup>().blocksRaycasts = false;
             // Set the parent to the canvas so that it's rendered on top of other objects.
             transform.SetParent(_parentCanvas.transform, true);
-            GetComponent<RectTransform>().sizeDelta = PlayerInventoryManager.DragSize;
+            GetComponent<RectTransform>().sizeDelta = DragHelper.DragSize;
         }
 
         void IDragHandler.OnDrag(PointerEventData eventData)
@@ -77,6 +82,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
                 {
                     SetToMousePosition(_draggedItem.transform);
                     _draggedItem.SetActive(true);
+                    Logger.Log($"ThrowForce: {GetThrowForce(_draggedItem.transform.position.y)}");
                     SetCanvasGroupAlpha(0);
                 }
                 else if (_source.GetItem() is InventoryItem inventoryItem)
@@ -149,9 +155,9 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         {
             // TODO: tune it so throw height is what feels above waist
             // if item has height from floor 0.5 or lower, it will drop, if its higher, it will throw it with every 0.1 of height above 0.5 more far away
-            float height = objectY - (Player.transform.position.y - 0.2f);
+            float height = objectY - (Player.transform.position.y);
             Logger.Log($"height: {height}");
-            return height > 0 ? height * 10 : 0;
+            return height > 0 ? height * ThrowPower : 0;
         }
 
         private void Throw(MapObjectInstance spawnedPickup, float throwForce)
@@ -177,8 +183,9 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         {
             Vector3 mouseScreenPosition = GetMouseScreenPosition();
             // TODO: Try to implement grabbable for dragged object or just clean it and clamp to horizontal axis as well
-            mouseScreenPosition = mouseScreenPosition.SetY(Mathf.Clamp(mouseScreenPosition.y,Player.transform.position.y - 0.4f, Player.transform.position.y + 0.3f));
-            Logger.Log($"object height: {mouseScreenPosition.y.ToString().WrapInColor(Color.cyan)}");
+            mouseScreenPosition = mouseScreenPosition.SetY(Mathf.Clamp(mouseScreenPosition.y,Player.transform.position.y + MinDragHeight, Player.transform.position.y + MaxDragHeight));
+            mouseScreenPosition = mouseScreenPosition.SetZ(Mathf.Clamp(mouseScreenPosition.x, Player.transform.position.x + MinDragWidth, Player.transform.position.x + MaxDragWidth));
+            // Logger.Log($"object height: {mouseScreenPosition.y.ToString().WrapInColor(Color.cyan)}");
             // targetTransform.position = GetMouseScreenPosition();
             targetTransform.position = mouseScreenPosition;
             targetTransform.localRotation = Quaternion.identity;

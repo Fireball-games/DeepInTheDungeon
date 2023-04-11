@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2310942999951951282}
   - component: {fileID: 5795127729979781595}
+  - component: {fileID: 6740077962933438335}
   m_Layer: 0
   m_Name: FlameBlazier
   m_TagString: Untagged
@@ -47,9 +48,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabType: 8
   guid: 
+  presentedInEditor: {fileID: 0}
   isWalkable: 0
   disableFloor: 0
   disableCeiling: 0
+--- !u!65 &6740077962933438335
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270337170681641643}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1291450413946372329
 GameObject:
   m_ObjectHideFlags: 0

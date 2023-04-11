@@ -1,4 +1,5 @@
 ﻿using Scripts.Building.ItemSpawning;
+using Scripts.Helpers.Extensions;
 using Scripts.InventoryManagement.Inventories;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.Player;
@@ -29,7 +30,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         where T : MapObject
     {
         private readonly Vector3 _draggedObjectOffset = new(0, 0, 0.7f);
-        
+
         private Vector3 _startPosition;
         private Transform _originalParent;
         private IDragSource<T> _source;
@@ -38,9 +39,9 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         private CanvasGroup _canvasGroup;
 
         private GameObject _draggedItem;
-        
+
         private bool IsOverUI => EventSystem.current.IsPointerOverGameObject();
-        
+
         private static PlayerController Player => PlayerController.Instance;
 
         private void Awake()
@@ -52,7 +53,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         private void Update()
         {
             if (!_draggedItem || IsOverUI) return;
-            
+
             SetToMousePosition(_draggedItem.transform);
         }
 
@@ -69,7 +70,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
             transform.position = eventData.position;
-            
+
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 if (_draggedItem)
@@ -99,22 +100,22 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         {
             transform.position = _startPosition;
             GetComponent<CanvasGroup>().blocksRaycasts = true;
-            
+
             SetCanvasGroupAlpha(1);
             transform.SetParent(_originalParent, true);
 
-            IDragDestination<T> container = !EventSystem.current.IsPointerOverGameObject() 
+            IDragDestination<T> container = !EventSystem.current.IsPointerOverGameObject()
                 ? DropObjectIntoWorld()
                 : GetContainer(eventData);
-            
+
             RemoveDraggedItem();
-            
+
             if (container != null)
             {
                 DropItemIntoContainer(container);
                 return;
             }
-            
+
             Player.InventoryManager.SetPickupColliderActive(true);
             _source.RemoveItems(int.MaxValue);
         }
@@ -126,59 +127,72 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         private IDragDestination<T> DropObjectIntoWorld()
         {
             if (!_draggedItem) return null;
-            
+
             Pickup spawnedPickup = _draggedItem.GetComponent<Pickup>();
-            
-            if (_source.GetItem() is InventoryItem item) 
+
+            if (_source.GetItem() is InventoryItem item)
             {
-                spawnedPickup = item.SpawnPickup(GetMouseScreenPosition(), _draggedItem.transform.rotation, _source.GetNumber());
+                spawnedPickup = item.SpawnPickup(_draggedItem.transform.position, _draggedItem.transform.rotation, _source.GetNumber());
             }
 
             if (spawnedPickup)
             {
-                // if item has height from floor 0.5 or lower, it will drop, if its higher, it will throw it with every 0.1 of height above 0.5 more far away
-                float height = spawnedPickup.transform.position.y - Player.transform.position.y;
-                Logger.Log($"height: {height}");
-                float throwForce = height > 0 ? height * 10 : 0;
-                Throw(spawnedPickup, throwForce);
+                Throw(spawnedPickup, GetThrowForce(spawnedPickup.transform.position.y));
             }
-                
+
             RemoveDraggedItem();
 
             return null;
+        }
+        
+        private static float GetThrowForce(float objectY)
+        {
+            // TODO: tune it so throw height is what feels above waist
+            // if item has height from floor 0.5 or lower, it will drop, if its higher, it will throw it with every 0.1 of height above 0.5 more far away
+            float height = objectY - (Player.transform.position.y - 0.2f);
+            Logger.Log($"height: {height}");
+            return height > 0 ? height * 10 : 0;
         }
 
         private void Throw(MapObjectInstance spawnedPickup, float throwForce)
         {
             Rigidbody rb = spawnedPickup.GetComponent<Rigidbody>();
-            if (rb)
-            {
-                Vector3 direction = /*Vector3.up + */spawnedPickup.transform.forward; // Change this to the direction you want to throw the pickup
-                float force = throwForce * 100; // Adjust this multiplier to control the strength of the throw
-                rb.AddForce(direction * force, ForceMode.Impulse);
-            }
+
+            if (!rb) return;
+
+            Vector3 direction = spawnedPickup.transform.forward;
+            float force = throwForce * 100; // Adjust this multiplier to control the strength of the throw
+            rb.AddForce(direction * force, ForceMode.Impulse);
         }
 
         private void RemoveDraggedItem()
         {
             if (!_draggedItem) return;
-            
+
             _draggedItem.DismissToPool();
             _draggedItem = null;
         }
 
         private void SetToMousePosition(Transform targetTransform)
         {
-            targetTransform.position = GetMouseScreenPosition();
+            Vector3 mouseScreenPosition = GetMouseScreenPosition();
+            // TODO: Try to implement grabbable for dragged object or just clean it and clamp to horizontal axis as well
+            mouseScreenPosition = mouseScreenPosition.SetY(Mathf.Clamp(mouseScreenPosition.y,Player.transform.position.y - 0.4f, Player.transform.position.y + 0.3f));
+            Logger.Log($"object height: {mouseScreenPosition.y.ToString().WrapInColor(Color.cyan)}");
+            // targetTransform.position = GetMouseScreenPosition();
+            targetTransform.position = mouseScreenPosition;
             targetTransform.localRotation = Quaternion.identity;
         }
 
+        /// <summary>
+        /// Gets position of dragged object relative to mouse position relative to the camera.
+        /// </summary>
+        /// <returns></returns>
         private Vector3 GetMouseScreenPosition()
         {
-            Vector3 mousePos = CameraManager.Instance.mainCamera.ScreenToWorldPoint(Input.mousePosition + _draggedObjectOffset);
-            return mousePos;
+            return CameraManager.Instance.mainCamera.ScreenToWorldPoint(Input.mousePosition + _draggedObjectOffset);
         }
-        
+
         private void SetCanvasGroupAlpha(float alpha)
         {
             _canvasGroup ??= GetComponent<CanvasGroup>();
@@ -189,7 +203,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         private IDragDestination<T> GetContainer(PointerEventData eventData)
         {
             if (!eventData.pointerEnter) return null;
-            
+
             IDragDestination<T> container = eventData.pointerEnter.GetComponentInParent<IDragDestination<T>>();
 
             return container;
@@ -200,9 +214,9 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             if (ReferenceEquals(destination, _source)) return;
 
             // Swap won't be possible
-            if (destination is not IDragContainer<T> destinationContainer 
-                || _source is not IDragContainer<T> sourceContainer 
-                || destinationContainer.GetItem() == null 
+            if (destination is not IDragContainer<T> destinationContainer
+                || _source is not IDragContainer<T> sourceContainer
+                || destinationContainer.GetItem() == null
                 || ReferenceEquals(destinationContainer.GetItem(), sourceContainer.GetItem()))
             {
                 AttemptSimpleTransfer(destination);
@@ -232,6 +246,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
                 source.AddItem(removedSourceItem, sourceTakeBackNumber);
                 removedSourceNumber -= sourceTakeBackNumber;
             }
+
             if (destinationTakeBackNumber > 0)
             {
                 destination.AddItem(removedDestinationItem, destinationTakeBackNumber);
@@ -247,10 +262,12 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
                 {
                     destination.AddItem(removedDestinationItem, removedDestinationNumber);
                 }
+
                 if (removedSourceNumber > 0)
                 {
                     source.AddItem(removedSourceItem, removedSourceNumber);
                 }
+
                 return;
             }
 
@@ -259,6 +276,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             {
                 source.AddItem(removedDestinationItem, removedDestinationNumber);
             }
+
             if (removedSourceNumber > 0)
             {
                 destination.AddItem(removedSourceItem, removedSourceNumber);
@@ -274,10 +292,10 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             int toTransfer = Mathf.Min(acceptable, draggingNumber);
 
             if (toTransfer <= 0) return true;
-            
+
             _source.RemoveItems(toTransfer);
             destination.AddItem(draggingItem, toTransfer);
-            
+
             return false;
         }
 
@@ -298,6 +316,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
                     return 0;
                 }
             }
+
             return takeBackNumber;
         }
     }

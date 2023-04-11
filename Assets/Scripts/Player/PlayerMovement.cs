@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building.PrefabsBuilding;
 using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.PrefabsSpawning.Walls.Identifications;
@@ -396,12 +397,7 @@ namespace Scripts.Player
 
                 if (wallScript is IMovementWall)
                 {
-                    Transform hitTransform = hit.transform;
-                    _waypoints = new List<Waypoint>(
-                        (GameManager.Instance.MapBuilder
-                            .GetPrefabConfigurationByTransformData(
-                                new PositionRotation(hitTransform.position, hitTransform.rotation)) as WallConfiguration)?
-                        .WayPoints ?? new List<Waypoint>());
+                    _waypoints = new List<Waypoint>(WallService.GetConfiguration(wallScript.Guid).WayPoints);
 
                     if (_waypoints[0].position != currentPosition.ToVector3Int())
                     {

@@ -39,6 +39,8 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         private CanvasGroup _canvasGroup;
 
         private GameObject _draggedItem;
+        private Rigidbody _draggedItemRigidbody;
+        
         private static float ThrowPower => DragHelper.ThrowPower;
         private static float MaxDragHeight => DragHelper.MaxDragHeight;
         private static float MinDragHeight => DragHelper.MinDragHeight;
@@ -57,9 +59,10 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
 
         private void Update()
         {
-            if (!_draggedItem || IsOverUI) return;
+            if (!_draggedItem || !_draggedItemRigidbody || IsOverUI) return;
 
-            SetToMousePosition(_draggedItem.transform);
+            // SetToMousePosition(_draggedItem.transform);
+            PushDraggedObjectToMousePosition();
         }
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
@@ -80,7 +83,8 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             {
                 if (_draggedItem)
                 {
-                    SetToMousePosition(_draggedItem.transform);
+                    // SetToMousePosition(_draggedItem.transform);
+                    PushDraggedObjectToMousePosition();
                     _draggedItem.SetActive(true);
                     Logger.Log($"ThrowForce: {GetThrowForce(_draggedItem.transform.position.y)}");
                     SetCanvasGroupAlpha(0);
@@ -89,6 +93,11 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
                 {
                     Player.InventoryManager.SetPickupColliderActive(false);
                     _draggedItem = inventoryItem.SpawnPickup(GetMouseScreenPosition(), 1, false).gameObject;
+                    _draggedItemRigidbody = _draggedItem.GetComponent<Rigidbody>();
+                    _draggedItemRigidbody.angularDrag = 1;
+                    _draggedItemRigidbody.drag = 1;
+                    _draggedItemRigidbody.useGravity = false;
+                    _draggedItemRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
                     _draggedItem.transform.SetParent(Player.transform, true);
                 }
             }
@@ -174,21 +183,31 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         private void RemoveDraggedItem()
         {
             if (!_draggedItem) return;
-
+            
             _draggedItem.DismissToPool();
             _draggedItem = null;
         }
 
         private void SetToMousePosition(Transform targetTransform)
         {
+            // Vector3 mouseScreenPosition = GetMouseScreenPosition();
+            // Logger.Log($"mouseScreenPosition: {mouseScreenPosition.ToString().WrapInColor(Color.cyan)}");
+            // Vector3 playerPosition = Player.transform.localPosition;
+            // mouseScreenPosition = mouseScreenPosition.SetY(Mathf.Clamp(mouseScreenPosition.y,playerPosition.y + MinDragHeight, playerPosition.y + MaxDragHeight));
+            // mouseScreenPosition = mouseScreenPosition.SetZ(Mathf.Clamp(mouseScreenPosition.z, playerPosition.z + MinDragWidth, playerPosition.z + MaxDragWidth));
+            // Logger.Log($"mouseScreenPosition clamped: {mouseScreenPosition.ToString().WrapInColor(Color.yellow)}");
+            // // Logger.Log($"object height: {mouseScreenPosition.y.ToString().WrapInColor(Color.cyan)}");
+            // // targetTransform.position = GetMouseScreenPosition();
+            // targetTransform.position = mouseScreenPosition;
+            // targetTransform.localRotation = Quaternion.identity;
+        }
+
+        private void PushDraggedObjectToMousePosition()
+        {
+            if (!_draggedItem || !_draggedItemRigidbody) return;
+            
             Vector3 mouseScreenPosition = GetMouseScreenPosition();
-            // TODO: Try to implement grabbable for dragged object or just clean it and clamp to horizontal axis as well
-            mouseScreenPosition = mouseScreenPosition.SetY(Mathf.Clamp(mouseScreenPosition.y,Player.transform.position.y + MinDragHeight, Player.transform.position.y + MaxDragHeight));
-            mouseScreenPosition = mouseScreenPosition.SetZ(Mathf.Clamp(mouseScreenPosition.x, Player.transform.position.x + MinDragWidth, Player.transform.position.x + MaxDragWidth));
-            // Logger.Log($"object height: {mouseScreenPosition.y.ToString().WrapInColor(Color.cyan)}");
-            // targetTransform.position = GetMouseScreenPosition();
-            targetTransform.position = mouseScreenPosition;
-            targetTransform.localRotation = Quaternion.identity;
+            _draggedItemRigidbody.AddForce(mouseScreenPosition - _draggedItem.transform.position, ForceMode.Impulse);
         }
 
         /// <summary>

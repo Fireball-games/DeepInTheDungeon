@@ -38,11 +38,11 @@ namespace Scripts.System
         /// </summary>
         public Campaign CurrentCampaign => _mapTraversal.CurrentCampaign;
         public MapDescription CurrentMap => _mapTraversal.CurrentMap;
+        public CharacterProfile CurrentCharacterProfile { get; private set; }
         public bool MovementEnabled => movementEnabled;
         public bool IsPlayingFromEditor { get; set; }
         public EGameMode GameMode => _gameMode;
         public bool CanSave { get; internal set; }
-        public CharacterProfile CurrentCharacterProfile { get; private set; }
 
         internal PlayerController player;
         internal bool movementEnabled;
@@ -93,11 +93,10 @@ namespace Scripts.System
 
         public void SetCurrentCampaign(Campaign campaign) => _mapTraversal.SetCurrentCampaign(campaign);
 
-        public void SetCurrentMap(MapDescription mapDescription)
-        {
-            _mapTraversal.SetCurrentMap(mapDescription);
-        }
+        public void SetCurrentMap(MapDescription mapDescription) => _mapTraversal.SetCurrentMap(mapDescription);
         
+        public void SetCurrentCharacterProfile(CharacterProfile characterProfile) => CurrentCharacterProfile = characterProfile;
+
         public void StartMainScene(bool fadeIn = true)
         {
             if(!_mapTraversal.SetForStartFromMainScreen())

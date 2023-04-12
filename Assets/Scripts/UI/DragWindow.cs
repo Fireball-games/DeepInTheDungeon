@@ -1,23 +1,27 @@
-﻿namespace Scripts.UI
-{
-    using UnityEngine;
-    using UnityEngine.EventSystems;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
-    public class DragWindow : MonoBehaviour, IBeginDragHandler, IDragHandler
+namespace Scripts.UI
+{
+    public class DragWindow : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         private RectTransform _rectTransform;
         private Rect _parentRect;
         private Vector2 _offsetToPointer;
+        
+        private IDraggableWindow _draggableWindow;
 
         private void Start()
         {
             _rectTransform = GetComponent<RectTransform>();
             _parentRect = _rectTransform.parent.GetComponent<RectTransform>().rect;
+            _draggableWindow = GetComponent<IDraggableWindow>();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
             _offsetToPointer = eventData.position - _rectTransform.anchoredPosition;
+            _draggableWindow?.OnDragStart(eventData);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -34,5 +38,7 @@
 
             _rectTransform.anchoredPosition = anchoredPosition;
         }
+
+        public void OnEndDrag(PointerEventData eventData) => _draggableWindow?.OnDragEnd(eventData);
     }
 }

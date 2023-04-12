@@ -1,13 +1,12 @@
 ﻿using Scripts.System.MonoBases;
-using TMPro;
 using UnityEngine;
 
 namespace Scripts.InventoryManagement.UI.Inventories
 {
     public abstract class InventoryUIBase : UIElementBase
     {
-        [SerializeField] protected TMP_Text title;
-
+        protected RectTransform RectTransform => (RectTransform) transform;
+        
         protected virtual void Awake()
         {
             SetTitle();

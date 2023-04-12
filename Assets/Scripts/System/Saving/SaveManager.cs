@@ -113,7 +113,7 @@ namespace Scripts.System.Saving
                 fileName = fileName,
                 saveName = saveName,
                 // TODO: Add character profile once implemented.
-                characterProfile = null,
+                characterProfile = GameManager.Instance.CurrentCharacterProfile,
                 playerSaveData = PlayerController.Instance.CaptureState(),
                 campaignsSaves = new List<CampaignSave>(),
                 timeStamp = DateTime.Now,
@@ -265,6 +265,11 @@ namespace Scripts.System.Saving
             {
                 GameManager.Instance.CurrentMap.MapObjects = currentMapSave.mapObjects;
                 await MapBuilder.RebuildItems();
+            }
+            
+            if (save.characterProfile != null)
+            {
+                GameManager.Instance.SetCurrentCharacterProfile(save.characterProfile);
             }
         }
 

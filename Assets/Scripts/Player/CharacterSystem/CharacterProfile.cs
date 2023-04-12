@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Scripts.Player.CharacterSystem
 {
@@ -10,6 +11,14 @@ namespace Scripts.Player.CharacterSystem
     {
         public string name;
         public int imageIndex;
+        public string guid;
+        public Vector2 inventoryPosition;
+
+        public CharacterProfile()
+        {
+            guid = Guid.NewGuid().ToString();
+            inventoryPosition = Vector2.zero;
+        }
 
         public enum ECharacterStats
         {

@@ -120,29 +120,6 @@ namespace Scripts.Helpers.Extensions
             return row >= 0 && row < source.Count && column >= 0 && column < source[0].Count;
         }
 
-        public static void DestroyAllChildren(this GameObject go)
-        {
-            foreach (Transform child in go.transform)
-            {
-                GameObject.Destroy(child.gameObject);
-            }
-        }
-
-        public static void DismissAllChildrenToPool(this GameObject go)
-        {
-            while (go.transform.childCount > 0)
-            {
-                // TODO: seems sometimes not returning all the kids, check it out
-                // Logger.Log("Shooing kids to pool");
-                foreach (Transform child in go.transform)
-                {
-                    ObjectPool.Instance.Dismiss(child.gameObject);
-                }
-            }
-        }
-
-        public static Transform GetBody(this GameObject source) => source.transform.Find("Body");
-
         public static TKey GetFirstKeyByValue<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TValue value)
         {
             return dictionary.FirstOrDefault(entry =>

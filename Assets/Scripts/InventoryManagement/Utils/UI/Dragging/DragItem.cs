@@ -84,7 +84,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
                 if (_draggedItem)
                 {
                     // SetToMousePosition(_draggedItem.transform);
-                    PushDraggedObjectToMousePosition();
+                    // PushDraggedObjectToMousePosition();
                     _draggedItem.SetActive(true);
                     Logger.Log($"ThrowForce: {GetThrowForce(_draggedItem.transform.position.y)}");
                     SetCanvasGroupAlpha(0);
@@ -94,11 +94,13 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
                     Player.InventoryManager.SetPickupColliderActive(false);
                     _draggedItem = inventoryItem.SpawnPickup(GetMouseScreenPosition(), 1, false).gameObject;
                     _draggedItemRigidbody = _draggedItem.GetComponent<Rigidbody>();
-                    _draggedItemRigidbody.angularDrag = 1;
-                    _draggedItemRigidbody.drag = 1;
+                    _draggedItemRigidbody.mass = 5;
+                    _draggedItemRigidbody.angularDrag = 2f;
+                    _draggedItemRigidbody.drag = 2f;
                     _draggedItemRigidbody.useGravity = false;
                     _draggedItemRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
                     _draggedItem.transform.SetParent(Player.transform, true);
+                    // Grabber.Grab(_draggedItem);
                 }
             }
             else
@@ -184,6 +186,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         {
             if (!_draggedItem) return;
             
+            // Grabber.Release();
             _draggedItem.DismissToPool();
             _draggedItem = null;
         }

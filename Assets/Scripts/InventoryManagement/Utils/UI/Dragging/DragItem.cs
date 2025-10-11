@@ -1,5 +1,4 @@
 ﻿using Scripts.Building.ItemSpawning;
-using Scripts.Helpers.Extensions;
 using Scripts.InventoryManagement.Inventories;
 using Scripts.InventoryManagement.Inventories.Items;
 using Scripts.Player;
@@ -47,22 +46,12 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         private static float MaxDragWidth => DragHelper.MaxDragWidth;
         private static float MinDragWidth => DragHelper.MinDragWidth;
 
-        private bool IsOverUI => EventSystem.current.IsPointerOverGameObject();
-
         private static PlayerController Player => PlayerController.Instance;
 
         private void Awake()
         {
             _parentCanvas = GetComponentInParent<Canvas>();
             _source = GetComponentInParent<IDragSource<T>>();
-        }
-
-        private void Update()
-        {
-            if (!_draggedItem || !_draggedItemRigidbody || IsOverUI) return;
-
-            // SetToMousePosition(_draggedItem.transform);
-            PushDraggedObjectToMousePosition();
         }
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
@@ -73,6 +62,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             // Set the parent to the canvas so that it's rendered on top of other objects.
             transform.SetParent(_parentCanvas.transform, true);
             GetComponent<RectTransform>().sizeDelta = DragHelper.DragSize;
+            Player.SetFrontalPlaneActive(true);
         }
 
         void IDragHandler.OnDrag(PointerEventData eventData)
@@ -83,10 +73,9 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             {
                 if (_draggedItem)
                 {
-                    // SetToMousePosition(_draggedItem.transform);
-                    // PushDraggedObjectToMousePosition();
+                    SetToMousePosition(_draggedItem.transform);
                     _draggedItem.SetActive(true);
-                    Logger.Log($"ThrowForce: {GetThrowForce(_draggedItem.transform.position.y)}");
+                    // Logger.Log($"ThrowForce: {GetThrowForce(_draggedItem.transform.position.y)}");
                     SetCanvasGroupAlpha(0);
                 }
                 else if (_source.GetItem() is InventoryItem inventoryItem)
@@ -94,13 +83,8 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
                     Player.InventoryManager.SetPickupColliderActive(false);
                     _draggedItem = inventoryItem.SpawnPickup(GetMouseScreenPosition(), 1, false).gameObject;
                     _draggedItemRigidbody = _draggedItem.GetComponent<Rigidbody>();
-                    _draggedItemRigidbody.mass = 5;
-                    _draggedItemRigidbody.angularDrag = 2f;
-                    _draggedItemRigidbody.drag = 2f;
-                    _draggedItemRigidbody.useGravity = false;
-                    _draggedItemRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+                    _draggedItemRigidbody.isKinematic = true;
                     _draggedItem.transform.SetParent(Player.transform, true);
-                    // Grabber.Grab(_draggedItem);
                 }
             }
             else
@@ -134,6 +118,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             }
 
             Player.InventoryManager.SetPickupColliderActive(true);
+            Player.SetFrontalPlaneActive(false);
             _source.RemoveItems(int.MaxValue);
         }
 
@@ -154,6 +139,7 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
 
             if (spawnedPickup)
             {
+                _draggedItemRigidbody.isKinematic = false;
                 Throw(spawnedPickup, GetThrowForce(spawnedPickup.transform.position.y));
             }
 
@@ -167,17 +153,18 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             // TODO: tune it so throw height is what feels above waist
             // if item has height from floor 0.5 or lower, it will drop, if its higher, it will throw it with every 0.1 of height above 0.5 more far away
             float height = objectY - (Player.transform.position.y);
-            Logger.Log($"height: {height}");
+            // Logger.Log($"height: {height}");
             return height > 0 ? height * ThrowPower : 0;
         }
 
-        private void Throw(MapObjectInstance spawnedPickup, float throwForce)
+        private static void Throw(MapObjectInstance spawnedPickup, float throwForce)
         {
             Rigidbody rb = spawnedPickup.GetComponent<Rigidbody>();
 
             if (!rb) return;
 
-            Vector3 direction = spawnedPickup.transform.forward;
+            Vector3 direction = Player.transform.forward;
+            Player.SetFrontalPlaneActive(false);
             float force = throwForce * 100; // Adjust this multiplier to control the strength of the throw
             rb.AddForce(direction * force, ForceMode.Impulse);
         }
@@ -186,31 +173,19 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
         {
             if (!_draggedItem) return;
             
-            // Grabber.Release();
             _draggedItem.DismissToPool();
             _draggedItem = null;
         }
 
         private void SetToMousePosition(Transform targetTransform)
         {
-            // Vector3 mouseScreenPosition = GetMouseScreenPosition();
-            // Logger.Log($"mouseScreenPosition: {mouseScreenPosition.ToString().WrapInColor(Color.cyan)}");
-            // Vector3 playerPosition = Player.transform.localPosition;
-            // mouseScreenPosition = mouseScreenPosition.SetY(Mathf.Clamp(mouseScreenPosition.y,playerPosition.y + MinDragHeight, playerPosition.y + MaxDragHeight));
-            // mouseScreenPosition = mouseScreenPosition.SetZ(Mathf.Clamp(mouseScreenPosition.z, playerPosition.z + MinDragWidth, playerPosition.z + MaxDragWidth));
-            // Logger.Log($"mouseScreenPosition clamped: {mouseScreenPosition.ToString().WrapInColor(Color.yellow)}");
-            // // Logger.Log($"object height: {mouseScreenPosition.y.ToString().WrapInColor(Color.cyan)}");
-            // // targetTransform.position = GetMouseScreenPosition();
-            // targetTransform.position = mouseScreenPosition;
-            // targetTransform.localRotation = Quaternion.identity;
-        }
-
-        private void PushDraggedObjectToMousePosition()
-        {
-            if (!_draggedItem || !_draggedItemRigidbody) return;
-            
-            Vector3 mouseScreenPosition = GetMouseScreenPosition();
-            _draggedItemRigidbody.AddForce(mouseScreenPosition - _draggedItem.transform.position, ForceMode.Impulse);
+            GameObject frontalPlane = Player.FrontalPlane;
+            Ray ray = CameraManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (frontalPlane.GetComponent<Collider>().Raycast(ray, out RaycastHit hit, 1f))
+            {
+                Vector3 hitPoint = hit.point;
+                targetTransform.position = hitPoint;
+            }
         }
 
         /// <summary>
@@ -234,6 +209,9 @@ namespace Scripts.InventoryManagement.Utils.UI.Dragging
             if (!eventData.pointerEnter) return null;
 
             IDragDestination<T> container = eventData.pointerEnter.GetComponentInParent<IDragDestination<T>>();
+
+            if (container == null && _source is IDragContainer<T> source) 
+                return source;
 
             return container;
         }

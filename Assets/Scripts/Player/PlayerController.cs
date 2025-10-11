@@ -2,6 +2,7 @@
 using Scripts.System;
 using Scripts.System.MonoBases;
 using Scripts.System.Saving;
+using UnityEngine;
 
 namespace Scripts.Player
 {
@@ -9,6 +10,10 @@ namespace Scripts.Player
     {
         public PlayerMovement PlayerMovement { get; private set; }
         public PlayerInventoryManager InventoryManager { get; private set; }
+        /// <summary>
+        /// Multipurpose plane in front of the player
+        /// </summary>
+        public GameObject FrontalPlane { get; private set; }
 
         protected override void Awake()
         {
@@ -16,12 +21,14 @@ namespace Scripts.Player
             
             PlayerMovement = GetComponent<PlayerMovement>();
             InventoryManager = GetComponentInChildren<PlayerInventoryManager>();
+            FrontalPlane = transform.Find("FrontalPlane").gameObject;
         }
 
         private void OnEnable()
         {
             InventoryManager.Initialize();
             InventoryManager.CloseInventories();
+            FrontalPlane.SetActive(false);
         }
 
         private void OnDisable()
@@ -48,6 +55,15 @@ namespace Scripts.Player
                 },
                 inventoriesContent = InventoryManager.GetInventorySavables().Select(SaveManager.CaptureSavaData).ToList(),
             };
+        }
+        
+        /// <summary>
+        /// Sets active state of the frontal plane.
+        /// </summary>
+        /// <param name="isActive"></param>
+        public void SetFrontalPlaneActive(bool isActive)
+        {
+            FrontalPlane.SetActive(isActive);
         }
     }
 }

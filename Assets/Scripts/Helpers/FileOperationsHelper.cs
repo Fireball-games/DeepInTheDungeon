@@ -79,6 +79,7 @@ namespace Scripts.Helpers
 
             try
             {
+                CampaignsLocalDirectoryPath.CreateDirectoryIfNotExists();
                 ES3.Save(campaign.CampaignName, campaign, GetFullRelativeCampaignPath(campaign.CampaignName));
                 PlayerPrefs.SetString(LastPlayedCampaign, campaign.CampaignName);
             }

@@ -44,7 +44,7 @@ namespace Scripts.UI.EditorUI.Components
 
             if (isCameraStayingOnNavigatedPosition)
             {
-                ParentList.NavigateToClickedButtonItem();
+                ParentList?.NavigateToClickedButtonItem();
             }
             else
             {
@@ -78,7 +78,7 @@ namespace Scripts.UI.EditorUI.Components
             if (EditorMouseService.Instance.IsManipulatingCameraPosition) return;
             
             UIManager.OpenedEditor.MoveCameraToPrefab(Vector3Int.RoundToInt(displayedItem.TransformData.Position));
-            ParentList.SetNavigatedAway();
+            ParentList?.SetNavigatedAway();
         }
     }
 }

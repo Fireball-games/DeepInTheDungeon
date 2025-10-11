@@ -171,14 +171,9 @@ namespace Scripts.Helpers.Extensions
         public static void SetTextColor(this Button button, Color color) => button.GetComponentInChildren<TMP_Text>().color = color;
         public static void SetText(this Button button, string text) => button.GetComponentInChildren<TMP_Text>().text = text;
         
-        public static string WrapInColor(this string text, Color color)
-        {
-            return $"<color={color.ToHtmlStringRGBA()}>{text}</color>";
-        }
-        public static string ToHtmlStringRGBA(this Color color)
-        {
-            return "#" + ColorUtility.ToHtmlStringRGBA(color);
-        }
+        public static string WrapInColor(this string text, Color color) => $"<color={color.ToHtmlStringRGBA()}>{text}</color>";
+
+        public static string ToHtmlStringRGBA(this Color color) => "#" + ColorUtility.ToHtmlStringRGBA(color);
 
         public static string ToLines(this IEnumerable<string> source) => string.Join('\n', source);
 

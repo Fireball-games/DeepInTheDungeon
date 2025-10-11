@@ -10,9 +10,9 @@ namespace Scripts.Triggers
 {
     public class DissolveCubeTriggerTarget : StateTriggerTarget
     {
-        [SerializeField] float effectDuration = 3f;
-        [SerializeField] float scaleDuration = 1f;
-        [SerializeField] Material idleMaterial;
+        [SerializeField] private float effectDuration = 3f;
+        [SerializeField] private float scaleDuration = 1f;
+        [SerializeField] private Material idleMaterial;
         private MeshRenderer _meshRenderer;
         private GameObject _innerCube;
         private ParticleSystem _centerEffect;
@@ -57,6 +57,7 @@ namespace Scripts.Triggers
         {
             if (_isWorking) return;
 
+            _dissolvingMaterial.SetFloat(Dissolve, 0f);
             _meshRenderer.material = _dissolvingMaterial;
             _innerCube.SetActive(true);
             _centerEffect.gameObject.SetActive(true);
@@ -81,6 +82,7 @@ namespace Scripts.Triggers
         {
             if (_isWorking) return;
 
+            _dissolvingMaterial.SetFloat(Dissolve, 0.85f);
             _meshRenderer.material = _dissolvingMaterial;
             _innerCube.SetActive(true);
             _centerEffect.gameObject.SetActive(true);
@@ -110,17 +112,18 @@ namespace Scripts.Triggers
         public override void SetState(int state)
         {
             // Solid
+            _innerCube.SetActive(false);
+            
             if (state == 0)
             {
-                _innerCube.SetActive(true);
                 _innerCube.transform.localScale = 0.999f.ToVectorUniform();
                 _meshRenderer.material.SetFloat(Dissolve, 0f);
             }
             // Dissolved
             else
             {
-                _innerCube.SetActive(false);
                 _innerCube.transform.localScale = 0f.ToVectorUniform();
+                _meshRenderer.material = _dissolvingMaterial;
                 _meshRenderer.material.SetFloat(Dissolve, 0.85f);
             }
         

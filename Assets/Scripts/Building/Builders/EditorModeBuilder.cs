@@ -28,7 +28,7 @@ namespace Scripts.Building
                 {
                     return;
                 }
-                // There is physical tile already, let us dispose of it.
+                // If there is physical tile already, let us dispose of it.
                 ObjectPool.Instance.Dismiss(foundTile);
                 PhysicalTiles.Remove(WorldKey);
             }
@@ -42,6 +42,7 @@ namespace Scripts.Building
             cube.transform.localScale = _tileScaleInEditor;
 
             NullTile script = cube.GetComponent<NullTile>();
+            script.Initialize();
             
             if (MapBuilder.ShouldBeInvisible(floor))
             {

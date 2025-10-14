@@ -16,7 +16,7 @@ using Scripts.System.Pooling;
 using UnityEngine;
 using UnityEngine.Events;
 using static Scripts.Enums;
-using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
@@ -56,8 +56,9 @@ namespace Scripts.Building
                 LayoutParent = new GameObject("Layout").transform;
                 PrefabsParent = new GameObject("Prefabs");
                 ItemsParent = new GameObject("Items");
-                
-                LayoutParent.transform.parent = PrefabsParent.transform.parent = ItemsParent.transform.parent = levelPartsParent.transform;
+
+                LayoutParent.transform.parent = PrefabsParent.transform.parent =
+                    ItemsParent.transform.parent = levelPartsParent.transform;
             }
         }
 
@@ -115,18 +116,18 @@ namespace Scripts.Building
                 }
             }
         }
-        
+
         public Campaign GenerateFallbackStartRoomsCampaign()
         {
             MapDescription defaultMap = GenerateFallbackStartRoomsMap(3, 5, 5);
-            
+
             Campaign defaultCampaign = new()
             {
                 CampaignName = Strings.StartRoomsCampaignName,
                 StartMapName = defaultMap.MapName,
-                Maps = new List<MapDescription> { defaultMap },
+                Maps = new List<MapDescription> {defaultMap},
             };
-            
+
             return defaultCampaign;
         }
 
@@ -144,15 +145,61 @@ namespace Scripts.Building
                 EditorStartPosition = center,
                 EditorPlayerStartRotation = Quaternion.identity,
                 SceneName = Scenes.PlayIndoorSceneName,
-                MapName = Strings.CampaignStartMapName,
             };
         }
 
-        public GameObject GetPhysicalTileByGridPosition(int floor, int row, int column) 
+        public static MapDescription GenerateOutdoorMap(int rows, int columns)
+        {
+            int adjustedRows = rows + 2;
+            int adjustedColumns = columns + 2;
+            // Outdoor map have just ground level, but we add one more level above in order to have a start area.
+            // Surrounded by null tiles, so player can't go out of the map.
+            TileDescription[,,] layout = new TileDescription[3, adjustedRows, adjustedColumns];
+
+            CreateOutdoorBaseLayout(adjustedRows, adjustedColumns, layout);
+
+            return new MapDescription
+            {
+                Layout = layout,
+                EditorStartPosition = new Vector3Int(1, adjustedRows / 2, adjustedColumns / 2),
+                EditorPlayerStartRotation = Quaternion.identity,
+                SceneName = Scenes.PlayOutdoorSceneName,
+                groundIndex = 1,
+            };
+        }
+
+        private static void CreateOutdoorBaseLayout(int adjustedRows, int adjustedColumns, TileDescription[,,] layout)
+        {
+            //Above ground level is surrounded by null tiles
+            for (int r = 0; r < adjustedRows; r++)
+            {
+                for (int c = 0; c < adjustedColumns; c++)
+                {
+                    //Above ground are null tiles
+                    layout[0, r, c] = null;
+
+                    // Levels above ground are full of walkable tiles, except borders
+                    if (r == 0 || r == adjustedRows - 1 || c == 0 || c == adjustedColumns - 1)
+                    {
+                        layout[1, r, c] = null;
+                    }
+                    else // Not the edge
+                    {
+                        layout[1, r, c] = DefaultMapProvider.FullTile;
+                    }
+
+                    // Below ground level is full of null tiles (ground)
+                    layout[2, r, c] = null;
+                }
+            }
+        }
+
+        public GameObject GetPhysicalTileByGridPosition(int floor, int row, int column)
             => GetPhysicalTileByWorldPosition(new Vector3(row, -floor, column).ToVector3Int());
-        
-        public GameObject GetPhysicalTileByWorldPosition(Vector3 worldPosition) => PhysicalTiles[worldPosition.ToVector3Int()];
-        
+
+        public GameObject GetPhysicalTileByWorldPosition(Vector3 worldPosition) =>
+            PhysicalTiles[worldPosition.ToVector3Int()];
+
         /// <summary>
         /// Determinate if floor should be visible, usable only from Editor
         /// </summary>
@@ -173,10 +220,10 @@ namespace Scripts.Building
                 prefab.SetActive(floorVisibilityMap[Mathf.RoundToInt(-prefab.transform.position.y)]);
             }
         }
-        
-        public void SetTileForMovement(Vector3 worldPosition, bool isWalkable) 
+
+        public void SetTileForMovement(Vector3 worldPosition, bool isWalkable)
             => Layout.ByGridV3Int(worldPosition.ToGridPosition()).IsForMovement = isWalkable;
-        
+
         private IEnumerator BuildMapCoroutine(MapDescription mapDescription)
         {
             DemolishMap();
@@ -218,7 +265,7 @@ namespace Scripts.Building
             }
 
             yield return new WaitUntil(() => _runningRowBuilds == 0);
-            
+
             _runningFloorBuilds -= 1;
         }
 
@@ -292,16 +339,44 @@ namespace Scripts.Building
             return layout;
         }
 
-        public GameObject GetPrefabByGridPosition(Vector3Int newGridPosition) => _prefabBuilder.GetPrefabByGridPosition(newGridPosition);
+        public bool IsEdgeTile(Vector3Int gridPosition)
+        {
+            int floors = Layout.GetLength(0);
+            
+            // Check if the position is on the top or bottom floor
+            bool onFloorEdge = (gridPosition.x == 0) || (gridPosition.x == floors - 1);
+            
+            return onFloorEdge || IsHorizontalEdgeTile(gridPosition);
+        }
+        
+        public bool IsHorizontalEdgeTile(Vector3Int gridPosition)
+        {
+            int rows = Layout.GetLength(1);
+            int columns = Layout.GetLength(2);
+
+            // Check if the position is on the row, or column boundaries
+            bool onRowEdge = (gridPosition.y == 0) || (gridPosition.y == rows - 1);
+            bool onColumnEdge = (gridPosition.z == 0) || (gridPosition.z == columns - 1);
+            
+            return onRowEdge || onColumnEdge;
+        }
+        
+        public bool IsOnGroundLevel(int floorGridPosition) => floorGridPosition == MapDescription.groundIndex;
+        public bool IsOnOrAboveGroundLevel(int floorGridPosition) => floorGridPosition <= MapDescription.groundIndex;
+
+        public GameObject GetPrefabByGridPosition(Vector3Int newGridPosition) =>
+            _prefabBuilder.GetPrefabByGridPosition(newGridPosition);
 
         public PrefabConfiguration GetPrefabConfigurationByTransformData(PositionRotation positionRotation)
         {
             return _prefabBuilder.GetPrefabConfigurationByTransformData(positionRotation);
         }
 
-        public void ChangePrefabPositionsBy(Vector3 positionChangeDelta) => _prefabBuilder.ChangePrefabPositionsBy(positionChangeDelta);
+        public void ChangePrefabPositionsBy(Vector3 positionChangeDelta) =>
+            _prefabBuilder.ChangePrefabPositionsBy(positionChangeDelta);
 
-        public IEnumerable<T> GetPrefabConfigurationsOnWorldPosition<T>(Vector3 transformPosition) where T : PrefabConfiguration =>
+        public IEnumerable<T> GetPrefabConfigurationsOnWorldPosition<T>(Vector3 transformPosition)
+            where T : PrefabConfiguration =>
             _prefabBuilder.GetPrefabConfigurationsOnWorldPosition<T>(transformPosition);
 
         public GameObject GetPrefabByGuid(string guid) =>
@@ -310,21 +385,24 @@ namespace Scripts.Building
         public TC GetConfigurationByGuid<TC>(string guid) where TC : PrefabConfiguration =>
             _prefabBuilder.GetConfigurationByGuid<TC>(guid);
 
-        public void RemovePrefab<TC>(TC configuration) where TC : PrefabConfiguration => _prefabBuilder.RemovePrefab(configuration);
+        public void RemovePrefab<TC>(TC configuration) where TC : PrefabConfiguration =>
+            _prefabBuilder.RemovePrefab(configuration);
 
-        public bool BuildPrefab<TC>(TC configuration, bool isEditorBuild = false) where TC : PrefabConfiguration 
+        public bool BuildPrefab<TC>(TC configuration, bool isEditorBuild = false) where TC : PrefabConfiguration
             => _prefabBuilder.BuildPrefab(configuration, isEditorBuild);
 
         public void AddReplacePrefabConfiguration<TC>(TC configuration) where TC : PrefabConfiguration =>
             _prefabBuilder.AddReplacePrefabConfiguration(configuration);
 
-        public IEnumerable<TC> GetConfigurationsByPrefabClass<TC, TP>() where TP : PrefabBase where TC : PrefabConfiguration 
+        public IEnumerable<TC> GetConfigurationsByPrefabClass<TC, TP>()
+            where TP : PrefabBase where TC : PrefabConfiguration
             => _prefabBuilder.GetConfigurationsByPrefabClass<TC, TP>();
 
-        public IEnumerable<TC> GetConfigurations<TC>(EPrefabType prefabType) where TC : PrefabConfiguration 
+        public IEnumerable<TC> GetConfigurations<TC>(EPrefabType prefabType) where TC : PrefabConfiguration
             => _prefabBuilder.GetConfigurations<TC>(prefabType);
 
-        public bool GetConfigurationByOwnerGuidAndName<TC>(string ownerGuid, string prefabName, out TC configuration) where TC : PrefabConfiguration
+        public bool GetConfigurationByOwnerGuidAndName<TC>(string ownerGuid, string prefabName, out TC configuration)
+            where TC : PrefabConfiguration
             => _prefabBuilder.GetConfigurationByOwnerGuidAndName(ownerGuid, prefabName, out configuration);
 
         public void RemoveConfiguration(string guid) => _prefabBuilder.RemoveConfiguration(guid);

@@ -14,6 +14,7 @@ namespace Scripts.UI.EditorUI
         [SerializeField] private int rowsCount;
         [SerializeField] private int columnsCount;
         [SerializeField] private int floorsCount;
+        public FramedCheckBox outdoorMapCheckBox;
         public InputField rowsInput;
         public InputField columnsInput;
         public InputField floorsInput;
@@ -32,6 +33,9 @@ namespace Scripts.UI.EditorUI
         
         private void InitializeTexts()
         {
+            outdoorMapCheckBox.SetLabel(t.Get(Keys.IsOutdoorMap));
+            outdoorMapCheckBox.SetToggle(false);
+            
             rowsInput.SetInputText(rowsCount.ToString());
             rowsInput.SetLabelText(t.Get(Keys.Rows));
             

@@ -27,6 +27,15 @@ namespace Scripts.System.MonoBases
             Cancel
         }
 
+        /// <summary>
+        /// Shows the dialog and awaits user confirmation.
+        /// </summary>
+        /// <param name="dialogTitle"></param>
+        /// <param name="confirmButtonText"></param>
+        /// <param name="cancelButtonText"></param>
+        /// <param name="isModalClosingDialog">If modal will close when clicking on the modal area.</param>
+        /// <param name="showVisibleModal"></param>
+        /// <returns></returns>
         public async Task<EConfirmResult> Show(string dialogTitle = null,
             string confirmButtonText = null,
             string cancelButtonText = null,

@@ -56,6 +56,9 @@ namespace Scripts.Helpers.Extensions
         
         public static bool HasIndex<T>(this IEnumerable<T> source, int index) => index >= 0 && index < source.Count();
 
+        public static bool HasIndex<T>(this T[,,] source, int x, int y, int z) =>
+            source.HasIndex(new Vector3Int(x, y, z));
+        
         public static bool HasIndex<T>(this T[,,] source, Vector3Int gridPosition)
         {
             return gridPosition.x >= 0 && gridPosition.x < source.GetLength(0)

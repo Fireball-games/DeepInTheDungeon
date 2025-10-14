@@ -44,6 +44,7 @@ namespace Scripts.Localization
         public const string ExitDelay = "ExitDelay";
         public const string ExitGame = "ExitGame";
         public const string Floors = "Floors";
+        public const string IsOutdoorMap = "IsOutdoorMap";
         public const string IsWalkable = "IsWalkable";
         public const string InvalidNumberOfPrefabsFound = "InvalidNumberOfPrefabsFound";
         public const string InventoryTitle = "InventoryTitle";

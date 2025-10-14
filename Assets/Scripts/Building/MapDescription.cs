@@ -18,23 +18,18 @@ namespace Scripts.Building
         /// <summary>
         /// Position according to Layout array
         /// </summary>
-        public Vector3Int EditorStartPosition;
+        public Vector3Int EditorStartPosition = Vector3Int.zero;
 
-        public Quaternion EditorPlayerStartRotation;
-        public string SceneName;
-        public TileDescription[,,] Layout;
-        public List<PrefabConfiguration> PrefabConfigurations;
-        public List<MapObjectConfiguration> MapObjects;
-        public List<EntryPoint> EntryPoints;
+        public Quaternion EditorPlayerStartRotation = Quaternion.identity;
+        public string SceneName = Scenes.PlayIndoorSceneName;
+        public TileDescription[,,] Layout = new TileDescription[10, 10, 1];
+        public List<PrefabConfiguration> PrefabConfigurations = new();
+        public List<MapObjectConfiguration> MapObjects = new();
+        public List<EntryPoint> EntryPoints = new();
 
-        public MapDescription()
-        {
-            EditorStartPosition = Vector3Int.zero;
-            EditorPlayerStartRotation = Quaternion.identity;
-            SceneName = Scenes.PlayIndoorSceneName;
-            PrefabConfigurations = new List<PrefabConfiguration>();
-            EntryPoints = new List<EntryPoint>();
-        }
+        public bool IsOutdoor;
+        public int groundIndex;
+        public string MusicTrackName;
 
         public MapDescription ClonedCopy() => (MapDescription) Clone();
 
@@ -63,6 +58,8 @@ namespace Scripts.Building
             PrefabConfigurations = PrefabConfigurations.Clone(),
             MapObjects = MapObjects.Clone(),
             EntryPoints = EntryPoints.Clone(),
+            IsOutdoor = false,
+            MusicTrackName = string.Empty,
         };
     }
 }

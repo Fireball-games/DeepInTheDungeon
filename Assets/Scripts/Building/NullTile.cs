@@ -1,19 +1,28 @@
 using System;
 using Scripts.Helpers;
+using Scripts.Helpers.Extensions;
 using Scripts.MapEditor;
+using Scripts.System;
 using Scripts.System.Pooling;
 using UnityEngine;
 
 namespace Scripts.Building
 {
+    [SelectionBase]
     public class NullTile : MonoBehaviour, IPoolInitializable
     {
-        [SerializeField] private MeshRenderer bodyRenderer;
+        [SerializeField] protected MeshRenderer bodyRenderer;
+        [SerializeField] private GameObject FloorObject;
         public Material normalMaterial;
         public Material transparentMaterial;
+        public bool isOnEdgeAboveGround;
 
-        private MapEditorManager Manager => MapEditorManager.Instance;
-        private bool IsOnUpperFloor => Math.Abs(-transform.position.y - (Manager.CurrentFloor - 1)) < float.Epsilon;
+        private static GameManager Manager => GameManager.Instance;
+        private bool IsOnUpperFloor => Math.Abs(-transform.position.y - (MapEditorManager.Instance.CurrentFloor - 1)) < float.Epsilon;
+        private bool IsOutdoorMap => Manager.MapBuilder.MapDescription.IsOutdoor;
+        private bool IsAboveGround => Manager.MapBuilder.IsOnOrAboveGroundLevel(transform.position.ToGridPosition().x);
+        private bool IsEdgeTile => Manager.MapBuilder.IsEdgeTile(transform.position.ToGridPosition());
+        private bool IsOnGroundLevel => Manager.MapBuilder.IsOnGroundLevel(transform.position.ToGridPosition().x);
 
         private int _myFloor;
 
@@ -21,11 +30,33 @@ namespace Scripts.Building
         {
             ShowTile();
         }
+        
+        public void Initialize()
+        {
+            isOnEdgeAboveGround = IsOutdoorMap && IsAboveGround && IsEdgeTile;
+            ShowTile();
+        }
 
         public void ShowTile(bool show = true)
         {
+            if (isOnEdgeAboveGround)
+            {
+                SetBodyMaterial(transparentMaterial);
+                FloorObject.gameObject.SetActive(IsOnGroundLevel && show);
+            }
+            else
+            {
+                SetBodyMaterial(normalMaterial);
+                FloorObject.gameObject.SetActive(false);
+            }
+            
             bodyRenderer.enabled = show;
-            SetMaterial(normalMaterial);
+        }
+        
+        public void ShowFloorOnly(bool show = true)
+        {
+            bodyRenderer.enabled = false;
+            FloorObject.gameObject.SetActive(show);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -35,7 +66,7 @@ namespace Scripts.Building
             if (!IsOnUpperFloor || other.gameObject.layer != LayersManager.UpperFloor) return;
 
             bodyRenderer.enabled = true;
-            SetMaterial(transparentMaterial);
+            SetBodyMaterial(transparentMaterial);
         }
 
         private void OnTriggerExit(Collider other)
@@ -45,6 +76,6 @@ namespace Scripts.Building
             ShowTile(!Manager.MapBuilder.ShouldBeInvisible(-_myFloor));
         }
 
-        private void SetMaterial(Material material) => bodyRenderer.material = material;
+        protected void SetBodyMaterial(Material material) => bodyRenderer.material = material;
     }
 }

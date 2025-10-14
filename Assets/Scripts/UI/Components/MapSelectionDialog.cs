@@ -76,7 +76,7 @@ namespace Scripts.UI.Components
             _loadLastEditedMapButton.onClick.AddListener(LoadLastEditedMap);
             _addCampaignButton.onClick.AddListener(AddCampaign);
             _addMapButton.onClick.AddListener(AddMap);
-            
+
             PrepareForTransition();
         }
 
@@ -98,8 +98,9 @@ namespace Scripts.UI.Components
         {
             string defaultCampaignName = t.Get(Keys.Campaign).IncrementName(
                 _existingCampaigns.Select(c => c.CampaignName));
-            
-            string campaignName = await EditorUIManager.Instance.ShowInputFieldDialog(t.Get(Keys.EnterCampaignName), defaultCampaignName);
+
+            string campaignName =
+                await EditorUIManager.Instance.ShowInputFieldDialog(t.Get(Keys.EnterCampaignName), defaultCampaignName);
 
             if (string.IsNullOrEmpty(campaignName)) return;
 
@@ -133,20 +134,34 @@ namespace Scripts.UI.Components
             int columns = int.Parse(dialog.columnsInput.Text);
             int floors = int.Parse(dialog.floorsInput.Text) + 2;
             string mapName = dialog.mapNameInput.Text;
+            bool isOutdoor = dialog.outdoorMapCheckBox.IsOn;
 
-            MapDescription newMap = MapBuilder.GenerateFallbackStartRoomsMap(
-                Mathf.Clamp(floors, MapEditorManager.MinFloors, MapEditorManager.MaxFloors),
-                Mathf.Clamp(rows, MapEditorManager.MinRows, MapEditorManager.MaxRows),
-                Mathf.Clamp(columns, MapEditorManager.MinColumns, MapEditorManager.MaxColumns));
+            MapDescription newMap = new() {MapName = mapName};
 
+            if (isOutdoor)
+            {
+                newMap = MapBuilder.GenerateOutdoorMap(
+                    Mathf.Clamp(rows, MapEditorManager.MinRows, MapEditorManager.MaxRows),
+                    Mathf.Clamp(columns, MapEditorManager.MinColumns, MapEditorManager.MaxColumns));
+            }
+            else
+            {
+                newMap = MapBuilder.GenerateFallbackStartRoomsMap(
+                    Mathf.Clamp(floors, MapEditorManager.MinFloors, MapEditorManager.MaxFloors),
+                    Mathf.Clamp(rows, MapEditorManager.MinRows, MapEditorManager.MaxRows),
+                    Mathf.Clamp(columns, MapEditorManager.MinColumns, MapEditorManager.MaxColumns));
+            }
+            
             newMap.MapName = string.IsNullOrEmpty(mapName)
                 ? t.Get(Keys.NewMapName).IncrementName(_selectedCampaign.Maps.Select(m => m.MapName))
                 : mapName;
+            newMap.IsOutdoor = isOutdoor;
 
             if (_selectedCampaign.Maps.Any(m => m.MapName == newMap.MapName))
             {
                 string message = $"{mapName}: {t.Get(Keys.MapAlreadyExists)}";
-                EditorUIManager.Instance.MessageBar.Set(message, MessageBar.EMessageType.Warning, automaticDismissDelay: 3f);
+                EditorUIManager.Instance.MessageBar.Set(message, MessageBar.EMessageType.Warning,
+                    automaticDismissDelay: 3f);
                 return;
             }
 
@@ -164,7 +179,8 @@ namespace Scripts.UI.Components
         {
             if (_lastEditedMap is null || _lastEditedMap.Length != 2)
             {
-                Logger.LogError($"Last edited map record in player prefs is null or empty, code should never get here if it is so.");
+                Logger.LogError(
+                    $"Last edited map record in player prefs is null or empty, code should never get here if it is so.");
                 return;
             }
 
@@ -230,7 +246,8 @@ namespace Scripts.UI.Components
                     try
                     {
                         string campaignName = Path.GetFileNameWithoutExtension(campaignFile);
-                        Campaign loadedCampaign = ES3.Load<Campaign>(campaignName, GetLocalRelativeCampaignPath(campaignName));
+                        Campaign loadedCampaign =
+                            ES3.Load<Campaign>(campaignName, GetLocalRelativeCampaignPath(campaignName));
                         if (loadedCampaign != null)
                         {
                             _existingCampaigns.Add(loadedCampaign);
@@ -278,7 +295,9 @@ namespace Scripts.UI.Components
         {
             foreach (Button button in scrollViewParent.GetComponentsInChildren<Button>())
             {
-                button.SetTextColor(button.GetComponentInChildren<TMP_Text>().text == selectedItemName ? Colors.Positive : Colors.White);
+                button.SetTextColor(button.GetComponentInChildren<TMP_Text>().text == selectedItemName
+                    ? Colors.Positive
+                    : Colors.White);
             }
         }
 
@@ -319,7 +338,8 @@ namespace Scripts.UI.Components
 
             if (lastEditedMapValid)
             {
-                _lastEditedMapDescription.SetTitle($"{t.Get(Keys.Campaign)}: {_lastEditedMap[0]} {t.Get(Keys.Map)}: {_lastEditedMap[1]}");
+                _lastEditedMapDescription.SetTitle(
+                    $"{t.Get(Keys.Campaign)}: {_lastEditedMap[0]} {t.Get(Keys.Map)}: {_lastEditedMap[1]}");
                 _lastEditedMapDescription.SetCollapsed(false);
             }
             else
@@ -334,7 +354,9 @@ namespace Scripts.UI.Components
 
             _selectCampaignPrompt.Show(!isCampaignSelected ? t.Get(Keys.SelectCampaignPrompt) : null);
 
-            _selectMapPrompt.Show(isCampaignSelected && !_selectedCampaign.Maps.Any() ? t.Get(Keys.SelectMapPrompt) : null);
+            _selectMapPrompt.Show(isCampaignSelected && !_selectedCampaign.Maps.Any()
+                ? t.Get(Keys.SelectMapPrompt)
+                : null);
 
             bool isMapsViewPresentable = isCampaignSelected && _selectedCampaign.Maps.Any();
 

@@ -15,6 +15,13 @@ namespace Scripts.UI.Components
 
         private void Awake()
         {
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            if (_label) return;
+            
             _checkbox = body.transform.Find("Checkbox").GetComponent<Toggle>();
             _checkbox.onValueChanged.AddListener(OnValueChanged_internal);
             
@@ -41,11 +48,15 @@ namespace Scripts.UI.Components
         
         public void SetLabel(string text)
         {
+            Initialize();
+            
             _label.text = text ?? "";
         }
 
         public void SetToggle(bool isOn)
         {
+            Initialize();
+            
             _checkbox.onValueChanged.RemoveAllListeners();
             _checkbox.isOn = isOn;
             _checkbox.onValueChanged.AddListener(OnValueChanged_internal);

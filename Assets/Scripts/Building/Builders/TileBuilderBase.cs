@@ -5,6 +5,7 @@ using Scripts.Helpers.Extensions;
 using Scripts.System.Pooling;
 using UnityEngine;
 using Logger = Scripts.Helpers.Logger;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.Building
 {
@@ -80,7 +81,18 @@ namespace Scripts.Building
 
             foreach (Vector3Int direction in TileDirections.VectorDirections)
             {
-                if (Layout[floor+direction.y, row+direction.x, column+direction.z] == null )
+                int x = floor + direction.y;
+                int y = row + direction.x;
+                int z = column + direction.z;
+                Vector3Int gridInDirection = new(x, y, z);
+                
+                if (!Layout.HasIndex(gridInDirection))
+                {
+                    Logger.LogError($"Tile at location: [{floor}] [{row}] [{column}] has invalid direction: {direction}");
+                    continue;
+                }
+                
+                if (Layout[x, y, z] == null && !IsOutdoorEdgeNullTile(gridInDirection))
                 {
                     newTile.ShowWall(TileDirections.WallDirectionByVector[direction]);
                 }
@@ -107,6 +119,13 @@ namespace Scripts.Building
             // tileTransform.position = new Vector3(row, 0 - floor, column);
             tileTransform.position = worldPosition;
             PhysicalTiles.Add(worldPosition.ToVector3Int(), newTile.gameObject);
+        }
+
+        private bool IsOutdoorEdgeNullTile(Vector3Int gridDirection)
+        {
+             return MapBuilder.MapDescription.IsOutdoor 
+                    && MapBuilder.IsOnOrAboveGroundLevel(gridDirection.x) 
+                    && MapBuilder.IsEdgeTile(gridDirection);
         }
     }
 }

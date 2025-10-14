@@ -1853,6 +1853,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3483869700169373490, guid: 28181d323fbe59d4e820e297385722e9,
+        type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 4981801818852720348, guid: 28181d323fbe59d4e820e297385722e9,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2509,12 +2514,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79f0e43f34060254baeec10f9cfbe91d, type: 3}
---- !u!4 &5263494167006222253 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7226024728097752466, guid: 79f0e43f34060254baeec10f9cfbe91d,
-    type: 3}
-  m_PrefabInstance: {fileID: 5263494167006222252}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7648017575263966322
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2522,6 +2521,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2868499664538057293, guid: 5b60b5f5ba27d7f4cbc703d46c12f425,
+        type: 3}
+      propertyPath: preSpawnSetItems.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3832279166589929012, guid: 5b60b5f5ba27d7f4cbc703d46c12f425,
+        type: 3}
+      propertyPath: defaultNullTileAboveGroundPrefab
+      value: 
+      objectReference: {fileID: 9077699002463559798, guid: c4af63374f37bb74fa37550b9ca7998d,
+        type: 3}
     - target: {fileID: 7648017574634641508, guid: 5b60b5f5ba27d7f4cbc703d46c12f425,
         type: 3}
       propertyPath: m_Name

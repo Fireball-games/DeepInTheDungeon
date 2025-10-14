@@ -6,7 +6,10 @@ using Scripts.Helpers.Extensions;
 using Scripts.System;
 using UnityEngine;
 using static Scripts.MapEditor.Enums;
-using LayoutType = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using LayoutType =
+    System.Collections.Generic.List<System.Collections.Generic.List<
+        System.Collections.Generic.List<Scripts.Building.Tile.TileDescription>>>;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Scripts.MapEditor.Services
 {
@@ -42,7 +45,7 @@ namespace Scripts.MapEditor.Services
         public void HandleUpperFloorVisibility()
         {
             bool shouldBeHidden = MapBuilder.ShouldBeInvisible(Manager.CurrentFloor - 1);
-            
+
             foreach (NullTile nullTile in Manager.MapBuilder.NullTilesMap[Manager.CurrentFloor - 1])
             {
                 nullTile.ShowTile(!shouldBeHidden);
@@ -60,7 +63,7 @@ namespace Scripts.MapEditor.Services
         public static void SetFloorVisible(int floor, bool isVisible)
         {
             Manager.FloorVisibilityMap[floor] = isVisible;
-            
+
             for (int row = 0; row < Manager.EditedLayout[floor].Count; row++)
             {
                 for (int column = 0; column < Manager.EditedLayout[floor][row].Count; column++)
@@ -219,9 +222,29 @@ namespace Scripts.MapEditor.Services
 
         private void InsertFloorToTop()
         {
+            if (MapBuilder.MapDescription.IsOutdoor)
+                FillDefaultTilesToCeiling();
+
             EditedLayout.Insert(0, new List<List<TileDescription>>());
 
             PopulateFloor(0);
+
+            MapBuilder.MapDescription.groundIndex += 1;
+        }
+
+        private void FillDefaultTilesToCeiling()
+        {
+            int rows = EditedLayout[0].Count;
+            int columns = EditedLayout[0][0].Count;
+            
+            for (int row = 0; row < rows; row++)
+            {
+                for (int column = 0; column < columns; column++)
+                {
+                    if (!MapBuilder.IsHorizontalEdgeTile(new Vector3Int(0, row, column)))
+                        EditedLayout[0][row][column] = DefaultMapProvider.FullTile;
+                }
+            }
         }
 
         private void AddFloorToBottom()
@@ -231,18 +254,19 @@ namespace Scripts.MapEditor.Services
             PopulateFloor(EditedLayout.Count - 1);
         }
 
-        private void PopulateFloor(int index)
+        private void PopulateFloor(int floor)
         {
             for (int row = 0; row < EditedLayout[1].Count; row++)
             {
-                EditedLayout[index].Add(new List<TileDescription>());
+                EditedLayout[floor].Add(new List<TileDescription>());
             }
 
-            foreach (List<TileDescription> row in EditedLayout[index])
+            for (int row = 0; row < EditedLayout[floor].Count; row++)
             {
-                for (int i = 0; i < EditedLayout[1][1].Count; i++)
+                List<TileDescription> rowList = EditedLayout[floor][row];
+                for (int column = 0; column < EditedLayout[1][1].Count; column++)
                 {
-                    row.Add(null);
+                    rowList.Add(null);
                 }
             }
         }
@@ -263,10 +287,12 @@ namespace Scripts.MapEditor.Services
             Vector3Int position = Mouse.MouseGridPosition;
 
             if (Mouse.LeftClickExpired
-                || Manager.WorkLevel == ELevel.Upper && (Mouse.GridPositionType != EGridPositionType.EditableTileAbove &&
-                                                         Mouse.GridPositionType != EGridPositionType.NullTileAbove)
-                || Manager.WorkLevel == ELevel.Lower && (Mouse.GridPositionType != EGridPositionType.EditableTileBellow &&
-                                                         Mouse.GridPositionType != EGridPositionType.NullTileBellow)
+                || Manager.WorkLevel == ELevel.Upper &&
+                (Mouse.GridPositionType != EGridPositionType.EditableTileAbove &&
+                 Mouse.GridPositionType != EGridPositionType.NullTileAbove)
+                || Manager.WorkLevel == ELevel.Lower &&
+                (Mouse.GridPositionType != EGridPositionType.EditableTileBellow &&
+                 Mouse.GridPositionType != EGridPositionType.NullTileBellow)
                )
             {
                 return;
@@ -290,8 +316,16 @@ namespace Scripts.MapEditor.Services
                 floor += 1;
             }
 
-            AdjustEditedLayout(floor, row, column, out int floorAdjustment, out int rowAdjustment, out int columnAdjustment,
+            AdjustEditedLayout(floor, row, column, out int floorAdjustment, out int rowAdjustment,
+                out int columnAdjustment,
                 out bool wasLayoutAdjusted);
+
+            if (MapBuilder.MapDescription.IsOutdoor && MapBuilder.IsOnOrAboveGroundLevel(floor) && floorAdjustment > 0)
+            {
+                // If new top level was added in outdoor map, clicked position is full tile instead of null tile,
+                // so it would be nullified in further process, so we need to set it to null again
+                EditedLayout[1][row][column] = null;
+            }
 
             int adjustedFloor = floor + floorAdjustment;
             int adjustedRow = row + rowAdjustment;
@@ -331,13 +365,15 @@ namespace Scripts.MapEditor.Services
                         ? ELevel.Lower
                         : ELevel.Equal;
 
-                Manager.OrderMapConstruction(newMap, mapIsPresented: true, useStartPosition: false, floorsCountChange: floorsAdded);
+                Manager.OrderMapConstruction(newMap, mapIsPresented: true, useStartPosition: false,
+                    floorsCountChange: floorsAdded);
             }
         }
 
         private TileDescription[,,] ConvertEditedLayoutToArray()
         {
-            TileDescription[,,] result = new TileDescription[EditedLayout.Count, EditedLayout[0].Count, EditedLayout[0][0].Count];
+            TileDescription[,,] result =
+                new TileDescription[EditedLayout.Count, EditedLayout[0].Count, EditedLayout[0][0].Count];
 
             for (int x = 0; x < EditedLayout.Count; x++)
             {

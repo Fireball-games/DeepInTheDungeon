@@ -22,6 +22,13 @@ namespace Scripts.Helpers
             Item = LayerMask.NameToLayer(ItemMaskName);
         }
 
+        /// <summary>
+        /// Checks if the mouse is over an object in the specified layer.
+        /// If so, returns true and outputs the hit object.
+        /// </summary>
+        /// <param name="layerName"></param>
+        /// <param name="hitObject"></param>
+        /// <returns></returns>
         public static bool CheckRayHit(string layerName, out GameObject hitObject)
         {
             if (Physics.Raycast(MouseRay, out RaycastHit hit, RayHitDistance, LayerMask.GetMask(layerName)))

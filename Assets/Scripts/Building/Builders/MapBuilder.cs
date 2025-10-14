@@ -309,7 +309,12 @@ namespace Scripts.Building
 
             foreach (Vector3Int direction in TileDirections.VectorDirections)
             {
-                if (Layout[floor + direction.y, row + direction.x, column + direction.z] == null)
+                int x = floor + direction.y;
+                int y = row + direction.x;
+                int z = column + direction.z;
+                Vector3Int gridInDirection = new(x, y, z);
+                
+                if (Layout[x, y, z] == null && !IsOutdoorEdgeNullTile(gridInDirection))
                     tileController.ShowWall(TileDirections.WallDirectionByVector[direction]);
                 else
                     tileController.HideWall(TileDirections.WallDirectionByVector[direction]);
@@ -338,6 +343,13 @@ namespace Scripts.Building
 
             return layout;
         }
+        
+        public bool IsOutdoorEdgeNullTile(Vector3Int gridDirection)
+        {
+            return MapDescription.IsOutdoor 
+                   && IsOnOrAboveGroundLevel(gridDirection.x) 
+                   && IsEdgeTile(gridDirection);
+        }
 
         public bool IsEdgeTile(Vector3Int gridPosition)
         {
@@ -359,6 +371,28 @@ namespace Scripts.Building
             bool onColumnEdge = (gridPosition.z == 0) || (gridPosition.z == columns - 1);
             
             return onRowEdge || onColumnEdge;
+        }
+        
+        public bool IsColumnSliceEdgeTile(Vector3Int gridPosition)
+        {
+            int floors = Layout.GetLength(0);
+            int rows = Layout.GetLength(1);
+            // Check if the position is on the column boundaries
+            bool floorEdge = (gridPosition.x == 0) || (gridPosition.x == floors - 1);
+            bool rowEdge = (gridPosition.y == 0) || (gridPosition.y == rows - 1);
+            
+            return floorEdge || rowEdge;
+        }
+        
+        public bool IsRowSliceEdgeTile(Vector3Int gridPosition, List<List<List<TileDescription>>> layout)
+        {
+            int floors = layout.Count;
+            int columns = layout[0][0].Count;
+            // Check if the position is on the row boundaries
+            bool floorEdge = (gridPosition.x == 0) || (gridPosition.x == floors - 1);
+            bool columnEdge = (gridPosition.z == 0) || (gridPosition.z == columns - 1);
+            
+            return floorEdge || columnEdge;
         }
         
         public bool IsOnGroundLevel(int floorGridPosition) => floorGridPosition == MapDescription.groundIndex;

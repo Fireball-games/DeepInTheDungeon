@@ -92,7 +92,7 @@ namespace Scripts.Building
                     continue;
                 }
                 
-                if (Layout[x, y, z] == null && !IsOutdoorEdgeNullTile(gridInDirection))
+                if (Layout[x, y, z] == null && !MapBuilder.IsOutdoorEdgeNullTile(gridInDirection))
                 {
                     newTile.ShowWall(TileDirections.WallDirectionByVector[direction]);
                 }
@@ -115,17 +115,10 @@ namespace Scripts.Building
                 // TODO: manage mesh and material via stored names
             }
 
-            Vector3 worldPosition = new(row, -floor, column); 
+            // Vector3 worldPosition = new(row, -floor, column); 
             // tileTransform.position = new Vector3(row, 0 - floor, column);
-            tileTransform.position = worldPosition;
-            PhysicalTiles.Add(worldPosition.ToVector3Int(), newTile.gameObject);
-        }
-
-        private bool IsOutdoorEdgeNullTile(Vector3Int gridDirection)
-        {
-             return MapBuilder.MapDescription.IsOutdoor 
-                    && MapBuilder.IsOnOrAboveGroundLevel(gridDirection.x) 
-                    && MapBuilder.IsEdgeTile(gridDirection);
+            tileTransform.position = WorldKey;
+            PhysicalTiles.Add(WorldKey, newTile.gameObject);
         }
     }
 }

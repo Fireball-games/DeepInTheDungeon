@@ -138,6 +138,7 @@ namespace Scripts.MapEditor.Services
             {
                 AddColumn();
                 AddRowToFront();
+                
                 wasAdjusted = true;
             }
             else if (row == 0)
@@ -180,6 +181,11 @@ namespace Scripts.MapEditor.Services
 
         private void AddColumn()
         {
+            if (MapBuilder.MapDescription.IsOutdoor)
+            {
+                FillDefaultTilesToColumnSlice(EditedLayout[0][0].Count - 1); 
+            }
+            
             foreach (List<List<TileDescription>> floor in EditedLayout)
             {
                 foreach (List<TileDescription> row in floor)
@@ -191,8 +197,14 @@ namespace Scripts.MapEditor.Services
 
         private void InsertColumnToStart()
         {
-            foreach (List<List<TileDescription>> floor in EditedLayout)
+            if (MapBuilder.MapDescription.IsOutdoor)
             {
+                FillDefaultTilesToColumnSlice(0); 
+            }
+            
+            for (int column = 0; column < EditedLayout.Count; column++)
+            {
+                List<List<TileDescription>> floor = EditedLayout[column];
                 foreach (List<TileDescription> row in floor)
                 {
                     row.Insert(0, null);
@@ -202,6 +214,11 @@ namespace Scripts.MapEditor.Services
 
         private void InsertRowToBack()
         {
+            if (MapBuilder.MapDescription.IsOutdoor)
+            {
+                FillDefaultTilesToRowSlice(0); 
+            }
+            
             foreach (List<List<TileDescription>> floor in EditedLayout)
             {
                 floor.Insert(0, new List<TileDescription>());
@@ -212,6 +229,11 @@ namespace Scripts.MapEditor.Services
 
         private void AddRowToFront()
         {
+            if (MapBuilder.MapDescription.IsOutdoor)
+            {
+                FillDefaultTilesToRowSlice(EditedLayout[0].Count - 1);
+            }
+            
             foreach (List<List<TileDescription>> floor in EditedLayout)
             {
                 floor.Add(new List<TileDescription>());
@@ -223,28 +245,15 @@ namespace Scripts.MapEditor.Services
         private void InsertFloorToTop()
         {
             if (MapBuilder.MapDescription.IsOutdoor)
+            {
                 FillDefaultTilesToCeiling();
+            }
 
             EditedLayout.Insert(0, new List<List<TileDescription>>());
 
             PopulateFloor(0);
 
             MapBuilder.MapDescription.groundIndex += 1;
-        }
-
-        private void FillDefaultTilesToCeiling()
-        {
-            int rows = EditedLayout[0].Count;
-            int columns = EditedLayout[0][0].Count;
-            
-            for (int row = 0; row < rows; row++)
-            {
-                for (int column = 0; column < columns; column++)
-                {
-                    if (!MapBuilder.IsHorizontalEdgeTile(new Vector3Int(0, row, column)))
-                        EditedLayout[0][row][column] = DefaultMapProvider.FullTile;
-                }
-            }
         }
 
         private void AddFloorToBottom()
@@ -278,6 +287,59 @@ namespace Scripts.MapEditor.Services
                 for (int row = 0; row < floor[1].Count; row++)
                 {
                     floor[index].Add(null);
+                }
+            }
+        }
+        
+        private void FillDefaultTilesToCeiling()
+        {
+            int rows = EditedLayout[0].Count;
+            int columns = EditedLayout[0][0].Count;
+            
+            for (int row = 0; row < rows; row++)
+            {
+                for (int column = 0; column < columns; column++)
+                {
+                    if (!MapBuilder.IsHorizontalEdgeTile(new Vector3Int(0, row, column)))
+                        EditedLayout[0][row][column] = DefaultMapProvider.FullTile;
+                }
+            }
+        }
+        
+        private void FillDefaultTilesToColumnSlice(int columnIndex)
+        {
+            int floors = EditedLayout.Count;
+            int rows = EditedLayout[0].Count;
+            int groundIndex = MapBuilder.MapDescription.groundIndex;
+            
+            for (int floor = 0; floor < floors; floor++)
+            {
+                for (int row = 0; row < rows; row++)
+                {
+                    if (floor <= groundIndex
+                        && !MapBuilder.IsColumnSliceEdgeTile(new Vector3Int(floor, row, columnIndex)))
+                    {
+                        EditedLayout[floor][row][columnIndex] = DefaultMapProvider.FullTile;
+                    }
+                }
+            }
+        }
+        
+        private void FillDefaultTilesToRowSlice(int rowIndex)
+        {
+            int floors = EditedLayout.Count;
+            int columns = EditedLayout[0][0].Count;
+            int groundIndex = MapBuilder.MapDescription.groundIndex;
+            
+            for (int floor = 0; floor < floors; floor++)
+            {
+                for (int column = 0; column < columns; column++)
+                {
+                    if (floor <= groundIndex
+                        && !MapBuilder.IsRowSliceEdgeTile(new Vector3Int(floor, rowIndex, column), EditedLayout))
+                    {
+                        EditedLayout[floor][rowIndex][column] = DefaultMapProvider.FullTile;
+                    }
                 }
             }
         }
@@ -320,11 +382,9 @@ namespace Scripts.MapEditor.Services
                 out int columnAdjustment,
                 out bool wasLayoutAdjusted);
 
-            if (MapBuilder.MapDescription.IsOutdoor && MapBuilder.IsOnOrAboveGroundLevel(floor) && floorAdjustment > 0)
+            if (wasLayoutAdjusted)
             {
-                // If new top level was added in outdoor map, clicked position is full tile instead of null tile,
-                // so it would be nullified in further process, so we need to set it to null again
-                EditedLayout[1][row][column] = null;
+                ReadjustForOutsideMap(floor, row, column, floorAdjustment, rowAdjustment, columnAdjustment);
             }
 
             int adjustedFloor = floor + floorAdjustment;
@@ -367,6 +427,49 @@ namespace Scripts.MapEditor.Services
 
                 Manager.OrderMapConstruction(newMap, mapIsPresented: true, useStartPosition: false,
                     floorsCountChange: floorsAdded);
+            }
+        }
+
+        /// <summary>
+        /// If the map is outdoor, and we are building on or above ground level, we need to make sure that
+        /// there is null tile instead of full tile, because it would get nullified in further process.
+        /// </summary>
+        /// <param name="floor"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="floorAdjustment"></param>
+        /// <param name="rowAdjustment"></param>
+        /// <param name="columnAdjustment"></param>
+        private static void ReadjustForOutsideMap(int floor, int row, int column, int floorAdjustment, int rowAdjustment,
+            int columnAdjustment)
+        {
+            if(!MapBuilder.MapDescription.IsOutdoor || !MapBuilder.IsOnOrAboveGroundLevel(floor))
+                return;
+            
+            if (floorAdjustment > 0)
+            {
+                EditedLayout[1][row][column] = null;
+            } else
+            if (floorAdjustment == 0 && rowAdjustment == 0 && columnAdjustment == 0) // SE corner
+            {
+                EditedLayout[floor][row][column] = null;
+                return;
+            }
+            if (rowAdjustment != 0 && columnAdjustment != 0) // corner case
+            {
+                int rowIndex = rowAdjustment > 0 ? 1 : EditedLayout[0].Count - 2;
+                int columnIndex = columnAdjustment > 0 ? 1 : EditedLayout[0][0].Count - 2;
+                EditedLayout[floor][rowIndex][columnIndex] = null;
+            } 
+            else if (rowAdjustment != 0)
+            {
+                int rowIndex = rowAdjustment > 0 ? 1 : EditedLayout[0].Count - 2;
+                EditedLayout[floor][rowIndex][column] = null;
+            } else
+            if (columnAdjustment != 0)
+            {
+                int columnIndex = columnAdjustment > 0 ? 1 : EditedLayout[0][0].Count - 2;
+                EditedLayout[floor][row][columnIndex] = null;
             }
         }
 

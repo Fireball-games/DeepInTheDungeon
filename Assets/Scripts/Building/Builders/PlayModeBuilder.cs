@@ -25,6 +25,7 @@ namespace Scripts.Building
                 NullTile nullTileComponent = newNullTile.GetComponent<NullTile>();
                 nullTileComponent.Initialize();
                 nullTileComponent.ShowFloorOnly();
+                newNullTile.transform.localScale = Vector3.one;
             }
         }
     }

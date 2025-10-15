@@ -215,6 +215,7 @@ namespace Scripts.System
             Player.PlayerMovement.SetPositionAndRotation(
                 _currentEntryPoint.playerGridPosition,
                 Quaternion.Euler(0f, _currentEntryPoint.playerRotationY, 0f));
+            
             Player.PlayerMovement.SetCamera();
             
             EventsManager.TriggerOnPlayerSpawned();

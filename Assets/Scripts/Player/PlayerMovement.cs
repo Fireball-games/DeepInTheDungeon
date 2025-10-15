@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Scripts.Building;
 using Scripts.Building.PrefabsBuilding;
-using Scripts.Building.PrefabsSpawning.Configurations;
 using Scripts.Building.PrefabsSpawning.Walls;
 using Scripts.Building.PrefabsSpawning.Walls.Identifications;
 using Scripts.Building.Tile;
@@ -73,8 +73,14 @@ namespace Scripts.Player
             _waypoints = new List<Waypoint>();
         }
 
-        public void SetCamera() => CameraManager.Instance.SetMainCamera(playerCamera);
-        
+        public void SetCamera()
+        {
+            Enums.ECameraBackgroundMode backgroundMode = MapBuilder.IsCurrentMapOutdoor
+                ? Enums.ECameraBackgroundMode.Skybox
+                : Enums.ECameraBackgroundMode.SolidColor;
+            CameraManager.Instance.SetMainCamera(playerCamera, backgroundMode);
+        }
+
         public void SetDefaultTransitionSpeed() => transitionSpeed = _defaultMoveSpeed;
 
         public void SetPositionAndRotation(Vector3 gridPosition, Quaternion rotation)

@@ -28,9 +28,9 @@ namespace Scripts.Building
         public List<EntryPoint> EntryPoints = new();
 
         public bool IsOutdoor;
-        public int groundIndex;
+        public int GroundIndex;
         public string MusicTrackName;
-
+        
         public MapDescription ClonedCopy() => (MapDescription) Clone();
 
         public IEnumerable<string> EntryPointsNames => EntryPoints.Select(e => e.name);
@@ -60,6 +60,7 @@ namespace Scripts.Building
             EntryPoints = EntryPoints.Clone(),
             IsOutdoor = false,
             MusicTrackName = string.Empty,
+            GroundIndex = GroundIndex,
         };
     }
 }

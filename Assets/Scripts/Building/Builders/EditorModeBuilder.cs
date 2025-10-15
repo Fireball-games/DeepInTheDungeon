@@ -9,6 +9,7 @@ namespace Scripts.Building
     public class EditorModeBuilder : TileBuilderBase
     {
         private readonly Vector3 _tileScaleInEditor = new(0.95f, 0.95f, 0.95f);
+        private readonly Vector3 _tileScaleNormal = new(1f, 1f, 1f);
         
         public EditorModeBuilder(MapBuilder mapBuilder) : base(mapBuilder)
         {
@@ -38,8 +39,10 @@ namespace Scripts.Building
                 : GameObject.CreatePrimitive(PrimitiveType.Cube);
             
             cube.transform.parent = LayoutParent;
-            cube.transform.position = new Vector3(row, 0 - floor, column);
-            cube.transform.localScale = _tileScaleInEditor;
+            cube.transform.position = WorldKey;
+            cube.transform.localScale = MapBuilder.IsOutdoorEdgeNullTile(WorldKey) 
+                ? _tileScaleNormal 
+                : _tileScaleInEditor;
 
             NullTile script = cube.GetComponent<NullTile>();
             script.Initialize();

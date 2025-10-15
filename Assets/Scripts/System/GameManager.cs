@@ -203,7 +203,8 @@ namespace Scripts.System
             {
                 await MainUIManager.Instance.ShowMainMenu(false);
             }
-            
+
+            MapBuilder.SetIsCurrentMapOutdoor(CurrentMap.IsOutdoor);
             SceneLoader.Instance.LoadScene(CurrentMap.SceneName, fadeIn, 1f);
         }
         

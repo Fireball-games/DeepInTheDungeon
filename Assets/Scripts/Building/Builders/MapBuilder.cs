@@ -42,6 +42,8 @@ namespace Scripts.Building
         private PrefabBuilder _prefabBuilder;
         private ItemSpawner _itemSpawner;
         internal HashSet<GameObject> Prefabs;
+        
+        public static bool IsCurrentMapOutdoor { get; private set; }
 
         private void Awake()
         {
@@ -62,7 +64,11 @@ namespace Scripts.Building
             }
         }
 
-        public void BuildMap(MapDescription mapDescription) => StartCoroutine(BuildMapCoroutine(mapDescription));
+        public void BuildMap(MapDescription mapDescription)
+        {
+            IsCurrentMapOutdoor = mapDescription.IsOutdoor;
+            StartCoroutine(BuildMapCoroutine(mapDescription));
+        }
 
         public void SetLayout(TileDescription[,,] layout) => Layout = layout;
 
@@ -164,7 +170,7 @@ namespace Scripts.Building
                 EditorStartPosition = new Vector3Int(1, adjustedRows / 2, adjustedColumns / 2),
                 EditorPlayerStartRotation = Quaternion.identity,
                 SceneName = Scenes.PlayOutdoorSceneName,
-                groundIndex = 1,
+                GroundIndex = 1,
             };
         }
 
@@ -395,8 +401,8 @@ namespace Scripts.Building
             return floorEdge || columnEdge;
         }
         
-        public bool IsOnGroundLevel(int floorGridPosition) => floorGridPosition == MapDescription.groundIndex;
-        public bool IsOnOrAboveGroundLevel(int floorGridPosition) => floorGridPosition <= MapDescription.groundIndex;
+        public bool IsOnGroundLevel(int floorGridPosition) => floorGridPosition == MapDescription.GroundIndex;
+        public bool IsOnOrAboveGroundLevel(int floorGridPosition) => floorGridPosition <= MapDescription.GroundIndex;
 
         public GameObject GetPrefabByGridPosition(Vector3Int newGridPosition) =>
             _prefabBuilder.GetPrefabByGridPosition(newGridPosition);
@@ -446,5 +452,7 @@ namespace Scripts.Building
         public List<MapObjectConfiguration> CollectMapObjects() => _itemSpawner.CollectMapObjects();
 
         public async Task RebuildItems() => await _itemSpawner.RebuildItems();
+
+        public void SetIsCurrentMapOutdoor(bool currentMapIsOutdoor) => IsCurrentMapOutdoor = currentMapIsOutdoor;
     }
 }

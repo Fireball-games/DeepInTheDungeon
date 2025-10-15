@@ -253,7 +253,7 @@ namespace Scripts.MapEditor.Services
 
             PopulateFloor(0);
 
-            MapBuilder.MapDescription.groundIndex += 1;
+            MapBuilder.MapDescription.GroundIndex += 1;
         }
 
         private void AddFloorToBottom()
@@ -310,7 +310,7 @@ namespace Scripts.MapEditor.Services
         {
             int floors = EditedLayout.Count;
             int rows = EditedLayout[0].Count;
-            int groundIndex = MapBuilder.MapDescription.groundIndex;
+            int groundIndex = MapBuilder.MapDescription.GroundIndex;
             
             for (int floor = 0; floor < floors; floor++)
             {
@@ -329,7 +329,7 @@ namespace Scripts.MapEditor.Services
         {
             int floors = EditedLayout.Count;
             int columns = EditedLayout[0][0].Count;
-            int groundIndex = MapBuilder.MapDescription.groundIndex;
+            int groundIndex = MapBuilder.MapDescription.GroundIndex;
             
             for (int floor = 0; floor < floors; floor++)
             {

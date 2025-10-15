@@ -40,6 +40,12 @@ namespace Scripts.ScenesManagement
 
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
+            if (asyncLoad == null)
+            {
+                Logger.LogError($"Failed to load scene, {nameof(asyncLoad)} is null");
+                return false;
+            }
+
             while (!asyncLoad.isDone)
             {
                 await Task.Yield();

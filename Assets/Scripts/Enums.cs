@@ -67,5 +67,12 @@
             Hazard = 4,
             PickupCollider = 5,
         }
+        
+        public enum ECameraBackgroundMode
+        {
+            SolidColor = 1,
+            Skybox = 2,
+            Uninitialized = 3,
+        }
     }
 }

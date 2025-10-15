@@ -26,11 +26,6 @@ namespace Scripts.InventoryManagement.UI.Inventories
         {
             Initialize.AddListener(OnInitialize);
         }
-        
-        private void OnEnable()
-        {
-            _store ??= Player.InventoryManager.ActionStore;
-        }
 
         public void AddItem(InventoryItem item, int number)
         {
@@ -59,6 +54,8 @@ namespace Scripts.InventoryManagement.UI.Inventories
         
         private void OnInitialize()
         {
+            _store ??= Player.InventoryManager.ActionStore;
+            
             _store.OnStoreUpdated.AddListener(UpdateIcon);
             _icon ??= GetComponentInChildren<InventoryItemIcon>();
         }

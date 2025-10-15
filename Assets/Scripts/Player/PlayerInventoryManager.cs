@@ -10,7 +10,7 @@ namespace Scripts.Player
     {
         [SerializeField] private float maxPickupDistance = 1.1f;
         [SerializeField] private float pickupSpawnGracePeriod = 0.2f;
-        
+
         /// <summary>
         /// Offset of ItemCursor while editing an item
         /// </summary>
@@ -38,7 +38,7 @@ namespace Scripts.Player
                 pickupColliderPrefab.gameObject.DismissToPool();
             }
         }
-        
+
         public void SetPickupColliderActive(bool isActive)
         {
             pickupColliderPrefab.SetActive(isActive);
@@ -48,36 +48,40 @@ namespace Scripts.Player
         {
             if (!Equipment) Initialize();
             if (!Equipment) return;
-            
+
             Equipment.Close();
         }
-        
+
         public void ClearInventory()
         {
             ActionStore.Clear();
             Inventory.Clear();
             Equipment.Clear();
         }
-        
+
         public void Initialize()
         {
+            pickupColliderPrefab = pickupColliderPrefab.GetFromPool(null);
+            pickupColliderPrefab.transform.SetParent(null);
+            pickupColliderPrefab.GetComponent<Follow>().target = transform;
+
             Equipment = GetComponent<Equipment>();
             if (Equipment) Equipment.Initialize();
-            
+
             Inventory = GetComponent<Inventory>();
             if (Inventory) Inventory.Initialize();
 
             ActionStore = GetComponent<ActionStore>();
             if (ActionStore) ActionStore.Initialize();
-            
+
             ClearInventory();
             SaveManager.RestoreInventoriesContentFromCurrentSave();
-            
+
             MaxClickPickupDistance = maxPickupDistance * maxPickupDistance;
             PickupSpawnGracePeriod = (int) (pickupSpawnGracePeriod * 1000);
             ItemEditCursorOffset = itemEditCursorOffset;
         }
 
-        public IEnumerable<ISavable> GetInventorySavables() => new ISavable[]{ Inventory, ActionStore, Equipment };
+        public IEnumerable<ISavable> GetInventorySavables() => new ISavable[] {Inventory, ActionStore, Equipment};
     }
 }

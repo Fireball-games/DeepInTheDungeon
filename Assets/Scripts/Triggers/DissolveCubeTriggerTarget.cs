@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using DG.Tweening;
 using Scripts.Building;
@@ -10,13 +9,13 @@ namespace Scripts.Triggers
 {
     public class DissolveCubeTriggerTarget : StateTriggerTarget
     {
+        [SerializeField, Range(0,1)] private float maxDissolveAmount = 0.75f;
         [SerializeField] private float effectDuration = 3f;
         [SerializeField] private float scaleDuration = 1f;
         [SerializeField] private Material idleMaterial;
         private MeshRenderer _meshRenderer;
         private GameObject _innerCube;
         private ParticleSystem _centerEffect;
-        private Sequence _dissolveSequence;
         private Sequence _solidifySequence;
         private Material _dissolvingMaterial;
 
@@ -36,22 +35,14 @@ namespace Scripts.Triggers
 
             _centerEffect = transform.Find("CenterEffect").GetComponent<ParticleSystem>();
             _centerEffect.Stop();
-
-            _dissolveSequence =
-                DOTween.Sequence(_meshRenderer.material.DOFloat(0.85f, "_Dissolve", effectDuration));
-            _dissolveSequence.Insert(0, _innerCube.transform.DOScale(0, scaleDuration).SetDelay(effectDuration - scaleDuration));
-            _dissolveSequence.Insert(0,
-                _innerCube.transform.DOLocalRotate(Quaternion.Euler(1800, 1800, 0).eulerAngles, scaleDuration)
-                    .SetDelay(effectDuration - scaleDuration));
-            _dissolveSequence.SetAutoKill(false);
             
             _meshRenderer.material = idleMaterial;
         }
 
-        private void OnDestroy()
-        {
-            _dissolveSequence.Kill();
-        }
+        // private void OnDestroy()
+        // {
+        //     _dissolveSequence.Kill();
+        // }
 
         private async Task StartDissolve()
         {
@@ -64,7 +55,7 @@ namespace Scripts.Triggers
             _centerEffect.Play();
 
             TaskCompletionSource<bool> tsc = new();
-            _meshRenderer.material.DOFloat(0.85f, Dissolve, effectDuration - scaleDuration).OnComplete(() =>
+            _meshRenderer.material.DOFloat(maxDissolveAmount, Dissolve, effectDuration - scaleDuration).OnComplete(() =>
             {
                 MapBuilder.SetTileForMovement(transform.position, true);
             
@@ -74,6 +65,8 @@ namespace Scripts.Triggers
                     tsc.SetResult(true);
                 }).SetAutoKill(true).Play();
             }).SetAutoKill(true).Play();
+            _innerCube.transform.DOLocalRotate(Quaternion.Euler(1800, 1800, 0).eulerAngles, scaleDuration)
+                .SetDelay(effectDuration - scaleDuration).SetAutoKill(true).Play();
         
             await tsc.Task;
         }
@@ -82,7 +75,7 @@ namespace Scripts.Triggers
         {
             if (_isWorking) return;
 
-            _dissolvingMaterial.SetFloat(Dissolve, 0.85f);
+            _dissolvingMaterial.SetFloat(Dissolve, maxDissolveAmount);
             _meshRenderer.material = _dissolvingMaterial;
             _innerCube.SetActive(true);
             _centerEffect.gameObject.SetActive(true);
@@ -101,6 +94,8 @@ namespace Scripts.Triggers
                     tsc.SetResult(true);
                 }).SetAutoKill(true).Play();
             }).SetAutoKill(true).Play();
+            _innerCube.transform.DOLocalRotate(Quaternion.Euler(1800, 1800, 0).eulerAngles, scaleDuration)
+                .SetDelay(effectDuration - scaleDuration).SetAutoKill(true).Play();
 
             await tsc.Task;
         }
@@ -124,7 +119,7 @@ namespace Scripts.Triggers
             {
                 _innerCube.transform.localScale = 0f.ToVectorUniform();
                 _meshRenderer.material = _dissolvingMaterial;
-                _meshRenderer.material.SetFloat(Dissolve, 0.85f);
+                _meshRenderer.material.SetFloat(Dissolve, maxDissolveAmount);
             }
         
             MapBuilder.SetTileForMovement(transform.position, state == 1);

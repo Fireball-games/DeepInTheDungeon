@@ -17,14 +17,6 @@ namespace Scripts.InventoryManagement.UI.Inventories
         private Inventory _playerInventory;
         private Transform _itemsParent;
 
-        protected override void Awake() 
-        {
-            base.Awake();
-            
-            _playerInventory = Inventory.PlayerInventory;
-            _itemsParent = transform.Find("Background/Frame/ScrollView/Viewport/Content");
-        }
-
         protected override void SetTitle()
         {
         }
@@ -36,11 +28,21 @@ namespace Scripts.InventoryManagement.UI.Inventories
 
         public override void OnInitialize()
         {
+            Initialize();
+            
             _playerInventory.OnInventoryUpdated.AddListener(Redraw);
+        }
+
+        private void Initialize()
+        {
+            _playerInventory ??= Inventory.PlayerInventory;
+            _itemsParent ??= transform.Find("Background/Frame/ScrollView/Viewport/Content");
         }
 
         private void Redraw()
         {
+            Initialize();
+            
             IEnumerable<InventorySlotUI> slots = _itemsParent.GetComponentsInChildren<InventorySlotUI>();
             
             if (slots.Count() > _playerInventory.InventorySize)

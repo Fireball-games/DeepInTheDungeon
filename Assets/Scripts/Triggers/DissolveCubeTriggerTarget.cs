@@ -39,11 +39,6 @@ namespace Scripts.Triggers
             _meshRenderer.material = idleMaterial;
         }
 
-        // private void OnDestroy()
-        // {
-        //     _dissolveSequence.Kill();
-        // }
-
         private async Task StartDissolve()
         {
             if (_isWorking) return;
@@ -65,8 +60,6 @@ namespace Scripts.Triggers
                     tsc.SetResult(true);
                 }).SetAutoKill(true).Play();
             }).SetAutoKill(true).Play();
-            _innerCube.transform.DOLocalRotate(Quaternion.Euler(1800, 1800, 0).eulerAngles, scaleDuration)
-                .SetDelay(effectDuration - scaleDuration).SetAutoKill(true).Play();
         
             await tsc.Task;
         }
@@ -94,8 +87,6 @@ namespace Scripts.Triggers
                     tsc.SetResult(true);
                 }).SetAutoKill(true).Play();
             }).SetAutoKill(true).Play();
-            _innerCube.transform.DOLocalRotate(Quaternion.Euler(1800, 1800, 0).eulerAngles, scaleDuration)
-                .SetDelay(effectDuration - scaleDuration).SetAutoKill(true).Play();
 
             await tsc.Task;
         }

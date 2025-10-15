@@ -252,7 +252,7 @@ namespace Helpers.Editor
 
             if (font)
             {
-                foreach (TMP_Text tmpText in FindObjectsOfType<TMP_Text>())
+                foreach (TMP_Text tmpText in FindObjectsByType<TMP_Text>(FindObjectsSortMode.None))
                 {
                     tmpText.font = font;
                 }

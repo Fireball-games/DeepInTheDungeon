@@ -45,8 +45,6 @@ namespace ES3Types
 
 				if(propertyName == ES3Type.typeFieldName)
 					return ES3TypeMgr.GetOrCreateES3Type(reader.ReadType()).Read<T>(reader);
-				else if(propertyName == null)
-					return null;
 				else
 				{
 					reader.overridePropertiesName = propertyName;

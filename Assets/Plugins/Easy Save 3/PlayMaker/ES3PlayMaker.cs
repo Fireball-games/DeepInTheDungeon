@@ -70,33 +70,33 @@ namespace ES3PlayMaker
     {
         [ActionSection("Settings")]
         public FsmBool overrideDefaultSettings = false;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [Tooltip("The path this ES3Settings object points to, if any.")]
         public FsmString path;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [ObjectType(typeof(ES3.Location))]
         [Tooltip("The storage location where we wish to store data by default.")]
         public FsmEnum location;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [ObjectType(typeof(ES3.EncryptionType))]
         [Tooltip("The type of encryption to use when encrypting data, if any.")]
         public FsmEnum encryptionType;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [Tooltip("The password to use to encrypt the data if encryption is enabled.")]
         public FsmString encryptionPassword;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [ObjectType(typeof(ES3.CompressionType))]
         [Tooltip("The type of compression to use when compressing data, if any.")]
         public FsmEnum compressionType;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [ObjectType(typeof(ES3.Directory))]
         [Tooltip("The default directory in which to store files when using the File save location, and the location which relative paths should be relative to.")]
         public FsmEnum directory;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [ObjectType(typeof(ES3.Format))]
         [Tooltip("The format we should use when serializing and deserializing data.")]
         public FsmEnum format;
-        [HideIf("DefaultSettingsOverridden")]
+        [HutongGames.PlayMaker.HideIf("DefaultSettingsOverridden")]
         [Tooltip("Any stream buffers will be set to this length in bytes.")]
         public FsmInt bufferSize;
 
@@ -1813,7 +1813,7 @@ namespace ES3Types
     }
 
     [UnityEngine.Scripting.Preserve]
-    [ES3Properties("ActiveStateName")]
+    [ES3Properties("ActiveStateName", "Variables")]
     public class ES3Type_Fsm : ES3ObjectType
     {
         public static ES3Type Instance = null;
@@ -1831,6 +1831,7 @@ namespace ES3Types
         protected override void ReadObject<T>(ES3Reader reader, object obj)
         {
             var instance = (Fsm)obj;
+
             if(!instance.Initialized)
             {
                 // Toggle FSM Component twice to trigger initialisation.
@@ -1866,7 +1867,11 @@ namespace ES3Types
     {
         public static ES3Type Instance = null;
 
-        public ES3Type_PlayMakerFSM() : base(typeof(PlayMakerFSM)) { Instance = this; priority = 1; }
+        public ES3Type_PlayMakerFSM() : base(typeof(PlayMakerFSM))
+        {
+            Instance = this; 
+            priority = 1;
+        }
 
 
         protected override void WriteComponent(object obj, ES3Writer writer)

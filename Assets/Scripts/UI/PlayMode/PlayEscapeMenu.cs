@@ -5,7 +5,9 @@ using Scripts.Localization;
 using Scripts.ScenesManagement;
 using Scripts.System;
 using Scripts.System.MonoBases;
+using UnityEngine;
 using UnityEngine.UI;
+using Logger = Scripts.Helpers.Logger;
 
 namespace Scripts.UI.PlayMode
 {
@@ -30,7 +32,7 @@ namespace Scripts.UI.PlayMode
             _toEditorButton = body.transform.Find("Background/Content/ToEditorButton").GetComponent<Button>();
             _toEditorButton.onClick.AddListener(LeaveToEditor);
             
-            _loadPositionsDialog = FindObjectOfType<LoadPositionsDialog>(true);
+            _loadPositionsDialog = FindFirstObjectByType<LoadPositionsDialog>(FindObjectsInactive.Include);
         }
 
         protected override void SetContentOnShow()

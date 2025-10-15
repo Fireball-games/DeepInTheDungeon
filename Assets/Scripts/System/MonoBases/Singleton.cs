@@ -41,7 +41,7 @@ namespace Scripts.System.MonoBases
                 
                 if (instance) return instance;
                 
-                instance = FindObjectOfType<T> ();
+                instance = FindFirstObjectByType<T> ();
                     
                 if (instance) return instance;
                     

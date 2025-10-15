@@ -25,7 +25,7 @@ namespace Scripts.System
                 
                 if(!_cursor3D)
                 {
-                    _cursor3D = FindObjectOfType<Cursor3D>();
+                    _cursor3D = FindFirstObjectByType<Cursor3D>();
                 }
 
                 return _cursor3D;

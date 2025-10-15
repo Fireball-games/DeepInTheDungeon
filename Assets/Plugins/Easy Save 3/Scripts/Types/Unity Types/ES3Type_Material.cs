@@ -15,6 +15,9 @@ namespace ES3Types
 		{
 			var instance = (UnityEngine.Material)obj;
 
+            // Uncomment if you want "instance" to be removed from the name.
+            //instance.name = instance.name.Replace(" (Instance)", "");
+
 			writer.WriteProperty("name", instance.name);
 			writer.WriteProperty("shader", instance.shader);
 			writer.WriteProperty("renderQueue", instance.renderQueue, ES3Type_int.Instance);
@@ -40,9 +43,16 @@ namespace ES3Types
                             writer.WriteProperty(name, instance.GetFloat(name));
                             break;
                         case UnityEngine.Rendering.ShaderPropertyType.Texture:
-                            writer.WriteProperty(name, instance.GetTexture(name));
-                            writer.WriteProperty(name+"_TextureOffset", instance.GetTextureOffset(name));
-                            writer.WriteProperty(name+"_TextureScale", instance.GetTextureScale(name));
+                            var texture = instance.GetTexture(name);
+
+                            if (texture != null && texture.GetType() != typeof(Texture2D))
+                            {
+                                ES3Internal.ES3Debug.LogWarning($"The texture '{name}' of Material '{instance.name}' will not be saved as only Textures of type Texture2D can be saved at runtime, whereas '{name}' is of type '{texture.GetType()}'.");
+                                break;
+                            }
+                            writer.WriteProperty(name, texture);
+                            writer.WriteProperty(name + "_TextureOffset", instance.GetTextureOffset(name));
+                            writer.WriteProperty(name + "_TextureScale", instance.GetTextureScale(name));
                             break;
                         case UnityEngine.Rendering.ShaderPropertyType.Vector:
                             writer.WriteProperty(name, instance.GetVector(name));
@@ -534,7 +544,9 @@ namespace ES3Types
                         instance.renderQueue = reader.Read<System.Int32>(ES3Type_int.Instance);
                         break;
                     case "shaderKeywords":
-                        instance.shaderKeywords = reader.Read<System.String[]>();
+                        var keywords = reader.Read<System.String[]>();
+                        foreach (var keyword in keywords)
+                            instance.EnableKeyword(keyword);
                         break;
                     case "globalIlluminationFlags":
                         instance.globalIlluminationFlags = reader.Read<UnityEngine.MaterialGlobalIlluminationFlags>();

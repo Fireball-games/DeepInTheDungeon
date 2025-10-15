@@ -23,17 +23,26 @@ namespace Scripts.ScenesManagement
         protected override void Awake()
         {
             base.Awake();
+
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            if(_splashTweenOut != null)
+                return;
             
+            _gameObject = gameObject;
             _faderImage = transform.Find("FaderImage").GetComponent<Image>();
             _splashImage = _faderImage.transform.Find("SplashImage").GetComponent<Image>();
             _splashTweenIn = _splashImage.DOFade(1, 1).SetAutoKill(false).SetEase(Ease.InOutSine);
             _splashTweenOut = _splashImage.DOFade(0, 1).SetAutoKill(false).SetEase(Ease.InOutSine);
-            _gameObject = gameObject;
-            
         }
-        
+
         public static async Task FadeIn(float duration)
         {
+            Instance.Initialize();
+            
             _gameObject.SetActive(true);
             _faderImage.color = Colors.FullTransparentBlack;
 
@@ -60,6 +69,8 @@ namespace Scripts.ScenesManagement
         
         public static void FadeOut(float duration, UnityAction onFadeOutFinished = null)
         {
+            Instance.Initialize();
+            
             _faderImage.color = new Color(0, 0, 0, 1);
             _faderImage.DOColor(new Color(0,0,0,0), duration).Play().OnComplete(() =>
             {

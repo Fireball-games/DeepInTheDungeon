@@ -64,7 +64,7 @@ namespace ES3Internal
             foreach (var kvp in localRefs)
             {
                 long id = refMgr.Add(kvp.Key);
-                localToGlobal.Add(kvp.Value.ToString(), id.ToString());
+                localToGlobal[kvp.Value.ToString()] = id.ToString();
             }
             return localToGlobal;
         }
@@ -110,7 +110,7 @@ namespace ES3Internal
             bool addedNewReference = false;
 
             // Add the GameObject's dependencies to the reference list.
-            foreach (var obj in ES3ReferenceMgr.CollectDependencies(gos))
+            foreach (var obj in EditorUtility.CollectDependencies(gos))
             {
                 var dependency = (UnityEngine.Object)obj;
                 if (obj == null || !ES3ReferenceMgr.CanBeSaved(dependency))

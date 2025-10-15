@@ -30,7 +30,8 @@ namespace ES3Types
 			writer.WriteProperty("localRotation", instance.localRotation, ES3Type_Quaternion.Instance);
 			writer.WriteProperty("localScale", instance.localScale, ES3Type_Vector3.Instance);
 			writer.WriteProperty("hideFlags", instance.hideFlags);
-		}
+            writer.WriteProperty("siblingIndex", instance.GetSiblingIndex());
+        }
 
 		protected override void ReadComponent<T>(ES3Reader reader, object obj)
 		{
@@ -82,7 +83,10 @@ namespace ES3Types
 					case "hideFlags":
 						instance.hideFlags = reader.Read<UnityEngine.HideFlags>();
 						break;
-					default:
+                    case "siblingIndex":
+                        instance.SetSiblingIndex(reader.Read<int>());
+                        break;
+                    default:
 						reader.Skip();
 						break;
 				}

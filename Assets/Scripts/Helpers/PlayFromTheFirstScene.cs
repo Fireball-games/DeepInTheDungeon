@@ -50,7 +50,7 @@ namespace Scripts.Helpers
                 return;
             }
  
-            foreach(GameObject go in Object.FindObjectsOfType<GameObject>())
+            foreach(GameObject go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
                 go.SetActive(false);
          
             SceneManager.LoadScene(0);

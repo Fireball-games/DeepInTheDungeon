@@ -22,7 +22,7 @@ namespace Scripts.InventoryManagement.Inventories
         {
             Clear();
             OnInventoryUpdated.RemoveAllListeners();
-            _inventoryUi = FindObjectOfType<TInventoryUI>();
+            _inventoryUi = FindFirstObjectByType<TInventoryUI>();
             
             if (_inventoryUi)
             {

@@ -37,7 +37,7 @@ namespace Scripts.Building.PrefabsSpawning.Walls
             Vector3 position = ownTransform.position;
             Quaternion rot = ownTransform.rotation;
 
-            FindObjectOfType<Cursor3D>().ShowAt(position, Cursor3D.EditorWallCursorScale, rot);
+            FindFirstObjectByType<Cursor3D>().ShowAt(position, Cursor3D.EditorWallCursorScale, rot);
                 
             _ownConfiguration ??= Manager.MapBuilder
                 .GetPrefabConfigurationByTransformData(new PositionRotation(position, rot)) as WallConfiguration;

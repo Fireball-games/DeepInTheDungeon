@@ -84,8 +84,8 @@ namespace Scripts.UI.EditorUI
             SelectedCage = _body.Find("SelectedCage").GetComponent<CageController>();
             SelectConfigurationWindow = _body.Find("SelectConfigurationWindow").GetComponent<SelectConfigurationWindow>();
             
-            TileGizmo = FindObjectOfType<TileGizmoController>();
-            Cursor3D = FindObjectOfType<Cursor3D>();
+            TileGizmo = FindFirstObjectByType<TileGizmoController>();
+            Cursor3D = FindFirstObjectByType<Cursor3D>();
             
             _editors = new Dictionary<EWorkMode, IPrefabEditor>
             {

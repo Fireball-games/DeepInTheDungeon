@@ -34,7 +34,10 @@ namespace Scripts.InventoryManagement.Inventories
         {
             base.Initialize();
             
-            FindObjectsOfType<EquipmentSlotUI>(true).ForEach(slot => slot.OnInitialize());
+            FindObjectsByType<EquipmentSlotUI>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.InstanceID)
+                .ForEach(slot => slot.OnInitialize());
         }
 
         /// <summary>

@@ -332,7 +332,7 @@ namespace Scripts.System
             await UIManager.ShowMainMenu(false);
 
             GameManager.Player.PlayerMovement.MoveForward(true);
-            GameObject.FindObjectOfType<DoTweenTriggerReceiver>().Trigger();
+            GameObject.FindFirstObjectByType<DoTweenTriggerReceiver>().Trigger();
         }
 
         private async void HandleFirstStepAfterTraversal()

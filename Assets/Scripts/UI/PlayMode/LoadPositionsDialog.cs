@@ -1,5 +1,6 @@
 ﻿using Scripts.System.MonoBases;
 using Scripts.UI.MainMenus;
+using UnityEngine;
 
 namespace Scripts.UI.PlayMode
 {
@@ -20,7 +21,7 @@ namespace Scripts.UI.PlayMode
         private void OnPositionSelected()
         {
             CloseDialog();
-            FindObjectOfType<PlayEscapeMenu>(true).CloseDialog();
+            FindFirstObjectByType<PlayEscapeMenu>(FindObjectsInactive.Include).CloseDialog();
         }
     }
 }

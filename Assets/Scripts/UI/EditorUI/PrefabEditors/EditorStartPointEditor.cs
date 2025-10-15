@@ -152,7 +152,7 @@ namespace Scripts.UI.EditorUI.PrefabEditors
 
         private void AssignComponents()
         {
-            _editorStartIndicator = FindObjectOfType<EditorStartIndicator>();
+            _editorStartIndicator = FindFirstObjectByType<EditorStartIndicator>();
             _indicatorTransform = _editorStartIndicator.transform;
             
             _rotationWidget = body.transform.Find("Background/Frame/Content/RotationWidget").GetComponent<RotationWidget>();

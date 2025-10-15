@@ -124,6 +124,17 @@ public class ES3Settings : System.ICloneable
     // <summary>Whether we should apply encryption and/or compression to raw cached data if they're specified in the cached data's settings.</summary>
     public bool postprocessRawCachedData = false;
 
+    // When we should automatically commit the cache to file.
+    public bool storeCacheAtEndOfEveryFrame = true;
+    public bool storeCacheOnApplicationQuit = true;
+    public bool storeCacheOnApplicationPause = true;
+
+    // Whether we should automatically cache the default file.
+    public bool autoCacheDefaultFile = true;
+
+    // Whether we should automatically cache the file when we load and it doesn't exist in the cache.
+    public bool autoCacheFileOnLoad = true;
+
     /// <summary>Whether we should check that the data we are loading from a file matches the method we are using to load it.</summary>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 	public bool typeChecking = true;
@@ -356,12 +367,18 @@ public class ES3Settings : System.ICloneable
         newSettings.encoding = encoding;
         newSettings.typeChecking = typeChecking;
         newSettings.safeReflection = safeReflection;
+        newSettings.referenceMode = referenceMode;
         newSettings.memberReferenceMode = memberReferenceMode;
         newSettings.assemblyNames = assemblyNames;
         newSettings.saveChildren = saveChildren;
         newSettings.serializationDepthLimit = serializationDepthLimit;
         newSettings.postprocessRawCachedData = postprocessRawCachedData;
-    }
+        newSettings.storeCacheAtEndOfEveryFrame = storeCacheAtEndOfEveryFrame;
+        newSettings.storeCacheOnApplicationQuit = storeCacheOnApplicationQuit;
+        newSettings.storeCacheOnApplicationPause = storeCacheOnApplicationPause;
+        newSettings.autoCacheDefaultFile = autoCacheDefaultFile;
+        newSettings.autoCacheFileOnLoad = autoCacheFileOnLoad;
+}
 
     #endregion
 }

@@ -81,7 +81,7 @@ namespace Scripts.UI.MainMenus
 
         private void OnLevelStarted()
         {
-            MainMenuCarrier mainMenuCarrier = FindObjectOfType<MainMenuCarrier>();
+            MainMenuCarrier mainMenuCarrier = FindFirstObjectByType<MainMenuCarrier>();
             
             if (!mainMenuCarrier) return;
             
